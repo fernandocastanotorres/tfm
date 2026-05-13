@@ -1,0 +1,142 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [ main, master ]
+
+env:
+  COVERAGE_ENFORCEMENT_MODE: report # switch to "enforce" after first sprint
+
+jobs:
+  backend-tests:
+    name: Backend Tests (Maven)
+    runs-on: ubuntu-latest
+    if: ${{ hashFiles('backend/**/pom.xml') != '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Run backend tests + JaCoCo
+        run: mvn -q -f backend/pom.xml test jacoco:report
+
+      - name: Upload backend coverage artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: |
+            backend/**/target/site/jacoco/jacoco.xml
+            backend/**/target/site/jacoco/index.html
+          if-no-files-found: warn
+
+  frontend-citizen-tests:
+    name: Frontend Citizen Tests
+    runs-on: ubuntu-latest
+    if: ${{ hashFiles('frontend-citizen/package.json') != '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: frontend-citizen/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: frontend-citizen
+
+      - name: Run tests with coverage
+        run: npm run test -- --watch=false --code-coverage
+        working-directory: frontend-citizen
+
+      - name: Upload citizen coverage artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: citizen-coverage
+          path: |
+            frontend-citizen/coverage/**/lcov.info
+            frontend-citizen/coverage/**/index.html
+          if-no-files-found: warn
+
+  frontend-backoffice-tests:
+    name: Frontend Backoffice Tests
+    runs-on: ubuntu-latest
+    if: ${{ hashFiles('backoffice-admin/package.json') != '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: backoffice-admin/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: backoffice-admin
+
+      - name: Run tests with coverage
+        run: npm run test -- --watch=false --code-coverage
+        working-directory: backoffice-admin
+
+      - name: Upload backoffice coverage artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: backoffice-coverage
+          path: |
+            backoffice-admin/coverage/**/lcov.info
+            backoffice-admin/coverage/**/index.html
+          if-no-files-found: warn
+
+  coverage-gates:
+    name: Coverage Gates (Report Mode / Enforce Mode)
+    runs-on: ubuntu-latest
+    needs:
+      - backend-tests
+      - frontend-citizen-tests
+      - frontend-backoffice-tests
+    if: always()
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download backend coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-coverage
+          path: .artifacts/backend
+        continue-on-error: true
+
+      - name: Download citizen coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: citizen-coverage
+          path: .artifacts/citizen
+        continue-on-error: true
+
+      - name: Download backoffice coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: backoffice-coverage
+          path: .artifacts/backoffice
+        continue-on-error: true
+
+      - name: Coverage summary placeholder
+        run: |
+          node scripts/coverage/check-coverage-gates.mjs
+
+      - name: Enforcement mode note
+        if: env.COVERAGE_ENFORCEMENT_MODE != 'enforce'
+        run: echo "Report mode active. Switch COVERAGE_ENFORCEMENT_MODE to 'enforce' to fail on threshold violations."
