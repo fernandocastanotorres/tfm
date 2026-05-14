@@ -1,0 +1,40 @@
+<main class="min-h-screen bg-surface-50 px-6 py-10" aria-labelledby="appointments-title">
+  <div class="max-w-4xl mx-auto">
+    <header class="space-y-2">
+      <p class="text-sm font-semibold text-brand-600">{{ 'APPOINTMENTS.EYEBROW' | translate }}</p>
+      <h1 id="appointments-title" class="text-2xl font-semibold text-surface-900">{{ 'APPOINTMENTS.TITLE' | translate }}</h1>
+      <p class="text-surface-600">{{ 'APPOINTMENTS.SUBTITLE' | translate }}</p>
+    </header>
+
+    <section class="mt-8 grid gap-4">
+      <article class="card p-6" *ngFor="let appointment of appointments">
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-semibold text-surface-900">{{ appointment.service }}</h2>
+            <p class="text-surface-500 text-sm">{{ appointment.date }} · {{ appointment.time }} · {{ appointment.location }}</p>
+          </div>
+          <span class="text-xs font-semibold px-3 py-1 rounded-full" [ngClass]="appointment.status === 'Confirmada' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'">
+            {{ appointment.status }}
+          </span>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-3">
+          <button class="btn-primary" type="button">{{ 'APPOINTMENTS.RESCHEDULE' | translate }}</button>
+          <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button">{{ 'APPOINTMENTS.CANCEL' | translate }}</button>
+        </div>
+      </article>
+      <div *ngIf="appointments.length === 0" class="card p-6 text-surface-600">
+        {{ 'APPOINTMENTS.EMPTY' | translate }}
+      </div>
+    </section>
+    <section class="mt-10 card p-6" aria-labelledby="slot-title">
+      <h2 id="slot-title" class="text-lg font-semibold text-surface-900">{{ 'APPOINTMENTS.SLOTS_TITLE' | translate }}</h2>
+      <p class="text-surface-600">{{ 'APPOINTMENTS.SLOTS_SUBTITLE' | translate }}</p>
+      <div class="mt-4 flex flex-wrap gap-3">
+        <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" *ngFor="let slot of slots" (click)="selectSlot(slot)">
+          {{ slot }}
+        </button>
+      </div>
+      <p class="mt-4 text-surface-600" *ngIf="selectedSlot">{{ 'APPOINTMENTS.SLOT_SELECTED' | translate }} {{ selectedSlot }}</p>
+    </section>
+  </div>
+</main>

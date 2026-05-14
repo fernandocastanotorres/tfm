@@ -1,0 +1,46 @@
+<main class="min-h-screen bg-surface-50 px-6 py-10" aria-labelledby="payments-title">
+  <div class="max-w-4xl mx-auto">
+    <header class="space-y-2">
+      <p class="text-sm font-semibold text-brand-600">{{ 'PAYMENTS.EYEBROW' | translate }}</p>
+      <h1 id="payments-title" class="text-2xl font-semibold text-surface-900">{{ 'PAYMENTS.TITLE' | translate }}</h1>
+      <p class="text-surface-600">{{ 'PAYMENTS.SUBTITLE' | translate }}</p>
+    </header>
+
+    <section class="mt-8 grid gap-6 lg:grid-cols-[2fr_1fr]">
+      <div class="grid gap-4">
+        <button type="button" class="card p-6 text-left" *ngFor="let payment of payments" (click)="selectPayment(payment)">
+          <div class="flex items-center justify-between gap-4">
+            <div>
+              <h2 class="text-lg font-semibold text-surface-900">{{ payment.concept }}</h2>
+              <p class="text-surface-500 text-sm">{{ 'PAYMENTS.DUE' | translate }} {{ payment.dueDate }}</p>
+            </div>
+            <span class="text-xs font-semibold px-3 py-1 rounded-full" [ngClass]="payment.status === 'Pagado' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'">
+              {{ payment.status }}
+            </span>
+          </div>
+          <p class="text-xl font-semibold mt-4">{{ payment.amount }}</p>
+        </button>
+      </div>
+      <aside class="card p-6" *ngIf="selectedPayment">
+        <h2 class="text-lg font-semibold text-surface-900">{{ 'PAYMENTS.DETAIL_TITLE' | translate }}</h2>
+        <p class="text-surface-600 mt-2">{{ selectedPayment.concept }}</p>
+        <div class="mt-4 space-y-2">
+          <p><strong>{{ 'PAYMENTS.DETAIL_AMOUNT' | translate }}:</strong> {{ selectedPayment.amount }}</p>
+          <p><strong>{{ 'PAYMENTS.DETAIL_DUE' | translate }}:</strong> {{ selectedPayment.dueDate }}</p>
+          <p><strong>{{ 'PAYMENTS.DETAIL_STATUS' | translate }}:</strong> {{ selectedPayment.status }}</p>
+        </div>
+        <div class="mt-5 flex flex-col gap-3">
+          <button class="btn-primary" type="button" [disabled]="selectedPayment.status === 'Pagado'" (click)="markAsPaid(selectedPayment)">
+            {{ 'PAYMENTS.PAY' | translate }}
+          </button>
+          <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button">
+            {{ 'PAYMENTS.DOWNLOAD' | translate }}
+          </button>
+        </div>
+      </aside>
+      <div *ngIf="payments.length === 0" class="card p-6 text-surface-600">
+        {{ 'PAYMENTS.EMPTY' | translate }}
+      </div>
+    </section>
+  </div>
+</main>

@@ -1,0 +1,40 @@
+<main class="min-h-screen bg-surface-50 px-6 py-10" aria-labelledby="messages-title">
+  <div class="max-w-4xl mx-auto">
+    <header class="space-y-2">
+      <p class="text-sm font-semibold text-brand-600">{{ 'MESSAGES.EYEBROW' | translate }}</p>
+      <h1 id="messages-title" class="text-2xl font-semibold text-surface-900">{{ 'MESSAGES.TITLE' | translate }}</h1>
+      <p class="text-surface-600">{{ 'MESSAGES.SUBTITLE' | translate }}</p>
+    </header>
+
+    <section class="mt-8 grid gap-6 lg:grid-cols-[2fr_1fr]">
+      <div class="grid gap-4">
+        <button type="button" class="card p-6 text-left" *ngFor="let thread of threads" (click)="selectThread(thread)">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h2 class="text-lg font-semibold text-surface-900">{{ thread.subject }}</h2>
+              <p class="text-surface-600 mt-2">{{ thread.lastMessage }}</p>
+              <p class="text-surface-500 text-sm mt-2">{{ thread.updatedAt }}</p>
+            </div>
+            <span class="text-xs font-semibold px-3 py-1 rounded-full" [ngClass]="thread.unread ? 'bg-brand-100 text-brand-700' : 'bg-surface-100 text-surface-600'">
+              {{ thread.unread ? ('MESSAGES.NEW' | translate) : ('MESSAGES.READ' | translate) }}
+            </span>
+          </div>
+        </button>
+        <div *ngIf="threads.length === 0" class="card p-6 text-surface-600">
+          {{ 'MESSAGES.EMPTY' | translate }}
+        </div>
+      </div>
+      <aside class="card p-6" *ngIf="selectedThread">
+        <h2 class="text-lg font-semibold text-surface-900">{{ 'MESSAGES.THREAD_TITLE' | translate }}</h2>
+        <p class="text-surface-600 mt-2">{{ selectedThread.subject }}</p>
+        <p class="text-surface-500 text-sm mt-2">{{ selectedThread.updatedAt }}</p>
+        <label class="field-label mt-4" for="reply">{{ 'MESSAGES.REPLY_LABEL' | translate }}</label>
+        <textarea id="reply" class="field-input min-h-[120px]" [(ngModel)]="reply"></textarea>
+        <div class="mt-4 flex flex-wrap gap-3">
+          <button class="btn-primary" type="button" (click)="sendReply()">{{ 'MESSAGES.REPLY' | translate }}</button>
+          <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button">{{ 'MESSAGES.ARCHIVE' | translate }}</button>
+        </div>
+      </aside>
+    </section>
+  </div>
+</main>

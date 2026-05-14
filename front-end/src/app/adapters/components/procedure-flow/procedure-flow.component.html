@@ -1,0 +1,59 @@
+<main class="min-h-screen bg-surface-50 px-6 py-10" aria-labelledby="procedure-flow-title">
+  <div class="max-w-5xl mx-auto" *ngIf="procedure">
+    <header class="space-y-2">
+      <p class="text-sm font-semibold text-brand-600">{{ 'PROCEDURE_FLOW.EYEBROW' | translate }}</p>
+      <h1 id="procedure-flow-title" class="text-2xl font-semibold text-surface-900">
+        {{ procedure.titleKey | translate }}
+      </h1>
+      <p class="text-surface-600">{{ procedure.descriptionKey | translate }}</p>
+    </header>
+
+    <section class="mt-8 grid gap-6 lg:grid-cols-[2fr_1fr]">
+      <article class="card p-6">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold text-surface-900">{{ 'PROCEDURE_FLOW.TASK_TITLE' | translate }}</h2>
+          <span class="text-sm text-surface-500">{{ taskStepLabel }}</span>
+        </div>
+        <div class="mt-4" *ngIf="currentTask">
+          <h3 class="text-base font-semibold text-surface-900">{{ currentTask.titleKey | translate }}</h3>
+          <p class="mt-2 text-surface-600">{{ currentTask.descriptionKey | translate }}</p>
+        </div>
+        <div class="mt-6 grid gap-3 sm:grid-cols-2" *ngIf="currentTask">
+          <div class="rounded-xl border border-dashed border-surface-200 p-4 text-sm text-surface-600" *ngIf="currentTask.type === 'form'">
+            {{ 'PROCEDURE_FLOW.HINT_FORM' | translate }}
+          </div>
+          <div class="rounded-xl border border-dashed border-surface-200 p-4 text-sm text-surface-600" *ngIf="currentTask.type === 'upload'">
+            {{ 'PROCEDURE_FLOW.HINT_UPLOAD' | translate }}
+          </div>
+          <div class="rounded-xl border border-dashed border-surface-200 p-4 text-sm text-surface-600" *ngIf="currentTask.type === 'review'">
+            {{ 'PROCEDURE_FLOW.HINT_REVIEW' | translate }}
+          </div>
+        </div>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a class="btn-primary" [routerLink]="['/expedientes/nuevo', procedure.id]">
+            {{ 'PROCEDURE_FLOW.START' | translate }}
+          </a>
+          <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="previousTask()">
+            {{ 'PROCEDURE_FLOW.PREVIOUS' | translate }}
+          </button>
+          <button class="btn-primary" type="button" (click)="nextTask()">
+            {{ 'PROCEDURE_FLOW.NEXT' | translate }}
+          </button>
+        </div>
+      </article>
+
+      <aside class="card p-6 space-y-4">
+        <h2 class="text-lg font-semibold text-surface-900">{{ 'PROCEDURE_FLOW.SUMMARY_TITLE' | translate }}</h2>
+        <div class="space-y-2 text-sm text-surface-700">
+          <p><strong>{{ 'PROCEDURES.DETAIL_FEE' | translate }}:</strong> {{ procedure.feeAmount === 0 ? ('PROCEDURES.FEE_FREE' | translate) : (procedure.feeAmount + ' €') }}</p>
+          <p><strong>{{ 'PROCEDURES.DETAIL_DEADLINE' | translate }}:</strong> {{ procedure.deadlineDays }} {{ 'PROCEDURES.DETAIL_DEADLINE_UNIT' | translate }}</p>
+          <p><strong>{{ 'PROCEDURES.DETAIL_STATUS' | translate }}:</strong> {{ procedure.statusKey | translate }}</p>
+          <p><strong>{{ 'PROCEDURES.DETAIL_UNIT' | translate }}:</strong> {{ procedure.unitKey | translate }}</p>
+        </div>
+        <div class="rounded-xl bg-surface-100 p-4 text-sm text-surface-600">
+          {{ 'PROCEDURE_FLOW.SUMMARY_HINT' | translate }}
+        </div>
+      </aside>
+    </section>
+  </div>
+</main>

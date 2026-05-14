@@ -1,0 +1,43 @@
+<main class="min-h-screen bg-surface-50 px-6 py-10" aria-labelledby="profile-title">
+  <div class="card max-w-3xl mx-auto p-10">
+    <header class="space-y-2">
+      <p class="text-sm font-semibold text-brand-600">{{ 'PROFILE.EYEBROW' | translate }}</p>
+      <h1 id="profile-title" class="text-2xl font-semibold text-surface-900">{{ 'PROFILE.TITLE' | translate }}</h1>
+      <p class="text-surface-600">{{ 'PROFILE.SUBTITLE' | translate }}</p>
+    </header>
+
+    <form class="mt-8 grid gap-6 md:grid-cols-2" [formGroup]="profileForm">
+      <div class="space-y-2">
+        <label class="field-label" for="profile-name">{{ 'PROFILE.FULL_NAME' | translate }}</label>
+        <input id="profile-name" class="field-input" type="text" formControlName="fullName" />
+      </div>
+      <div class="space-y-2">
+        <label class="field-label" for="profile-email">{{ 'PROFILE.EMAIL' | translate }}</label>
+        <input id="profile-email" class="field-input" type="email" formControlName="email" />
+      </div>
+      <div class="space-y-2">
+        <label class="field-label" for="profile-phone">{{ 'PROFILE.PHONE' | translate }}</label>
+        <input id="profile-phone" class="field-input" type="tel" formControlName="phone" />
+      </div>
+      <div class="space-y-2">
+        <label class="field-label" for="profile-id">{{ 'PROFILE.NATIONAL_ID' | translate }}</label>
+        <input id="profile-id" class="field-input" type="text" formControlName="nationalId" />
+      </div>
+      <div class="space-y-2 md:col-span-2">
+        <label class="field-label" for="profile-address">{{ 'PROFILE.ADDRESS' | translate }}</label>
+        <input id="profile-address" class="field-input" type="text" formControlName="address" />
+      </div>
+      <div class="md:col-span-2 flex flex-col gap-3 md:flex-row">
+        <button class="btn-primary" type="button" (click)="toggleEdit()">
+          {{ isEditing ? ('PROFILE.CANCEL' | translate) : ('PROFILE.EDIT' | translate) }}
+        </button>
+        <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="saveProfile()" [disabled]="!isEditing">
+          {{ 'PROFILE.SAVE' | translate }}
+        </button>
+      </div>
+      <p class="text-success font-semibold md:col-span-2" role="status" *ngIf="lastSavedMessage">
+        {{ lastSavedMessage }}
+      </p>
+    </form>
+  </div>
+</main>

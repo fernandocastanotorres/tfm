@@ -1,0 +1,39 @@
+<main class="min-h-screen bg-surface-50 px-6 py-10" aria-labelledby="procedures-title">
+  <div class="max-w-5xl mx-auto">
+    <header class="space-y-2">
+      <p class="text-sm font-semibold text-brand-600">{{ 'PROCEDURES.EYEBROW' | translate }}</p>
+      <h1 id="procedures-title" class="text-2xl font-semibold text-surface-900">{{ 'PROCEDURES.TITLE' | translate }}</h1>
+      <p class="text-surface-600">{{ 'PROCEDURES.SUBTITLE' | translate }}</p>
+    </header>
+
+    <section class="mt-8 grid gap-6 md:grid-cols-2">
+      <article class="card p-6" *ngFor="let procedure of procedures">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-semibold text-surface-900">{{ procedure.titleKey | translate }}</h2>
+            <p class="text-surface-600 mt-2">{{ procedure.descriptionKey | translate }}</p>
+          </div>
+          <span class="text-xs font-semibold px-3 py-1 rounded-full bg-surface-100 text-surface-600">
+            {{ procedure.statusKey | translate }}
+          </span>
+        </div>
+        <div class="mt-4 grid gap-2 text-sm text-surface-600">
+          <p><strong>{{ 'PROCEDURES.DETAIL_FEE' | translate }}:</strong>
+            <ng-container *ngIf="procedure.feeAmount === 0; else feeAmount">
+              {{ 'PROCEDURES.FEE_FREE' | translate }}
+            </ng-container>
+            <ng-template #feeAmount>{{ procedure.feeAmount }} €</ng-template>
+          </p>
+          <p><strong>{{ 'PROCEDURES.DETAIL_DEADLINE' | translate }}:</strong> {{ procedure.deadlineDays }} {{ 'PROCEDURES.DETAIL_DEADLINE_UNIT' | translate }}</p>
+          <p><strong>{{ 'PROCEDURES.DETAIL_UNIT' | translate }}:</strong> {{ procedure.unitKey | translate }}</p>
+        </div>
+        <button class="btn-primary mt-4" type="button" (click)="startProcedure(procedure)">
+          {{ 'PROCEDURES.START' | translate }}
+        </button>
+      </article>
+    </section>
+    <div class="mt-8 card p-6 text-surface-600">
+      {{ 'PROCEDURES.FOOTER' | translate }}
+    </div>
+  </div>
+</main>

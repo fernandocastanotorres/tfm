@@ -1,0 +1,50 @@
+/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+    @apply bg-surface-50 text-surface-900;
+  }
+
+  :focus-visible {
+    @apply outline outline-2 outline-offset-2 outline-brand-300;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-white rounded-2xl shadow-lg shadow-surface-900/10 border border-surface-100;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-3 text-white font-semibold transition hover:bg-brand-700 focus-visible:outline-brand-300 disabled:bg-surface-300 disabled:cursor-not-allowed;
+  }
+
+  .field-input {
+    @apply w-full rounded-xl border border-surface-200 px-4 py-3 text-surface-900 focus-visible:outline-brand-300;
+  }
+
+  .field-label {
+    @apply text-sm font-semibold text-surface-800;
+  }
+
+  .helper-text {
+    @apply text-sm text-surface-500;
+  }
+
+  .error-text {
+    @apply text-sm text-danger;
+  }
+}

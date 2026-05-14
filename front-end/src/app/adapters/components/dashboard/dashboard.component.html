@@ -1,0 +1,101 @@
+<main class="px-6 py-10" aria-labelledby="dashboard-title">
+  <header class="mb-10">
+    <h1 id="dashboard-title" class="text-2xl font-semibold text-surface-900">{{ 'DASHBOARD.TITLE' | translate }}</h1>
+    <p class="text-surface-600">{{ 'DASHBOARD.SUBTITLE' | translate }}</p>
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="card p-4" *ngFor="let stat of summaryStats">
+        <p class="text-sm text-surface-500">{{ stat.labelKey | translate }}</p>
+        <p class="text-2xl font-semibold text-surface-900">{{ stat.value }}</p>
+      </div>
+    </div>
+  </header>
+
+  <section class="mb-10" aria-labelledby="expedientes-title">
+    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div>
+        <h2 id="expedientes-title" class="text-xl font-semibold text-surface-900">{{ 'DASHBOARD.CASES_TITLE' | translate }}</h2>
+        <p class="text-surface-600">{{ 'DASHBOARD.CASES_SUBTITLE' | translate }}</p>
+      </div>
+      <form [formGroup]="filterForm" class="flex flex-col gap-3 md:flex-row" role="search">
+        <label class="sr-only" for="case-search">{{ 'DASHBOARD.SEARCH_LABEL' | translate }}</label>
+        <input id="case-search" type="text" formControlName="search" class="field-input w-64" [placeholder]="'DASHBOARD.SEARCH_PLACEHOLDER' | translate" />
+        <label class="sr-only" for="case-status">{{ 'DASHBOARD.STATUS_LABEL' | translate }}</label>
+        <select id="case-status" formControlName="status" class="field-input w-48">
+          <option value="all">{{ 'DASHBOARD.STATUS_ALL' | translate }}</option>
+          <option value="En revisión">{{ 'DASHBOARD.STATUS_REVIEW' | translate }}</option>
+          <option value="Pendiente">{{ 'DASHBOARD.STATUS_PENDING' | translate }}</option>
+          <option value="Aprobado">{{ 'DASHBOARD.STATUS_APPROVED' | translate }}</option>
+        </select>
+        <button type="button" class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" (click)="clearFilters()">
+          {{ 'DASHBOARD.CLEAR' | translate }}
+        </button>
+      </form>
+    </div>
+    <div class="mt-6 grid gap-6 lg:grid-cols-[2fr_1fr]">
+      <div class="grid gap-4">
+        <button
+          type="button"
+          class="card p-5 text-left border border-transparent hover:border-brand-200 focus-visible:outline-brand-300"
+          *ngFor="let caseItem of filteredCases"
+          (click)="selectCase(caseItem)"
+          [attr.aria-pressed]="selectedCase?.id === caseItem.id"
+          [ngClass]="selectedCase?.id === caseItem.id ? 'ring-2 ring-brand-300' : ''"
+        >
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h3 class="text-lg font-semibold">{{ caseItem.title }}</h3>
+          <p class="text-surface-500 text-sm">{{ caseItem.id }} · {{ caseItem.category }}</p>
+            </div>
+            <span class="px-3 py-1 rounded-full text-xs font-semibold" [ngClass]="statusClass(caseItem.status)">
+              {{ caseItem.status }}
+            </span>
+          </div>
+          <p class="text-surface-600 mt-3">{{ caseItem.description }}</p>
+          <p class="text-surface-500 text-sm mt-3">{{ 'DASHBOARD.UPDATED' | translate }} {{ caseItem.lastUpdated }}</p>
+        </button>
+          <div *ngIf="filteredCases.length === 0" class="card p-6 text-surface-600">
+          {{ 'DASHBOARD.EMPTY' | translate }}
+        </div>
+      </div>
+      <aside class="card p-6" *ngIf="selectedCase">
+        <h3 class="text-lg font-semibold">{{ 'DASHBOARD.DETAIL_TITLE' | translate }}</h3>
+        <div class="mt-4 space-y-2 text-surface-700">
+          <p><strong>{{ 'DASHBOARD.DETAIL_ID' | translate }}:</strong> {{ selectedCase.id }}</p>
+          <p><strong>{{ 'DASHBOARD.DETAIL_TYPE' | translate }}:</strong> {{ selectedCase.category }}</p>
+          <p><strong>{{ 'DASHBOARD.DETAIL_STATUS' | translate }}:</strong> {{ selectedCase.status }}</p>
+          <p><strong>{{ 'DASHBOARD.DETAIL_SUBMITTED' | translate }}:</strong> {{ selectedCase.submittedAt }}</p>
+          <p><strong>{{ 'DASHBOARD.DETAIL_UPDATED' | translate }}:</strong> {{ selectedCase.lastUpdated }}</p>
+        </div>
+        <div class="mt-5 rounded-xl bg-surface-100 p-4 text-sm text-surface-600">
+          {{ selectedCase.description }}
+        </div>
+        <div class="mt-5 flex flex-col gap-3">
+          <button class="btn-primary" type="button">{{ 'DASHBOARD.DETAIL_ATTACH' | translate }}</button>
+          <a class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300 text-center" routerLink="/expedientes/detalle">
+            {{ 'DASHBOARD.DETAIL_HISTORY' | translate }}
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="mb-10" aria-labelledby="notificaciones-title">
+    <h2 id="notificaciones-title" class="text-xl font-semibold text-surface-900">{{ 'DASHBOARD.NOTIFICATIONS' | translate }}</h2>
+    <ul class="mt-6 grid gap-4">
+      <li class="card p-5" *ngFor="let notification of notifications">
+        <p>{{ notification.message }}</p>
+        <span class="text-surface-500 text-sm">{{ notification.date }}</span>
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="accesos-title">
+    <h2 id="accesos-title" class="text-xl font-semibold text-surface-900">{{ 'DASHBOARD.QUICK_ACCESS' | translate }}</h2>
+    <div class="mt-6 grid gap-6 md:grid-cols-2">
+      <a class="card p-6 transition hover:-translate-y-0.5 hover:shadow-xl" *ngFor="let quickLink of quickAccess" [routerLink]="quickLink.route">
+        <h3 class="text-lg font-semibold">{{ quickLink.title }}</h3>
+        <p class="text-surface-600">{{ quickLink.description }}</p>
+      </a>
+    </div>
+  </section>
+</main>

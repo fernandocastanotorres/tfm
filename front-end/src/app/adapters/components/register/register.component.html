@@ -1,0 +1,77 @@
+<main class="min-h-screen bg-surface-50 flex items-center justify-center px-6 py-10" aria-labelledby="register-title">
+  <div class="card w-full max-w-3xl p-10" role="region" aria-live="polite">
+    <header class="space-y-2">
+      <p class="text-sm font-semibold text-brand-600">{{ 'REGISTER.EYEBROW' | translate }}</p>
+      <h1 id="register-title" class="text-2xl font-semibold text-surface-900">{{ 'REGISTER.TITLE' | translate }}</h1>
+      <p class="text-surface-600">{{ 'REGISTER.SUBTITLE' | translate }}</p>
+    </header>
+
+    <form class="mt-8 space-y-6" [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
+      <div class="grid gap-6 md:grid-cols-2">
+        <div class="space-y-2">
+          <label for="fullName" class="field-label">{{ 'REGISTER.FULL_NAME' | translate }}</label>
+          <input id="fullName" type="text" formControlName="fullName" autocomplete="name" required class="field-input" />
+          <p class="error-text" *ngIf="registerForm.get('fullName')?.invalid && registerForm.get('fullName')?.touched">
+            {{ 'REGISTER.FULL_NAME_ERROR' | translate }}
+          </p>
+        </div>
+
+        <div class="space-y-2">
+          <label for="email" class="field-label">{{ 'REGISTER.EMAIL' | translate }}</label>
+          <input id="email" type="email" formControlName="email" autocomplete="email" required class="field-input" />
+          <p class="error-text" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+            {{ 'REGISTER.EMAIL_ERROR' | translate }}
+          </p>
+        </div>
+
+        <div class="space-y-2">
+          <label for="nationalId" class="field-label">{{ 'REGISTER.NATIONAL_ID' | translate }}</label>
+          <input id="nationalId" type="text" formControlName="nationalId" autocomplete="off" required class="field-input" />
+          <p class="helper-text">{{ 'REGISTER.NATIONAL_ID_HELP' | translate }}</p>
+          <p class="error-text" *ngIf="registerForm.get('nationalId')?.invalid && registerForm.get('nationalId')?.touched">
+            {{ 'REGISTER.NATIONAL_ID_ERROR' | translate }}
+          </p>
+        </div>
+
+        <div class="space-y-2">
+          <label for="phone" class="field-label">{{ 'REGISTER.PHONE' | translate }}</label>
+          <input id="phone" type="tel" formControlName="phone" autocomplete="tel" required class="field-input" />
+          <p class="helper-text">{{ 'REGISTER.PHONE_HELP' | translate }}</p>
+          <p class="error-text" *ngIf="registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched">
+            {{ 'REGISTER.PHONE_ERROR' | translate }}
+          </p>
+        </div>
+
+        <div class="space-y-2">
+          <label for="password" class="field-label">{{ 'REGISTER.PASSWORD' | translate }}</label>
+          <input id="password" type="password" formControlName="password" autocomplete="new-password" required class="field-input" />
+          <p class="helper-text">{{ 'REGISTER.PASSWORD_HELP' | translate }}</p>
+          <p class="error-text" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+            {{ 'REGISTER.PASSWORD_ERROR' | translate }}
+          </p>
+        </div>
+
+        <div class="space-y-2">
+          <label for="confirmPassword" class="field-label">{{ 'REGISTER.CONFIRM_PASSWORD' | translate }}</label>
+          <input id="confirmPassword" type="password" formControlName="confirmPassword" autocomplete="new-password" required class="field-input" />
+          <p class="error-text" *ngIf="registerForm.errors?.mismatch && registerForm.get('confirmPassword')?.touched">
+            {{ 'REGISTER.CONFIRM_PASSWORD_ERROR' | translate }}
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3">
+        <input id="terms" type="checkbox" formControlName="acceptTerms" class="mt-1" />
+        <label for="terms" class="text-sm text-surface-700">{{ 'REGISTER.TERMS' | translate }}</label>
+      </div>
+      <p class="error-text" *ngIf="registerForm.get('acceptTerms')?.invalid && registerForm.get('acceptTerms')?.touched">
+        {{ 'REGISTER.TERMS_ERROR' | translate }}
+      </p>
+
+      <button class="btn-primary w-full" type="submit" [disabled]="isSubmitting">
+        {{ isSubmitting ? ('REGISTER.SUBMITTING' | translate) : ('REGISTER.SUBMIT' | translate) }}
+      </button>
+      <p class="text-success font-semibold" role="status" *ngIf="successMessageKey">{{ successMessageKey | translate }}</p>
+    </form>
+  </div>
+</main>

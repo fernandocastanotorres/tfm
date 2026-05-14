@@ -1,0 +1,64 @@
+<main class="min-h-screen bg-surface-50 px-6 py-10" aria-labelledby="case-title">
+  <div class="max-w-5xl mx-auto" *ngIf="caseDetail; else emptyCase">
+    <header class="space-y-2">
+      <a class="text-sm text-brand-600 hover:underline" routerLink="/dashboard">{{ 'CASE_DETAIL.BACK' | translate }}</a>
+      <p class="text-sm font-semibold text-brand-600">{{ 'CASE_DETAIL.EYEBROW' | translate }}</p>
+      <h1 id="case-title" class="text-2xl font-semibold text-surface-900">{{ caseDetail.titleKey | translate }}</h1>
+      <p class="text-surface-600">{{ caseDetail.id }} · {{ caseDetail.categoryKey | translate }}</p>
+      <span class="inline-flex w-fit px-3 py-1 rounded-full text-xs font-semibold" [ngClass]="statusClass(caseDetail.statusKey)">
+        {{ caseDetail.statusKey | translate }}
+      </span>
+    </header>
+
+    <section class="mt-8 grid gap-6 lg:grid-cols-[2fr_1fr]">
+      <div class="space-y-6">
+        <div class="card p-6">
+          <h2 class="text-lg font-semibold text-surface-900">{{ 'CASE_DETAIL.SUMMARY' | translate }}</h2>
+          <p class="text-surface-600 mt-2">{{ caseDetail.descriptionKey | translate }}</p>
+          <div class="mt-4 grid gap-3 sm:grid-cols-2">
+            <p><strong>{{ 'CASE_DETAIL.STATUS' | translate }}:</strong> {{ caseDetail.statusKey | translate }}</p>
+            <p><strong>{{ 'CASE_DETAIL.UNIT' | translate }}:</strong> {{ caseDetail.assignedUnitKey | translate }}</p>
+            <p><strong>{{ 'CASE_DETAIL.SUBMITTED' | translate }}:</strong> {{ caseDetail.submittedAt }}</p>
+          </div>
+          <div class="mt-5 flex flex-wrap gap-3">
+            <button class="btn-primary" type="button">{{ 'CASE_DETAIL.ATTACH' | translate }}</button>
+            <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button">{{ 'CASE_DETAIL.DOWNLOAD' | translate }}</button>
+            <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button">{{ 'CASE_DETAIL.REQUEST' | translate }}</button>
+          </div>
+        </div>
+
+        <div class="card p-6">
+          <h2 class="text-lg font-semibold text-surface-900">{{ 'CASE_DETAIL.TIMELINE' | translate }}</h2>
+          <ol class="mt-4 space-y-4">
+            <li *ngFor="let event of caseDetail.timeline" class="border-l-2 border-brand-200 pl-4">
+              <p class="text-sm text-surface-500">{{ event.date }}</p>
+              <p class="font-semibold">{{ event.titleKey | translate }}</p>
+              <p class="text-surface-600">{{ event.descriptionKey | translate }}</p>
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <aside class="card p-6">
+        <h2 class="text-lg font-semibold text-surface-900">{{ 'CASE_DETAIL.ATTACHMENTS' | translate }}</h2>
+        <ul class="mt-4 space-y-3">
+          <li *ngFor="let attachment of caseDetail.attachments" class="flex items-center justify-between">
+            <div>
+              <p class="font-semibold">{{ attachment.nameKey | translate }}</p>
+              <p class="text-sm text-surface-500">{{ attachment.type }} · {{ attachment.uploadedAt }}</p>
+            </div>
+            <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button">{{ 'CASE_DETAIL.DOWNLOAD' | translate }}</button>
+          </li>
+        </ul>
+        <div class="mt-6 rounded-xl bg-surface-100 p-4 text-sm text-surface-600">
+          {{ 'CASE_DETAIL.ATTACHMENTS_HINT' | translate }}
+        </div>
+      </aside>
+    </section>
+  </div>
+  <ng-template #emptyCase>
+    <div class="card max-w-3xl mx-auto p-6 text-surface-600">
+      {{ 'CASE_DETAIL.EMPTY' | translate }}
+    </div>
+  </ng-template>
+</main>
