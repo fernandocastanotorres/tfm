@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { DocumentsService, DocumentItem } from '../../../application/services/documents.service';
+import { changePage, updatePageSize, getPaginationState, PaginationState } from '../../../application/utils/pagination';
 
 @Component({
   selector: 'app-documents',
@@ -12,7 +13,7 @@ export class DocumentsComponent implements OnInit {
   filter: 'all' | 'pending' | 'validated' = 'all';
   selectedDocument: DocumentItem | null = null;
   readonly paginationOptions = [10, 20, 50];
-  currentPage = 1;
+  paginationState: PaginationState = { currentPage: 1, totalPages: 1, pageSize: 10 };
 
   readonly filterForm = this.fb.group({
     search: [''],
@@ -31,6 +32,7 @@ export class DocumentsComponent implements OnInit {
   ngOnInit(): void {
     this.documents = this.documentsService.getDocuments();
     this.selectedDocument = this.documents[0] ?? null;
+    this.updatePaginationState();
   }
 
   get filteredDocuments(): DocumentItem[] {
@@ -46,7 +48,7 @@ export class DocumentsComponent implements OnInit {
         doc.caseId.toLowerCase().includes(search) ||
         doc.caseTitleKey.toLowerCase().includes(search) ||
         doc.unitKey.toLowerCase().includes(search);
-    const matchesStatus = status === 'all' || doc.statusKey === status;
+      const matchesStatus = status === 'all' || doc.statusKey === status;
       const matchesType = type === 'all' || doc.typeKey === type;
       const matchesCase = caseId === 'all' || doc.caseId === caseId;
       return matchesSearch && matchesStatus && matchesType && matchesCase;
@@ -66,14 +68,8 @@ export class DocumentsComponent implements OnInit {
   }
 
   get pagedDocuments(): DocumentItem[] {
-    const pageSize = this.filterForm.value.pageSize ?? 10;
-    const start = (this.currentPage - 1) * pageSize;
-    return this.filteredDocuments.slice(start, start + pageSize);
-  }
-
-  get totalPages(): number {
-    const pageSize = this.filterForm.value.pageSize ?? 10;
-    return Math.max(1, Math.ceil(this.filteredDocuments.length / pageSize));
+    const start = (this.paginationState.currentPage - 1) * this.paginationState.pageSize;
+    return this.filteredDocuments.slice(start, start + this.paginationState.pageSize);
   }
 
   get caseOptions(): { id: string; labelKey: string }[] {
@@ -97,15 +93,20 @@ export class DocumentsComponent implements OnInit {
   setFilter(filter: 'all' | 'pending' | 'validated'): void {
     this.filter = filter;
     this.filterForm.patchValue({ status: filter });
-    this.currentPage = 1;
+    this.paginationState = updatePageSize(this.filterForm, this.paginationState.pageSize, this.paginationState);
+    this.updatePaginationState();
   }
 
   changePage(page: number): void {
-    this.currentPage = Math.min(Math.max(page, 1), this.totalPages);
+    this.paginationState = changePage(page, this.paginationState);
   }
 
   updatePageSize(size: number): void {
-    this.filterForm.patchValue({ pageSize: Number(size) });
-    this.currentPage = 1;
+    this.paginationState = updatePageSize(this.filterForm, size, this.paginationState);
+    this.updatePaginationState();
+  }
+
+  private updatePaginationState(): void {
+    this.paginationState = getPaginationState(this.filteredDocuments.length, this.filterForm);
   }
 }

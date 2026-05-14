@@ -6,13 +6,46 @@
       <p class="text-surface-600">{{ 'MESSAGES.SUBTITLE' | translate }}</p>
     </header>
 
+    <div class="mt-6 flex flex-wrap gap-3" [formGroup]="filterForm">
+      <button class="btn-primary" type="button" (click)="toggleFilter('all')" [ngClass]="filterForm.value.status === 'all' ? '' : 'bg-surface-200 text-surface-700 hover:bg-surface-300'">
+        {{ 'MESSAGES.FILTER_ALL' | translate }}
+      </button>
+      <button class="btn-primary" type="button" (click)="toggleFilter('unread')" [ngClass]="filterForm.value.status === 'unread' ? '' : 'bg-surface-200 text-surface-700 hover:bg-surface-300'">
+        {{ 'MESSAGES.FILTER_UNREAD' | translate }}
+      </button>
+      <button class="btn-primary" type="button" (click)="toggleFilter('read')" [ngClass]="filterForm.value.status === 'read' ? '' : 'bg-surface-200 text-surface-700 hover:bg-surface-300'">
+        {{ 'MESSAGES.FILTER_READ' | translate }}
+      </button>
+      <label class="sr-only" for="messages-search">{{ 'MESSAGES.SEARCH_LABEL' | translate }}</label>
+      <input id="messages-search" type="text" formControlName="search" class="field-input w-64" [placeholder]="'MESSAGES.SEARCH_PLACEHOLDER' | translate" />
+      <label class="sr-only" for="messages-case">{{ 'MESSAGES.FILTER_CASE' | translate }}</label>
+      <select id="messages-case" formControlName="caseId" class="field-input w-44">
+        <option value="all">{{ 'MESSAGES.FILTER_CASE_ALL' | translate }}</option>
+        <option *ngFor="let caseOption of caseOptions" [value]="caseOption.id">
+          {{ caseOption.id }} · {{ caseOption.labelKey | translate }}
+        </option>
+      </select>
+      <label class="sr-only" for="messages-sort">{{ 'MESSAGES.SORT_LABEL' | translate }}</label>
+      <select id="messages-sort" formControlName="sort" class="field-input w-40">
+        <option value="updated">{{ 'MESSAGES.SORT_UPDATED' | translate }}</option>
+        <option value="subject">{{ 'MESSAGES.SORT_SUBJECT' | translate }}</option>
+      </select>
+      <label class="sr-only" for="messages-page-size">{{ 'MESSAGES.PAGE_SIZE_LABEL' | translate }}</label>
+      <select id="messages-page-size" formControlName="pageSize" class="field-input w-24" (change)="updatePageSize($any($event.target).value)">
+        <option *ngFor="let size of paginationOptions" [value]="size">{{ size }}</option>
+      </select>
+    </div>
+
     <section class="mt-8 grid gap-6 lg:grid-cols-[2fr_1fr]">
       <div class="grid gap-4">
-        <button type="button" class="card p-6 text-left" *ngFor="let thread of threads" (click)="selectThread(thread)">
+        <button type="button" class="card p-6 text-left" *ngFor="let thread of pagedThreads" (click)="selectThread(thread)" [ngClass]="selectedThread?.id === thread.id ? 'ring-2 ring-brand-300' : ''">
           <div class="flex items-start justify-between gap-4">
             <div>
-              <h2 class="text-lg font-semibold text-surface-900">{{ thread.subject }}</h2>
-              <p class="text-surface-600 mt-2">{{ thread.lastMessage }}</p>
+              <h2 class="text-lg font-semibold text-surface-900">{{ thread.subjectKey | translate }}</h2>
+              <p class="text-surface-600 mt-2">
+                {{ (thread.lastMessageKey ? (thread.lastMessageKey | translate) : thread.lastMessageText) || ('MESSAGES.NO_MESSAGES' | translate) }}
+              </p>
+              <p class="text-surface-500 text-sm mt-2">{{ thread.caseId }} · {{ thread.caseTitleKey | translate }}</p>
               <p class="text-surface-500 text-sm mt-2">{{ thread.updatedAt }}</p>
             </div>
             <span class="text-xs font-semibold px-3 py-1 rounded-full" [ngClass]="thread.unread ? 'bg-brand-100 text-brand-700' : 'bg-surface-100 text-surface-600'">
@@ -20,14 +53,32 @@
             </span>
           </div>
         </button>
-        <div *ngIf="threads.length === 0" class="card p-6 text-surface-600">
+        <div *ngIf="pagedThreads.length === 0" class="card p-6 text-surface-600">
           {{ 'MESSAGES.EMPTY' | translate }}
+        </div>
+        <div class="mt-4 flex items-center justify-between" *ngIf="filteredThreads.length > 0">
+      <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage - 1)" [disabled]="paginationState.currentPage === 1">
+        {{ 'MESSAGES.PREVIOUS' | translate }}
+      </button>
+      <span class="text-sm text-surface-600">{{ 'MESSAGES.PAGE' | translate }} {{ paginationState.currentPage }} / {{ paginationState.totalPages }}</span>
+      <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage + 1)" [disabled]="paginationState.currentPage === paginationState.totalPages">
+        {{ 'MESSAGES.NEXT' | translate }}
+      </button>
         </div>
       </div>
       <aside class="card p-6" *ngIf="selectedThread">
         <h2 class="text-lg font-semibold text-surface-900">{{ 'MESSAGES.THREAD_TITLE' | translate }}</h2>
-        <p class="text-surface-600 mt-2">{{ selectedThread.subject }}</p>
+        <p class="text-surface-600 mt-2">{{ selectedThread.subjectKey | translate }}</p>
+        <p class="text-surface-500 text-sm mt-2">{{ selectedThread.caseId }} · {{ selectedThread.caseTitleKey | translate }}</p>
         <p class="text-surface-500 text-sm mt-2">{{ selectedThread.updatedAt }}</p>
+        <div class="mt-4 space-y-3">
+          <div class="rounded-xl border border-surface-100 p-4" *ngFor="let message of selectedThread.messages">
+            <p class="text-xs text-surface-500">{{ message.senderKey | translate }} · {{ message.sentAt }}</p>
+            <p class="text-surface-700 mt-2">
+              {{ message.bodyKey ? (message.bodyKey | translate) : message.bodyText }}
+            </p>
+          </div>
+        </div>
         <label class="field-label mt-4" for="reply">{{ 'MESSAGES.REPLY_LABEL' | translate }}</label>
         <textarea id="reply" class="field-input min-h-[120px]" [(ngModel)]="reply"></textarea>
         <div class="mt-4 flex flex-wrap gap-3">

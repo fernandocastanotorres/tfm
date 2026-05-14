@@ -80,11 +80,11 @@
     </section>
 
     <div class="mt-6 flex items-center justify-between" *ngIf="filteredDocuments.length > 0">
-      <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
+      <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage - 1)" [disabled]="paginationState.currentPage === 1">
         {{ 'DOCUMENTS.PREVIOUS' | translate }}
       </button>
-      <span class="text-sm text-surface-600">{{ 'DOCUMENTS.PAGE' | translate }} {{ currentPage }} / {{ totalPages }}</span>
-      <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
+      <span class="text-sm text-surface-600">{{ 'DOCUMENTS.PAGE' | translate }} {{ paginationState.currentPage }} / {{ paginationState.totalPages }}</span>
+      <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage + 1)" [disabled]="paginationState.currentPage === paginationState.totalPages">
         {{ 'DOCUMENTS.NEXT' | translate }}
       </button>
     </div>

@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NotificationsComponent } from './notifications.component';
 import { NotificationsService } from '../../../application/services/notifications.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { ReactiveFormsModule } from '@angular/forms';
 
 describe('NotificationsComponent', () => {
   let component: NotificationsComponent;
@@ -10,7 +11,7 @@ describe('NotificationsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [NotificationsComponent],
-      imports: [TranslateModule.forRoot()],
+      imports: [TranslateModule.forRoot(), ReactiveFormsModule],
       providers: [NotificationsService]
     }).compileComponents();
 

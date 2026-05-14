@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MessagesComponent } from './messages.component';
 import { MessagesService } from '../../../application/services/messages.service';
 import { TranslateModule } from '@ngx-translate/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 describe('MessagesComponent', () => {
   let component: MessagesComponent;
@@ -11,7 +11,7 @@ describe('MessagesComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [MessagesComponent],
-      imports: [TranslateModule.forRoot(), FormsModule],
+      imports: [TranslateModule.forRoot(), FormsModule, ReactiveFormsModule],
       providers: [MessagesService]
     }).compileComponents();
 
@@ -26,6 +26,7 @@ describe('MessagesComponent', () => {
 
   it('should clear reply after send', () => {
     component.reply = 'test';
+    component.selectedThread = component.threads[0];
     component.sendReply();
     expect(component.reply).toBe('');
   });

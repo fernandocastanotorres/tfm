@@ -2,25 +2,25 @@ import { Injectable } from '@angular/core';
 
 export interface CaseItem {
   id: string;
-  title: string;
-  status: 'En revisión' | 'Pendiente' | 'Aprobado';
+  titleKey: string;
+  statusKey: 'CASE_STATUS.REVIEW' | 'CASE_STATUS.PENDING' | 'CASE_STATUS.APPROVED';
   lastUpdated: string;
   submittedAt: string;
-  category: string;
-  description: string;
-  assignedUnit: string;
+  categoryKey: string;
+  descriptionKey: string;
+  assignedUnitKey: string;
 }
 
 export interface NotificationItem {
   id: string;
-  message: string;
+  messageKey: string;
   date: string;
 }
 
 export interface QuickAccessItem {
   id: string;
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
   route: string;
 }
 
@@ -32,33 +32,33 @@ export class DashboardService {
     return [
       {
         id: 'EXP-2026-001',
-        title: 'Solicitud de licencia',
-        status: 'En revisión',
+        titleKey: 'DASHBOARD.MOCK_LICENSE_TITLE',
+        statusKey: 'CASE_STATUS.REVIEW',
         lastUpdated: '14/05/2026',
         submittedAt: '01/05/2026',
-        category: 'Urbanismo',
-        description: 'Licencia de obra menor para reforma interior.',
-        assignedUnit: 'Unidad de Licencias'
+        categoryKey: 'DASHBOARD.MOCK_CATEGORY_URBANISM',
+        descriptionKey: 'DASHBOARD.MOCK_LICENSE_DESC',
+        assignedUnitKey: 'CASE_DETAIL.MOCK_UNIT_LICENSES'
       },
       {
         id: 'EXP-2026-002',
-        title: 'Registro de vivienda',
-        status: 'Pendiente',
+        titleKey: 'DASHBOARD.MOCK_REGISTRY_TITLE',
+        statusKey: 'CASE_STATUS.PENDING',
         lastUpdated: '10/05/2026',
         submittedAt: '05/05/2026',
-        category: 'Catastro',
-        description: 'Alta de vivienda en registro municipal.',
-        assignedUnit: 'Unidad de Catastro'
+        categoryKey: 'DASHBOARD.MOCK_CATEGORY_CADASTRE',
+        descriptionKey: 'DASHBOARD.MOCK_REGISTRY_DESC',
+        assignedUnitKey: 'PROCEDURES.UNIT_REGISTRY'
       },
       {
         id: 'EXP-2026-003',
-        title: 'Solicitud de empadronamiento',
-        status: 'Aprobado',
+        titleKey: 'DASHBOARD.MOCK_APPLICATION_TITLE',
+        statusKey: 'CASE_STATUS.APPROVED',
         lastUpdated: '08/05/2026',
         submittedAt: '29/04/2026',
-        category: 'Padrón',
-        description: 'Cambio de domicilio en el padrón municipal.',
-        assignedUnit: 'Unidad de Padrón'
+        categoryKey: 'DASHBOARD.MOCK_CATEGORY_REGISTRY',
+        descriptionKey: 'DASHBOARD.MOCK_APPLICATION_DESC',
+        assignedUnitKey: 'PROCEDURES.UNIT_REGISTRY'
       }
     ];
   }
@@ -67,12 +67,12 @@ export class DashboardService {
     return [
       {
         id: 'NOT-1',
-        message: 'Tu solicitud ha cambiado a “En revisión”.',
+        messageKey: 'DASHBOARD.MOCK_NOTIFICATION_REVIEW',
         date: '14/05/2026'
       },
       {
         id: 'NOT-2',
-        message: 'Adjunta la documentación pendiente antes del 20/05/2026.',
+        messageKey: 'DASHBOARD.MOCK_NOTIFICATION_DOCUMENTS',
         date: '12/05/2026'
       }
     ];
@@ -82,32 +82,32 @@ export class DashboardService {
     return [
       {
         id: 'ACC-1',
-        title: 'Nueva solicitud',
-        description: 'Inicia un nuevo expediente desde cero.',
+        titleKey: 'DASHBOARD.MOCK_QUICK_NEW_CASE',
+        descriptionKey: 'DASHBOARD.MOCK_QUICK_NEW_CASE_DESC',
         route: '/procedimientos'
       },
       {
         id: 'ACC-2',
-        title: 'Mis documentos',
-        description: 'Gestiona tus documentos y adjuntos.',
+        titleKey: 'DASHBOARD.MOCK_QUICK_DOCUMENTS',
+        descriptionKey: 'DASHBOARD.MOCK_QUICK_DOCUMENTS_DESC',
         route: '/documentos'
       },
       {
         id: 'ACC-3',
-        title: 'Notificaciones',
-        description: 'Revisa tus avisos y comunicaciones.',
+        titleKey: 'DASHBOARD.MOCK_QUICK_NOTIFICATIONS',
+        descriptionKey: 'DASHBOARD.MOCK_QUICK_NOTIFICATIONS_DESC',
         route: '/notificaciones'
       },
       {
         id: 'ACC-4',
-        title: 'Mi perfil',
-        description: 'Actualiza tus datos personales.',
+        titleKey: 'DASHBOARD.MOCK_QUICK_PROFILE',
+        descriptionKey: 'DASHBOARD.MOCK_QUICK_PROFILE_DESC',
         route: '/perfil'
       },
       {
         id: 'ACC-5',
-        title: 'Pagos y tasas',
-        description: 'Consulta y paga tus recibos.',
+        titleKey: 'DASHBOARD.MOCK_QUICK_PAYMENTS',
+        descriptionKey: 'DASHBOARD.MOCK_QUICK_PAYMENTS_DESC',
         route: '/pagos'
       }
     ];

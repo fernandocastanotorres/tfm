@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppointmentsComponent } from './appointments.component';
 import { AppointmentsService } from '../../../application/services/appointments.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { ReactiveFormsModule } from '@angular/forms';
 
 describe('AppointmentsComponent', () => {
   let component: AppointmentsComponent;
@@ -10,7 +11,7 @@ describe('AppointmentsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [AppointmentsComponent],
-      imports: [TranslateModule.forRoot()],
+      imports: [TranslateModule.forRoot(), ReactiveFormsModule],
       providers: [AppointmentsService]
     }).compileComponents();
 

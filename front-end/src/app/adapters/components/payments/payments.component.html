@@ -6,31 +6,85 @@
       <p class="text-surface-600">{{ 'PAYMENTS.SUBTITLE' | translate }}</p>
     </header>
 
+    <div class="mt-6 flex flex-wrap gap-3" [formGroup]="filterForm">
+      <button class="btn-primary" type="button" (click)="toggleFilter('all')" [ngClass]="filterForm.value.status === 'all' ? '' : 'bg-surface-200 text-surface-700 hover:bg-surface-300'">
+        {{ 'PAYMENTS.FILTER_ALL' | translate }}
+      </button>
+      <button class="btn-primary" type="button" (click)="toggleFilter('pending')" [ngClass]="filterForm.value.status === 'pending' ? '' : 'bg-surface-200 text-surface-700 hover:bg-surface-300'">
+        {{ 'PAYMENTS.FILTER_PENDING' | translate }}
+      </button>
+      <button class="btn-primary" type="button" (click)="toggleFilter('paid')" [ngClass]="filterForm.value.status === 'paid' ? '' : 'bg-surface-200 text-surface-700 hover:bg-surface-300'">
+        {{ 'PAYMENTS.FILTER_PAID' | translate }}
+      </button>
+      <label class="sr-only" for="payments-search">{{ 'PAYMENTS.SEARCH_LABEL' | translate }}</label>
+      <input id="payments-search" type="text" formControlName="search" class="field-input w-64" [placeholder]="'PAYMENTS.SEARCH_PLACEHOLDER' | translate" />
+      <label class="sr-only" for="payments-status">{{ 'PAYMENTS.FILTER_STATUS' | translate }}</label>
+      <select id="payments-status" formControlName="status" class="field-input w-44">
+        <option value="all">{{ 'PAYMENTS.FILTER_ALL' | translate }}</option>
+        <option value="PAYMENT_STATUS.PENDING">{{ 'PAYMENT_STATUS.PENDING' | translate }}</option>
+        <option value="PAYMENT_STATUS.PAID">{{ 'PAYMENT_STATUS.PAID' | translate }}</option>
+      </select>
+      <label class="sr-only" for="payments-type">{{ 'PAYMENTS.FILTER_TYPE' | translate }}</label>
+      <select id="payments-type" formControlName="type" class="field-input w-44">
+        <option value="all">{{ 'PAYMENTS.FILTER_TYPE_ALL' | translate }}</option>
+        <option *ngFor="let type of typeOptions" [value]="type">{{ type | translate }}</option>
+      </select>
+      <label class="sr-only" for="payments-case">{{ 'PAYMENTS.FILTER_CASE' | translate }}</label>
+      <select id="payments-case" formControlName="caseId" class="field-input w-44">
+        <option value="all">{{ 'PAYMENTS.FILTER_CASE_ALL' | translate }}</option>
+        <option *ngFor="let caseOption of caseOptions" [value]="caseOption.id">
+          {{ caseOption.id }} · {{ caseOption.labelKey | translate }}
+        </option>
+      </select>
+      <label class="sr-only" for="payments-sort">{{ 'PAYMENTS.SORT_LABEL' | translate }}</label>
+      <select id="payments-sort" formControlName="sort" class="field-input w-40">
+        <option value="due">{{ 'PAYMENTS.SORT_DUE' | translate }}</option>
+        <option value="amount">{{ 'PAYMENTS.SORT_AMOUNT' | translate }}</option>
+        <option value="status">{{ 'PAYMENTS.SORT_STATUS' | translate }}</option>
+      </select>
+      <label class="sr-only" for="payments-page-size">{{ 'PAYMENTS.PAGE_SIZE_LABEL' | translate }}</label>
+      <select id="payments-page-size" formControlName="pageSize" class="field-input w-24" (change)="updatePageSize($any($event.target).value)">
+        <option *ngFor="let size of paginationOptions" [value]="size">{{ size }}</option>
+      </select>
+    </div>
+
     <section class="mt-8 grid gap-6 lg:grid-cols-[2fr_1fr]">
       <div class="grid gap-4">
-        <button type="button" class="card p-6 text-left" *ngFor="let payment of payments" (click)="selectPayment(payment)">
+        <button type="button" class="card p-6 text-left" *ngFor="let payment of pagedPayments" (click)="selectPayment(payment)" [ngClass]="selectedPayment?.id === payment.id ? 'ring-2 ring-brand-300' : ''">
           <div class="flex items-center justify-between gap-4">
             <div>
-              <h2 class="text-lg font-semibold text-surface-900">{{ payment.concept }}</h2>
+              <h2 class="text-lg font-semibold text-surface-900">{{ payment.conceptKey | translate }}</h2>
+              <p class="text-surface-500 text-sm">{{ payment.caseId }} · {{ payment.caseTitleKey | translate }}</p>
               <p class="text-surface-500 text-sm">{{ 'PAYMENTS.DUE' | translate }} {{ payment.dueDate }}</p>
             </div>
-            <span class="text-xs font-semibold px-3 py-1 rounded-full" [ngClass]="payment.status === 'Pagado' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'">
-              {{ payment.status }}
+            <span class="text-xs font-semibold px-3 py-1 rounded-full" [ngClass]="payment.statusKey === 'PAYMENT_STATUS.PAID' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'">
+              {{ payment.statusKey | translate }}
             </span>
           </div>
-          <p class="text-xl font-semibold mt-4">{{ payment.amount }}</p>
+          <p class="text-xl font-semibold mt-4">{{ payment.amountLabel }}</p>
         </button>
+        <div class="mt-4 flex items-center justify-between" *ngIf="filteredPayments.length > 0">
+      <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage - 1)" [disabled]="paginationState.currentPage === 1">
+        {{ 'PAYMENTS.PREVIOUS' | translate }}
+      </button>
+      <span class="text-sm text-surface-600">{{ 'PAYMENTS.PAGE' | translate }} {{ paginationState.currentPage }} / {{ paginationState.totalPages }}</span>
+      <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage + 1)" [disabled]="paginationState.currentPage === paginationState.totalPages">
+        {{ 'PAYMENTS.NEXT' | translate }}
+      </button>
+        </div>
       </div>
       <aside class="card p-6" *ngIf="selectedPayment">
         <h2 class="text-lg font-semibold text-surface-900">{{ 'PAYMENTS.DETAIL_TITLE' | translate }}</h2>
-        <p class="text-surface-600 mt-2">{{ selectedPayment.concept }}</p>
+        <p class="text-surface-600 mt-2">{{ selectedPayment.conceptKey | translate }}</p>
         <div class="mt-4 space-y-2">
-          <p><strong>{{ 'PAYMENTS.DETAIL_AMOUNT' | translate }}:</strong> {{ selectedPayment.amount }}</p>
+          <p><strong>{{ 'PAYMENTS.DETAIL_AMOUNT' | translate }}:</strong> {{ selectedPayment.amountLabel }}</p>
           <p><strong>{{ 'PAYMENTS.DETAIL_DUE' | translate }}:</strong> {{ selectedPayment.dueDate }}</p>
-          <p><strong>{{ 'PAYMENTS.DETAIL_STATUS' | translate }}:</strong> {{ selectedPayment.status }}</p>
+          <p><strong>{{ 'PAYMENTS.DETAIL_STATUS' | translate }}:</strong> {{ selectedPayment.statusKey | translate }}</p>
+          <p><strong>{{ 'PAYMENTS.DETAIL_CASE' | translate }}:</strong> {{ selectedPayment.caseId }} · {{ selectedPayment.caseTitleKey | translate }}</p>
+          <p><strong>{{ 'PAYMENTS.DETAIL_UNIT' | translate }}:</strong> {{ selectedPayment.unitKey | translate }}</p>
         </div>
         <div class="mt-5 flex flex-col gap-3">
-          <button class="btn-primary" type="button" [disabled]="selectedPayment.status === 'Pagado'" (click)="markAsPaid(selectedPayment)">
+          <button class="btn-primary" type="button" [disabled]="selectedPayment.statusKey === 'PAYMENT_STATUS.PAID'" (click)="markAsPaid(selectedPayment)">
             {{ 'PAYMENTS.PAY' | translate }}
           </button>
           <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button">

@@ -6,15 +6,51 @@
       <p class="text-surface-600">{{ 'APPOINTMENTS.SUBTITLE' | translate }}</p>
     </header>
 
+    <div class="mt-6 flex flex-wrap gap-3" [formGroup]="filterForm">
+      <button class="btn-primary" type="button" (click)="toggleFilter('all')" [ngClass]="filterForm.value.status === 'all' ? '' : 'bg-surface-200 text-surface-700 hover:bg-surface-300'">
+        {{ 'APPOINTMENTS.FILTER_ALL' | translate }}
+      </button>
+      <button class="btn-primary" type="button" (click)="toggleFilter('confirmed')" [ngClass]="filterForm.value.status === 'confirmed' ? '' : 'bg-surface-200 text-surface-700 hover:bg-surface-300'">
+        {{ 'APPOINTMENTS.FILTER_CONFIRMED' | translate }}
+      </button>
+      <button class="btn-primary" type="button" (click)="toggleFilter('pending')" [ngClass]="filterForm.value.status === 'pending' ? '' : 'bg-surface-200 text-surface-700 hover:bg-surface-300'">
+        {{ 'APPOINTMENTS.FILTER_PENDING' | translate }}
+      </button>
+      <label class="sr-only" for="appointments-search">{{ 'APPOINTMENTS.SEARCH_LABEL' | translate }}</label>
+      <input id="appointments-search" type="text" formControlName="search" class="field-input w-64" [placeholder]="'APPOINTMENTS.SEARCH_PLACEHOLDER' | translate" />
+      <label class="sr-only" for="appointments-type">{{ 'APPOINTMENTS.FILTER_TYPE' | translate }}</label>
+      <select id="appointments-type" formControlName="type" class="field-input w-44">
+        <option value="all">{{ 'APPOINTMENTS.FILTER_TYPE_ALL' | translate }}</option>
+        <option *ngFor="let type of typeOptions" [value]="type">{{ type | translate }}</option>
+      </select>
+      <label class="sr-only" for="appointments-case">{{ 'APPOINTMENTS.FILTER_CASE' | translate }}</label>
+      <select id="appointments-case" formControlName="caseId" class="field-input w-44">
+        <option value="all">{{ 'APPOINTMENTS.FILTER_CASE_ALL' | translate }}</option>
+        <option *ngFor="let caseOption of caseOptions" [value]="caseOption.id">
+          {{ caseOption.id }} · {{ caseOption.labelKey | translate }}
+        </option>
+      </select>
+      <label class="sr-only" for="appointments-sort">{{ 'APPOINTMENTS.SORT_LABEL' | translate }}</label>
+      <select id="appointments-sort" formControlName="sort" class="field-input w-40">
+        <option value="date">{{ 'APPOINTMENTS.SORT_DATE' | translate }}</option>
+        <option value="time">{{ 'APPOINTMENTS.SORT_TIME' | translate }}</option>
+      </select>
+      <label class="sr-only" for="appointments-page-size">{{ 'APPOINTMENTS.PAGE_SIZE_LABEL' | translate }}</label>
+      <select id="appointments-page-size" formControlName="pageSize" class="field-input w-24" (change)="updatePageSize($any($event.target).value)">
+        <option *ngFor="let size of paginationOptions" [value]="size">{{ size }}</option>
+      </select>
+    </div>
+
     <section class="mt-8 grid gap-4">
-      <article class="card p-6" *ngFor="let appointment of appointments">
+      <article class="card p-6" *ngFor="let appointment of pagedAppointments">
         <div class="flex items-center justify-between gap-4">
           <div>
-            <h2 class="text-lg font-semibold text-surface-900">{{ appointment.service }}</h2>
-            <p class="text-surface-500 text-sm">{{ appointment.date }} · {{ appointment.time }} · {{ appointment.location }}</p>
+            <h2 class="text-lg font-semibold text-surface-900">{{ appointment.serviceKey | translate }}</h2>
+            <p class="text-surface-500 text-sm">{{ appointment.date }} · {{ appointment.time }} · {{ appointment.locationKey | translate }}</p>
+            <p class="text-sm text-surface-500">{{ appointment.caseId }} · {{ appointment.caseTitleKey | translate }}</p>
           </div>
-          <span class="text-xs font-semibold px-3 py-1 rounded-full" [ngClass]="appointment.status === 'Confirmada' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'">
-            {{ appointment.status }}
+          <span class="text-xs font-semibold px-3 py-1 rounded-full" [ngClass]="appointment.statusKey === 'APPOINTMENT_STATUS.CONFIRMED' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'">
+            {{ appointment.statusKey | translate }}
           </span>
         </div>
         <div class="mt-4 flex flex-wrap gap-3">
@@ -22,8 +58,17 @@
           <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button">{{ 'APPOINTMENTS.CANCEL' | translate }}</button>
         </div>
       </article>
-      <div *ngIf="appointments.length === 0" class="card p-6 text-surface-600">
+      <div *ngIf="pagedAppointments.length === 0" class="card p-6 text-surface-600">
         {{ 'APPOINTMENTS.EMPTY' | translate }}
+      </div>
+      <div class="mt-4 flex items-center justify-between" *ngIf="filteredAppointments.length > 0">
+        <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage - 1)" [disabled]="paginationState.currentPage === 1">
+          {{ 'APPOINTMENTS.PREVIOUS' | translate }}
+        </button>
+        <span class="text-sm text-surface-600">{{ 'APPOINTMENTS.PAGE' | translate }} {{ paginationState.currentPage }} / {{ paginationState.totalPages }}</span>
+        <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage + 1)" [disabled]="paginationState.currentPage === paginationState.totalPages">
+          {{ 'APPOINTMENTS.NEXT' | translate }}
+        </button>
       </div>
     </section>
     <section class="mt-10 card p-6" aria-labelledby="slot-title">

@@ -25,8 +25,8 @@ export class PasswordRecoveryComponent {
   }, { validators: [PasswordRecoveryComponent.passwordsMatch] });
 
   step: 'request' | 'verify' | 'reset' | 'done' = 'request';
-  helperMessage = '';
-  errorMessage = '';
+  helperMessageKey = '';
+  errorMessageKey = '';
 
   constructor(
     private readonly fb: FormBuilder,
@@ -36,7 +36,7 @@ export class PasswordRecoveryComponent {
   ) {}
 
   requestOtp(): void {
-    this.errorMessage = '';
+    this.errorMessageKey = '';
     if (this.requestForm.invalid) {
       this.requestForm.markAllAsTouched();
       return;
@@ -44,12 +44,12 @@ export class PasswordRecoveryComponent {
 
     const { email } = this.requestForm.value;
     const code = this.otpService.generateOtp(email as string);
-    this.helperMessage = `Código enviado (mock): ${code}`;
+    this.helperMessageKey = 'RECOVERY.OTP_SENT';
     this.step = 'verify';
   }
 
   verifyOtp(): void {
-    this.errorMessage = '';
+    this.errorMessageKey = '';
     if (this.otpForm.invalid) {
       this.otpForm.markAllAsTouched();
       return;
@@ -60,12 +60,12 @@ export class PasswordRecoveryComponent {
     if (valid) {
       this.step = 'reset';
     } else {
-      this.errorMessage = 'El código OTP no es válido o ha caducado.';
+      this.errorMessageKey = 'RECOVERY.OTP_ERROR';
     }
   }
 
   resetPassword(): void {
-    this.errorMessage = '';
+    this.errorMessageKey = '';
     if (this.resetForm.invalid) {
       this.resetForm.markAllAsTouched();
       return;
