@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: es.tfg.records.tests.mapper.UserMapperTest
--------------------------------------------------------------------------------
-Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.030 s -- in es.tfg.records.tests.mapper.UserMapperTest

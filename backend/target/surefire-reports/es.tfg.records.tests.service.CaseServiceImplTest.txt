@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: es.tfg.records.tests.service.CaseServiceImplTest
--------------------------------------------------------------------------------
-Tests run: 17, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.303 s -- in es.tfg.records.tests.service.CaseServiceImplTest
