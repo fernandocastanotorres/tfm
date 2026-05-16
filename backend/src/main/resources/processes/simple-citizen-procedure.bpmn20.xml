@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:flowable="http://flowable.org/bpmn"
+             targetNamespace="http://tfg.es/workflow">
+
+  <process id="simpleCitizenProcedure" name="Simple Citizen Procedure" isExecutable="true">
+    <startEvent id="startEvent" name="Start"/>
+    <sequenceFlow id="flow1" sourceRef="startEvent" targetRef="reviewTask"/>
+
+    <userTask id="reviewTask" name="Review citizen submission" flowable:candidateGroups="ROLE_TRAMITADOR,ROLE_ADMIN"/>
+    <sequenceFlow id="flow2" sourceRef="reviewTask" targetRef="approvalTask"/>
+
+    <userTask id="approvalTask" name="Approve resolution" flowable:candidateGroups="ROLE_ADMIN"/>
+    <sequenceFlow id="flow3" sourceRef="approvalTask" targetRef="endEvent"/>
+
+    <endEvent id="endEvent" name="Done"/>
+  </process>
+
+</definitions>

@@ -81,3 +81,24 @@
 .legislation__empty {
   @apply text-surface-500;
 }
+
+:host-context(.theme-dark) .legislation__breadcrumb,
+:host-context(.theme-dark) .legislation__loading,
+:host-context(.theme-dark) .legislation__empty,
+:host-context(.theme-dark) .legislation__item-date {
+  @apply text-slate-400;
+}
+
+:host-context(.theme-dark) .legislation__header h1,
+:host-context(.theme-dark) .legislation__item-title {
+  @apply text-slate-100;
+}
+
+:host-context(.theme-dark) .legislation__subtitle,
+:host-context(.theme-dark) .legislation__item-desc {
+  @apply text-slate-300;
+}
+
+:host-context(.theme-dark) .legislation__breadcrumb a {
+  @apply text-sky-300;
+}

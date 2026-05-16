@@ -66,3 +66,25 @@
 .faq__empty {
   @apply text-surface-500;
 }
+
+:host-context(.theme-dark) .faq__breadcrumb,
+:host-context(.theme-dark) .faq__loading,
+:host-context(.theme-dark) .faq__empty {
+  @apply text-slate-400;
+}
+
+:host-context(.theme-dark) .faq__header h1,
+:host-context(.theme-dark) .faq__question {
+  @apply text-slate-100;
+}
+
+:host-context(.theme-dark) .faq__subtitle,
+:host-context(.theme-dark) .faq__answer p {
+  @apply text-slate-300;
+}
+
+:host-context(.theme-dark) .faq__icon,
+:host-context(.theme-dark) .faq__breadcrumb a,
+:host-context(.theme-dark) .faq__question:hover {
+  @apply text-sky-300;
+}

@@ -3,6 +3,16 @@
 @tailwind components;
 @tailwind utilities;
 
+body.mobile-menu-open {
+  overflow: hidden;
+}
+
+body.theme-dark {
+  background: #020617;
+  color: #e2e8f0;
+  color-scheme: dark;
+}
+
 :root {
   color-scheme: light;
 }
@@ -51,4 +61,76 @@
   .error-text {
     @apply text-sm text-danger;
   }
+}
+
+body.theme-dark .card {
+  @apply bg-slate-900 border-slate-700 shadow-none text-slate-100;
+}
+
+body.theme-dark .field-input {
+  @apply bg-slate-800 border-slate-600 text-slate-100;
+}
+
+body.theme-dark .field-input::placeholder {
+  color: #94a3b8;
+}
+
+body.theme-dark .helper-text {
+  @apply text-slate-300;
+}
+
+body.theme-dark .bg-white {
+  @apply bg-slate-900;
+}
+
+body.theme-dark .bg-surface-50,
+body.theme-dark .bg-surface-100 {
+  @apply bg-slate-900;
+}
+
+body.theme-dark .bg-brand-50 {
+  @apply bg-slate-800;
+}
+
+body.theme-dark .text-surface-900,
+body.theme-dark .text-surface-800,
+body.theme-dark .text-surface-700 {
+  @apply text-slate-100;
+}
+
+body.theme-dark .text-surface-600,
+body.theme-dark .text-surface-500,
+body.theme-dark .text-surface-400 {
+  @apply text-slate-300;
+}
+
+body.theme-dark .text-brand-700,
+body.theme-dark .text-brand-600 {
+  @apply text-sky-300;
+}
+
+body.theme-dark .text-brand-500 {
+  @apply text-sky-400;
+}
+
+body.theme-dark .border-surface-100,
+body.theme-dark .border-surface-200 {
+  @apply border-slate-700;
+}
+
+body.theme-dark .border-brand-300,
+body.theme-dark .border-brand-200 {
+  @apply border-sky-700;
+}
+
+body.theme-dark a:not(.btn-primary) {
+  @apply text-sky-300;
+}
+
+body.theme-dark a:not(.btn-primary):hover {
+  @apply text-sky-200;
+}
+
+body.theme-dark .btn-primary--outline {
+  @apply border-slate-500 text-slate-100 hover:bg-slate-800;
 }

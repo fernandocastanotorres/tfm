@@ -1,0 +1,338 @@
+package es.tfg.records.application.service;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import es.tfg.records.application.dto.BackofficeDtos;
+import es.tfg.records.application.dto.CaseAttachmentDto;
+import es.tfg.records.application.dto.CaseStatusResponse;
+import es.tfg.records.application.dto.CaseTimelineEventDto;
+import es.tfg.records.application.dto.PagedResponse;
+import es.tfg.records.application.exception.ConflictException;
+import es.tfg.records.application.exception.ResourceNotFoundException;
+import es.tfg.records.domain.model.CaseStatus;
+import es.tfg.records.domain.model.TaskType;
+import es.tfg.records.infrastructure.persistence.entity.ProcedureEntity;
+import es.tfg.records.infrastructure.persistence.entity.ProcedureTaskEntity;
+import es.tfg.records.infrastructure.persistence.entity.ProcedureTypeEntity;
+import es.tfg.records.infrastructure.persistence.entity.UserEntity;
+import es.tfg.records.infrastructure.persistence.repository.ProcedureJpaRepository;
+import es.tfg.records.infrastructure.persistence.repository.ProcedureTaskJpaRepository;
+import es.tfg.records.infrastructure.persistence.repository.ProcedureTypeJpaRepository;
+import es.tfg.records.infrastructure.persistence.repository.UserJpaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+@Service
+public class BackofficeService {
+
+    private final ProcedureJpaRepository procedureRepository;
+    private final ProcedureTypeJpaRepository procedureTypeRepository;
+    private final ProcedureTaskJpaRepository taskRepository;
+    private final UserJpaRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final ObjectMapper objectMapper;
+
+    public BackofficeService(ProcedureJpaRepository procedureRepository,
+                             ProcedureTypeJpaRepository procedureTypeRepository,
+                             ProcedureTaskJpaRepository taskRepository,
+                             UserJpaRepository userRepository,
+                             PasswordEncoder passwordEncoder,
+                             ObjectMapper objectMapper) {
+        this.procedureRepository = procedureRepository;
+        this.procedureTypeRepository = procedureTypeRepository;
+        this.taskRepository = taskRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.objectMapper = objectMapper;
+    }
+
+    @Transactional(readOnly = true)
+    public PagedResponse<BackofficeDtos.AdminCaseItem> listCases(int page, int size, String status) {
+        int clampedPage = Math.max(0, page);
+        int clampedSize = Math.min(Math.max(1, size), 100);
+        Page<ProcedureEntity> result = procedureRepository.findAll(PageRequest.of(clampedPage, clampedSize));
+        Map<UUID, ProcedureTypeEntity> types = procedureTypeRepository.findAll().stream()
+                .collect(Collectors.toMap(ProcedureTypeEntity::getId, Function.identity()));
+        List<BackofficeDtos.AdminCaseItem> items = result.getContent().stream()
+                .filter(procedure -> status == null || status.isBlank() || procedure.getStatus() == parseStatus(status))
+                .map(procedure -> toAdminCaseItem(procedure, types.get(procedure.getProcedureTypeId())))
+                .toList();
+
+        return new PagedResponse<>(items, clampedPage, clampedSize, result.getTotalElements(), result.getTotalPages());
+    }
+
+    @Transactional(readOnly = true)
+    public BackofficeDtos.AdminCaseDetail getCaseDetail(UUID id) {
+        ProcedureEntity procedure = findProcedure(id);
+        ProcedureTypeEntity type = procedureTypeRepository.findById(procedure.getProcedureTypeId()).orElse(null);
+        UserEntity citizen = userRepository.findById(procedure.getOwnerId()).orElse(null);
+        return new BackofficeDtos.AdminCaseDetail(
+                procedure.getId(),
+                typeTitle(type),
+                procedure.getStatus().name(),
+                procedure.getCreatedAt(),
+                procedure.getUpdatedAt(),
+                procedure.getTitle(),
+                type == null ? "" : type.getDescription(),
+                currentTask(procedure, type),
+                procedure.getAssignedUnit() != null ? procedure.getAssignedUnit() : typeUnit(type),
+                null,
+                citizen == null ? "Ciudadano" : citizen.getEmail(),
+                citizen == null ? "" : citizen.getEmail(),
+                defaultTimeline(procedure),
+                List.<CaseAttachmentDto>of(),
+                parseFormData(procedure.getFormData())
+        );
+    }
+
+    @Transactional
+    public CaseStatusResponse updateCaseStatus(UUID id, String status) {
+        ProcedureEntity procedure = findProcedure(id);
+        procedure.setStatus(parseStatus(status));
+        ProcedureEntity saved = procedureRepository.save(procedure);
+        return new CaseStatusResponse(saved.getId(), saved.getStatus().name(), saved.getUpdatedAt(), currentTask(saved, null));
+    }
+
+    @Transactional(readOnly = true)
+    public List<BackofficeDtos.PendingTask> pendingTasks() {
+        Map<UUID, ProcedureTypeEntity> types = procedureTypeRepository.findAll().stream()
+                .collect(Collectors.toMap(ProcedureTypeEntity::getId, Function.identity()));
+        return procedureRepository.findAll().stream()
+                .filter(procedure -> procedure.getStatus() == CaseStatus.SUBMITTED
+                        || procedure.getStatus() == CaseStatus.IN_REVIEW
+                        || procedure.getStatus() == CaseStatus.RESUBMITTED)
+                .map(procedure -> {
+                    ProcedureTypeEntity type = types.get(procedure.getProcedureTypeId());
+                    return new BackofficeDtos.PendingTask(
+                            "task-" + procedure.getId(),
+                            procedure.getId(),
+                            procedure.getTitle(),
+                            currentTask(procedure, type),
+                            "REVIEW",
+                            null,
+                            procedure.getSubmittedAt() == null ? null : procedure.getSubmittedAt().plusSeconds(86400L * Math.max(1, type == null ? 10 : type.getDeadlineDays())),
+                            procedure.getSubmittedAt() == null ? procedure.getCreatedAt() : procedure.getSubmittedAt(),
+                            priority(procedure)
+                    );
+                })
+                .toList();
+    }
+
+    @Transactional
+    public CaseStatusResponse resolveTask(UUID caseId, BackofficeDtos.TaskResolutionRequest request) {
+        String action = request.action() == null ? "approve" : request.action();
+        CaseStatus nextStatus = switch (action) {
+            case "reject" -> CaseStatus.REJECTED;
+            case "request_amendment" -> CaseStatus.AMENDMENT_REQUIRED;
+            default -> CaseStatus.APPROVED;
+        };
+        return updateCaseStatus(caseId, nextStatus.name());
+    }
+
+    @Transactional(readOnly = true)
+    public BackofficeDtos.DashboardStats dashboardStats() {
+        List<ProcedureEntity> procedures = procedureRepository.findAll();
+        long pending = procedures.stream().filter(p -> p.getStatus() == CaseStatus.SUBMITTED).count();
+        long inProgress = procedures.stream().filter(p -> p.getStatus() == CaseStatus.IN_REVIEW || p.getStatus() == CaseStatus.RESUBMITTED).count();
+        long completedToday = procedures.stream()
+                .filter(p -> p.getStatus() == CaseStatus.APPROVED || p.getStatus() == CaseStatus.REJECTED)
+                .filter(p -> p.getUpdatedAt() != null && p.getUpdatedAt().isAfter(Instant.now().minusSeconds(86400)))
+                .count();
+        return new BackofficeDtos.DashboardStats(procedures.size(), pending, inProgress, completedToday, 0, "N/D");
+    }
+
+    @Transactional(readOnly = true)
+    public List<BackofficeDtos.BackofficeUser> listUsers() {
+        return userRepository.findAll().stream().map(this::toUserDto).toList();
+    }
+
+    @Transactional
+    public BackofficeDtos.BackofficeUser createUser(BackofficeDtos.CreateUserRequest request) {
+        if (userRepository.existsByEmail(request.email())) {
+            throw new ConflictException("AUTH", "EMAIL_EXISTS");
+        }
+        UserEntity user = new UserEntity();
+        user.setId(UUID.randomUUID());
+        user.setEmail(request.email());
+        user.setDisplayName(request.email());
+        user.setPasswordHash(passwordEncoder.encode(request.password()));
+        user.setRoles(toRoleSet(request.roles()));
+        user.setActive(request.isActive());
+        return toUserDto(userRepository.save(user));
+    }
+
+    @Transactional
+    public BackofficeDtos.BackofficeUser updateUser(UUID id, BackofficeDtos.UpdateUserRequest request) {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("USER", id.toString()));
+        user.setEmail(request.email());
+        user.setDisplayName(request.email());
+        user.setRoles(toRoleSet(request.roles()));
+        user.setActive(request.isActive());
+        return toUserDto(userRepository.save(user));
+    }
+
+    @Transactional
+    public BackofficeDtos.BackofficeUser toggleUserStatus(UUID id, boolean active) {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("USER", id.toString()));
+        user.setActive(active);
+        return toUserDto(userRepository.save(user));
+    }
+
+    @Transactional(readOnly = true)
+    public List<BackofficeDtos.ManagedProcedure> listProcedures() {
+        return procedureTypeRepository.findAll().stream()
+                .map(this::toManagedProcedure)
+                .toList();
+    }
+
+    @Transactional
+    public BackofficeDtos.ManagedProcedure createProcedure(BackofficeDtos.ProcedureRequest request) {
+        ProcedureTypeEntity entity = new ProcedureTypeEntity();
+        entity.setId(UUID.randomUUID());
+        applyProcedureRequest(entity, request);
+        ProcedureTypeEntity saved = procedureTypeRepository.save(entity);
+        replaceTasks(saved.getId(), request.tasks());
+        return toManagedProcedure(saved);
+    }
+
+    @Transactional
+    public BackofficeDtos.ManagedProcedure updateProcedure(UUID id, BackofficeDtos.ProcedureRequest request) {
+        ProcedureTypeEntity entity = procedureTypeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("PROCEDURE_TYPE", id.toString()));
+        applyProcedureRequest(entity, request);
+        ProcedureTypeEntity saved = procedureTypeRepository.save(entity);
+        replaceTasks(saved.getId(), request.tasks());
+        return toManagedProcedure(saved);
+    }
+
+    @Transactional
+    public BackofficeDtos.ManagedProcedure toggleProcedureStatus(UUID id, String status) {
+        ProcedureTypeEntity entity = procedureTypeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("PROCEDURE_TYPE", id.toString()));
+        entity.setStatus(status);
+        return toManagedProcedure(procedureTypeRepository.save(entity));
+    }
+
+    private ProcedureEntity findProcedure(UUID id) {
+        return procedureRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("PROC", id.toString()));
+    }
+
+    private BackofficeDtos.AdminCaseItem toAdminCaseItem(ProcedureEntity procedure, ProcedureTypeEntity type) {
+        return new BackofficeDtos.AdminCaseItem(
+                procedure.getId(), typeTitle(type), procedure.getStatus().name(), procedure.getCreatedAt(), procedure.getUpdatedAt(),
+                procedure.getTitle(), type == null ? "" : type.getDescription(), procedure.getAssignedUnit() != null ? procedure.getAssignedUnit() : typeUnit(type),
+                null, userRepository.findById(procedure.getOwnerId()).map(UserEntity::getEmail).orElse("Ciudadano"), currentTask(procedure, type), priority(procedure));
+    }
+
+    private String currentTask(ProcedureEntity procedure, ProcedureTypeEntity type) {
+        if (procedure.getStatus() == CaseStatus.SUBMITTED || procedure.getStatus() == CaseStatus.RESUBMITTED) return "Revision de documentacion";
+        if (procedure.getStatus() == CaseStatus.IN_REVIEW) return "Resolucion administrativa";
+        if (procedure.getStatus() == CaseStatus.AMENDMENT_REQUIRED) return "Subsanacion requerida";
+        return "";
+    }
+
+    private String priority(ProcedureEntity procedure) {
+        return procedure.getSubmittedAt() != null && procedure.getSubmittedAt().isBefore(Instant.now().minusSeconds(86400)) ? "urgent" : "normal";
+    }
+
+    private String typeTitle(ProcedureTypeEntity type) {
+        return type == null ? "Procedimiento" : type.getTitle();
+    }
+
+    private String typeUnit(ProcedureTypeEntity type) {
+        return type == null ? "" : type.getUnit();
+    }
+
+    private CaseStatus parseStatus(String status) {
+        String normalized = switch (status.toUpperCase()) {
+            case "IN_PROGRESS" -> "IN_REVIEW";
+            case "PENDING_AMENDMENT" -> "AMENDMENT_REQUIRED";
+            case "RESOLVED" -> "APPROVED";
+            default -> status.toUpperCase();
+        };
+        try {
+            return CaseStatus.valueOf(normalized);
+        } catch (IllegalArgumentException ex) {
+            throw new ResourceNotFoundException("CASE_STATUS", status);
+        }
+    }
+
+    private Map<String, Object> parseFormData(String formData) {
+        if (formData == null || formData.isBlank()) return Map.of();
+        try {
+            return objectMapper.readValue(formData, new TypeReference<>() {});
+        } catch (Exception ignored) {
+            return Map.of("raw", formData);
+        }
+    }
+
+    private List<CaseTimelineEventDto> defaultTimeline(ProcedureEntity procedure) {
+        List<CaseTimelineEventDto> events = new ArrayList<>();
+        events.add(new CaseTimelineEventDto(UUID.nameUUIDFromBytes((procedure.getId() + "-created").getBytes()), "Expediente creado", procedure.getCreatedAt(), "Alta inicial del expediente"));
+        if (procedure.getSubmittedAt() != null) {
+            events.add(new CaseTimelineEventDto(UUID.nameUUIDFromBytes((procedure.getId() + "-submitted").getBytes()), "Expediente presentado", procedure.getSubmittedAt(), "El ciudadano presento el expediente"));
+        }
+        events.add(new CaseTimelineEventDto(UUID.nameUUIDFromBytes((procedure.getId() + "-updated").getBytes()), "Ultima actualizacion", procedure.getUpdatedAt(), "Estado actual: " + procedure.getStatus().name()));
+        return events;
+    }
+
+    private BackofficeDtos.BackofficeUser toUserDto(UserEntity user) {
+        return new BackofficeDtos.BackofficeUser(user.getId(), user.getEmail(), user.getRoles().stream().sorted().toList(), user.getCreatedAt(), null, user.isActive());
+    }
+
+    private Set<String> toRoleSet(List<String> roles) {
+        if (roles == null || roles.isEmpty()) return Set.of("ROLE_TRAMITADOR");
+        return Set.copyOf(roles);
+    }
+
+    private BackofficeDtos.ManagedProcedure toManagedProcedure(ProcedureTypeEntity entity) {
+        List<ProcedureTaskEntity> tasks = taskRepository.findByProcedureTypeIdOrderByOrderIndexAsc(entity.getId());
+        return new BackofficeDtos.ManagedProcedure(
+                entity.getId(), entity.getTitle(), entity.getDescription(), entity.getTitle(), entity.getStatus(), entity.getUnit(),
+                entity.getDeadlineDays(), entity.getFeeAmount(), entity.getCreatedAt(), entity.getUpdatedAt(), tasks.stream().map(this::toTaskConfig).toList(), List.of());
+    }
+
+    private BackofficeDtos.ProcedureTaskConfig toTaskConfig(ProcedureTaskEntity task) {
+        return new BackofficeDtos.ProcedureTaskConfig(task.getId(), task.getTitle(), task.getType().name(), task.getDescription(), task.getOrderIndex(), "ROLE_TRAMITADOR");
+    }
+
+    private void applyProcedureRequest(ProcedureTypeEntity entity, BackofficeDtos.ProcedureRequest request) {
+        entity.setTitle(request.title());
+        entity.setDescription(request.description());
+        entity.setStatus(request.status());
+        entity.setUnit(request.assignedUnit());
+        entity.setDeadlineDays(request.deadlineDays());
+        entity.setFeeAmount(request.feeAmount());
+    }
+
+    private void replaceTasks(UUID procedureTypeId, List<BackofficeDtos.ProcedureTaskConfig> tasks) {
+        taskRepository.deleteAll(taskRepository.findByProcedureTypeIdOrderByOrderIndexAsc(procedureTypeId));
+        if (tasks == null) return;
+        tasks.stream().sorted(Comparator.comparingInt(BackofficeDtos.ProcedureTaskConfig::orderIndex)).forEach(task -> {
+            ProcedureTaskEntity entity = new ProcedureTaskEntity();
+            entity.setId(task.id() == null ? UUID.randomUUID() : task.id());
+            entity.setProcedureTypeId(procedureTypeId);
+            entity.setTitle(task.title());
+            entity.setDescription(task.description());
+            entity.setOrderIndex(task.orderIndex());
+            entity.setType(TaskType.valueOf(task.type()));
+            taskRepository.save(entity);
+        });
+    }
+}

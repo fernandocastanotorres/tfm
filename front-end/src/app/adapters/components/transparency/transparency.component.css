@@ -85,3 +85,30 @@
 .transparency__report-desc {
   @apply text-surface-600 text-sm;
 }
+
+:host-context(.theme-dark) .transparency__breadcrumb,
+:host-context(.theme-dark) .transparency__loading,
+:host-context(.theme-dark) .transparency__metric-label {
+  @apply text-slate-400;
+}
+
+:host-context(.theme-dark) .transparency__header h1,
+:host-context(.theme-dark) .transparency__section-title,
+:host-context(.theme-dark) .transparency__metric-value,
+:host-context(.theme-dark) .transparency__report-title {
+  @apply text-slate-100;
+}
+
+:host-context(.theme-dark) .transparency__subtitle,
+:host-context(.theme-dark) .transparency__report-desc {
+  @apply text-slate-300;
+}
+
+:host-context(.theme-dark) .transparency__breadcrumb a,
+:host-context(.theme-dark) .transparency__report-year {
+  @apply text-sky-300;
+}
+
+:host-context(.theme-dark) .transparency__report-year {
+  @apply bg-slate-800;
+}

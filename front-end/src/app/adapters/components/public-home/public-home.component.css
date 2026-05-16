@@ -86,3 +86,22 @@
 .public-home__event-info {
   @apply flex-1;
 }
+
+:host-context(.theme-dark) .public-home__section--alt {
+  @apply bg-slate-900;
+}
+
+:host-context(.theme-dark) .public-home__section-title,
+:host-context(.theme-dark) .public-home__quick-card,
+:host-context(.theme-dark) .public-home__quick-title {
+  @apply text-slate-100;
+}
+
+:host-context(.theme-dark) .public-home__quick-desc,
+:host-context(.theme-dark) .public-home__loading {
+  @apply text-slate-300;
+}
+
+:host-context(.theme-dark) .public-home__event-date {
+  @apply bg-slate-800 text-sky-300;
+}

@@ -1,8 +1,10 @@
 package es.tfg.records.entrypoints.controller;
 
 import es.tfg.records.application.dto.CaseStatusResponse;
+import es.tfg.records.application.dto.BackofficeDtos;
 import es.tfg.records.application.dto.ErrorResponse;
-import es.tfg.records.application.service.CaseService;
+import es.tfg.records.application.dto.PagedResponse;
+import es.tfg.records.application.service.BackofficeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,7 +14,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -27,10 +28,26 @@ import java.util.UUID;
 @SecurityRequirement(name = "bearerAuth")
 public class AdminCaseController {
 
-    private final CaseService caseService;
+    private final BackofficeService backofficeService;
 
-    public AdminCaseController(CaseService caseService) {
-        this.caseService = caseService;
+    public AdminCaseController(BackofficeService backofficeService) {
+        this.backofficeService = backofficeService;
+    }
+
+    @GetMapping
+    @Operation(summary = "List all cases (backoffice)", description = "List cases for admin/tramitador backoffice queues.")
+    public ResponseEntity<PagedResponse<BackofficeDtos.AdminCaseItem>> listCases(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String status) {
+        return ResponseEntity.ok(backofficeService.listCases(page, size, status));
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get case detail (backoffice)", description = "Get full case detail for review by backoffice users.")
+    public ResponseEntity<BackofficeDtos.AdminCaseDetail> getCaseDetail(@PathVariable UUID id) {
+        return ResponseEntity.ok(backofficeService.getCaseDetail(id));
     }
 
     @PatchMapping("/{id}/status")
@@ -46,17 +63,21 @@ public class AdminCaseController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     public ResponseEntity<CaseStatusResponse> updateCaseStatus(
-            Authentication authentication,
             @Parameter(description = "Case UUID", required = true)
             @PathVariable("id") UUID id,
             @Parameter(description = "New status value", required = true)
             @RequestParam String status) {
 
-        UUID ownerId = extractUserId(authentication);
-        return ResponseEntity.ok(caseService.updateCaseStatus(id, ownerId, status));
+        return ResponseEntity.ok(backofficeService.updateCaseStatus(id, status));
     }
 
-    private UUID extractUserId(Authentication authentication) {
-        return UUID.fromString(authentication.getName());
+    @PostMapping("/{id}/tasks/{taskId}/resolve")
+    @Operation(summary = "Resolve case task", description = "Resolve the active workflow task for a case.")
+    public ResponseEntity<CaseStatusResponse> resolveTask(
+            @PathVariable("id") UUID id,
+            @PathVariable String taskId,
+            @RequestBody BackofficeDtos.TaskResolutionRequest request) {
+        return ResponseEntity.ok(backofficeService.resolveTask(id, request));
     }
+
 }

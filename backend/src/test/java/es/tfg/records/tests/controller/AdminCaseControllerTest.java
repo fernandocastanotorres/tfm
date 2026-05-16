@@ -1,7 +1,7 @@
 package es.tfg.records.tests.controller;
 
 import es.tfg.records.application.dto.CaseStatusResponse;
-import es.tfg.records.application.service.CaseService;
+import es.tfg.records.application.service.BackofficeService;
 import es.tfg.records.entrypoints.advice.GlobalExceptionHandler;
 import es.tfg.records.entrypoints.controller.AdminCaseController;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
@@ -31,18 +30,16 @@ class AdminCaseControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private CaseService caseService;
+    private BackofficeService backofficeService;
 
     @Test
     void updateCaseStatus_shouldReturn200() throws Exception {
-        UUID adminId = UUID.randomUUID();
         UUID caseId = UUID.randomUUID();
-        when(caseService.updateCaseStatus(eq(caseId), eq(adminId), eq("APPROVED")))
+        when(backofficeService.updateCaseStatus(eq(caseId), eq("APPROVED")))
                 .thenReturn(new CaseStatusResponse(caseId, "APPROVED", Instant.now(), null));
 
         mockMvc.perform(patch("/admin/procedures/{id}/status", caseId)
-                        .queryParam("status", "APPROVED")
-                        .principal(new TestingAuthenticationToken(adminId.toString(), null)))
+                        .queryParam("status", "APPROVED"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("APPROVED"));
     }

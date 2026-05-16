@@ -1,15 +1,15 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
-  CaseItem,
   CaseDetail,
+  CaseItem,
   CaseStatusResponse,
+  DashboardStats,
   PagedResponse,
-  TaskResolutionRequest,
   PendingTask,
-  DashboardStats
+  TaskResolutionRequest
 } from '../models/backoffice.models';
 
 @Injectable({
@@ -20,26 +20,58 @@ export class AdminCasesService {
   private readonly baseUrl = `${environment.apiBaseUrl}/admin`;
 
   list(page: number = 0, size: number = 10, sort?: string, status?: string): Observable<PagedResponse<CaseItem>> {
-    const params: any = { page: page.toString(), size: size.toString() };
-    if (sort) params.sort = sort;
-    if (status) params.status = status;
+    const params: Record<string, string> = {
+      page: page.toString(),
+      size: size.toString()
+    };
+    if (sort) params['sort'] = sort;
+    if (status) params['status'] = status;
     return this.http.get<PagedResponse<CaseItem>>(`${this.baseUrl}/procedures`, { params });
   }
 
   getDetail(id: string): Observable<CaseDetail> {
-    return this.http.get<CaseDetail>(`${this.baseUrl}/procedures/${id}`);
+    return this.http.get<any>(`${this.baseUrl}/procedures/${id}`).pipe(
+      map((response: any) => ({
+        ...response,
+        timeline: (response.timeline ?? []).map((event: any) => ({
+          id: event.id,
+          title: event.title,
+          date: event.date,
+          description: event.description,
+          actor: event.actor ?? 'Sistema'
+        })),
+        attachments: (response.attachments ?? []).map((attachment: any) => ({
+          id: attachment.id,
+          name: attachment.name,
+          type: attachment.type,
+          size: attachment.size ?? 0,
+          uploadedAt: attachment.uploadedAt,
+          uploadedBy: attachment.uploadedBy ?? 'Sistema'
+        }))
+      }))
+    );
   }
 
   updateStatus(id: string, status: string): Observable<CaseStatusResponse> {
-    return this.http.patch<CaseStatusResponse>(`${this.baseUrl}/procedures/${id}/status`, null, {
-      params: { status }
-    });
+    return this.http.patch<any>(`${this.baseUrl}/procedures/${id}/status`, null, { params: { status } }).pipe(
+      map((response: any) => ({
+        id: response.id,
+        status: response.status,
+        currentTask: response.currentTask ?? '',
+        lastUpdated: response.lastUpdated ?? response.statusUpdatedAt
+      }))
+    );
   }
 
   reassignCase(id: string, assigneeId: string): Observable<CaseStatusResponse> {
-    return this.http.patch<CaseStatusResponse>(`${this.baseUrl}/procedures/${id}/reassign`, null, {
-      params: { assigneeId }
-    });
+    return this.http.patch<any>(`${this.baseUrl}/procedures/${id}/reassign`, null, { params: { assigneeId } }).pipe(
+      map((response: any) => ({
+        id: response.id,
+        status: response.status,
+        currentTask: response.currentTask ?? '',
+        lastUpdated: response.lastUpdated ?? response.statusUpdatedAt
+      }))
+    );
   }
 
   getPendingTasks(): Observable<PendingTask[]> {
@@ -47,9 +79,13 @@ export class AdminCasesService {
   }
 
   resolveTask(caseId: string, taskId: string, request: TaskResolutionRequest): Observable<CaseStatusResponse> {
-    return this.http.post<CaseStatusResponse>(
-      `${this.baseUrl}/procedures/${caseId}/tasks/${taskId}/resolve`,
-      request
+    return this.http.post<any>(`${this.baseUrl}/procedures/${caseId}/tasks/${taskId}/resolve`, request).pipe(
+      map((response: any) => ({
+        id: response.id,
+        status: response.status,
+        currentTask: response.currentTask ?? '',
+        lastUpdated: response.lastUpdated ?? response.statusUpdatedAt
+      }))
     );
   }
 

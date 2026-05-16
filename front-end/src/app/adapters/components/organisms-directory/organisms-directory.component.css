@@ -69,3 +69,29 @@
 .organisms__empty {
   @apply text-surface-500;
 }
+
+:host-context(.theme-dark) .organisms__breadcrumb,
+:host-context(.theme-dark) .organisms__loading,
+:host-context(.theme-dark) .organisms__empty {
+  @apply text-slate-400;
+}
+
+:host-context(.theme-dark) .organisms__breadcrumb a,
+:host-context(.theme-dark) .organisms__item-contact a {
+  @apply text-sky-300;
+}
+
+:host-context(.theme-dark) .organisms__header h1,
+:host-context(.theme-dark) .organisms__item-name {
+  @apply text-slate-100;
+}
+
+:host-context(.theme-dark) .organisms__subtitle,
+:host-context(.theme-dark) .organisms__item-desc,
+:host-context(.theme-dark) .organisms__item-contact {
+  @apply text-slate-300;
+}
+
+:host-context(.theme-dark) .organisms__item-category {
+  @apply text-sky-300 bg-slate-800;
+}

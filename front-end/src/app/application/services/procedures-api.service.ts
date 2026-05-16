@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { MockCitizenFlowService } from './mock-citizen-flow.service';
 import {
@@ -17,6 +17,37 @@ export class ProceduresApiService {
   private readonly mockCitizenFlowService = inject(MockCitizenFlowService);
   private readonly baseUrl = `${environment.apiBaseUrl}/citizen/procedures/catalog`;
 
+  private mapTask(raw: any): ProcedureTaskDto {
+    return {
+      id: raw.id,
+      name: raw.title ?? raw.name,
+      type: raw.type,
+      description: raw.description ?? '',
+      formFields: raw.formFields,
+      uploadRequirements: raw.uploadRequirements
+    };
+  }
+
+  private mapProcedure(raw: any): ProcedureItem {
+    return {
+      id: raw.id,
+      slug: raw.id,
+      name: raw.title,
+      description: raw.description ?? '',
+      category: raw.unit ?? 'General',
+      fee: raw.feeAmount ?? 0,
+      deadline: raw.deadlineDays ?? 0,
+      status: raw.status
+    };
+  }
+
+  private mapProcedureDetail(raw: any): ProcedureDetail {
+    return {
+      ...this.mapProcedure(raw),
+      tasks: (raw.tasks ?? []).map((task: any) => this.mapTask(task))
+    };
+  }
+
   /**
    * GET /api/v1/citizen/procedures/catalog — List all available procedures.
    */
@@ -24,7 +55,9 @@ export class ProceduresApiService {
     if (environment.useMockCitizenFlow) {
       return this.mockCitizenFlowService.listProcedures();
     }
-    return this.http.get<ProcedureItem[]>(this.baseUrl);
+    return this.http.get<any[]>(this.baseUrl).pipe(
+      map((response) => response.map((item) => this.mapProcedure(item)))
+    );
   }
 
   /**
@@ -34,7 +67,9 @@ export class ProceduresApiService {
     if (environment.useMockCitizenFlow) {
       return this.mockCitizenFlowService.getProcedureBySlug(slug);
     }
-    return this.http.get<ProcedureDetail>(`${this.baseUrl}/${slug}`);
+    return this.http.get<any>(`${this.baseUrl}/${slug}`).pipe(
+      map((response) => this.mapProcedureDetail(response))
+    );
   }
 
   /**
@@ -44,7 +79,9 @@ export class ProceduresApiService {
     if (environment.useMockCitizenFlow) {
       return this.mockCitizenFlowService.getFormSchema(slug);
     }
-    return this.http.get<ProcedureTaskDto[]>(`${this.baseUrl}/${slug}/form-schema`);
+    return this.http.get<any[]>(`${this.baseUrl}/${slug}/form-schema`).pipe(
+      map((response) => response.map((task) => this.mapTask(task)))
+    );
   }
 
   /**
@@ -54,6 +91,8 @@ export class ProceduresApiService {
     if (environment.useMockCitizenFlow) {
       return this.mockCitizenFlowService.getTaskSchema(slug, taskId);
     }
-    return this.http.get<ProcedureTaskDto>(`${this.baseUrl}/${slug}/tasks/${taskId}/schema`);
+    return this.http.get<any>(`${this.baseUrl}/${slug}/tasks/${taskId}/schema`).pipe(
+      map((response) => this.mapTask(response))
+    );
   }
 }

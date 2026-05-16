@@ -19,9 +19,15 @@
           <span aria-hidden="true">&#9776;</span>
         </button>
 
-        <ul id="main-menu" class="public-header__menu" [class.public-header__menu--open]="menuOpen">
+        <ul
+          id="main-menu"
+          class="public-header__menu"
+          [class.public-header__menu--open]="menuOpen"
+          tabindex="-1"
+          (keydown)="onMobileMenuKeydown($event)"
+        >
           <li>
-            <a [routerLink]="['/sede']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <a [routerLink]="['/sede']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMobileMenu()">
               {{ 'PUBLIC.NAV_HOME' | translate }}
             </a>
           </li>
@@ -49,7 +55,7 @@
                   [routerLink]="item.route"
                   routerLinkActive="active"
                   role="menuitem"
-                  (click)="closeDropdown()"
+                  (click)="closeMobileMenu()"
                 >
                   {{ item.labelKey | translate }}
                 </a>
@@ -68,6 +74,14 @@
     </ng-container>
 
     <div class="public-header__actions">
+      <button
+        type="button"
+        class="public-header__theme-toggle"
+        [attr.aria-label]="isDarkMode ? 'Activar modo dia' : 'Activar modo noche'"
+        (click)="toggleTheme()"
+      >
+        <span aria-hidden="true">{{ isDarkMode ? '☀' : '☾' }}</span>
+      </button>
       <a *ngIf="!isAuthPage" [routerLink]="['/sede/login']" class="btn-primary btn-primary--sm">{{ 'PUBLIC.LOGIN' | translate }}</a>
       <div class="public-header__locale">
         <label class="sr-only" for="locale-select-public">Idioma</label>
@@ -86,6 +100,15 @@
     </div>
   </div>
 </header>
+
+<button
+  *ngIf="menuOpen && !isAuthPage"
+  type="button"
+  class="public-header__mobile-backdrop"
+  aria-label="Cerrar menu de navegacion"
+  (keydown)="onMobileMenuKeydown($event)"
+  (click)="closeMobileMenu()"
+></button>
 
 <main class="public-main" role="main">
   <router-outlet></router-outlet>

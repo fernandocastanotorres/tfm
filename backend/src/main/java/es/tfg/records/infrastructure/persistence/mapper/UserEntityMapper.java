@@ -25,8 +25,9 @@ public final class UserEntityMapper {
         user.setOtpExpiry(entity.getOtpExpiry());
         user.setCreatedAt(entity.getCreatedAt());
         user.setUpdatedAt(entity.getUpdatedAt());
-        // Roles are stored separately; set as empty for now
-        user.setRoles(Set.of("ROLE_CITIZEN"));
+        user.setRoles(entity.getRoles() == null || entity.getRoles().isEmpty()
+                ? Set.of("ROLE_CITIZEN")
+                : Set.copyOf(entity.getRoles()));
         return user;
     }
 
@@ -38,6 +39,7 @@ public final class UserEntityMapper {
         entity.setPasswordHash(domain.getPasswordHash());
         entity.setDisplayName(domain.getDisplayName());
         entity.setActive(domain.isActive());
+        entity.setRoles(domain.getRoles() == null ? Set.of("ROLE_CITIZEN") : Set.copyOf(domain.getRoles()));
         entity.setOtpCode(domain.getOtpCode());
         entity.setOtpExpiry(domain.getOtpExpiry());
         return entity;

@@ -93,3 +93,30 @@
 .contact__success {
   @apply mb-6 bg-green-50 border border-green-200;
 }
+
+:host-context(.theme-dark) .contact__breadcrumb {
+  @apply text-slate-400;
+}
+
+:host-context(.theme-dark) .contact__header h1,
+:host-context(.theme-dark) .contact__section-title,
+:host-context(.theme-dark) .contact__channel-name,
+:host-context(.theme-dark) .contact__office-name {
+  @apply text-slate-100;
+}
+
+:host-context(.theme-dark) .contact__subtitle,
+:host-context(.theme-dark) .contact__channel-desc,
+:host-context(.theme-dark) .contact__office-address {
+  @apply text-slate-300;
+}
+
+:host-context(.theme-dark) .contact__breadcrumb a,
+:host-context(.theme-dark) .contact__channel-link,
+:host-context(.theme-dark) .contact__office-address a {
+  @apply text-sky-300;
+}
+
+:host-context(.theme-dark) .contact__success {
+  @apply bg-emerald-950 border-emerald-800 text-emerald-200;
+}

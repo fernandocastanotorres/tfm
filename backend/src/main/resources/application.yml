@@ -31,6 +31,11 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
 
+flowable:
+  database-schema-update: true
+  check-process-definitions: true
+  process-definition-location-prefix: classpath*:/processes/
+
 # JWT Configuration
 jwt:
   secret: ${JWT_SECRET:change-me-to-a-secure-base64-secret-key-of-at-least-256-bits}

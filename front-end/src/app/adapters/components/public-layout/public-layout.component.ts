@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { I18nService, SupportedLocale } from '../../../application/services/i18n.service';
 import { Observable, Subscription } from 'rxjs';
@@ -25,6 +25,7 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
   currentLocale$: Observable<SupportedLocale>;
   currentLocale: SupportedLocale = 'es-ES';
   isAuthPage = false;
+  isDarkMode = false;
   private localeSub?: Subscription;
   private routeSub?: Subscription;
 
@@ -74,19 +75,29 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
     this.localeSub = this.i18nService.getCurrentLocale$().subscribe(locale => {
       this.currentLocale = locale;
     });
+    this.initTheme();
+    this.updateRouteState(this.router.url);
     this.routeSub = this.router.events.subscribe(() => {
-      const url = this.router.url;
-      this.isAuthPage = url.includes('/sede/login') || url.includes('/sede/registro') || url.includes('/sede/recuperacion');
+      this.updateRouteState(this.router.url);
+      this.menuOpen = false;
+      this.activeDropdown = null;
     });
   }
 
   ngOnDestroy(): void {
+    this.unlockBodyScroll();
     this.localeSub?.unsubscribe();
     this.routeSub?.unsubscribe();
   }
 
   switchLocale(locale: SupportedLocale): void {
     this.i18nService.setLocale(locale);
+  }
+
+  toggleTheme(): void {
+    this.isDarkMode = !this.isDarkMode;
+    this.applyTheme(this.isDarkMode);
+    localStorage.setItem('tfg.theme', this.isDarkMode ? 'dark' : 'light');
   }
 
   toggleDropdown(groupLabel: string): void {
@@ -97,10 +108,34 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
     this.activeDropdown = null;
   }
 
+  closeMobileMenu(): void {
+    this.menuOpen = false;
+    this.activeDropdown = null;
+    this.unlockBodyScroll();
+  }
+
   toggleMobileMenu(): void {
     this.menuOpen = !this.menuOpen;
+    if (this.menuOpen) {
+      this.lockBodyScroll();
+    } else {
+      this.unlockBodyScroll();
+    }
     if (!this.menuOpen) {
       this.activeDropdown = null;
+    }
+  }
+
+  onMobileMenuKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Escape') {
+      this.closeMobileMenu();
+    }
+  }
+
+  @HostListener('window:keydown.escape')
+  onEscapeKey(): void {
+    if (this.menuOpen) {
+      this.closeMobileMenu();
     }
   }
 
@@ -109,5 +144,31 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
     if (!relatedTarget || !relatedTarget.closest('.public-header__dropdown')) {
       this.closeDropdown();
     }
+  }
+
+  private updateRouteState(url: string): void {
+    this.isAuthPage = url.includes('/sede/login') || url.includes('/sede/registro') || url.includes('/sede/recuperacion');
+  }
+
+  private initTheme(): void {
+    const storedTheme = localStorage.getItem('tfg.theme');
+    this.isDarkMode = storedTheme === 'dark';
+    this.applyTheme(this.isDarkMode);
+  }
+
+  private applyTheme(isDark: boolean): void {
+    if (isDark) {
+      document.body.classList.add('theme-dark');
+      return;
+    }
+    document.body.classList.remove('theme-dark');
+  }
+
+  private lockBodyScroll(): void {
+    document.body.classList.add('mobile-menu-open');
+  }
+
+  private unlockBodyScroll(): void {
+    document.body.classList.remove('mobile-menu-open');
   }
 }

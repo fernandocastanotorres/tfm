@@ -28,6 +28,32 @@ export class DocumentsApiService {
   private readonly citizenBase = `${environment.apiBaseUrl}/citizen/procedures`;
   private readonly documentsBase = `${environment.apiBaseUrl}/citizen/procedures/documents`;
 
+  private mapDocumentItem(raw: any): DocumentItem {
+    return {
+      id: raw.id,
+      caseId: raw.caseId,
+      name: raw.name,
+      type: raw.type ?? raw.mimeType,
+      size: raw.size,
+      status: raw.status,
+      uploadedAt: raw.uploadedAt
+    };
+  }
+
+  private mapDocumentDetail(raw: any): DocumentDetail {
+    return {
+      id: raw.id,
+      caseId: raw.caseId,
+      name: raw.name,
+      type: raw.type ?? raw.mimeType,
+      size: raw.size,
+      status: raw.status,
+      uploadedAt: raw.uploadedAt,
+      checksum: raw.checksum ?? '',
+      version: raw.version ?? 1
+    };
+  }
+
   /**
    * POST /api/v1/citizen/procedures/{caseId}/documents — Upload a document (multipart).
    * Returns an Observable that emits HttpProgressEvent for progress tracking,
@@ -49,14 +75,16 @@ export class DocumentsApiService {
     }
 
     return this.http
-      .post<UploadResponse>(`${this.citizenBase}/${caseId}/documents`, formData, {
+      .post<any>(`${this.citizenBase}/${caseId}/documents`, formData, {
         reportProgress: true,
         observe: 'events'
       })
       .pipe(
         map((event) => {
           if (event.type === HttpEventType.Response) {
-            return event.body?.document as DocumentItem;
+            const body: any = event.body;
+            const payload = body?.document ?? body;
+            return this.mapDocumentItem(payload);
           }
           return event as HttpProgressEvent;
         })
@@ -67,15 +95,19 @@ export class DocumentsApiService {
    * GET /api/v1/citizen/procedures/{caseId}/documents — List documents for a case.
    */
   listByCase(caseId: string): Observable<DocumentItem[]> {
-    return this.http.get<DocumentItem[]>(`${this.citizenBase}/${caseId}/documents`);
+    return this.http.get<any[]>(`${this.citizenBase}/${caseId}/documents`).pipe(
+      map((response) => response.map((item) => this.mapDocumentItem(item)))
+    );
   }
 
   /**
    * GET /api/v1/citizen/procedures/{procedureUuid}/documents/{docUuid} — Get document detail.
    */
   getDetail(procedureUuid: string, docUuid: string): Observable<DocumentDetail> {
-    return this.http.get<DocumentDetail>(
+    return this.http.get<any>(
       `${this.citizenBase}/${procedureUuid}/documents/${docUuid}`
+    ).pipe(
+      map((response) => this.mapDocumentDetail(response))
     );
   }
 

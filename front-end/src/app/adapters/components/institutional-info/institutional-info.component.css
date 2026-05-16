@@ -45,3 +45,22 @@
 .institutional__card-content {
   @apply text-surface-600 leading-relaxed;
 }
+
+:host-context(.theme-dark) .institutional__breadcrumb,
+:host-context(.theme-dark) .institutional__loading {
+  @apply text-slate-400;
+}
+
+:host-context(.theme-dark) .institutional__breadcrumb a {
+  @apply text-sky-300;
+}
+
+:host-context(.theme-dark) .institutional__header h1,
+:host-context(.theme-dark) .institutional__card-title {
+  @apply text-slate-100;
+}
+
+:host-context(.theme-dark) .institutional__subtitle,
+:host-context(.theme-dark) .institutional__card-content {
+  @apply text-slate-300;
+}

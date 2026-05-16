@@ -52,12 +52,14 @@ public class SecurityConfig {
             "/citizen/**"
     };
 
-    /**
-     * Endpoints restricted to admin role only.
-     */
-    private static final String[] ADMIN_ENDPOINTS = {
-            "/admin/**",
+    private static final String[] ADMIN_ONLY_ENDPOINTS = {
+            "/admin/users/**",
+            "/admin/procedure-types/**",
             "/health/ready"
+    };
+
+    private static final String[] BACKOFFICE_ENDPOINTS = {
+            "/admin/**"
     };
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -78,8 +80,10 @@ public class SecurityConfig {
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
                         // OpenAPI / Swagger — public read access
                         .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/api-docs/**", "/swagger-ui.html").permitAll()
-                        // Admin-only endpoints
-                        .requestMatchers(ADMIN_ENDPOINTS).hasRole("ADMIN")
+                        // Admin-only catalog/user management endpoints
+                        .requestMatchers(ADMIN_ONLY_ENDPOINTS).hasRole("ADMIN")
+                        // Backoffice case/task endpoints — processors and admins
+                        .requestMatchers(BACKOFFICE_ENDPOINTS).hasAnyRole("TRAMITADOR", "ADMIN")
                         // Citizen endpoints — citizen or admin
                         .requestMatchers(CITIZEN_ENDPOINTS).hasAnyRole("CITIZEN", "ADMIN")
                         // Everything else requires authentication

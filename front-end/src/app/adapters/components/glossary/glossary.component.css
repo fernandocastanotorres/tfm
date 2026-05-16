@@ -74,3 +74,36 @@
 .glossary__empty {
   @apply text-surface-500;
 }
+
+:host-context(.theme-dark) .glossary__breadcrumb,
+:host-context(.theme-dark) .glossary__loading,
+:host-context(.theme-dark) .glossary__empty,
+:host-context(.theme-dark) .glossary__related {
+  @apply text-slate-400;
+}
+
+:host-context(.theme-dark) .glossary__breadcrumb a {
+  @apply text-sky-300;
+}
+
+:host-context(.theme-dark) .glossary__header h1,
+:host-context(.theme-dark) .glossary__term {
+  @apply text-slate-100;
+}
+
+:host-context(.theme-dark) .glossary__subtitle,
+:host-context(.theme-dark) .glossary__definition {
+  @apply text-slate-300;
+}
+
+:host-context(.theme-dark) .glossary__letter {
+  @apply bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800 hover:border-sky-700 hover:text-sky-300;
+}
+
+:host-context(.theme-dark) .glossary__letter--active {
+  @apply bg-sky-700 border-sky-700 text-white;
+}
+
+:host-context(.theme-dark) .glossary__related {
+  @apply border-slate-700;
+}
