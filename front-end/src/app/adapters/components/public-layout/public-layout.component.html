@@ -1,0 +1,139 @@
+<header class="public-header" role="banner">
+  <div class="public-header__container">
+    <a [routerLink]="['/sede']" class="public-header__logo" aria-label="Ir a la pagina principal de la sede electronica">
+      <span class="public-header__brand">Sede Electronica</span>
+      <span class="public-header__tagline">{{ 'PUBLIC.TAGLINE' | translate }}</span>
+    </a>
+
+    <!-- Full navigation (hidden on auth pages) -->
+    <ng-container *ngIf="!isAuthPage">
+      <nav class="public-header__nav" aria-label="Navegacion principal">
+        <button
+          type="button"
+          class="public-header__menu-toggle"
+          [attr.aria-expanded]="menuOpen"
+          aria-controls="main-menu"
+          aria-label="Abrir menu de navegacion"
+          (click)="toggleMobileMenu()"
+        >
+          <span aria-hidden="true">&#9776;</span>
+        </button>
+
+        <ul id="main-menu" class="public-header__menu" [class.public-header__menu--open]="menuOpen">
+          <li>
+            <a [routerLink]="['/sede']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+              {{ 'PUBLIC.NAV_HOME' | translate }}
+            </a>
+          </li>
+
+          <li class="public-header__dropdown" *ngFor="let group of menuGroups">
+            <button
+              type="button"
+              class="public-header__dropdown-trigger"
+              [attr.aria-expanded]="activeDropdown === group.labelKey"
+              [attr.aria-controls]="'dropdown-' + group.labelKey"
+              (click)="toggleDropdown(group.labelKey)"
+              (focusout)="onDropdownFocusOut($event)"
+            >
+              {{ group.labelKey | translate }}
+              <span class="public-header__chevron" aria-hidden="true">&#9662;</span>
+            </button>
+            <ul
+              [id]="'dropdown-' + group.labelKey"
+              class="public-header__dropdown-menu"
+              [class.public-header__dropdown-menu--open]="activeDropdown === group.labelKey"
+              role="menu"
+            >
+              <li *ngFor="let item of group.items">
+                <a
+                  [routerLink]="item.route"
+                  routerLinkActive="active"
+                  role="menuitem"
+                  (click)="closeDropdown()"
+                >
+                  {{ item.labelKey | translate }}
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </ng-container>
+
+    <!-- Back link for auth pages -->
+    <ng-container *ngIf="isAuthPage">
+      <a [routerLink]="['/sede']" class="public-header__back-link">
+        <span aria-hidden="true">&#8592;</span> {{ 'PUBLIC.BACK_TO_SEDE' | translate }}
+      </a>
+    </ng-container>
+
+    <div class="public-header__actions">
+      <a *ngIf="!isAuthPage" [routerLink]="['/sede/login']" class="btn-primary btn-primary--sm">{{ 'PUBLIC.LOGIN' | translate }}</a>
+      <div class="public-header__locale">
+        <label class="sr-only" for="locale-select-public">Idioma</label>
+        <select
+          id="locale-select-public"
+          class="field-input field-input--sm"
+          [value]="currentLocale"
+          (change)="switchLocale($any($event.target).value)"
+          aria-label="Selecciona idioma"
+        >
+          <option *ngFor="let locale of locales" [value]="locale.code">
+            {{ locale.label }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="public-main" role="main">
+  <router-outlet></router-outlet>
+</main>
+
+<footer class="public-footer" role="contentinfo">
+  <div class="public-footer__container">
+    <div class="public-footer__section">
+      <h3 class="public-footer__title">{{ 'PUBLIC.FOOTER_SEDE' | translate }}</h3>
+      <ul class="public-footer__links">
+        <li><a [routerLink]="['/sede/procedimientos']">{{ 'PUBLIC.NAV_PROCEDURES' | translate }}</a></li>
+        <li><a [routerLink]="['/sede/faq']">{{ 'PUBLIC.NAV_FAQ' | translate }}</a></li>
+        <li><a [routerLink]="['/sede/contacto']">{{ 'PUBLIC.NAV_CONTACT' | translate }}</a></li>
+        <li><a [routerLink]="['/sede/estado']">{{ 'PUBLIC.NAV_STATUS' | translate }}</a></li>
+      </ul>
+    </div>
+    <div class="public-footer__section">
+      <h3 class="public-footer__title">{{ 'PUBLIC.FOOTER_INFO' | translate }}</h3>
+      <ul class="public-footer__links">
+        <li><a [routerLink]="['/sede/institucional']">{{ 'PUBLIC.NAV_INSTITUTIONAL' | translate }}</a></li>
+        <li><a [routerLink]="['/sede/normativa']">{{ 'PUBLIC.NAV_LEGISLATION' | translate }}</a></li>
+        <li><a [routerLink]="['/sede/transparencia']">{{ 'PUBLIC.NAV_TRANSPARENCY' | translate }}</a></li>
+        <li><a [routerLink]="['/sede/organismo']">{{ 'PUBLIC.NAV_ORGANISMS' | translate }}</a></li>
+      </ul>
+    </div>
+    <div class="public-footer__section">
+      <h3 class="public-footer__title">{{ 'PUBLIC.FOOTER_RESOURCES' | translate }}</h3>
+      <ul class="public-footer__links">
+        <li><a [routerLink]="['/sede/calendario']">{{ 'PUBLIC.NAV_CALENDAR' | translate }}</a></li>
+        <li><a [routerLink]="['/sede/glosario']">{{ 'PUBLIC.NAV_GLOSSARY' | translate }}</a></li>
+        <li><a [routerLink]="['/sede/accesibilidad']">{{ 'PUBLIC.NAV_ACCESSIBILITY' | translate }}</a></li>
+        <li><a [routerLink]="['/sede/mapa']">{{ 'PUBLIC.NAV_SITEMAP' | translate }}</a></li>
+      </ul>
+    </div>
+    <div class="public-footer__section">
+      <h3 class="public-footer__title">{{ 'PUBLIC.FOOTER_ACCESS' | translate }}</h3>
+      <ul class="public-footer__links">
+        <li><a [routerLink]="['/sede/login']">{{ 'PUBLIC.LOGIN' | translate }}</a></li>
+        <li><a [routerLink]="['/sede/registro']">{{ 'PUBLIC.REGISTER' | translate }}</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="public-footer__bottom">
+    <p>{{ 'PUBLIC.FOOTER_COPYRIGHT' | translate }}</p>
+    <div class="public-footer__legal">
+      <a [routerLink]="['/sede/accesibilidad']">{{ 'PUBLIC.FOOTER_ACCESSIBILITY' | translate }}</a>
+      <span aria-hidden="true">|</span>
+      <a [routerLink]="['/sede/mapa']">{{ 'PUBLIC.FOOTER_SITEMAP' | translate }}</a>
+    </div>
+  </div>
+</footer>

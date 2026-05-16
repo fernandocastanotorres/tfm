@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { DashboardService, CaseItem, NotificationItem, QuickAccessItem } from '../../../application/services/dashboard.service';
+import { DashboardService, NotificationItem, QuickAccessItem } from '../../../application/services/dashboard.service';
+import { CasesApiService } from '../../../application/services/cases-api.service';
+import { CaseItem } from '../../../application/models/case.models';
 import { TranslateService } from '@ngx-translate/core';
 import { changePage, updatePageSize, getPaginationState, PaginationState } from '../../../application/utils/pagination';
 
@@ -16,6 +18,8 @@ export class DashboardComponent implements OnInit {
   selectedCase: CaseItem | null = null;
   readonly paginationOptions = [10, 20, 50];
   paginationState: PaginationState = { currentPage: 1, totalPages: 1, pageSize: 10 };
+  isLoading = true;
+  error: string | null = null;
 
   readonly filterForm = this.fb.group({
     search: [''],
@@ -25,24 +29,50 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private readonly dashboardService: DashboardService,
+    private readonly casesApiService: CasesApiService,
     private readonly fb: FormBuilder,
     private readonly translate: TranslateService
   ) {}
 
   ngOnInit(): void {
-    this.cases = this.dashboardService.getCases();
+    // Load notifications and quick access from mock service (no backend endpoint yet)
     this.notifications = this.dashboardService.getNotifications();
     this.quickAccess = this.dashboardService.getQuickAccess();
-    this.selectedCase = this.cases[0] ?? null;
-    this.updatePaginationState();
+
+    // Load cases from backend API
+    this.loadCases();
+  }
+
+  private loadCases(): void {
+    this.isLoading = true;
+    this.error = null;
+
+    const page = this.paginationState.currentPage - 1; // API is 0-indexed
+    const size = this.paginationState.pageSize;
+
+    this.casesApiService.list(page, size).subscribe({
+      next: (response) => {
+        this.cases = response.items;
+        this.paginationState.totalPages = response.totalPages;
+        this.isLoading = false;
+
+        if (this.cases.length > 0 && !this.selectedCase) {
+          this.selectedCase = this.cases[0];
+        }
+      },
+      error: (err) => {
+        this.error = err?.error?.message ?? 'DASHBOARD.ERROR_LOAD';
+        this.isLoading = false;
+      }
+    });
   }
 
   get summaryStats(): { labelKey: string; value: number }[] {
     return [
       { labelKey: 'DASHBOARD.STAT_TOTAL', value: this.cases.length },
-      { labelKey: 'CASE_STATUS.REVIEW', value: this.cases.filter((item) => item.statusKey === 'CASE_STATUS.REVIEW').length },
-      { labelKey: 'CASE_STATUS.PENDING', value: this.cases.filter((item) => item.statusKey === 'CASE_STATUS.PENDING').length },
-      { labelKey: 'CASE_STATUS.APPROVED', value: this.cases.filter((item) => item.statusKey === 'CASE_STATUS.APPROVED').length }
+      { labelKey: 'CASE_STATUS.REVIEW', value: this.cases.filter((item) => item.status === 'REVIEW' || item.status === 'UNDER_REVIEW').length },
+      { labelKey: 'CASE_STATUS.PENDING', value: this.cases.filter((item) => item.status === 'PENDING').length },
+      { labelKey: 'CASE_STATUS.APPROVED', value: this.cases.filter((item) => item.status === 'APPROVED' || item.status === 'COMPLETED').length }
     ];
   }
 
@@ -52,10 +82,10 @@ export class DashboardComponent implements OnInit {
 
     return this.cases.filter((caseItem) => {
       const matchesSearch =
-        caseItem.titleKey.toLowerCase().includes(search) ||
+        caseItem.title.toLowerCase().includes(search) ||
         caseItem.id.toLowerCase().includes(search) ||
-        caseItem.categoryKey.toLowerCase().includes(search);
-      const matchesStatus = status === 'all' || caseItem.statusKey === status;
+        caseItem.procedureType.toLowerCase().includes(search);
+      const matchesStatus = status === 'all' || caseItem.status === status;
       return matchesSearch && matchesStatus;
     });
   }
@@ -72,14 +102,17 @@ export class DashboardComponent implements OnInit {
   clearFilters(): void {
     this.filterForm.setValue({ search: '', status: 'all', pageSize: 10 });
     this.paginationState = updatePageSize(this.filterForm, this.paginationState.pageSize, this.paginationState);
-    this.updatePaginationState();
+    this.paginationState.currentPage = 1;
+    this.loadCases();
   }
 
-  statusClass(statusKey: CaseItem['statusKey']): string {
-    switch (statusKey) {
-      case 'CASE_STATUS.APPROVED':
+  statusClass(status: string): string {
+    switch (status) {
+      case 'APPROVED':
+      case 'COMPLETED':
         return 'bg-green-100 text-green-700';
-      case 'CASE_STATUS.PENDING':
+      case 'PENDING':
+      case 'WAITING':
         return 'bg-amber-100 text-amber-700';
       default:
         return 'bg-blue-100 text-blue-700';
@@ -87,15 +120,16 @@ export class DashboardComponent implements OnInit {
   }
 
   changePage(page: number): void {
+    if (page < 1 || page > this.paginationState.totalPages) {
+      return;
+    }
     this.paginationState = changePage(page, this.paginationState);
+    this.loadCases();
   }
 
   updatePageSize(size: number): void {
     this.paginationState = updatePageSize(this.filterForm, size, this.paginationState);
-    this.updatePaginationState();
-  }
-
-  private updatePaginationState(): void {
-    this.paginationState = getPaginationState(this.filteredCases.length, this.filterForm);
+    this.paginationState.currentPage = 1;
+    this.loadCases();
   }
 }

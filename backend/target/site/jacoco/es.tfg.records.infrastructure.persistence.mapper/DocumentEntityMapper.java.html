@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DocumentEntityMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">records-api</a> &gt; <a href="index.source.html" class="el_package">es.tfg.records.infrastructure.persistence.mapper</a> &gt; <span class="el_source">DocumentEntityMapper.java</span></div><h1>DocumentEntityMapper.java</h1><pre class="source lang-java linenums">package es.tfg.records.infrastructure.persistence.mapper;
+
+import es.tfg.records.domain.model.Document;
+import es.tfg.records.domain.model.DocumentStatus;
+import es.tfg.records.infrastructure.persistence.entity.DocumentEntity;
+
+import java.util.List;
+
+/**
+ * Mapper between JPA DocumentEntity and domain Document model.
+ */
+public final class DocumentEntityMapper {
+
+    private DocumentEntityMapper() {
+    }
+
+    public static Document toDomain(DocumentEntity entity) {
+<span class="nc bnc" id="L18" title="All 2 branches missed.">        if (entity == null) return null;</span>
+<span class="nc" id="L19">        Document document = new Document();</span>
+<span class="nc" id="L20">        document.setId(entity.getId());</span>
+<span class="nc bnc" id="L21" title="All 2 branches missed.">        document.setProcedureId(entity.getProcedure() != null ? entity.getProcedure().getId() : null);</span>
+<span class="nc" id="L22">        document.setName(entity.getName());</span>
+<span class="nc" id="L23">        document.setMimeType(entity.getMimeType());</span>
+<span class="nc" id="L24">        document.setSize(entity.getSize());</span>
+<span class="nc" id="L25">        document.setVersion(entity.getVersion());</span>
+<span class="nc" id="L26">        document.setStatus(entity.getStatus());</span>
+<span class="nc" id="L27">        document.setStoragePath(entity.getStoragePath());</span>
+<span class="nc" id="L28">        document.setUploadedAt(entity.getUploadedAt());</span>
+<span class="nc" id="L29">        document.setCreatedAt(entity.getCreatedAt());</span>
+<span class="nc" id="L30">        document.setUpdatedAt(entity.getUpdatedAt());</span>
+<span class="nc" id="L31">        return document;</span>
+    }
+
+    public static DocumentEntity toEntity(Document domain) {
+<span class="nc bnc" id="L35" title="All 2 branches missed.">        if (domain == null) return null;</span>
+<span class="nc" id="L36">        DocumentEntity entity = new DocumentEntity();</span>
+<span class="nc" id="L37">        entity.setId(domain.getId());</span>
+        // Resolver y asignar ProcedureEntity antes de mapear. Revisar diseño al manejar relaciones.
+<span class="nc" id="L39">        entity.setName(domain.getName());</span>
+<span class="nc" id="L40">        entity.setMimeType(domain.getMimeType());</span>
+<span class="nc" id="L41">        entity.setSize(domain.getSize());</span>
+<span class="nc" id="L42">        entity.setVersion(domain.getVersion());</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        entity.setStatus(domain.getStatus() != null ? domain.getStatus() : DocumentStatus.PENDING);</span>
+<span class="nc" id="L44">        entity.setStoragePath(domain.getStoragePath());</span>
+<span class="nc" id="L45">        entity.setUploadedAt(domain.getUploadedAt());</span>
+<span class="nc" id="L46">        return entity;</span>
+    }
+
+    public static List&lt;Document&gt; toDomainList(List&lt;DocumentEntity&gt; entities) {
+<span class="nc bnc" id="L50" title="All 2 branches missed.">        if (entities == null) return List.of();</span>
+<span class="nc" id="L51">        return entities.stream()</span>
+<span class="nc" id="L52">                .map(DocumentEntityMapper::toDomain)</span>
+<span class="nc" id="L53">                .toList();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

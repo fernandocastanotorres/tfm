@@ -1,0 +1,35 @@
+.accessibility__container {
+  @apply max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12;
+}
+
+.accessibility__header {
+  @apply mb-10;
+}
+
+.accessibility__breadcrumb {
+  @apply text-sm text-surface-500 mb-4;
+}
+
+.accessibility__breadcrumb a {
+  @apply text-brand-600 hover:text-brand-700 no-underline;
+}
+
+.accessibility__header h1 {
+  @apply text-3xl font-bold text-surface-900;
+}
+
+.accessibility__content {
+  @apply space-y-6;
+}
+
+.accessibility__content h2 {
+  @apply text-xl font-semibold text-surface-900 mt-6 first:mt-0;
+}
+
+.accessibility__content p {
+  @apply text-surface-600 leading-relaxed;
+}
+
+.accessibility__content ul {
+  @apply list-disc pl-6 space-y-2 text-surface-600;
+}

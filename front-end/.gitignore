@@ -10,6 +10,8 @@
 /node_modules
 npm-debug.log
 yarn-error.log
+pnpm-debug.log*
+bun-debug.log*
 
 # IDEs and editors
 .idea/
@@ -30,12 +32,35 @@ yarn-error.log
 
 # Miscellaneous
 /.angular/cache
+.angular/cache
+.angular/cache-loader
+.cache/
+node_modules/.cache/
+.eslintcache
+.stylelintcache
+.parcel-cache/
+.turbo/
+.vite/
 .sass-cache/
 /connect.lock
 /coverage
+/coverage-final.json
 /libpeerconnection.log
 testem.log
 /typings
+*.tsbuildinfo
+*.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Temp files
+*.tmp
+*.temp
+*.swp
+*.swo
 
 # System files
 .DS_Store

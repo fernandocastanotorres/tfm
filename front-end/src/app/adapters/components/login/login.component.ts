@@ -34,14 +34,22 @@ export class LoginComponent {
 
     this.isSubmitting = true;
     const { email, password } = this.loginForm.value;
-    const success = this.authService.login({ email, password });
 
-    if (success) {
-      this.router.navigate(['/']);
-    } else {
-      this.errorMessageKey = 'LOGIN.ERROR_INVALID';
-    }
-
-    this.isSubmitting = false;
+    this.authService.login({ email, password }).subscribe({
+      next: () => {
+        this.isSubmitting = false;
+        this.router.navigate(['/']);
+      },
+      error: (error) => {
+        this.isSubmitting = false;
+        if (error?.status === 401) {
+          this.errorMessageKey = 'LOGIN.ERROR_INVALID';
+        } else if (error?.error?.message) {
+          this.errorMessageKey = error.error.message;
+        } else {
+          this.errorMessageKey = 'LOGIN.ERROR_GENERIC';
+        }
+      }
+    });
   }
 }

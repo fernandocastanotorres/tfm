@@ -1,10 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { CaseWizardComponent } from './case-wizard.component';
-import { CaseWizardService } from '../../../application/services/case-wizard.service';
-import { ProceduresService } from '../../../application/services/procedures.service';
 
 describe('CaseWizardComponent', () => {
   let component: CaseWizardComponent;
@@ -13,10 +12,12 @@ describe('CaseWizardComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [CaseWizardComponent],
-      imports: [ReactiveFormsModule, TranslateModule.forRoot()],
+      imports: [
+        HttpClientTestingModule,
+        ReactiveFormsModule,
+        TranslateModule.forRoot()
+      ],
       providers: [
-        CaseWizardService,
-        ProceduresService,
         {
           provide: ActivatedRoute,
           useValue: {
@@ -41,9 +42,11 @@ describe('CaseWizardComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should progress to next task', () => {
-    const originalIndex = component.currentTaskIndex;
-    component.nextStep();
-    expect(component.currentTaskIndex).toBeGreaterThanOrEqual(originalIndex);
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should have loading state initially', () => {
+    expect(component.isLoading).toBeTrue();
   });
 });

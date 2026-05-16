@@ -1,0 +1,71 @@
+.organisms__container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12;
+}
+
+.organisms__header {
+  @apply mb-10;
+}
+
+.organisms__breadcrumb {
+  @apply text-sm text-surface-500 mb-4;
+}
+
+.organisms__breadcrumb a {
+  @apply text-brand-600 hover:text-brand-700 no-underline;
+}
+
+.organisms__header h1 {
+  @apply text-3xl font-bold text-surface-900;
+}
+
+.organisms__subtitle {
+  @apply text-lg text-surface-600 mt-2;
+}
+
+.organisms__controls {
+  @apply flex flex-col sm:flex-row gap-4 mb-8;
+}
+
+.organisms__search {
+  @apply flex-1;
+}
+
+.organisms__loading {
+  @apply text-center text-surface-500 py-12;
+}
+
+.organisms__grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+}
+
+.organisms__item {
+  @apply transition hover:shadow-lg;
+}
+
+.organisms__item-name {
+  @apply text-lg font-semibold text-surface-900 mb-1;
+}
+
+.organisms__item-category {
+  @apply inline-block text-xs font-semibold text-brand-600 bg-brand-50 px-2 py-1 rounded-full mb-3;
+}
+
+.organisms__item-desc {
+  @apply text-sm text-surface-600 mb-4;
+}
+
+.organisms__item-contact {
+  @apply text-sm text-surface-600 not-italic space-y-1;
+}
+
+.organisms__item-contact a {
+  @apply text-brand-600 hover:text-brand-700 no-underline;
+}
+
+.organisms__item-link {
+  @apply inline-block;
+}
+
+.organisms__empty {
+  @apply text-surface-500;
+}

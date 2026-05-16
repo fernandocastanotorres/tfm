@@ -57,7 +57,7 @@ describe('PasswordRecoveryComponent', () => {
     component.resetForm.setValue({ newPassword: 'Password1!', confirmPassword: 'Password1!' });
     component.resetPassword();
     setTimeout(() => {
-      expect(router.navigate).toHaveBeenCalledWith(['/login']);
+      expect(router.navigate).toHaveBeenCalledWith(['/sede/login']);
       done();
     }, 1300);
   });

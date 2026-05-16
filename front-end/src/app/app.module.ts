@@ -1,14 +1,20 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { TranslateModule, TranslateLoader, TranslationObject } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+
+// Auth components
 import { LoginComponent } from './adapters/components/login/login.component';
 import { RegisterComponent } from './adapters/components/register/register.component';
 import { PasswordRecoveryComponent } from './adapters/components/password-recovery/password-recovery.component';
+
+// Authenticated components
 import { DashboardComponent } from './adapters/components/dashboard/dashboard.component';
 import { ProfileComponent } from './adapters/components/profile/profile.component';
 import { NotificationsComponent } from './adapters/components/notifications/notifications.component';
@@ -20,6 +26,38 @@ import { MessagesComponent } from './adapters/components/messages/messages.compo
 import { ProceduresComponent } from './adapters/components/procedures/procedures.component';
 import { CaseWizardComponent } from './adapters/components/case-wizard/case-wizard.component';
 import { ProcedureFlowComponent } from './adapters/components/procedure-flow/procedure-flow.component';
+
+// Public sede components
+import { PublicLayoutComponent } from './adapters/components/public-layout/public-layout.component';
+import { PublicHomeComponent } from './adapters/components/public-home/public-home.component';
+import { InstitutionalInfoComponent } from './adapters/components/institutional-info/institutional-info.component';
+import { LegislationComponent } from './adapters/components/legislation/legislation.component';
+import { FaqComponent } from './adapters/components/faq/faq.component';
+import { ContactComponent } from './adapters/components/contact/contact.component';
+import { ServiceStatusComponent } from './adapters/components/service-status/service-status.component';
+import { OrganismsDirectoryComponent } from './adapters/components/organisms-directory/organisms-directory.component';
+import { TransparencyComponent } from './adapters/components/transparency/transparency.component';
+import { CalendarComponent } from './adapters/components/calendar/calendar.component';
+import { GlossaryComponent } from './adapters/components/glossary/glossary.component';
+import { AccessibilityStatementComponent } from './adapters/components/accessibility-statement/accessibility-statement.component';
+import { SitemapComponent } from './adapters/components/sitemap/sitemap.component';
+
+// Interceptors
+import { HttpErrorInterceptor } from './application/interceptors/http-error.interceptor';
+import { JwtAuthInterceptor } from './application/interceptors/jwt-auth.interceptor';
+import { CorrelationIdInterceptor } from './application/interceptors/correlation-id.interceptor';
+
+export class CustomLoader implements TranslateLoader {
+  constructor(private http: HttpClient) {}
+
+  getTranslation(lang: string): Observable<TranslationObject> {
+    return this.http.get<TranslationObject>(`/assets/i18n/${lang}.json`);
+  }
+}
+
+export function HttpLoaderFactory(http: HttpClient): CustomLoader {
+  return new CustomLoader(http);
+}
 
 @NgModule({
   declarations: [
@@ -37,25 +75,41 @@ import { ProcedureFlowComponent } from './adapters/components/procedure-flow/pro
     MessagesComponent,
     ProceduresComponent,
     CaseWizardComponent,
-    ProcedureFlowComponent
+    ProcedureFlowComponent,
+    PublicLayoutComponent,
+    PublicHomeComponent,
+    InstitutionalInfoComponent,
+    LegislationComponent,
+    FaqComponent,
+    ContactComponent,
+    ServiceStatusComponent,
+    OrganismsDirectoryComponent,
+    TransparencyComponent,
+    CalendarComponent,
+    GlossaryComponent,
+    AccessibilityStatementComponent,
+    SitemapComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
+    FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
     RouterModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: (http: HttpClient) => new TranslateHttpLoader(http, './assets/i18n/', '.json'),
+        useFactory: HttpLoaderFactory,
         deps: [HttpClient]
       }
     })
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: JwtAuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: CorrelationIdInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';

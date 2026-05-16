@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ProceduresService, ProcedureItem } from '../../../application/services/procedures.service';
+import { ProceduresApiService } from '../../../application/services/procedures-api.service';
+import { ProcedureItem } from '../../../application/models/procedure.models';
 
 @Component({
   selector: 'app-procedures',
@@ -9,17 +10,28 @@ import { ProceduresService, ProcedureItem } from '../../../application/services/
 })
 export class ProceduresComponent implements OnInit {
   procedures: ProcedureItem[] = [];
+  isLoading = true;
+  error: string | null = null;
 
   constructor(
-    private readonly proceduresService: ProceduresService,
+    private readonly proceduresApiService: ProceduresApiService,
     private readonly router: Router
   ) {}
 
   ngOnInit(): void {
-    this.procedures = this.proceduresService.getProcedures();
+    this.proceduresApiService.listAll().subscribe({
+      next: (data) => {
+        this.procedures = data;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.error = err?.error?.message ?? 'PROCEDURES.ERROR_LOAD';
+        this.isLoading = false;
+      }
+    });
   }
 
   startProcedure(procedure: ProcedureItem): void {
-    this.router.navigate(['/procedimientos', procedure.id, 'flujo']);
+    this.router.navigate(['/sede/procedimientos', procedure.slug, 'flujo']);
   }
 }

@@ -1,4 +1,4 @@
-<main class="min-h-screen bg-surface-50 flex items-center justify-center px-6 py-10" aria-labelledby="login-title">
+<section class="auth-page" aria-labelledby="login-title">
   <div class="card w-full max-w-md p-10" role="region" aria-live="polite">
     <header class="space-y-2">
       <p class="text-sm font-semibold text-brand-600">{{ 'APP.TAGLINE' | translate }}</p>
@@ -50,9 +50,9 @@
 
       <p class="error-text text-center" role="alert" *ngIf="errorMessageKey">{{ errorMessageKey | translate }}</p>
       <div class="flex flex-col gap-2 text-sm text-surface-600">
-        <a routerLink="/registro" class="text-brand-600 hover:underline">{{ 'LOGIN.CREATE_ACCOUNT' | translate }}</a>
-        <a routerLink="/recuperacion" class="text-brand-600 hover:underline">{{ 'LOGIN.FORGOT' | translate }}</a>
+        <a [routerLink]="['/sede/registro']" class="text-brand-600 hover:underline">{{ 'LOGIN.CREATE_ACCOUNT' | translate }}</a>
+        <a [routerLink]="['/sede/recuperacion']" class="text-brand-600 hover:underline">{{ 'LOGIN.FORGOT' | translate }}</a>
       </div>
     </form>
   </div>
-</main>
+</section>

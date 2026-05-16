@@ -24,6 +24,10 @@
 }
 
 @layer components {
+  .auth-page {
+    @apply min-h-[calc(100vh-4rem)] flex items-center justify-center px-6 py-10;
+  }
+
   .card {
     @apply bg-white rounded-2xl shadow-lg shadow-surface-900/10 border border-surface-100;
   }

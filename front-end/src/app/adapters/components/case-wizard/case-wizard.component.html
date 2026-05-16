@@ -1,100 +1,118 @@
 <main class="min-h-screen bg-surface-50 px-6 py-10" aria-labelledby="wizard-title">
   <div class="max-w-4xl mx-auto">
-    <header class="space-y-2" *ngIf="procedure">
-      <p class="text-sm font-semibold text-brand-600">{{ 'CASE_WIZARD.EYEBROW' | translate }}</p>
-      <h1 id="wizard-title" class="text-2xl font-semibold text-surface-900">{{ procedure.titleKey | translate }}</h1>
-      <p class="text-surface-600">{{ procedure.descriptionKey | translate }}</p>
-    </header>
+    <!-- Loading state -->
+    <div *ngIf="isLoading" class="card p-6 text-center text-surface-600">
+      {{ 'CASE_WIZARD.LOADING' | translate }}
+    </div>
 
-    <div class="mt-6 flex items-center gap-3" *ngIf="procedure">
-      <span class="text-sm text-surface-600">{{ 'CASE_WIZARD.STEP' | translate }} {{ stepLabel }}</span>
-      <div class="flex-1 h-2 rounded-full bg-surface-100">
-        <div class="h-2 rounded-full bg-brand-500" [style.width.%]="((currentTaskIndex + 1) / tasks.length) * 100"></div>
+    <!-- Error state -->
+    <div *ngIf="error && !isLoading" class="card p-6 text-center text-red-600">
+      {{ error | translate }}
+    </div>
+
+    <!-- Wizard content -->
+    <ng-container *ngIf="procedure && !isLoading">
+      <header class="space-y-2">
+        <p class="text-sm font-semibold text-brand-600">{{ 'CASE_WIZARD.EYEBROW' | translate }}</p>
+        <h1 id="wizard-title" class="text-2xl font-semibold text-surface-900">{{ procedure.name | translate }}</h1>
+        <p class="text-surface-600">{{ procedure.description | translate }}</p>
+      </header>
+
+      <div class="mt-6 flex items-center gap-3">
+        <span class="text-sm text-surface-600">{{ 'CASE_WIZARD.STEP' | translate }} {{ stepLabel }}</span>
+        <div class="flex-1 h-2 rounded-full bg-surface-100">
+          <div class="h-2 rounded-full bg-brand-500" [style.width.%]="((currentTaskIndex + 1) / tasks.length) * 100"></div>
+        </div>
       </div>
-    </div>
 
-    <form class="mt-8 space-y-6" [formGroup]="wizardForm" *ngIf="currentTask">
-      <section class="card p-6 space-y-4" *ngIf="currentTask.type === 'form'">
-        <h2 class="text-lg font-semibold">{{ currentTask.titleKey | translate }}</h2>
-        <p class="text-surface-600">{{ currentTask.descriptionKey | translate }}</p>
-        <div class="space-y-4" *ngFor="let field of currentTask.fields">
-          <label class="field-label" [attr.for]="field.id">{{ field.labelKey | translate }}</label>
-          <input
-            *ngIf="field.type === 'text' || field.type === 'email' || field.type === 'number' || field.type === 'phone'"
-            [id]="field.id"
-            [type]="field.type === 'phone' ? 'tel' : field.type"
-            [formControlName]="field.id"
-            class="field-input"
-            [placeholder]="field.placeholderKey | translate"
-          />
-          <textarea
-            *ngIf="field.type === 'textarea'"
-            [id]="field.id"
-            [formControlName]="field.id"
-            class="field-input min-h-[140px]"
-            [placeholder]="field.placeholderKey | translate"
-          ></textarea>
-          <select
-            *ngIf="field.type === 'select'"
-            [id]="field.id"
-            [formControlName]="field.id"
-            class="field-input"
-          >
-            <option value="">{{ field.placeholderKey | translate }}</option>
-            <option *ngFor="let option of field.options" [value]="option.value">
-              {{ option.labelKey | translate }}
-            </option>
-          </select>
-          <p class="error-text" *ngIf="wizardForm.get(field.id)?.invalid && wizardForm.get(field.id)?.touched">
-            {{ 'CASE_WIZARD.FIELD_REQUIRED' | translate }}
-          </p>
-        </div>
-      </section>
+      <form class="mt-8 space-y-6" [formGroup]="wizardForm" *ngIf="currentTask && !isSubmitting">
+        <section class="card p-6 space-y-4" *ngIf="currentTask.type === 'form'">
+          <h2 class="text-lg font-semibold">{{ currentTask.name | translate }}</h2>
+          <p class="text-surface-600">{{ currentTask.description | translate }}</p>
+          <div class="space-y-4" *ngFor="let field of currentTask.formFields">
+            <label class="field-label" [attr.for]="field.id">{{ field.name | translate }}</label>
+            <input
+              *ngIf="field.type === 'text' || field.type === 'email' || field.type === 'number' || field.type === 'phone'"
+              [id]="field.id"
+              [type]="field.type === 'phone' ? 'tel' : field.type"
+              [formControlName]="field.id"
+              class="field-input"
+              [placeholder]="field.placeholder | translate"
+            />
+            <textarea
+              *ngIf="field.type === 'textarea'"
+              [id]="field.id"
+              [formControlName]="field.id"
+              class="field-input min-h-[140px]"
+              [placeholder]="field.placeholder | translate"
+            ></textarea>
+            <select
+              *ngIf="field.type === 'select'"
+              [id]="field.id"
+              [formControlName]="field.id"
+              class="field-input"
+            >
+              <option value="">{{ field.placeholder | translate }}</option>
+              <option *ngFor="let option of field.options" [value]="option.value">
+                {{ option.label | translate }}
+              </option>
+            </select>
+            <p class="error-text" *ngIf="wizardForm.get(field.id)?.invalid && wizardForm.get(field.id)?.touched">
+              {{ 'CASE_WIZARD.FIELD_REQUIRED' | translate }}
+            </p>
+          </div>
+        </section>
 
-      <section class="card p-6 space-y-4" *ngIf="currentTask.type === 'upload'">
-        <h2 class="text-lg font-semibold">{{ currentTask.titleKey | translate }}</h2>
-        <p class="text-surface-600">{{ currentTask.descriptionKey | translate }}</p>
-        <div class="space-y-4" *ngFor="let requirement of currentTask.uploadRequirements">
-          <label class="field-label" [attr.for]="requirement.id">{{ requirement.labelKey | translate }}</label>
-          <input
-            [id]="requirement.id"
-            type="file"
-            class="field-input"
-            (change)="onFilesSelected(requirement.id, $any($event.target).files)"
-          />
-          <ul class="space-y-2" *ngIf="attachments.value[requirement.id]?.length">
-            <li class="text-surface-600 flex items-center justify-between" *ngFor="let file of attachments.value[requirement.id]; let i = index">
-              <span>{{ file.name }}</span>
-              <button class="text-sm text-brand-600 hover:underline" type="button" (click)="removeAttachment(requirement.id, i)">
-                {{ 'CASE_WIZARD.REMOVE_FILE' | translate }}
-              </button>
-            </li>
-          </ul>
-          <p class="error-text" *ngIf="requirement.required && attachments.value[requirement.id]?.length === 0">
-            {{ 'CASE_WIZARD.FIELD_REQUIRED' | translate }}
-          </p>
-        </div>
-      </section>
+        <section class="card p-6 space-y-4" *ngIf="currentTask.type === 'upload'">
+          <h2 class="text-lg font-semibold">{{ currentTask.name | translate }}</h2>
+          <p class="text-surface-600">{{ currentTask.description | translate }}</p>
+          <div class="space-y-4" *ngFor="let requirement of currentTask.uploadRequirements">
+            <label class="field-label" [attr.for]="requirement.id">{{ requirement.name | translate }}</label>
+            <input
+              [id]="requirement.id"
+              type="file"
+              class="field-input"
+              (change)="onFilesSelected(requirement.id, $any($event.target).files)"
+            />
+            <ul class="space-y-2" *ngIf="attachments.value[requirement.id]?.length">
+              <li class="text-surface-600 flex items-center justify-between" *ngFor="let file of attachments.value[requirement.id]; let i = index">
+                <span>{{ file.name }}</span>
+                <button class="text-sm text-brand-600 hover:underline" type="button" (click)="removeAttachment(requirement.id, i)">
+                  {{ 'CASE_WIZARD.REMOVE_FILE' | translate }}
+                </button>
+              </li>
+            </ul>
+            <p class="error-text" *ngIf="requirement.required && attachments.value[requirement.id]?.length === 0">
+              {{ 'CASE_WIZARD.FIELD_REQUIRED' | translate }}
+            </p>
+          </div>
+        </section>
 
-      <section class="card p-6 space-y-4" *ngIf="currentTask.type === 'review'">
-        <h2 class="text-lg font-semibold">{{ currentTask.titleKey | translate }}</h2>
-        <p class="text-surface-600">{{ currentTask.descriptionKey | translate }}</p>
-        <div class="rounded-xl bg-surface-100 p-4 text-sm text-surface-600">
-          {{ 'CASE_WIZARD.REVIEW_HINT' | translate }}
-        </div>
-      </section>
-    </form>
+        <section class="card p-6 space-y-4" *ngIf="currentTask.type === 'review'">
+          <h2 class="text-lg font-semibold">{{ currentTask.name | translate }}</h2>
+          <p class="text-surface-600">{{ currentTask.description | translate }}</p>
+          <div class="rounded-xl bg-surface-100 p-4 text-sm text-surface-600">
+            {{ 'CASE_WIZARD.REVIEW_HINT' | translate }}
+          </div>
+        </section>
+      </form>
 
-    <div class="mt-6 flex flex-wrap gap-3" *ngIf="procedure">
-      <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="previousStep()" [disabled]="currentTaskIndex === 0">
-        {{ 'CASE_WIZARD.BACK' | translate }}
-      </button>
-      <button class="btn-primary" type="button" (click)="nextStep()" *ngIf="!isLastStep">
-        {{ 'CASE_WIZARD.NEXT' | translate }}
-      </button>
-      <button class="btn-primary" type="button" (click)="submit()" *ngIf="isLastStep">
-        {{ 'CASE_WIZARD.SUBMIT' | translate }}
-      </button>
-    </div>
+      <!-- Submitting state -->
+      <div *ngIf="isSubmitting" class="mt-8 card p-6 text-center text-surface-600">
+        {{ 'CASE_WIZARD.SUBMITTING' | translate }}
+      </div>
+
+      <div class="mt-6 flex flex-wrap gap-3" *ngIf="!isSubmitting">
+        <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="previousStep()" [disabled]="currentTaskIndex === 0">
+          {{ 'CASE_WIZARD.BACK' | translate }}
+        </button>
+        <button class="btn-primary" type="button" (click)="nextStep()" *ngIf="!isLastStep">
+          {{ 'CASE_WIZARD.NEXT' | translate }}
+        </button>
+        <button class="btn-primary" type="button" (click)="submit()" *ngIf="isLastStep">
+          {{ 'CASE_WIZARD.SUBMIT' | translate }}
+        </button>
+      </div>
+    </ng-container>
   </div>
 </main>

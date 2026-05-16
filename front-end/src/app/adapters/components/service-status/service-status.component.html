@@ -1,0 +1,49 @@
+<section class="service-status" aria-labelledby="status-title">
+  <div class="service-status__container">
+    <header class="service-status__header">
+      <nav aria-label="Breadcrumb" class="service-status__breadcrumb">
+        <a [routerLink]="['/sede']">{{ 'PUBLIC.NAV_HOME' | translate }}</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{{ 'SERVICE_STATUS.EYEBROW' | translate }}</span>
+      </nav>
+      <h1 id="status-title">{{ 'SERVICE_STATUS.TITLE' | translate }}</h1>
+      <p class="service-status__subtitle">{{ 'SERVICE_STATUS.SUBTITLE' | translate }}</p>
+    </header>
+
+    <!-- Summary -->
+    <div class="service-status__summary card p-6 mb-8">
+      <div class="service-status__summary-content">
+        <span class="service-status__summary-icon" aria-hidden="true">&#10004;</span>
+        <div>
+          <p class="service-status__summary-text">
+            {{ 'SERVICE_STATUS.SUMMARY_TEXT' | translate:{ count: operationalCount } }}
+          </p>
+          <p class="service-status__summary-updated">
+            {{ 'SERVICE_STATUS.LAST_UPDATED' | translate }}: {{ services[0].lastUpdated | date:'short' }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="isLoading" class="service-status__loading">
+      {{ 'PUBLIC_HOME.LOADING' | translate }}
+    </div>
+
+    <!-- Services List -->
+    <ul class="service-status__list" *ngIf="!isLoading">
+      <li class="card p-6 service-status__item" *ngFor="let service of services">
+        <div class="service-status__item-header">
+          <h2 class="service-status__item-name">{{ service.nameKey | translate }}</h2>
+          <span class="service-status__indicator" [ngClass]="getStatusClass(service.status)">
+            <span class="service-status__indicator-dot" aria-hidden="true"></span>
+            {{ getStatusLabel(service.status) | translate }}
+          </span>
+        </div>
+        <p class="service-status__item-desc">{{ service.descriptionKey | translate }}</p>
+        <time class="service-status__item-updated" [attr.datetime]="service.lastUpdated">
+          {{ 'SERVICE_STATUS.UPDATED_AT' | translate }}: {{ formatDate(service.lastUpdated) }}
+        </time>
+      </li>
+    </ul>
+  </div>
+</section>

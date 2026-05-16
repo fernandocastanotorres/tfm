@@ -1,0 +1,52 @@
+<section class="calendar" aria-labelledby="calendar-title">
+  <div class="calendar__container">
+    <header class="calendar__header">
+      <nav aria-label="Breadcrumb" class="calendar__breadcrumb">
+        <a [routerLink]="['/sede']">{{ 'PUBLIC.NAV_HOME' | translate }}</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{{ 'CALENDAR.EYEBROW' | translate }}</span>
+      </nav>
+      <h1 id="calendar-title">{{ 'CALENDAR.TITLE' | translate }}</h1>
+      <p class="calendar__subtitle">{{ 'CALENDAR.SUBTITLE' | translate }}</p>
+    </header>
+
+    <div class="calendar__filters" role="search">
+      <label class="sr-only" for="calendar-type-filter">{{ 'CALENDAR.FILTER_TYPE' | translate }}</label>
+      <select
+        id="calendar-type-filter"
+        class="field-input w-48"
+        [value]="selectedType"
+        (change)="onTypeChange($any($event.target).value)"
+      >
+        <option *ngFor="let type of types" [value]="type.value">{{ type.labelKey | translate }}</option>
+      </select>
+    </div>
+
+    <div *ngIf="isLoading" class="calendar__loading">
+      {{ 'PUBLIC_HOME.LOADING' | translate }}
+    </div>
+
+    <ul class="calendar__list" *ngIf="!isLoading">
+      <li class="card p-6 calendar__event" *ngFor="let event of events">
+        <div class="calendar__event-header">
+          <time class="calendar__event-date" [attr.datetime]="event.date">
+            <span class="calendar__event-day">{{ event.date | date:'dd' }}</span>
+            <span class="calendar__event-month">{{ event.date | date:'MMM yyyy' }}</span>
+          </time>
+          <span class="calendar__event-type" [ngClass]="getTypeClass(event.type)">
+            {{ 'CALENDAR.TYPE_' + event.type.toUpperCase() | translate }}
+          </span>
+        </div>
+        <h2 class="calendar__event-title">{{ event.titleKey | translate }}</h2>
+        <p class="calendar__event-desc">{{ event.descriptionKey | translate }}</p>
+        <p *ngIf="event.relatedProcedure" class="calendar__event-procedure">
+          <strong>{{ 'CALENDAR.RELATED_PROCEDURE' | translate }}:</strong> {{ event.relatedProcedure }}
+        </p>
+      </li>
+    </ul>
+
+    <div *ngIf="!isLoading && events.length === 0" class="calendar__empty card p-6 text-center">
+      {{ 'CALENDAR.EMPTY' | translate }}
+    </div>
+  </div>
+</section>

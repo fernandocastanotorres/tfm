@@ -1,4 +1,4 @@
-<main class="min-h-screen bg-surface-50 flex items-center justify-center px-6 py-10" aria-labelledby="register-title">
+<section class="auth-page" aria-labelledby="register-title">
   <div class="card w-full max-w-3xl p-10" role="region" aria-live="polite">
     <header class="space-y-2">
       <p class="text-sm font-semibold text-brand-600">{{ 'REGISTER.EYEBROW' | translate }}</p>
@@ -54,7 +54,7 @@
         <div class="space-y-2">
           <label for="confirmPassword" class="field-label">{{ 'REGISTER.CONFIRM_PASSWORD' | translate }}</label>
           <input id="confirmPassword" type="password" formControlName="confirmPassword" autocomplete="new-password" required class="field-input" />
-          <p class="error-text" *ngIf="registerForm.errors?.mismatch && registerForm.get('confirmPassword')?.touched">
+          <p class="error-text" *ngIf="registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched">
             {{ 'REGISTER.CONFIRM_PASSWORD_ERROR' | translate }}
           </p>
         </div>
@@ -72,6 +72,11 @@
         {{ isSubmitting ? ('REGISTER.SUBMITTING' | translate) : ('REGISTER.SUBMIT' | translate) }}
       </button>
       <p class="text-success font-semibold" role="status" *ngIf="successMessageKey">{{ successMessageKey | translate }}</p>
+      <p class="error-text text-center" role="alert" *ngIf="errorMessageKey">{{ errorMessageKey | translate }}</p>
+
+      <p class="text-sm text-surface-600 text-center mt-4">
+        <a [routerLink]="['/sede/login']" class="text-brand-600 hover:underline">{{ 'LOGIN.SUBMIT' | translate }}</a>
+      </p>
     </form>
   </div>
-</main>
+</section>

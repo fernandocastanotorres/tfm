@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DataInitializer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">records-api</a> &gt; <a href="index.source.html" class="el_package">es.tfg.records.infrastructure.config</a> &gt; <span class="el_source">DataInitializer.java</span></div><h1>DataInitializer.java</h1><pre class="source lang-java linenums">package es.tfg.records.infrastructure.config;
+
+import es.tfg.records.domain.model.CaseStatus;
+import es.tfg.records.domain.model.Procedure;
+import es.tfg.records.domain.model.ProcedureTask;
+import es.tfg.records.domain.model.ProcedureType;
+import es.tfg.records.domain.model.TaskType;
+import es.tfg.records.domain.model.User;
+import es.tfg.records.domain.port.ProcedureRepository;
+import es.tfg.records.domain.port.ProcedureTypeRepository;
+import es.tfg.records.domain.port.UserRepository;
+import es.tfg.records.infrastructure.persistence.entity.ProcedureTaskEntity;
+import es.tfg.records.infrastructure.persistence.entity.ProcedureTypeEntity;
+import es.tfg.records.infrastructure.persistence.repository.ProcedureTaskJpaRepository;
+import es.tfg.records.infrastructure.persistence.repository.ProcedureTypeJpaRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
+/**
+ * Data initializer for development seeding.
+ * Only active in the 'dev' profile.
+ *
+ * Seeds:
+ * - Test users: citizen (dev@tfg.es) and admin (admin@tfg.es)
+ * - Procedure types with form schemas and tasks
+ * - Sample cases for the citizen user
+ */
+@Configuration
+@Profile(&quot;dev&quot;)
+<span class="nc" id="L41">public class DataInitializer {</span>
+
+<span class="nc" id="L43">    private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);</span>
+
+    @Bean
+    CommandLineRunner initDevData(PasswordEncoder passwordEncoder,
+                                  UserRepository userRepository,
+                                  ProcedureTypeRepository procedureTypeRepository,
+                                  ProcedureTypeJpaRepository typeJpaRepository,
+                                  ProcedureTaskJpaRepository taskJpaRepository,
+                                  ProcedureRepository procedureRepository) {
+<span class="nc" id="L52">        return args -&gt; {</span>
+<span class="nc" id="L53">            log.info(&quot;=== DEV DATA INITIALIZER ===&quot;);</span>
+
+            // --- Seed test users ---
+<span class="nc" id="L56">            UUID citizenId = UUID.randomUUID();</span>
+<span class="nc" id="L57">            User citizen = new User();</span>
+<span class="nc" id="L58">            citizen.setId(citizenId);</span>
+<span class="nc" id="L59">            citizen.setEmail(&quot;citizen@tfg.es&quot;);</span>
+<span class="nc" id="L60">            citizen.setPasswordHash(passwordEncoder.encode(&quot;Citizen1&quot;));</span>
+<span class="nc" id="L61">            citizen.setDisplayName(&quot;Test Citizen&quot;);</span>
+<span class="nc" id="L62">            citizen.setRoles(Set.of(&quot;ROLE_CITIZEN&quot;));</span>
+<span class="nc" id="L63">            citizen.setActive(true);</span>
+<span class="nc" id="L64">            userRepository.save(citizen);</span>
+<span class="nc" id="L65">            log.info(&quot;Created citizen user: citizen@tfg.es / Citizen1&quot;);</span>
+
+<span class="nc" id="L67">            UUID adminId = UUID.randomUUID();</span>
+<span class="nc" id="L68">            User admin = new User();</span>
+<span class="nc" id="L69">            admin.setId(adminId);</span>
+<span class="nc" id="L70">            admin.setEmail(&quot;admin@tfg.es&quot;);</span>
+<span class="nc" id="L71">            admin.setPasswordHash(passwordEncoder.encode(&quot;Admin1234&quot;));</span>
+<span class="nc" id="L72">            admin.setDisplayName(&quot;Test Admin&quot;);</span>
+<span class="nc" id="L73">            admin.setRoles(Set.of(&quot;ROLE_ADMIN&quot;, &quot;ROLE_CITIZEN&quot;));</span>
+<span class="nc" id="L74">            admin.setActive(true);</span>
+<span class="nc" id="L75">            userRepository.save(admin);</span>
+<span class="nc" id="L76">            log.info(&quot;Created admin user: admin@tfg.es / Admin1234&quot;);</span>
+
+            // --- Seed procedure types ---
+<span class="nc" id="L79">            UUID licenseId = seedProcedureType(</span>
+                    typeJpaRepository, taskJpaRepository,
+                    &quot;License Application&quot;,
+                    &quot;Apply for a new business or activity license&quot;,
+                    new BigDecimal(&quot;25.00&quot;),
+                    30,
+                    &quot;ACTIVE&quot;,
+                    &quot;Licensing Unit&quot;,
+<span class="nc" id="L87">                    List.of(</span>
+<span class="nc" id="L88">                            createTask(&quot;Personal Information&quot;, TaskType.FORM, &quot;Fill in your personal details&quot;, 0),</span>
+<span class="nc" id="L89">                            createTask(&quot;Upload Documents&quot;, TaskType.UPLOAD, &quot;Upload required supporting documents&quot;, 1),</span>
+<span class="nc" id="L90">                            createTask(&quot;Review and Submit&quot;, TaskType.REVIEW, &quot;Review your application before submission&quot;, 2)</span>
+                    )
+            );
+
+<span class="nc" id="L94">            UUID registryId = seedProcedureType(</span>
+                    typeJpaRepository, taskJpaRepository,
+                    &quot;Registry Certificate&quot;,
+                    &quot;Request an official registry certificate&quot;,
+                    new BigDecimal(&quot;10.00&quot;),
+                    15,
+                    &quot;ACTIVE&quot;,
+                    &quot;Registry Office&quot;,
+<span class="nc" id="L102">                    List.of(</span>
+<span class="nc" id="L103">                            createTask(&quot;Certificate Details&quot;, TaskType.FORM, &quot;Specify the type of certificate needed&quot;, 0),</span>
+<span class="nc" id="L104">                            createTask(&quot;Identity Verification&quot;, TaskType.UPLOAD, &quot;Upload identity verification documents&quot;, 1),</span>
+<span class="nc" id="L105">                            createTask(&quot;Review and Submit&quot;, TaskType.REVIEW, &quot;Review your request before submission&quot;, 2)</span>
+                    )
+            );
+
+<span class="nc" id="L109">            UUID addressId = seedProcedureType(</span>
+                    typeJpaRepository, taskJpaRepository,
+                    &quot;Address Update&quot;,
+                    &quot;Update your registered address&quot;,
+                    BigDecimal.ZERO,
+                    7,
+                    &quot;ACTIVE&quot;,
+                    &quot;Citizen Services&quot;,
+<span class="nc" id="L117">                    List.of(</span>
+<span class="nc" id="L118">                            createTask(&quot;New Address&quot;, TaskType.FORM, &quot;Enter your new address details&quot;, 0),</span>
+<span class="nc" id="L119">                            createTask(&quot;Proof of Address&quot;, TaskType.UPLOAD, &quot;Upload proof of your new address&quot;, 1),</span>
+<span class="nc" id="L120">                            createTask(&quot;Review and Submit&quot;, TaskType.REVIEW, &quot;Review your update before submission&quot;, 2)</span>
+                    )
+            );
+
+<span class="nc" id="L124">            log.info(&quot;Seeded 3 procedure types with tasks&quot;);</span>
+
+            // --- Seed sample cases for the citizen user ---
+<span class="nc" id="L127">            Procedure licenseCase = new Procedure();</span>
+<span class="nc" id="L128">            licenseCase.setId(UUID.randomUUID());</span>
+<span class="nc" id="L129">            licenseCase.setProcedureTypeId(licenseId);</span>
+<span class="nc" id="L130">            licenseCase.setOwnerId(citizenId);</span>
+<span class="nc" id="L131">            licenseCase.setTitle(&quot;License Application&quot;);</span>
+<span class="nc" id="L132">            licenseCase.setStatus(CaseStatus.DRAFT);</span>
+<span class="nc" id="L133">            licenseCase.setSubmittedAt(null);</span>
+<span class="nc" id="L134">            procedureRepository.save(licenseCase);</span>
+<span class="nc" id="L135">            log.info(&quot;Created sample case: License Application (DRAFT)&quot;);</span>
+
+<span class="nc" id="L137">            Procedure certificateCase = new Procedure();</span>
+<span class="nc" id="L138">            certificateCase.setId(UUID.randomUUID());</span>
+<span class="nc" id="L139">            certificateCase.setProcedureTypeId(registryId);</span>
+<span class="nc" id="L140">            certificateCase.setOwnerId(citizenId);</span>
+<span class="nc" id="L141">            certificateCase.setTitle(&quot;Registry Certificate&quot;);</span>
+<span class="nc" id="L142">            certificateCase.setStatus(CaseStatus.SUBMITTED);</span>
+<span class="nc" id="L143">            certificateCase.setSubmittedAt(Instant.now().minusSeconds(86400));</span>
+<span class="nc" id="L144">            procedureRepository.save(certificateCase);</span>
+<span class="nc" id="L145">            log.info(&quot;Created sample case: Registry Certificate (SUBMITTED)&quot;);</span>
+
+<span class="nc" id="L147">            Procedure addressCase = new Procedure();</span>
+<span class="nc" id="L148">            addressCase.setId(UUID.randomUUID());</span>
+<span class="nc" id="L149">            addressCase.setProcedureTypeId(addressId);</span>
+<span class="nc" id="L150">            addressCase.setOwnerId(citizenId);</span>
+<span class="nc" id="L151">            addressCase.setTitle(&quot;Address Update&quot;);</span>
+<span class="nc" id="L152">            addressCase.setStatus(CaseStatus.AMENDMENT_REQUIRED);</span>
+<span class="nc" id="L153">            addressCase.setSubmittedAt(Instant.now().minusSeconds(172800));</span>
+<span class="nc" id="L154">            procedureRepository.save(addressCase);</span>
+<span class="nc" id="L155">            log.info(&quot;Created sample case: Address Update (AMENDMENT_REQUIRED)&quot;);</span>
+
+<span class="nc" id="L157">            log.info(&quot;=== DEV DATA INITIALIZATION COMPLETE ===&quot;);</span>
+<span class="nc" id="L158">        };</span>
+    }
+
+    private UUID seedProcedureType(ProcedureTypeJpaRepository typeRepo,
+                                   ProcedureTaskJpaRepository taskRepo,
+                                   String title, String description,
+                                   BigDecimal fee, int deadlineDays,
+                                   String status, String unit,
+                                   List&lt;ProcedureTask&gt; tasks) {
+<span class="nc" id="L167">        UUID id = UUID.randomUUID();</span>
+
+<span class="nc" id="L169">        ProcedureTypeEntity entity = new ProcedureTypeEntity();</span>
+<span class="nc" id="L170">        entity.setId(id);</span>
+<span class="nc" id="L171">        entity.setTitle(title);</span>
+<span class="nc" id="L172">        entity.setDescription(description);</span>
+<span class="nc" id="L173">        entity.setFeeAmount(fee);</span>
+<span class="nc" id="L174">        entity.setDeadlineDays(deadlineDays);</span>
+<span class="nc" id="L175">        entity.setStatus(status);</span>
+<span class="nc" id="L176">        entity.setUnit(unit);</span>
+<span class="nc" id="L177">        typeRepo.save(entity);</span>
+
+<span class="nc bnc" id="L179" title="All 2 branches missed.">        for (ProcedureTask task : tasks) {</span>
+<span class="nc" id="L180">            ProcedureTaskEntity taskEntity = new ProcedureTaskEntity();</span>
+<span class="nc" id="L181">            taskEntity.setId(task.getId());</span>
+<span class="nc" id="L182">            taskEntity.setProcedureTypeId(id);</span>
+<span class="nc" id="L183">            taskEntity.setType(task.getType());</span>
+<span class="nc" id="L184">            taskEntity.setOrderIndex(task.getOrderIndex());</span>
+<span class="nc" id="L185">            taskEntity.setTitle(task.getTitle());</span>
+<span class="nc" id="L186">            taskEntity.setDescription(task.getDescription());</span>
+<span class="nc" id="L187">            taskRepo.save(taskEntity);</span>
+<span class="nc" id="L188">        }</span>
+
+<span class="nc" id="L190">        log.info(&quot;  - Seeded: {} (id: {}) with {} tasks&quot;, title, id, tasks.size());</span>
+<span class="nc" id="L191">        return id;</span>
+    }
+
+    private ProcedureTask createTask(String title, TaskType type, String description, int orderIndex) {
+<span class="nc" id="L195">        ProcedureTask task = new ProcedureTask();</span>
+<span class="nc" id="L196">        task.setId(UUID.randomUUID());</span>
+<span class="nc" id="L197">        task.setTitle(title);</span>
+<span class="nc" id="L198">        task.setType(type);</span>
+<span class="nc" id="L199">        task.setDescription(description);</span>
+<span class="nc" id="L200">        task.setOrderIndex(orderIndex);</span>
+<span class="nc" id="L201">        return task;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

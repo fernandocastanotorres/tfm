@@ -1,0 +1,87 @@
+.transparency__container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12;
+}
+
+.transparency__header {
+  @apply mb-10;
+}
+
+.transparency__breadcrumb {
+  @apply text-sm text-surface-500 mb-4;
+}
+
+.transparency__breadcrumb a {
+  @apply text-brand-600 hover:text-brand-700 no-underline;
+}
+
+.transparency__header h1 {
+  @apply text-3xl font-bold text-surface-900;
+}
+
+.transparency__subtitle {
+  @apply text-lg text-surface-600 mt-2;
+}
+
+.transparency__loading {
+  @apply text-center text-surface-500 py-12;
+}
+
+.transparency__section-title {
+  @apply text-2xl font-semibold text-surface-900 mb-6;
+}
+
+.transparency__metrics {
+  @apply mb-12;
+}
+
+.transparency__metrics-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6;
+}
+
+.transparency__metric {
+  @apply text-center;
+}
+
+.transparency__metric-label {
+  @apply text-sm text-surface-500 mb-2;
+}
+
+.transparency__metric-value {
+  @apply text-3xl font-bold text-surface-900;
+}
+
+.transparency__metric-trend {
+  @apply text-lg ml-2;
+}
+
+.transparency__trend--up {
+  @apply text-green-600;
+}
+
+.transparency__trend--down {
+  @apply text-red-600;
+}
+
+.transparency__reports-list {
+  @apply list-none p-0 m-0 space-y-4;
+}
+
+.transparency__report {
+  @apply transition hover:shadow-lg;
+}
+
+.transparency__report-header {
+  @apply flex items-center justify-between mb-2;
+}
+
+.transparency__report-title {
+  @apply text-lg font-semibold text-surface-900;
+}
+
+.transparency__report-year {
+  @apply text-sm font-semibold text-brand-600 bg-brand-50 px-3 py-1 rounded-full;
+}
+
+.transparency__report-desc {
+  @apply text-surface-600 text-sm;
+}

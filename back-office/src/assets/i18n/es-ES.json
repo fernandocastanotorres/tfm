@@ -1,0 +1,43 @@
+{
+  "es-ES": {
+    "backoffice": {
+      "title": "Backoffice",
+      "subtitle": "Gestion de Expedientes Electronicos",
+      "login": {
+        "username": "Usuario",
+        "password": "Contrasena",
+        "submit": "Iniciar sesion",
+        "loading": "Cargando..."
+      },
+      "nav": {
+        "dashboard": "Panel Principal",
+        "cases": "Expedientes",
+        "tasks": "Tareas Pendientes",
+        "users": "Usuarios",
+        "procedures": "Procedimientos",
+        "logout": "Cerrar sesion"
+      },
+      "dashboard": {
+        "totalCases": "Total Expedientes",
+        "pendingCases": "Pendientes",
+        "inProgress": "En Tramitacion",
+        "completedToday": "Completados Hoy"
+      },
+      "cases": {
+        "title": "Expedientes",
+        "filterByStatus": "Estado",
+        "all": "Todos",
+        "viewDetail": "Ver detalle",
+        "noCases": "No se encontraron expedientes"
+      },
+      "status": {
+        "DRAFT": "Borrador",
+        "SUBMITTED": "Presentado",
+        "IN_PROGRESS": "En Tramitacion",
+        "PENDING_AMENDMENT": "Pendiente Subsanacion",
+        "RESOLVED": "Resuelto",
+        "REJECTED": "Rechazado"
+      }
+    }
+  }
+}

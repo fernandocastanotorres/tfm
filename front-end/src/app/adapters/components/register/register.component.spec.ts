@@ -44,7 +44,7 @@ describe('RegisterComponent', () => {
     });
     component.onSubmit();
     setTimeout(() => {
-      expect(router.navigate).toHaveBeenCalledWith(['/login']);
+      expect(router.navigate).toHaveBeenCalledWith(['/sede/login']);
       done();
     }, 650);
   });

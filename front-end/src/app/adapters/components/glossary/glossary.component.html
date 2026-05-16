@@ -1,0 +1,58 @@
+<section class="glossary" aria-labelledby="glossary-title">
+  <div class="glossary__container">
+    <header class="glossary__header">
+      <nav aria-label="Breadcrumb" class="glossary__breadcrumb">
+        <a [routerLink]="['/sede']">{{ 'PUBLIC.NAV_HOME' | translate }}</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{{ 'GLOSSARY.EYEBROW' | translate }}</span>
+      </nav>
+      <h1 id="glossary-title">{{ 'GLOSSARY.TITLE' | translate }}</h1>
+      <p class="glossary__subtitle">{{ 'GLOSSARY.SUBTITLE' | translate }}</p>
+    </header>
+
+    <div class="glossary__controls">
+      <div class="glossary__search" role="search">
+        <label class="sr-only" for="glossary-search">{{ 'GLOSSARY.SEARCH_LABEL' | translate }}</label>
+        <input
+          id="glossary-search"
+          type="search"
+          class="field-input w-full"
+          [placeholder]="'GLOSSARY.SEARCH_PLACEHOLDER' | translate"
+          [(ngModel)]="searchQuery"
+          (keyup.enter)="onSearch()"
+        />
+      </div>
+      <nav class="glossary__letters" aria-label="Filtrar por letra">
+        <button
+          type="button"
+          class="glossary__letter"
+          *ngFor="let letter of letters"
+          [class.glossary__letter--active]="selectedLetter === letter"
+          (click)="onLetterSelect(letter)"
+          [attr.aria-pressed]="selectedLetter === letter"
+        >
+          {{ letter }}
+        </button>
+      </nav>
+    </div>
+
+    <div *ngIf="isLoading" class="glossary__loading">
+      {{ 'PUBLIC_HOME.LOADING' | translate }}
+    </div>
+
+    <dl class="glossary__list" *ngIf="!isLoading">
+      <div class="glossary__item card p-5" *ngFor="let term of terms">
+        <dt class="glossary__term">{{ term.term }}</dt>
+        <dd class="glossary__definition">{{ term.definitionKey | translate }}</dd>
+        <div class="glossary__related" *ngIf="term.relatedTerms && term.relatedTerms.length > 0">
+          <strong class="glossary__related-label">{{ 'GLOSSARY.RELATED_TERMS' | translate }}:</strong>
+          <span class="glossary__related-list">{{ term.relatedTerms.join(', ') }}</span>
+        </div>
+      </div>
+    </dl>
+
+    <div *ngIf="!isLoading && terms.length === 0" class="glossary__empty card p-6 text-center">
+      {{ 'GLOSSARY.EMPTY' | translate }}
+    </div>
+  </div>
+</section>

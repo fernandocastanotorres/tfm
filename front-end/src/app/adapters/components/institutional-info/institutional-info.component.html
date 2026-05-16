@@ -1,0 +1,25 @@
+<section class="institutional" aria-labelledby="institutional-title">
+  <div class="institutional__container">
+    <header class="institutional__header">
+      <nav aria-label="Breadcrumb" class="institutional__breadcrumb">
+        <a [routerLink]="['/sede']">{{ 'PUBLIC.NAV_HOME' | translate }}</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{{ 'INSTITUTIONAL.EYEBROW' | translate }}</span>
+      </nav>
+      <h1 id="institutional-title">{{ 'INSTITUTIONAL.TITLE' | translate }}</h1>
+      <p class="institutional__subtitle">{{ 'INSTITUTIONAL.SUBTITLE' | translate }}</p>
+    </header>
+
+    <div *ngIf="isLoading" class="institutional__loading">
+      {{ 'PUBLIC_HOME.LOADING' | translate }}
+    </div>
+
+    <div class="institutional__grid" *ngIf="!isLoading">
+      <article class="card p-6 institutional__card" *ngFor="let section of sections">
+        <div class="institutional__card-icon" aria-hidden="true">{{ section.icon }}</div>
+        <h2 class="institutional__card-title">{{ section.titleKey | translate }}</h2>
+        <p class="institutional__card-content">{{ section.contentKey | translate }}</p>
+      </article>
+    </div>
+  </div>
+</section>

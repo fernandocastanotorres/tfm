@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProcedureServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">records-api</a> &gt; <a href="index.source.html" class="el_package">es.tfg.records.application.service</a> &gt; <span class="el_source">ProcedureServiceImpl.java</span></div><h1>ProcedureServiceImpl.java</h1><pre class="source lang-java linenums">package es.tfg.records.application.service;
+
+import es.tfg.records.application.dto.ProcedureItem;
+import es.tfg.records.application.dto.ProcedureTaskDto;
+import es.tfg.records.application.exception.ResourceNotFoundException;
+import es.tfg.records.application.mapper.ProcedureTypeMapper;
+import es.tfg.records.domain.model.ProcedureTask;
+import es.tfg.records.domain.model.ProcedureType;
+import es.tfg.records.domain.port.ProcedureTypeRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+
+/**
+ * Implementation of procedure catalog use cases.
+ * Provides access to available procedure types and their task schemas.
+ */
+@Service
+public class ProcedureServiceImpl implements ProcedureService {
+
+    private final ProcedureTypeRepository procedureTypeRepository;
+
+<span class="fc" id="L24">    public ProcedureServiceImpl(ProcedureTypeRepository procedureTypeRepository) {</span>
+<span class="fc" id="L25">        this.procedureTypeRepository = procedureTypeRepository;</span>
+<span class="fc" id="L26">    }</span>
+
+    @Override
+    public List&lt;ProcedureItem&gt; listAllProcedures() {
+<span class="fc" id="L30">        return procedureTypeRepository.findAll().stream()</span>
+<span class="fc" id="L31">                .map(pt -&gt; ProcedureTypeMapper.toProcedureItem(pt, mapTasks(pt.getTasks())))</span>
+<span class="fc" id="L32">                .toList();</span>
+    }
+
+    @Override
+    public ProcedureItem getProcedureBySlug(String slug) {
+        // Find by matching slug against title (lowercase, hyphenated)
+<span class="fc" id="L38">        ProcedureType procedureType = procedureTypeRepository.findAll().stream()</span>
+<span class="fc" id="L39">                .filter(pt -&gt; toSlug(pt.getTitle()).equals(slug))</span>
+<span class="fc" id="L40">                .findFirst()</span>
+<span class="fc" id="L41">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;PROCEDURE&quot;, slug));</span>
+
+<span class="fc" id="L43">        return ProcedureTypeMapper.toProcedureItem(procedureType, mapTasks(procedureType.getTasks()));</span>
+    }
+
+    @Override
+    public List&lt;ProcedureTaskDto&gt; getFormSchema(String slug) {
+<span class="fc" id="L48">        ProcedureType procedureType = findProcedureBySlug(slug);</span>
+
+<span class="fc" id="L50">        return procedureType.getTasks().stream()</span>
+<span class="pc bpc" id="L51" title="1 of 4 branches missed.">                .filter(task -&gt; task.getType() != null &amp;&amp; task.getType().name().equals(&quot;FORM&quot;))</span>
+<span class="fc" id="L52">                .map(ProcedureTypeMapper::toProcedureTaskDto)</span>
+<span class="fc" id="L53">                .toList();</span>
+    }
+
+    @Override
+    public List&lt;ProcedureTaskDto&gt; getTaskSchema(String slug, String taskId) {
+<span class="fc" id="L58">        ProcedureType procedureType = findProcedureBySlug(slug);</span>
+
+<span class="fc" id="L60">        return procedureType.getTasks().stream()</span>
+<span class="fc" id="L61">                .filter(task -&gt; task.getId().toString().equals(taskId))</span>
+<span class="fc" id="L62">                .map(ProcedureTypeMapper::toProcedureTaskDto)</span>
+<span class="fc" id="L63">                .toList();</span>
+    }
+
+    private ProcedureType findProcedureBySlug(String slug) {
+<span class="fc" id="L67">        return procedureTypeRepository.findAll().stream()</span>
+<span class="fc" id="L68">                .filter(pt -&gt; toSlug(pt.getTitle()).equals(slug))</span>
+<span class="fc" id="L69">                .findFirst()</span>
+<span class="fc" id="L70">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;PROCEDURE&quot;, slug));</span>
+    }
+
+    private List&lt;ProcedureTaskDto&gt; mapTasks(List&lt;ProcedureTask&gt; tasks) {
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        if (tasks == null) return List.of();</span>
+<span class="fc" id="L75">        return tasks.stream()</span>
+<span class="fc" id="L76">                .map(ProcedureTypeMapper::toProcedureTaskDto)</span>
+<span class="fc" id="L77">                .toList();</span>
+    }
+
+    /**
+     * Converts a procedure title to a URL-friendly slug.
+     * E.g., &quot;License Application&quot; -&gt; &quot;license-application&quot;
+     */
+    private String toSlug(String title) {
+<span class="fc" id="L85">        return title.toLowerCase()</span>
+<span class="fc" id="L86">                .replaceAll(&quot;[^a-z0-9\\s-]&quot;, &quot;&quot;)</span>
+<span class="fc" id="L87">                .replaceAll(&quot;\\s+&quot;, &quot;-&quot;)</span>
+<span class="fc" id="L88">                .replaceAll(&quot;-+&quot;, &quot;-&quot;);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

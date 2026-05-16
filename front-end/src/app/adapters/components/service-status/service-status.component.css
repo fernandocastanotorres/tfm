@@ -1,0 +1,107 @@
+.service-status__container {
+  @apply max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12;
+}
+
+.service-status__header {
+  @apply mb-10;
+}
+
+.service-status__breadcrumb {
+  @apply text-sm text-surface-500 mb-4;
+}
+
+.service-status__breadcrumb a {
+  @apply text-brand-600 hover:text-brand-700 no-underline;
+}
+
+.service-status__header h1 {
+  @apply text-3xl font-bold text-surface-900;
+}
+
+.service-status__subtitle {
+  @apply text-lg text-surface-600 mt-2;
+}
+
+.service-status__summary-content {
+  @apply flex items-center gap-4;
+}
+
+.service-status__summary-icon {
+  @apply text-2xl text-green-600;
+}
+
+.service-status__summary-text {
+  @apply font-semibold text-surface-900;
+}
+
+.service-status__summary-updated {
+  @apply text-sm text-surface-500 mt-1;
+}
+
+.service-status__loading {
+  @apply text-center text-surface-500 py-12;
+}
+
+.service-status__list {
+  @apply list-none p-0 m-0 space-y-4;
+}
+
+.service-status__item {
+  @apply transition hover:shadow-lg;
+}
+
+.service-status__item-header {
+  @apply flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2;
+}
+
+.service-status__item-name {
+  @apply text-lg font-semibold text-surface-900;
+}
+
+.service-status__indicator {
+  @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold;
+}
+
+.service-status__indicator--operational {
+  @apply bg-green-100 text-green-700;
+}
+
+.service-status__indicator--degraded {
+  @apply bg-amber-100 text-amber-700;
+}
+
+.service-status__indicator--down {
+  @apply bg-red-100 text-red-700;
+}
+
+.service-status__indicator--maintenance {
+  @apply bg-blue-100 text-blue-700;
+}
+
+.service-status__indicator-dot {
+  @apply w-2 h-2 rounded-full;
+}
+
+.service-status__indicator--operational .service-status__indicator-dot {
+  @apply bg-green-500;
+}
+
+.service-status__indicator--degraded .service-status__indicator-dot {
+  @apply bg-amber-500;
+}
+
+.service-status__indicator--down .service-status__indicator-dot {
+  @apply bg-red-500;
+}
+
+.service-status__indicator--maintenance .service-status__indicator-dot {
+  @apply bg-blue-500;
+}
+
+.service-status__item-desc {
+  @apply text-surface-600 text-sm mb-2;
+}
+
+.service-status__item-updated {
+  @apply text-xs text-surface-500;
+}

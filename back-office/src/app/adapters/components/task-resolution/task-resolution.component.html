@@ -1,0 +1,55 @@
+<div class="max-w-2xl mx-auto">
+  <div class="bg-white rounded-lg shadow p-6">
+    <h2 class="text-xl font-bold text-gray-900 mb-6">Resolver Tarea</h2>
+
+    <div *ngIf="success" class="mb-4 p-4 bg-green-50 border border-green-200 text-green-700 rounded-md">
+      Tarea resuelta correctamente. Redirigiendo...
+    </div>
+
+    <form [formGroup]="resolutionForm" (ngSubmit)="onSubmit()">
+      <div class="mb-4">
+        <label for="action" class="block text-sm font-medium text-gray-700 mb-1">
+          Accion
+        </label>
+        <select
+          id="action"
+          formControlName="action"
+          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option *ngFor="let opt of actionOptions" [value]="opt.value">{{ opt.label }}</option>
+        </select>
+      </div>
+
+      <div class="mb-6">
+        <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">
+          Observaciones
+        </label>
+        <textarea
+          id="notes"
+          formControlName="notes"
+          rows="4"
+          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Añade observaciones sobre esta resolucion..."
+        ></textarea>
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <button
+          type="button"
+          (click)="router.navigate(['/cases', caseId])"
+          class="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-50"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          [disabled]="isLoading || resolutionForm.invalid"
+          class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <span *ngIf="!isLoading">Confirmar Resolucion</span>
+          <span *ngIf="isLoading">Procesando...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

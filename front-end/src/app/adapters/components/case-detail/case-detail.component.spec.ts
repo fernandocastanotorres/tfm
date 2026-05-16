@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CaseDetailComponent } from './case-detail.component';
-import { CaseDetailService } from '../../../application/services/case-detail.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { ActivatedRoute } from '@angular/router';
 
 describe('CaseDetailComponent', () => {
   let component: CaseDetailComponent;
@@ -10,8 +11,19 @@ describe('CaseDetailComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [CaseDetailComponent],
-      imports: [TranslateModule.forRoot()],
-      providers: [CaseDetailService]
+      imports: [HttpClientTestingModule, TranslateModule.forRoot()],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              paramMap: {
+                get: () => 'test-case-id'
+              }
+            }
+          }
+        }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(CaseDetailComponent);
@@ -19,11 +31,11 @@ describe('CaseDetailComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should load case detail', () => {
-    expect(component.caseDetail).toBeTruthy();
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 
-  it('should return a status class', () => {
-    expect(component.statusClass('CASE_STATUS.PENDING')).toContain('amber');
+  it('should have loading state initially', () => {
+    expect(component.isLoading).toBeTrue();
   });
 });

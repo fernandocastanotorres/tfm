@@ -1,0 +1,83 @@
+<section class="contact" aria-labelledby="contact-title">
+  <div class="contact__container">
+    <header class="contact__header">
+      <nav aria-label="Breadcrumb" class="contact__breadcrumb">
+        <a [routerLink]="['/sede']">{{ 'PUBLIC.NAV_HOME' | translate }}</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{{ 'CONTACT.EYEBROW' | translate }}</span>
+      </nav>
+      <h1 id="contact-title">{{ 'CONTACT.TITLE' | translate }}</h1>
+      <p class="contact__subtitle">{{ 'CONTACT.SUBTITLE' | translate }}</p>
+    </header>
+
+    <!-- Contact Channels -->
+    <div class="contact__channels">
+      <h2 class="contact__section-title">{{ 'CONTACT.CHANNELS_TITLE' | translate }}</h2>
+      <div class="contact__channels-grid">
+        <div class="card p-6 contact__channel" *ngFor="let channel of channels">
+          <div class="contact__channel-icon" aria-hidden="true">{{ channel.icon }}</div>
+          <h3 class="contact__channel-name">{{ channel.nameKey | translate }}</h3>
+          <p class="contact__channel-desc">{{ channel.descriptionKey | translate }}</p>
+          <a *ngIf="channel.link" [href]="channel.link" class="contact__channel-link">{{ 'CONTACT.CHANNEL_ACCESS' | translate }}</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Offices -->
+    <div class="contact__offices">
+      <h2 class="contact__section-title">{{ 'CONTACT.OFFICES_TITLE' | translate }}</h2>
+      <div class="contact__offices-grid">
+        <div class="card p-6 contact__office" *ngFor="let office of offices">
+          <h3 class="contact__office-name">{{ office.nameKey | translate }}</h3>
+          <address class="contact__office-address">
+            <p>{{ office.addressKey | translate }}</p>
+            <p><strong>{{ 'CONTACT.PHONE' | translate }}:</strong> <a [href]="'tel:' + office.phone">{{ office.phone }}</a></p>
+            <p><strong>{{ 'CONTACT.EMAIL' | translate }}:</strong> <a [href]="'mailto:' + office.email">{{ office.email }}</a></p>
+            <p><strong>{{ 'CONTACT.SCHEDULE' | translate }}:</strong> {{ office.scheduleKey | translate }}</p>
+          </address>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="contact__form-section">
+      <h2 class="contact__section-title">{{ 'CONTACT.FORM_TITLE' | translate }}</h2>
+      <div *ngIf="formSubmitted" class="card p-6 contact__success" role="alert">
+        <p class="text-green-700 font-semibold">{{ 'CONTACT.FORM_SUCCESS' | translate }}</p>
+      </div>
+      <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="card p-6 contact__form" novalidate>
+        <div class="contact__form-group">
+          <label class="field-label" for="contact-name">{{ 'CONTACT.FORM_NAME' | translate }}</label>
+          <input id="contact-name" type="text" formControlName="name" class="field-input" />
+          <div *ngIf="contactForm.get('name')?.invalid && contactForm.get('name')?.touched" class="error-text">
+            {{ 'CONTACT.FORM_NAME_ERROR' | translate }}
+          </div>
+        </div>
+        <div class="contact__form-group">
+          <label class="field-label" for="contact-email">{{ 'CONTACT.FORM_EMAIL' | translate }}</label>
+          <input id="contact-email" type="email" formControlName="email" class="field-input" />
+          <div *ngIf="contactForm.get('email')?.invalid && contactForm.get('email')?.touched" class="error-text">
+            {{ 'CONTACT.FORM_EMAIL_ERROR' | translate }}
+          </div>
+        </div>
+        <div class="contact__form-group">
+          <label class="field-label" for="contact-subject">{{ 'CONTACT.FORM_SUBJECT' | translate }}</label>
+          <input id="contact-subject" type="text" formControlName="subject" class="field-input" />
+          <div *ngIf="contactForm.get('subject')?.invalid && contactForm.get('subject')?.touched" class="error-text">
+            {{ 'CONTACT.FORM_SUBJECT_ERROR' | translate }}
+          </div>
+        </div>
+        <div class="contact__form-group">
+          <label class="field-label" for="contact-message">{{ 'CONTACT.FORM_MESSAGE' | translate }}</label>
+          <textarea id="contact-message" formControlName="message" class="field-input" rows="5"></textarea>
+          <div *ngIf="contactForm.get('message')?.invalid && contactForm.get('message')?.touched" class="error-text">
+            {{ 'CONTACT.FORM_MESSAGE_ERROR' | translate }}
+          </div>
+        </div>
+        <button type="submit" class="btn-primary" [disabled]="contactForm.invalid">
+          {{ 'CONTACT.FORM_SUBMIT' | translate }}
+        </button>
+      </form>
+    </div>
+  </div>
+</section>

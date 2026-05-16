@@ -1,0 +1,70 @@
+<section class="faq" aria-labelledby="faq-title">
+  <div class="faq__container">
+    <header class="faq__header">
+      <nav aria-label="Breadcrumb" class="faq__breadcrumb">
+        <a [routerLink]="['/sede']">{{ 'PUBLIC.NAV_HOME' | translate }}</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{{ 'FAQ.EYEBROW' | translate }}</span>
+      </nav>
+      <h1 id="faq-title">{{ 'FAQ.TITLE' | translate }}</h1>
+      <p class="faq__subtitle">{{ 'FAQ.SUBTITLE' | translate }}</p>
+    </header>
+
+    <div class="faq__controls">
+      <div class="faq__search" role="search">
+        <label class="sr-only" for="faq-search">{{ 'FAQ.SEARCH_LABEL' | translate }}</label>
+        <input
+          id="faq-search"
+          type="search"
+          class="field-input w-full"
+          [placeholder]="'FAQ.SEARCH_PLACEHOLDER' | translate"
+          [(ngModel)]="searchQuery"
+          (keyup.enter)="onSearch()"
+        />
+      </div>
+      <div class="faq__categories">
+        <label class="sr-only" for="faq-category">{{ 'FAQ.FILTER_CATEGORY' | translate }}</label>
+        <select
+          id="faq-category"
+          class="field-input w-48"
+          [value]="selectedCategory"
+          (change)="onCategoryChange($any($event.target).value)"
+        >
+          <option value="all">{{ 'FAQ.CAT_ALL' | translate }}</option>
+          <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.nameKey | translate }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div *ngIf="isLoading" class="faq__loading">
+      {{ 'PUBLIC_HOME.LOADING' | translate }}
+    </div>
+
+    <div class="faq__list" *ngIf="!isLoading">
+      <div class="faq__item card" *ngFor="let faq of faqs">
+        <button
+          type="button"
+          class="faq__question"
+          [attr.aria-expanded]="expandedFaq === faq.id"
+          [attr.aria-controls]="'faq-answer-' + faq.id"
+          (click)="toggleFaq(faq.id)"
+        >
+          <span class="faq__question-text">{{ faq.questionKey | translate }}</span>
+          <span class="faq__icon" aria-hidden="true">{{ expandedFaq === faq.id ? '-' : '+' }}</span>
+        </button>
+        <div
+          [id]="'faq-answer-' + faq.id"
+          class="faq__answer"
+          [class.faq__answer--open]="expandedFaq === faq.id"
+          role="region"
+        >
+          <p>{{ faq.answerKey | translate }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!isLoading && faqs.length === 0" class="faq__empty card p-6 text-center">
+      {{ 'FAQ.EMPTY' | translate }}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CaseController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">records-api</a> &gt; <a href="index.source.html" class="el_package">es.tfg.records.entrypoints.controller</a> &gt; <span class="el_source">CaseController.java</span></div><h1>CaseController.java</h1><pre class="source lang-java linenums">package es.tfg.records.entrypoints.controller;
+
+import es.tfg.records.application.dto.*;
+import es.tfg.records.application.service.CaseService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+
+/**
+ * REST controller for case (expediente) management endpoints.
+ * All endpoints require authentication and enforce case ownership.
+ */
+@RestController
+@RequestMapping(&quot;/citizen/procedures&quot;)
+@Tag(name = &quot;Cases&quot;, description = &quot;Citizen case (expediente) management: create, list, view detail, submit, and amend&quot;)
+@SecurityRequirement(name = &quot;bearerAuth&quot;)
+public class CaseController {
+
+    private final CaseService caseService;
+
+<span class="fc" id="L33">    public CaseController(CaseService caseService) {</span>
+<span class="fc" id="L34">        this.caseService = caseService;</span>
+<span class="fc" id="L35">    }</span>
+
+    @GetMapping
+    @Operation(summary = &quot;List citizen cases&quot;, description = &quot;Return a paginated list of cases owned by the authenticated citizen&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Paginated case list&quot;,
+                    content = @Content(schema = @Schema(implementation = PagedResponse.class))),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized — missing or invalid token&quot;,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity&lt;PagedResponse&lt;CaseItem&gt;&gt; listCases(
+            Authentication authentication,
+            @Parameter(description = &quot;Page number (0-based)&quot;, example = &quot;0&quot;)
+            @RequestParam(defaultValue = &quot;0&quot;) int page,
+            @Parameter(description = &quot;Page size&quot;, example = &quot;10&quot;)
+            @RequestParam(defaultValue = &quot;10&quot;) int size,
+            @Parameter(description = &quot;Sort field (optional)&quot;)
+            @RequestParam(required = false) String sort) {
+
+<span class="fc" id="L54">        UUID ownerId = extractUserId(authentication);</span>
+<span class="fc" id="L55">        return ResponseEntity.ok(caseService.listCases(ownerId, page, size, sort));</span>
+    }
+
+    @PostMapping
+    @Operation(summary = &quot;Create case draft&quot;, description = &quot;Create a new procedure draft linked to a procedure type&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Case created successfully&quot;,
+                    content = @Content(schema = @Schema(implementation = CaseItem.class))),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid procedure ID or request body&quot;,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized&quot;,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity&lt;CaseItem&gt; createCase(
+            Authentication authentication,
+            @Valid @RequestBody CreateCaseRequest request) {
+
+<span class="fc" id="L72">        UUID ownerId = extractUserId(authentication);</span>
+<span class="fc" id="L73">        return ResponseEntity.status(HttpStatus.CREATED).body(caseService.createCase(ownerId, request));</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Get case detail&quot;, description = &quot;Return full case details including timeline events and attachments for an owned case&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Case detail&quot;,
+                    content = @Content(schema = @Schema(implementation = CaseDetail.class))),
+            @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Forbidden — case not owned by citizen&quot;,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Case not found&quot;,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity&lt;CaseDetail&gt; getCaseDetail(
+            Authentication authentication,
+            @Parameter(description = &quot;Case UUID&quot;, required = true)
+            @PathVariable(&quot;id&quot;) UUID id) {
+
+<span class="nc" id="L91">        UUID ownerId = extractUserId(authentication);</span>
+<span class="nc" id="L92">        return ResponseEntity.ok(caseService.getCaseDetail(id, ownerId));</span>
+    }
+
+    @GetMapping(&quot;/{id}/status&quot;)
+    @Operation(summary = &quot;Get case status&quot;, description = &quot;Return the current status of an owned case&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Case status&quot;,
+                    content = @Content(schema = @Schema(implementation = CaseStatusResponse.class))),
+            @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Forbidden — case not owned by citizen&quot;,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Case not found&quot;,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity&lt;CaseStatusResponse&gt; getCaseStatus(
+            Authentication authentication,
+            @Parameter(description = &quot;Case UUID&quot;, required = true)
+            @PathVariable(&quot;id&quot;) UUID id) {
+
+<span class="nc" id="L110">        UUID ownerId = extractUserId(authentication);</span>
+<span class="nc" id="L111">        return ResponseEntity.ok(caseService.getCaseStatus(id, ownerId));</span>
+    }
+
+    @PostMapping(&quot;/{id}/amend&quot;)
+    @Operation(summary = &quot;Request amendment&quot;, description = &quot;Request an amendment for a case that has been returned for correction&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Amendment requested&quot;,
+                    content = @Content(schema = @Schema(implementation = CaseStatusResponse.class))),
+            @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Forbidden — case not owned by citizen&quot;,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Case not found&quot;,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity&lt;CaseStatusResponse&gt; requestAmendment(
+            Authentication authentication,
+            @Parameter(description = &quot;Case UUID&quot;, required = true)
+            @PathVariable(&quot;id&quot;) UUID id,
+            @RequestBody(required = false) CreateCaseRequest request) {
+
+<span class="nc" id="L130">        UUID ownerId = extractUserId(authentication);</span>
+<span class="nc" id="L131">        return ResponseEntity.ok(caseService.requestAmendment(id, ownerId, request));</span>
+    }
+
+    @PostMapping(&quot;/{id}/submit&quot;)
+    @Operation(summary = &quot;Submit case&quot;, description = &quot;Submit a draft case for processing. Transitions status from DRAFT to SUBMITTED.&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Case submitted&quot;,
+                    content = @Content(schema = @Schema(implementation = CaseStatusResponse.class))),
+            @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Forbidden — case not owned by citizen&quot;,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Case not found&quot;,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Case not in DRAFT status&quot;,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity&lt;CaseStatusResponse&gt; submitCase(
+            Authentication authentication,
+            @Parameter(description = &quot;Case UUID&quot;, required = true)
+            @PathVariable(&quot;id&quot;) UUID id) {
+
+<span class="nc" id="L151">        UUID ownerId = extractUserId(authentication);</span>
+<span class="nc" id="L152">        return ResponseEntity.ok(caseService.submitCase(id, ownerId));</span>
+    }
+
+    private UUID extractUserId(Authentication authentication) {
+<span class="fc" id="L156">        return UUID.fromString(authentication.getName());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

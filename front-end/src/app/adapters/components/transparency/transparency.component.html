@@ -1,0 +1,48 @@
+<section class="transparency" aria-labelledby="transparency-title">
+  <div class="transparency__container">
+    <header class="transparency__header">
+      <nav aria-label="Breadcrumb" class="transparency__breadcrumb">
+        <a [routerLink]="['/sede']">{{ 'PUBLIC.NAV_HOME' | translate }}</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{{ 'TRANSPARENCY.EYEBROW' | translate }}</span>
+      </nav>
+      <h1 id="transparency-title">{{ 'TRANSPARENCY.TITLE' | translate }}</h1>
+      <p class="transparency__subtitle">{{ 'TRANSPARENCY.SUBTITLE' | translate }}</p>
+    </header>
+
+    <div *ngIf="isLoading" class="transparency__loading">
+      {{ 'PUBLIC_HOME.LOADING' | translate }}
+    </div>
+
+    <!-- Metrics -->
+    <div class="transparency__metrics" *ngIf="!isLoading">
+      <h2 class="transparency__section-title">{{ 'TRANSPARENCY.METRICS_TITLE' | translate }}</h2>
+      <div class="transparency__metrics-grid">
+        <div class="card p-6 transparency__metric" *ngFor="let metric of metrics">
+          <p class="transparency__metric-label">{{ metric.labelKey | translate }}</p>
+          <p class="transparency__metric-value">
+            {{ metric.value }}{{ metric.unit }}
+            <span class="transparency__metric-trend" [ngClass]="'transparency__trend--' + metric.trend" [innerHTML]="getTrendIcon(metric.trend)" [attr.aria-label]="getTrendLabel(metric.trend) | translate"></span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reports -->
+    <div class="transparency__reports" *ngIf="!isLoading">
+      <h2 class="transparency__section-title">{{ 'TRANSPARENCY.REPORTS_TITLE' | translate }}</h2>
+      <ul class="transparency__reports-list">
+        <li class="card p-6 transparency__report" *ngFor="let report of reports">
+          <div class="transparency__report-header">
+            <h3 class="transparency__report-title">{{ report.titleKey | translate }}</h3>
+            <span class="transparency__report-year">{{ report.year }}</span>
+          </div>
+          <p class="transparency__report-desc">{{ report.descriptionKey | translate }}</p>
+          <a *ngIf="report.downloadUrl" [href]="report.downloadUrl" class="btn-primary btn-primary--sm mt-3">
+            {{ 'TRANSPARENCY.DOWNLOAD_REPORT' | translate }}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>

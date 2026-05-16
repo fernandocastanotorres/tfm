@@ -1,0 +1,5 @@
+#surefire_0
+#Sat May 16 15:10:55 CEST 2026
+basedir=/home/fcastano/Proyectos/TFG/backend
+test=DocumentControllerTest,AdminCaseControllerTest,HealthControllerTest
+localRepository=/home/fcastano/.m2/repository

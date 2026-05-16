@@ -84,7 +84,7 @@ export class DashboardService {
         id: 'ACC-1',
         titleKey: 'DASHBOARD.MOCK_QUICK_NEW_CASE',
         descriptionKey: 'DASHBOARD.MOCK_QUICK_NEW_CASE_DESC',
-        route: '/procedimientos'
+        route: '/sede/procedimientos'
       },
       {
         id: 'ACC-2',

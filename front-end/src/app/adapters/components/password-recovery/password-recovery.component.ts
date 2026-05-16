@@ -73,7 +73,7 @@ export class PasswordRecoveryComponent {
 
     this.step = 'done';
     setTimeout(() => {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/sede/login']);
     }, 1200);
   }
 

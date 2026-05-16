@@ -1,0 +1,62 @@
+<section class="organisms" aria-labelledby="organisms-title">
+  <div class="organisms__container">
+    <header class="organisms__header">
+      <nav aria-label="Breadcrumb" class="organisms__breadcrumb">
+        <a [routerLink]="['/sede']">{{ 'PUBLIC.NAV_HOME' | translate }}</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{{ 'ORGANISMS.EYEBROW' | translate }}</span>
+      </nav>
+      <h1 id="organisms-title">{{ 'ORGANISMS.TITLE' | translate }}</h1>
+      <p class="organisms__subtitle">{{ 'ORGANISMS.SUBTITLE' | translate }}</p>
+    </header>
+
+    <div class="organisms__controls">
+      <div class="organisms__search" role="search">
+        <label class="sr-only" for="organism-search">{{ 'ORGANISMS.SEARCH_LABEL' | translate }}</label>
+        <input
+          id="organism-search"
+          type="search"
+          class="field-input w-full"
+          [placeholder]="'ORGANISMS.SEARCH_PLACEHOLDER' | translate"
+          [(ngModel)]="searchQuery"
+          (keyup.enter)="onSearch()"
+        />
+      </div>
+      <div class="organisms__filters">
+        <label class="sr-only" for="organism-category">{{ 'ORGANISMS.FILTER_CATEGORY' | translate }}</label>
+        <select
+          id="organism-category"
+          class="field-input w-48"
+          [value]="selectedCategory"
+          (change)="onCategoryChange($any($event.target).value)"
+        >
+          <option *ngFor="let cat of categories" [value]="cat">{{ getCategoryLabel(cat) | translate }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div *ngIf="isLoading" class="organisms__loading">
+      {{ 'PUBLIC_HOME.LOADING' | translate }}
+    </div>
+
+    <div class="organisms__grid" *ngIf="!isLoading">
+      <article class="card p-6 organisms__item" *ngFor="let org of organisms">
+        <h2 class="organisms__item-name">{{ org.nameKey | translate }}</h2>
+        <span class="organisms__item-category">{{ org.categoryKey | translate }}</span>
+        <p class="organisms__item-desc">{{ org.descriptionKey | translate }}</p>
+        <address class="organisms__item-contact">
+          <p><strong>{{ 'ORGANISMS.PHONE' | translate }}:</strong> <a [href]="'tel:' + org.phone">{{ org.phone }}</a></p>
+          <p><strong>{{ 'ORGANISMS.EMAIL' | translate }}:</strong> <a [href]="'mailto:' + org.email">{{ org.email }}</a></p>
+          <p>{{ org.addressKey | translate }}</p>
+        </address>
+        <a *ngIf="org.websiteUrl" [href]="org.websiteUrl" class="organisms__item-link btn-primary btn-primary--sm btn-primary--outline mt-4">
+          {{ 'ORGANISMS.VIEW_WEBSITE' | translate }}
+        </a>
+      </article>
+    </div>
+
+    <div *ngIf="!isLoading && organisms.length === 0" class="organisms__empty card p-6 text-center">
+      {{ 'ORGANISMS.EMPTY' | translate }}
+    </div>
+  </div>
+</section>

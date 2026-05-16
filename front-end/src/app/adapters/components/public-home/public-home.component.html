@@ -1,0 +1,108 @@
+<section class="public-home" aria-labelledby="home-title">
+  <!-- Hero Section -->
+  <div class="public-home__hero">
+    <div class="public-home__hero-content">
+      <h1 id="home-title" class="public-home__title">{{ 'PUBLIC_HOME.TITLE' | translate }}</h1>
+      <p class="public-home__subtitle">{{ 'PUBLIC_HOME.SUBTITLE' | translate }}</p>
+      <div class="public-home__hero-actions">
+        <a [routerLink]="['/sede/procedimientos']" class="btn-primary">
+          {{ 'PUBLIC_HOME.CTA_PROCEDURES' | translate }}
+        </a>
+        <a [routerLink]="['/sede/login']" class="btn-primary btn-primary--outline">
+          {{ 'PUBLIC_HOME.CTA_LOGIN' | translate }}
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Access Cards -->
+  <div class="public-home__section">
+    <div class="public-home__container">
+      <h2 class="public-home__section-title">{{ 'PUBLIC_HOME.QUICK_ACCESS_TITLE' | translate }}</h2>
+      <div class="public-home__quick-grid">
+        <a [routerLink]="['/sede/procedimientos']" class="public-home__quick-card card">
+          <div class="public-home__quick-icon" aria-hidden="true">&#128196;</div>
+          <h3 class="public-home__quick-title">{{ 'PUBLIC_HOME.QUICK_PROCEDURES' | translate }}</h3>
+          <p class="public-home__quick-desc">{{ 'PUBLIC_HOME.QUICK_PROCEDURES_DESC' | translate }}</p>
+        </a>
+        <a [routerLink]="['/sede/faq']" class="public-home__quick-card card">
+          <div class="public-home__quick-icon" aria-hidden="true">&#10067;</div>
+          <h3 class="public-home__quick-title">{{ 'PUBLIC_HOME.QUICK_FAQ' | translate }}</h3>
+          <p class="public-home__quick-desc">{{ 'PUBLIC_HOME.QUICK_FAQ_DESC' | translate }}</p>
+        </a>
+        <a [routerLink]="['/sede/contacto']" class="public-home__quick-card card">
+          <div class="public-home__quick-icon" aria-hidden="true">&#9993;</div>
+          <h3 class="public-home__quick-title">{{ 'PUBLIC_HOME.QUICK_CONTACT' | translate }}</h3>
+          <p class="public-home__quick-desc">{{ 'PUBLIC_HOME.QUICK_CONTACT_DESC' | translate }}</p>
+        </a>
+        <a [routerLink]="['/sede/citas']" class="public-home__quick-card card">
+          <div class="public-home__quick-icon" aria-hidden="true">&#128197;</div>
+          <h3 class="public-home__quick-title">{{ 'PUBLIC_HOME.QUICK_APPOINTMENTS' | translate }}</h3>
+          <p class="public-home__quick-desc">{{ 'PUBLIC_HOME.QUICK_APPOINTMENTS_DESC' | translate }}</p>
+        </a>
+        <a [routerLink]="['/sede/estado']" class="public-home__quick-card card">
+          <div class="public-home__quick-icon" aria-hidden="true">&#9889;</div>
+          <h3 class="public-home__quick-title">{{ 'PUBLIC_HOME.QUICK_STATUS' | translate }}</h3>
+          <p class="public-home__quick-desc">{{ 'PUBLIC_HOME.QUICK_STATUS_DESC' | translate }}</p>
+        </a>
+        <a [routerLink]="['/sede/transparencia']" class="public-home__quick-card card">
+          <div class="public-home__quick-icon" aria-hidden="true">&#128202;</div>
+          <h3 class="public-home__quick-title">{{ 'PUBLIC_HOME.QUICK_TRANSPARENCY' | translate }}</h3>
+          <p class="public-home__quick-desc">{{ 'PUBLIC_HOME.QUICK_TRANSPARENCY_DESC' | translate }}</p>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Featured Procedures -->
+  <div class="public-home__section public-home__section--alt">
+    <div class="public-home__container">
+      <h2 class="public-home__section-title">{{ 'PUBLIC_HOME.FEATURED_PROCEDURES' | translate }}</h2>
+      <div *ngIf="isLoading" class="public-home__loading">
+        {{ 'PUBLIC_HOME.LOADING' | translate }}
+      </div>
+      <div class="public-home__procedures-grid" *ngIf="!isLoading">
+        <div class="card p-6" *ngFor="let proc of procedures">
+          <h3 class="text-lg font-semibold text-surface-900">{{ proc.name }}</h3>
+          <p class="text-surface-600 text-sm mt-2">{{ proc.description }}</p>
+          <div class="mt-4 flex items-center gap-4 text-sm text-surface-500">
+            <span>{{ 'PROCEDURES.DETAIL_FEE' | translate }}: {{ proc.fee > 0 ? (proc.fee | currency:'EUR') : ('PROCEDURES.FEE_FREE' | translate) }}</span>
+            <span>{{ 'PROCEDURES.DETAIL_DEADLINE' | translate }}: {{ proc.deadline }} {{ 'PROCEDURES.DETAIL_DEADLINE_UNIT' | translate }}</span>
+          </div>
+          <a [routerLink]="['/sede/procedimientos', proc.slug, 'flujo']" class="btn-primary mt-4 w-full text-center">
+            {{ 'PROCEDURES.START' | translate }}
+          </a>
+        </div>
+      </div>
+      <div class="public-home__see-all" *ngIf="!isLoading">
+        <a [routerLink]="['/sede/procedimientos']" class="btn-primary btn-primary--outline">
+          {{ 'PUBLIC_HOME.SEE_ALL_PROCEDURES' | translate }}
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upcoming Events -->
+  <div class="public-home__section" *ngIf="upcomingEvents.length > 0">
+    <div class="public-home__container">
+      <h2 class="public-home__section-title">{{ 'PUBLIC_HOME.UPCOMING_EVENTS' | translate }}</h2>
+      <ul class="public-home__events-list">
+        <li class="card p-5" *ngFor="let event of upcomingEvents">
+          <div class="public-home__event-date">
+            <span class="public-home__event-day">{{ event.date | date:'dd' }}</span>
+            <span class="public-home__event-month">{{ event.date | date:'MMM' }}</span>
+          </div>
+          <div class="public-home__event-info">
+            <h3 class="text-base font-semibold">{{ event.titleKey | translate }}</h3>
+            <p class="text-sm text-surface-600">{{ event.descriptionKey | translate }}</p>
+          </div>
+        </li>
+      </ul>
+      <div class="public-home__see-all">
+        <a [routerLink]="['/sede/calendario']" class="btn-primary btn-primary--outline">
+          {{ 'PUBLIC_HOME.SEE_CALENDAR' | translate }}
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

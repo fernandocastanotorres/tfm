@@ -1,0 +1,91 @@
+.calendar__container {
+  @apply max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12;
+}
+
+.calendar__header {
+  @apply mb-10;
+}
+
+.calendar__breadcrumb {
+  @apply text-sm text-surface-500 mb-4;
+}
+
+.calendar__breadcrumb a {
+  @apply text-brand-600 hover:text-brand-700 no-underline;
+}
+
+.calendar__header h1 {
+  @apply text-3xl font-bold text-surface-900;
+}
+
+.calendar__subtitle {
+  @apply text-lg text-surface-600 mt-2;
+}
+
+.calendar__filters {
+  @apply mb-8;
+}
+
+.calendar__loading {
+  @apply text-center text-surface-500 py-12;
+}
+
+.calendar__list {
+  @apply list-none p-0 m-0 space-y-4;
+}
+
+.calendar__event {
+  @apply transition hover:shadow-lg;
+}
+
+.calendar__event-header {
+  @apply flex items-center justify-between mb-3;
+}
+
+.calendar__event-date {
+  @apply flex flex-col items-center bg-brand-50 text-brand-700 rounded-xl p-3 min-w-16;
+}
+
+.calendar__event-day {
+  @apply text-2xl font-bold;
+}
+
+.calendar__event-month {
+  @apply text-xs uppercase font-semibold;
+}
+
+.calendar__event-type {
+  @apply px-3 py-1 rounded-full text-xs font-semibold uppercase;
+}
+
+.calendar__type--deadline {
+  @apply bg-red-100 text-red-700;
+}
+
+.calendar__type--holiday {
+  @apply bg-blue-100 text-blue-700;
+}
+
+.calendar__type--reminder {
+  @apply bg-amber-100 text-amber-700;
+}
+
+.calendar__type--info {
+  @apply bg-green-100 text-green-700;
+}
+
+.calendar__event-title {
+  @apply text-lg font-semibold text-surface-900 mb-2;
+}
+
+.calendar__event-desc {
+  @apply text-surface-600 text-sm mb-2;
+}
+
+.calendar__event-procedure {
+  @apply text-sm text-surface-500;
+}
+
+.calendar__empty {
+  @apply text-surface-500;
+}

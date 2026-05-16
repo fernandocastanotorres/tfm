@@ -47,3 +47,12 @@
 4.  **Compliance Review:** Architect validates that the metadata inferred by the Backend matches the official ENI Technical Standards.
 5.  **Signature Integration:** Backend implements XAdES signing; Frontend ensures the citizen can download the signed evidence.
 6.  **Final Audit:** DevOps and Architect verify that all actions are being correctly recorded in the immutable audit log for ENS compliance.
+
+## 4. Mandatory Frontend Language Standard
+
+- **All Angular frontend development must be written in English**, including:
+  - Variable names
+  - Method/function names
+  - Class and file names
+  - Component selectors
+- This is mandatory to keep the codebase professional and consistent across teams.

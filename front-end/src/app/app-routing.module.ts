@@ -14,24 +14,53 @@ import { MessagesComponent } from './adapters/components/messages/messages.compo
 import { ProceduresComponent } from './adapters/components/procedures/procedures.component';
 import { CaseWizardComponent } from './adapters/components/case-wizard/case-wizard.component';
 import { ProcedureFlowComponent } from './adapters/components/procedure-flow/procedure-flow.component';
+import { PublicLayoutComponent } from './adapters/components/public-layout/public-layout.component';
+import { PublicHomeComponent } from './adapters/components/public-home/public-home.component';
+import { InstitutionalInfoComponent } from './adapters/components/institutional-info/institutional-info.component';
+import { LegislationComponent } from './adapters/components/legislation/legislation.component';
+import { FaqComponent } from './adapters/components/faq/faq.component';
+import { ContactComponent } from './adapters/components/contact/contact.component';
+import { ServiceStatusComponent } from './adapters/components/service-status/service-status.component';
+import { OrganismsDirectoryComponent } from './adapters/components/organisms-directory/organisms-directory.component';
+import { TransparencyComponent } from './adapters/components/transparency/transparency.component';
+import { CalendarComponent } from './adapters/components/calendar/calendar.component';
+import { GlossaryComponent } from './adapters/components/glossary/glossary.component';
+import { AccessibilityStatementComponent } from './adapters/components/accessibility-statement/accessibility-statement.component';
+import { SitemapComponent } from './adapters/components/sitemap/sitemap.component';
 import { authGuard } from './application/guards/auth.guard';
 
 const routes: Routes = [
+  // Public routes with shared header/footer (no auth required)
   {
-    path: 'login',
-    component: LoginComponent,
-    title: 'Iniciar sesión'
+    path: 'sede',
+    component: PublicLayoutComponent,
+    children: [
+      { path: '', component: PublicHomeComponent, title: 'Sede Electronica' },
+      { path: 'institucional', component: InstitutionalInfoComponent, title: 'Informacion Institucional' },
+      { path: 'normativa', component: LegislationComponent, title: 'Normativa y Legislacion' },
+      { path: 'faq', component: FaqComponent, title: 'Preguntas Frecuentes' },
+      { path: 'contacto', component: ContactComponent, title: 'Contacto y Atencion al Ciudadano' },
+      { path: 'estado', component: ServiceStatusComponent, title: 'Estado del Servicio' },
+      { path: 'organismo', component: OrganismsDirectoryComponent, title: 'Directorio de Organismos' },
+      { path: 'transparencia', component: TransparencyComponent, title: 'Transparencia y Estadisticas' },
+      { path: 'calendario', component: CalendarComponent, title: 'Calendario de Plazos' },
+      { path: 'glosario', component: GlossaryComponent, title: 'Glosario de Terminos' },
+      { path: 'accesibilidad', component: AccessibilityStatementComponent, title: 'Declaracion de Accesibilidad' },
+      { path: 'mapa', component: SitemapComponent, title: 'Mapa Web' },
+      { path: 'procedimientos', component: ProceduresComponent, title: 'Procedimientos' },
+      { path: 'procedimientos/:procedureId/flujo', component: ProcedureFlowComponent, title: 'Flujo del Procedimiento' },
+      { path: 'citas', component: AppointmentsComponent, title: 'Citas' },
+      // Auth pages inside public layout so they share header/footer
+      { path: 'login', component: LoginComponent, title: 'Iniciar sesion' },
+      { path: 'registro', component: RegisterComponent, title: 'Crear cuenta' },
+      { path: 'recuperacion', component: PasswordRecoveryComponent, title: 'Recuperar contrasena' }
+    ]
   },
-  {
-    path: 'registro',
-    component: RegisterComponent,
-    title: 'Crear cuenta'
-  },
-  {
-    path: 'recuperacion',
-    component: PasswordRecoveryComponent,
-    title: 'Recuperar contraseña'
-  },
+  // Legacy redirects for auth routes
+  { path: 'login', redirectTo: 'sede/login', pathMatch: 'full' },
+  { path: 'registro', redirectTo: 'sede/registro', pathMatch: 'full' },
+  { path: 'recuperacion', redirectTo: 'sede/recuperacion', pathMatch: 'full' },
+  // Authenticated routes
   {
     path: 'dashboard',
     canActivate: [authGuard],
@@ -57,10 +86,16 @@ const routes: Routes = [
     title: 'Documentos'
   },
   {
+    path: 'expedientes/:id/detalle',
+    canActivate: [authGuard],
+    component: CaseDetailComponent,
+    title: 'Detalle del Expediente'
+  },
+  {
     path: 'expedientes/detalle',
     canActivate: [authGuard],
     component: CaseDetailComponent,
-    title: 'Detalle del expediente'
+    title: 'Detalle del Expediente'
   },
   {
     path: 'pagos',
@@ -69,28 +104,10 @@ const routes: Routes = [
     title: 'Pagos y tasas'
   },
   {
-    path: 'citas',
-    canActivate: [authGuard],
-    component: AppointmentsComponent,
-    title: 'Citas'
-  },
-  {
     path: 'mensajes',
     canActivate: [authGuard],
     component: MessagesComponent,
-    title: 'Mensajería segura'
-  },
-  {
-    path: 'procedimientos',
-    canActivate: [authGuard],
-    component: ProceduresComponent,
-    title: 'Procedimientos'
-  },
-  {
-    path: 'procedimientos/:procedureId/flujo',
-    canActivate: [authGuard],
-    component: ProcedureFlowComponent,
-    title: 'Flujo del procedimiento'
+    title: 'Mensajeria segura'
   },
   {
     path: 'expedientes/nuevo',
@@ -106,13 +123,12 @@ const routes: Routes = [
   },
   {
     path: '',
-    canActivate: [authGuard],
-    component: DashboardComponent,
-    title: 'Inicio seguro'
+    redirectTo: 'sede',
+    pathMatch: 'full'
   },
   {
     path: '**',
-    redirectTo: 'login'
+    redirectTo: 'sede'
   }
 ];
 

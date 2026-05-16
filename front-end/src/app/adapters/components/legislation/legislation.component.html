@@ -1,0 +1,56 @@
+<section class="legislation" aria-labelledby="legislation-title">
+  <div class="legislation__container">
+    <header class="legislation__header">
+      <nav aria-label="Breadcrumb" class="legislation__breadcrumb">
+        <a [routerLink]="['/sede']">{{ 'PUBLIC.NAV_HOME' | translate }}</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{{ 'LEGISLATION.EYEBROW' | translate }}</span>
+      </nav>
+      <h1 id="legislation-title">{{ 'LEGISLATION.TITLE' | translate }}</h1>
+      <p class="legislation__subtitle">{{ 'LEGISLATION.SUBTITLE' | translate }}</p>
+    </header>
+
+    <div class="legislation__filters" role="search">
+      <label class="sr-only" for="legislation-type-filter">{{ 'LEGISLATION.FILTER_TYPE' | translate }}</label>
+      <select
+        id="legislation-type-filter"
+        class="field-input w-48"
+        [value]="selectedType"
+        (change)="onTypeChange($any($event.target).value)"
+      >
+        <option *ngFor="let type of types" [value]="type">{{ getTypeLabel(type) | translate }}</option>
+      </select>
+    </div>
+
+    <div *ngIf="isLoading" class="legislation__loading">
+      {{ 'PUBLIC_HOME.LOADING' | translate }}
+    </div>
+
+    <ul class="legislation__list" *ngIf="!isLoading">
+      <li class="card p-6 legislation__item" *ngFor="let item of legislation">
+        <div class="legislation__item-header">
+          <span class="legislation__type-badge" [ngClass]="'legislation__type--' + item.type">
+            {{ getTypeLabel(item.type) | translate }}
+          </span>
+          <h2 class="legislation__item-title">{{ item.titleKey | translate }}</h2>
+          <time class="legislation__item-date" [attr.datetime]="item.date">
+            {{ formatDate(item.date) }}
+          </time>
+        </div>
+        <p class="legislation__item-desc">{{ item.descriptionKey | translate }}</p>
+        <div class="legislation__item-actions">
+          <a *ngIf="item.externalUrl" [href]="item.externalUrl" target="_blank" rel="noopener noreferrer" class="btn-primary btn-primary--sm btn-primary--outline">
+            {{ 'LEGISLATION.VIEW_EXTERNAL' | translate }}
+          </a>
+          <a *ngIf="item.downloadUrl" [href]="item.downloadUrl" class="btn-primary btn-primary--sm">
+            {{ 'LEGISLATION.DOWNLOAD' | translate }}
+          </a>
+        </div>
+      </li>
+    </ul>
+
+    <div *ngIf="!isLoading && legislation.length === 0" class="legislation__empty card p-6 text-center">
+      {{ 'LEGISLATION.EMPTY' | translate }}
+    </div>
+  </div>
+</section>

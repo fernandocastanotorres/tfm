@@ -1,0 +1,88 @@
+.public-home__hero {
+  @apply bg-gradient-to-br from-brand-600 to-brand-800 text-white;
+  @apply py-16 sm:py-24;
+}
+
+.public-home__hero-content {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center;
+}
+
+.public-home__title {
+  @apply text-3xl sm:text-4xl lg:text-5xl font-bold mb-4;
+}
+
+.public-home__subtitle {
+  @apply text-lg sm:text-xl text-brand-100 mb-8 max-w-2xl mx-auto;
+}
+
+.public-home__hero-actions {
+  @apply flex flex-col sm:flex-row gap-4 justify-center;
+}
+
+.public-home__section {
+  @apply py-12 sm:py-16;
+}
+
+.public-home__section--alt {
+  @apply bg-surface-50;
+}
+
+.public-home__container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.public-home__section-title {
+  @apply text-2xl font-semibold text-surface-900 mb-8;
+}
+
+.public-home__quick-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6;
+}
+
+.public-home__quick-card {
+  @apply p-6 transition hover:-translate-y-1 hover:shadow-xl no-underline text-surface-900 cursor-pointer;
+}
+
+.public-home__quick-icon {
+  @apply text-3xl mb-3;
+}
+
+.public-home__quick-title {
+  @apply text-lg font-semibold mb-2;
+}
+
+.public-home__quick-desc {
+  @apply text-sm text-surface-600;
+}
+
+.public-home__procedures-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+}
+
+.public-home__see-all {
+  @apply mt-8 text-center;
+}
+
+.public-home__loading {
+  @apply text-center text-surface-500 py-8;
+}
+
+.public-home__events-list {
+  @apply list-none p-0 m-0 space-y-4;
+}
+
+.public-home__event-date {
+  @apply flex flex-col items-center bg-brand-50 text-brand-700 rounded-xl p-3 min-w-16;
+}
+
+.public-home__event-day {
+  @apply text-2xl font-bold;
+}
+
+.public-home__event-month {
+  @apply text-xs uppercase font-semibold;
+}
+
+.public-home__event-info {
+  @apply flex-1;
+}

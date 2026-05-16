@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProcedureController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">records-api</a> &gt; <a href="index.source.html" class="el_package">es.tfg.records.entrypoints.controller</a> &gt; <span class="el_source">ProcedureController.java</span></div><h1>ProcedureController.java</h1><pre class="source lang-java linenums">package es.tfg.records.entrypoints.controller;
+
+import es.tfg.records.application.dto.ErrorResponse;
+import es.tfg.records.application.dto.ProcedureItem;
+import es.tfg.records.application.dto.ProcedureTaskDto;
+import es.tfg.records.application.service.ProcedureService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * REST controller for procedure catalog endpoints.
+ * Provides access to available procedure types and their form/task schemas.
+ */
+@RestController
+@RequestMapping(&quot;/citizen/procedures/catalog&quot;)
+@Tag(name = &quot;Procedure Catalog&quot;, description = &quot;Browse available procedure types and their form/task schemas for dynamic UI rendering&quot;)
+@SecurityRequirement(name = &quot;bearerAuth&quot;)
+public class ProcedureController {
+
+    private final ProcedureService procedureService;
+
+<span class="fc" id="L32">    public ProcedureController(ProcedureService procedureService) {</span>
+<span class="fc" id="L33">        this.procedureService = procedureService;</span>
+<span class="fc" id="L34">    }</span>
+
+    @GetMapping
+    @Operation(summary = &quot;List all procedures&quot;, description = &quot;Return the complete catalog of available procedure types with metadata&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Procedure catalog&quot;,
+                    content = @Content(schema = @Schema(implementation = ProcedureItem.class))),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized&quot;,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity&lt;List&lt;ProcedureItem&gt;&gt; listAllProcedures() {
+<span class="fc" id="L45">        return ResponseEntity.ok(procedureService.listAllProcedures());</span>
+    }
+
+    @GetMapping(&quot;/{slug}&quot;)
+    @Operation(summary = &quot;Get procedure detail&quot;, description = &quot;Return a specific procedure type with its associated workflow tasks and form schemas&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Procedure detail with tasks&quot;,
+                    content = @Content(schema = @Schema(implementation = ProcedureItem.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Procedure not found&quot;,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity&lt;ProcedureItem&gt; getProcedure(
+            @Parameter(description = &quot;Procedure slug identifier&quot;, required = true, example = &quot;birth-certificate&quot;)
+            @PathVariable(&quot;slug&quot;) String slug) {
+<span class="nc" id="L59">        return ResponseEntity.ok(procedureService.getProcedureBySlug(slug));</span>
+    }
+
+    @GetMapping(&quot;/{slug}/form-schema&quot;)
+    @Operation(summary = &quot;Get form schema&quot;, description = &quot;Return form field definitions for all form-type tasks in a procedure, enabling dynamic UI rendering&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;List of procedure tasks with form fields&quot;,
+                    content = @Content(schema = @Schema(implementation = ProcedureTaskDto.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Procedure not found&quot;,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity&lt;List&lt;ProcedureTaskDto&gt;&gt; getFormSchema(
+            @Parameter(description = &quot;Procedure slug identifier&quot;, required = true)
+            @PathVariable(&quot;slug&quot;) String slug) {
+<span class="fc" id="L73">        return ResponseEntity.ok(procedureService.getFormSchema(slug));</span>
+    }
+
+    @GetMapping(&quot;/{slug}/tasks/{taskId}/schema&quot;)
+    @Operation(summary = &quot;Get task schema&quot;, description = &quot;Return the schema for a specific task within a procedure&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Task schema&quot;,
+                    content = @Content(schema = @Schema(implementation = ProcedureTaskDto.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Procedure or task not found&quot;,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity&lt;List&lt;ProcedureTaskDto&gt;&gt; getTaskSchema(
+            @Parameter(description = &quot;Procedure slug identifier&quot;, required = true)
+            @PathVariable(&quot;slug&quot;) String slug,
+            @Parameter(description = &quot;Task identifier&quot;, required = true)
+            @PathVariable(&quot;taskId&quot;) String taskId) {
+<span class="nc" id="L89">        return ResponseEntity.ok(procedureService.getTaskSchema(slug, taskId));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

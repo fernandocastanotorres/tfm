@@ -1,0 +1,100 @@
+<div class="bg-white rounded-lg shadow">
+  <!-- Filters -->
+  <div class="px-6 py-4 border-b border-gray-200">
+    <div class="flex items-center justify-between">
+      <h3 class="text-lg font-semibold text-gray-900">Expedientes</h3>
+      <div class="flex items-center gap-4">
+        <input
+          type="search"
+          [(ngModel)]="searchTerm"
+          placeholder="Buscar expediente"
+          class="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <label for="statusFilter" class="text-sm text-gray-600">Estado:</label>
+        <select
+          id="statusFilter"
+          [value]="statusFilter"
+          (change)="onStatusChange($any($event.target).value)"
+          class="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option *ngFor="let opt of statusOptions" [value]="opt.value">{{ opt.label }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="flex items-center justify-center h-64">
+    <div class="text-gray-500">Cargando expedientes...</div>
+  </div>
+
+  <!-- Cases table -->
+  <div *ngIf="!isLoading" class="overflow-x-auto">
+    <table class="w-full">
+      <thead class="bg-gray-50 border-b border-gray-200">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expediente</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ciudadano</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tarea Actual</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ultima Actualizacion</th>
+          <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        <tr *ngFor="let caseItem of filteredCases" class="hover:bg-gray-50">
+          <td class="px-6 py-4">
+            <div class="font-medium text-gray-900">{{ caseItem.title }}</div>
+            <div class="text-sm text-gray-500 truncate max-w-xs">{{ caseItem.id }}</div>
+          </td>
+          <td class="px-6 py-4 text-sm text-gray-600">{{ caseItem.procedureType }}</td>
+          <td class="px-6 py-4 text-sm text-gray-600">{{ caseItem.citizenName }}</td>
+          <td class="px-6 py-4">
+            <span class="px-2 py-1 text-xs font-medium rounded-full" [ngClass]="getStatusClass(caseItem.status)">
+              {{ getStatusLabel(caseItem.status) }}
+            </span>
+          </td>
+          <td class="px-6 py-4 text-sm text-gray-600">{{ caseItem.currentTask || '-' }}</td>
+          <td class="px-6 py-4 text-sm text-gray-500">{{ caseItem.lastUpdated | date: 'dd/MM/yyyy HH:mm' }}</td>
+          <td class="px-6 py-4 text-right">
+            <button
+              (click)="viewCase(caseItem.id)"
+              class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+            >
+              Ver detalle
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredCases.length === 0">
+          <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+            No se encontraron expedientes
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="!isLoading && totalPages > 1" class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+    <div class="text-sm text-gray-500">
+      Mostrando {{ currentPage * pageSize + 1 }} - {{ Math.min((currentPage + 1) * pageSize, totalItems) }} de {{ totalItems }}
+    </div>
+    <div class="flex gap-2">
+      <button
+        [disabled]="currentPage === 0"
+        (click)="onPageChange(currentPage - 1)"
+        class="px-3 py-1 border border-gray-300 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+      >
+        Anterior
+      </button>
+      <button
+        [disabled]="currentPage >= totalPages - 1"
+        (click)="onPageChange(currentPage + 1)"
+        class="px-3 py-1 border border-gray-300 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+      >
+        Siguiente
+      </button>
+    </div>
+  </div>
+</div>

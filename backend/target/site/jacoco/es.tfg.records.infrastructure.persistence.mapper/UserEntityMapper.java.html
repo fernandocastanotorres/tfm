@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserEntityMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">records-api</a> &gt; <a href="index.source.html" class="el_package">es.tfg.records.infrastructure.persistence.mapper</a> &gt; <span class="el_source">UserEntityMapper.java</span></div><h1>UserEntityMapper.java</h1><pre class="source lang-java linenums">package es.tfg.records.infrastructure.persistence.mapper;
+
+import es.tfg.records.infrastructure.persistence.entity.UserEntity;
+import es.tfg.records.domain.model.User;  // Verify domain package consistency
+
+import java.util.Set;
+
+/**
+ * Mapper between JPA UserEntity and domain User model.
+ */
+public final class UserEntityMapper {
+
+    private UserEntityMapper() {
+    }
+
+    public static User toDomain(UserEntity entity) {
+<span class="nc bnc" id="L17" title="All 2 branches missed.">        if (entity == null) return null;</span>
+<span class="nc" id="L18">        User user = new User();</span>
+<span class="nc" id="L19">        user.setId(entity.getId());</span>
+<span class="nc" id="L20">        user.setEmail(entity.getEmail());</span>
+<span class="nc" id="L21">        user.setPasswordHash(entity.getPasswordHash());</span>
+<span class="nc" id="L22">        user.setDisplayName(entity.getDisplayName());</span>
+<span class="nc" id="L23">        user.setActive(entity.isActive());</span>
+<span class="nc" id="L24">        user.setOtpCode(entity.getOtpCode());</span>
+<span class="nc" id="L25">        user.setOtpExpiry(entity.getOtpExpiry());</span>
+<span class="nc" id="L26">        user.setCreatedAt(entity.getCreatedAt());</span>
+<span class="nc" id="L27">        user.setUpdatedAt(entity.getUpdatedAt());</span>
+        // Roles are stored separately; set as empty for now
+<span class="nc" id="L29">        user.setRoles(Set.of(&quot;ROLE_CITIZEN&quot;));</span>
+<span class="nc" id="L30">        return user;</span>
+    }
+
+    public static UserEntity toEntity(User domain) {
+<span class="nc bnc" id="L34" title="All 2 branches missed.">        if (domain == null) return null;</span>
+<span class="nc" id="L35">        UserEntity entity = new UserEntity();</span>
+<span class="nc" id="L36">        entity.setId(domain.getId());</span>
+<span class="nc" id="L37">        entity.setEmail(domain.getEmail());</span>
+<span class="nc" id="L38">        entity.setPasswordHash(domain.getPasswordHash());</span>
+<span class="nc" id="L39">        entity.setDisplayName(domain.getDisplayName());</span>
+<span class="nc" id="L40">        entity.setActive(domain.isActive());</span>
+<span class="nc" id="L41">        entity.setOtpCode(domain.getOtpCode());</span>
+<span class="nc" id="L42">        entity.setOtpExpiry(domain.getOtpExpiry());</span>
+<span class="nc" id="L43">        return entity;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

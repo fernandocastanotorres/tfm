@@ -1,0 +1,22 @@
+package es.tfg.records.tests.domain;
+
+import es.tfg.records.domain.model.TaskType;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class TaskTypeTest {
+
+    @Test
+    void taskType_shouldContainExpectedValues() {
+        assertThat(TaskType.values()).extracting(TaskType::name)
+                .containsExactly("FORM", "UPLOAD", "REVIEW");
+    }
+
+    @Test
+    void taskType_shouldMapFromString() {
+        assertThat(TaskType.valueOf("FORM")).isEqualTo(TaskType.FORM);
+        assertThat(TaskType.valueOf("UPLOAD")).isEqualTo(TaskType.UPLOAD);
+        assertThat(TaskType.valueOf("REVIEW")).isEqualTo(TaskType.REVIEW);
+    }
+}

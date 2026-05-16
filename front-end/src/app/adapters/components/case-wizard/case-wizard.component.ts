@@ -1,14 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
-import { CaseWizardService } from '../../../application/services/case-wizard.service';
-import {
-  ProceduresService,
-  ProcedureItem,
-  ProcedureTask,
-  ProcedureFormField,
-  ProcedureUploadRequirement
-} from '../../../application/services/procedures.service';
+import { CasesApiService } from '../../../application/services/cases-api.service';
+import { ProceduresApiService } from '../../../application/services/procedures-api.service';
+import { ProcedureDetail, ProcedureTaskDto, FormFieldDto, UploadRequirementDto } from '../../../application/models/procedure.models';
+import { CreateCaseRequest } from '../../../application/models/case.models';
 
 @Component({
   selector: 'app-case-wizard',
@@ -16,40 +12,47 @@ import {
   styleUrls: []
 })
 export class CaseWizardComponent implements OnInit {
-  procedure: ProcedureItem | null = null;
-  tasks: ProcedureTask[] = [];
+  procedure: ProcedureDetail | null = null;
+  tasks: ProcedureTaskDto[] = [];
   currentTaskIndex = 0;
-  currentTask: ProcedureTask | null = null;
+  currentTask: ProcedureTaskDto | null = null;
   readonly wizardForm = this.fb.group({});
   readonly uploadForm = this.fb.group({});
   readonly attachments = this.fb.nonNullable.control<Record<string, File[]>>({});
+  isLoading = true;
+  isSubmitting = false;
+  error: string | null = null;
+  createdCaseId: string | null = null;
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly wizardService: CaseWizardService,
-    private readonly proceduresService: ProceduresService,
+    private readonly casesApiService: CasesApiService,
+    private readonly proceduresApiService: ProceduresApiService,
     private readonly route: ActivatedRoute,
     private readonly router: Router
   ) {}
 
   ngOnInit(): void {
-    const procedureId = this.route.snapshot.paramMap.get('procedureId');
-    if (!procedureId) {
-      this.router.navigate(['/procedimientos']);
+    const procedureSlug = this.route.snapshot.paramMap.get('procedureId');
+    if (!procedureSlug) {
+      this.router.navigate(['/sede/procedimientos']);
       return;
     }
 
-    const procedure = this.proceduresService.getProcedureById(procedureId);
-    if (!procedure) {
-      this.router.navigate(['/procedimientos']);
-      return;
-    }
-
-    this.procedure = procedure;
-    this.tasks = procedure.tasks;
-    this.currentTaskIndex = 0;
-    this.currentTask = this.tasks[this.currentTaskIndex] ?? null;
-    this.buildForms(this.currentTask);
+    this.proceduresApiService.getBySlug(procedureSlug).subscribe({
+      next: (data) => {
+        this.procedure = data;
+        this.tasks = data.tasks ?? [];
+        this.currentTaskIndex = 0;
+        this.currentTask = this.tasks[this.currentTaskIndex] ?? null;
+        this.buildForms(this.currentTask);
+        this.isLoading = false;
+      },
+      error: () => {
+        this.error = 'CASE_WIZARD.ERROR_LOAD_PROCEDURE';
+        this.isLoading = false;
+      }
+    });
   }
 
   nextStep(): void {
@@ -98,16 +101,37 @@ export class CaseWizardComponent implements OnInit {
   }
 
   submit(): void {
-    if (!this.isCurrentTaskValid()) {
+    if (!this.procedure || !this.isCurrentTaskValid()) {
       this.markCurrentTaskTouched();
       return;
     }
 
-    this.wizardService.saveDraft({
-      procedureId: this.procedure?.id ?? '',
-      payload: {
-        form: this.wizardForm.getRawValue(),
-        uploads: this.serializeUploads(this.attachments.getRawValue())
+    this.isSubmitting = true;
+
+    const request: CreateCaseRequest = {
+      procedureSlug: this.procedure.slug,
+      title: this.procedure.name,
+      formData: this.wizardForm.getRawValue()
+    };
+
+    this.casesApiService.create(request).subscribe({
+      next: (createdCase) => {
+        this.createdCaseId = createdCase.id;
+        // Submit the case immediately after creation
+        this.casesApiService.submit(createdCase.id).subscribe({
+          next: () => {
+            this.isSubmitting = false;
+            this.router.navigate(['/expedientes', createdCase.id, 'detalle']);
+          },
+          error: () => {
+            this.isSubmitting = false;
+            this.error = 'CASE_WIZARD.ERROR_SUBMIT';
+          }
+        });
+      },
+      error: (err) => {
+        this.isSubmitting = false;
+        this.error = err?.error?.message ?? 'CASE_WIZARD.ERROR_CREATE';
       }
     });
   }
@@ -120,21 +144,21 @@ export class CaseWizardComponent implements OnInit {
     return `${this.currentTaskIndex + 1}/${this.tasks.length}`;
   }
 
-  private buildForms(task: ProcedureTask | null): void {
+  private buildForms(task: ProcedureTaskDto | null): void {
     if (!task) {
       return;
     }
 
-    if (task.type === 'form') {
-      this.buildFormFields(task.fields ?? []);
+    if (task.type === 'form' && task.formFields) {
+      this.buildFormFields(task.formFields);
     }
 
-    if (task.type === 'upload') {
-      this.buildUploadFields(task.uploadRequirements ?? []);
+    if (task.type === 'upload' && task.uploadRequirements) {
+      this.buildUploadFields(task.uploadRequirements);
     }
   }
 
-  private buildFormFields(fields: ProcedureFormField[]): void {
+  private buildFormFields(fields: FormFieldDto[]): void {
     Object.keys(this.wizardForm.controls).forEach((key) => this.wizardForm.removeControl(key));
     fields.forEach((field) => {
       const validators = field.required ? [Validators.required] : [];
@@ -148,7 +172,7 @@ export class CaseWizardComponent implements OnInit {
     });
   }
 
-  private buildUploadFields(requirements: ProcedureUploadRequirement[]): void {
+  private buildUploadFields(requirements: UploadRequirementDto[]): void {
     Object.keys(this.uploadForm.controls).forEach((key) => this.uploadForm.removeControl(key));
     requirements.forEach((requirement) => {
       this.uploadForm.addControl(
@@ -195,12 +219,5 @@ export class CaseWizardComponent implements OnInit {
     if (this.currentTask?.type === 'upload') {
       this.uploadForm.markAllAsTouched();
     }
-  }
-
-  private serializeUploads(uploads: Record<string, File[]>): Record<string, string[]> {
-    return Object.entries(uploads).reduce<Record<string, string[]>>((acc, [key, files]) => {
-      acc[key] = (files ?? []).map((file) => file.name);
-      return acc;
-    }, {});
   }
 }

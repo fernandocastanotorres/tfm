@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProcedureEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">records-api</a> &gt; <a href="index.source.html" class="el_package">es.tfg.records.infrastructure.persistence.entity</a> &gt; <span class="el_source">ProcedureEntity.java</span></div><h1>ProcedureEntity.java</h1><pre class="source lang-java linenums">package es.tfg.records.infrastructure.persistence.entity;
+
+import es.tfg.records.domain.model.CaseStatus;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.Instant;
+import java.util.UUID;
+
+/**
+ * JPA entity for the procedures table (cases/expedientes).
+ */
+@Entity
+@Table(name = &quot;procedures&quot;)
+@EntityListeners(AuditingEntityListener.class)
+public class ProcedureEntity {
+
+    @Id
+    @Column(nullable = false, updatable = false)
+    private UUID id;
+
+    @Column(name = &quot;procedure_type_id&quot;, nullable = false)
+    private UUID procedureTypeId;
+
+    @Column(name = &quot;owner_id&quot;, nullable = false)
+    private UUID ownerId;
+
+    @Column(nullable = false, length = 255)
+    private String title;
+
+<span class="nc" id="L39">    @Enumerated(EnumType.STRING)</span>
+    @Column(nullable = false, length = 30)
+    private CaseStatus status = CaseStatus.DRAFT;
+
+    @Column(name = &quot;form_data&quot;, columnDefinition = &quot;TEXT&quot;)
+    private String formData;
+
+    @Column(name = &quot;assigned_unit&quot;, length = 100)
+    private String assignedUnit;
+
+    @Column(name = &quot;submitted_at&quot;)
+    private Instant submittedAt;
+
+    @CreatedDate
+    @Column(name = &quot;created_at&quot;, nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Column(name = &quot;updated_at&quot;, nullable = false)
+    private Instant updatedAt;
+
+<span class="nc" id="L60">    public ProcedureEntity() {</span>
+<span class="nc" id="L61">    }</span>
+
+    public UUID getId() {
+<span class="nc" id="L64">        return id;</span>
+    }
+
+    public void setId(UUID id) {
+<span class="nc" id="L68">        this.id = id;</span>
+<span class="nc" id="L69">    }</span>
+
+    public UUID getProcedureTypeId() {
+<span class="nc" id="L72">        return procedureTypeId;</span>
+    }
+
+    public void setProcedureTypeId(UUID procedureTypeId) {
+<span class="nc" id="L76">        this.procedureTypeId = procedureTypeId;</span>
+<span class="nc" id="L77">    }</span>
+
+    public UUID getOwnerId() {
+<span class="nc" id="L80">        return ownerId;</span>
+    }
+
+    public void setOwnerId(UUID ownerId) {
+<span class="nc" id="L84">        this.ownerId = ownerId;</span>
+<span class="nc" id="L85">    }</span>
+
+    public String getTitle() {
+<span class="nc" id="L88">        return title;</span>
+    }
+
+    public void setTitle(String title) {
+<span class="nc" id="L92">        this.title = title;</span>
+<span class="nc" id="L93">    }</span>
+
+    public CaseStatus getStatus() {
+<span class="nc" id="L96">        return status;</span>
+    }
+
+    public void setStatus(CaseStatus status) {
+<span class="nc" id="L100">        this.status = status;</span>
+<span class="nc" id="L101">    }</span>
+
+    public String getFormData() {
+<span class="nc" id="L104">        return formData;</span>
+    }
+
+    public void setFormData(String formData) {
+<span class="nc" id="L108">        this.formData = formData;</span>
+<span class="nc" id="L109">    }</span>
+
+    public String getAssignedUnit() {
+<span class="nc" id="L112">        return assignedUnit;</span>
+    }
+
+    public void setAssignedUnit(String assignedUnit) {
+<span class="nc" id="L116">        this.assignedUnit = assignedUnit;</span>
+<span class="nc" id="L117">    }</span>
+
+    public Instant getSubmittedAt() {
+<span class="nc" id="L120">        return submittedAt;</span>
+    }
+
+    public void setSubmittedAt(Instant submittedAt) {
+<span class="nc" id="L124">        this.submittedAt = submittedAt;</span>
+<span class="nc" id="L125">    }</span>
+
+    public Instant getCreatedAt() {
+<span class="nc" id="L128">        return createdAt;</span>
+    }
+
+    public Instant getUpdatedAt() {
+<span class="nc" id="L132">        return updatedAt;</span>
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+<span class="nc" id="L136">        this.createdAt = createdAt;</span>
+<span class="nc" id="L137">    }</span>
+
+    public void setUpdatedAt(Instant updatedAt) {
+<span class="nc" id="L140">        this.updatedAt = updatedAt;</span>
+<span class="nc" id="L141">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

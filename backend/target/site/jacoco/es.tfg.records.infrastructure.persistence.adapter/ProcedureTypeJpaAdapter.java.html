@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProcedureTypeJpaAdapter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">records-api</a> &gt; <a href="index.source.html" class="el_package">es.tfg.records.infrastructure.persistence.adapter</a> &gt; <span class="el_source">ProcedureTypeJpaAdapter.java</span></div><h1>ProcedureTypeJpaAdapter.java</h1><pre class="source lang-java linenums">package es.tfg.records.infrastructure.persistence.adapter;
+
+import es.tfg.records.domain.model.ProcedureType;
+import es.tfg.records.domain.port.ProcedureTypeRepository;
+import es.tfg.records.infrastructure.persistence.entity.ProcedureTypeEntity;
+import es.tfg.records.infrastructure.persistence.entity.ProcedureTaskEntity;
+import es.tfg.records.domain.model.ProcedureTask;
+import es.tfg.records.infrastructure.persistence.repository.ProcedureTaskJpaRepository;
+import es.tfg.records.infrastructure.persistence.repository.ProcedureTypeJpaRepository;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+/**
+ * Infrastructure adapter implementing the ProcedureTypeRepository port using Spring Data JPA.
+ */
+@Component
+public class ProcedureTypeJpaAdapter implements ProcedureTypeRepository {
+
+    private final ProcedureTypeJpaRepository typeJpaRepository;
+    private final ProcedureTaskJpaRepository taskJpaRepository;
+
+    public ProcedureTypeJpaAdapter(ProcedureTypeJpaRepository typeJpaRepository,
+<span class="nc" id="L26">                                    ProcedureTaskJpaRepository taskJpaRepository) {</span>
+<span class="nc" id="L27">        this.typeJpaRepository = typeJpaRepository;</span>
+<span class="nc" id="L28">        this.taskJpaRepository = taskJpaRepository;</span>
+<span class="nc" id="L29">    }</span>
+
+    @Override
+    public List&lt;ProcedureType&gt; findAll() {
+<span class="nc" id="L33">        return typeJpaRepository.findByStatus(&quot;ACTIVE&quot;).stream()</span>
+<span class="nc" id="L34">                .map(this::toDomain)</span>
+<span class="nc" id="L35">                .toList();</span>
+    }
+
+    @Override
+    public Optional&lt;ProcedureType&gt; findById(UUID id) {
+<span class="nc" id="L40">        return typeJpaRepository.findById(id)</span>
+<span class="nc" id="L41">                .map(this::toDomain);</span>
+    }
+
+    private ProcedureType toDomain(ProcedureTypeEntity entity) {
+<span class="nc" id="L45">        ProcedureType procedureType = new ProcedureType();</span>
+<span class="nc" id="L46">        procedureType.setId(entity.getId());</span>
+<span class="nc" id="L47">        procedureType.setTitle(entity.getTitle());</span>
+<span class="nc" id="L48">        procedureType.setDescription(entity.getDescription());</span>
+<span class="nc" id="L49">        procedureType.setFeeAmount(entity.getFeeAmount());</span>
+<span class="nc" id="L50">        procedureType.setDeadlineDays(entity.getDeadlineDays());</span>
+<span class="nc" id="L51">        procedureType.setStatus(entity.getStatus());</span>
+<span class="nc" id="L52">        procedureType.setUnit(entity.getUnit());</span>
+<span class="nc" id="L53">        procedureType.setCreatedAt(entity.getCreatedAt());</span>
+<span class="nc" id="L54">        procedureType.setUpdatedAt(entity.getUpdatedAt());</span>
+
+<span class="nc" id="L56">        List&lt;ProcedureTask&gt; tasks = taskJpaRepository</span>
+<span class="nc" id="L57">                .findByProcedureTypeIdOrderByOrderIndexAsc(entity.getId())</span>
+<span class="nc" id="L58">                .stream()</span>
+<span class="nc" id="L59">                .map(this::toTaskDomain)</span>
+<span class="nc" id="L60">                .toList();</span>
+<span class="nc" id="L61">        procedureType.setTasks(tasks);</span>
+
+<span class="nc" id="L63">        return procedureType;</span>
+    }
+
+    private ProcedureTask toTaskDomain(ProcedureTaskEntity entity) {
+<span class="nc" id="L67">        ProcedureTask task = new ProcedureTask();</span>
+<span class="nc" id="L68">        task.setId(entity.getId());</span>
+<span class="nc" id="L69">        task.setProcedureTypeId(entity.getProcedureTypeId());</span>
+<span class="nc" id="L70">        task.setType(entity.getType());</span>
+<span class="nc" id="L71">        task.setOrderIndex(entity.getOrderIndex());</span>
+<span class="nc" id="L72">        task.setTitle(entity.getTitle());</span>
+<span class="nc" id="L73">        task.setDescription(entity.getDescription());</span>
+<span class="nc" id="L74">        task.setFormSchema(entity.getFormSchema());</span>
+<span class="nc" id="L75">        task.setUploadRequirements(entity.getUploadRequirements());</span>
+<span class="nc" id="L76">        return task;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

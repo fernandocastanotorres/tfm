@@ -1,0 +1,97 @@
+<div class="space-y-6">
+  <div class="bg-white rounded-lg shadow p-6">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div>
+        <h3 class="text-lg font-semibold text-gray-900">Gestion de Procedimientos</h3>
+        <p class="text-sm text-gray-500 mt-1">Configurar catalogo, tareas BPMN y campos de formulario.</p>
+      </div>
+      <div class="flex gap-3">
+        <input type="search" [(ngModel)]="searchTerm" placeholder="Buscar procedimiento" class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <button type="button" (click)="openCreate()" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700">Nuevo procedimiento</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+    <div *ngFor="let procedure of filteredProcedures" class="bg-white rounded-lg shadow p-6">
+      <div class="flex items-start justify-between gap-4 mb-4">
+        <div>
+          <h4 class="text-lg font-semibold text-gray-900">{{ procedure.title }}</h4>
+          <p class="text-sm text-gray-500 mt-1">{{ procedure.description }}</p>
+        </div>
+        <span class="px-2 py-1 text-xs font-medium rounded-full" [class.bg-green-100]="procedure.status === 'ACTIVE'" [class.text-green-800]="procedure.status === 'ACTIVE'" [class.bg-gray-100]="procedure.status !== 'ACTIVE'" [class.text-gray-800]="procedure.status !== 'ACTIVE'">{{ procedure.status }}</span>
+      </div>
+      <div class="grid grid-cols-2 gap-3 text-sm mb-4">
+        <div><span class="text-gray-500">Categoria:</span> {{ procedure.category }}</div>
+        <div><span class="text-gray-500">Unidad:</span> {{ procedure.assignedUnit }}</div>
+        <div><span class="text-gray-500">Plazo:</span> {{ procedure.deadlineDays }} dias</div>
+        <div><span class="text-gray-500">Tasa:</span> {{ procedure.feeAmount | currency: 'EUR' }}</div>
+      </div>
+      <div class="mb-4">
+        <div class="text-xs font-medium text-gray-500 uppercase mb-2">Tareas</div>
+        <div class="flex flex-wrap gap-2">
+          <span *ngFor="let task of procedure.tasks" class="px-2 py-1 bg-blue-50 text-blue-700 rounded-full text-xs">{{ task.orderIndex + 1 }}. {{ task.title }}</span>
+        </div>
+      </div>
+      <div class="flex justify-end gap-3">
+        <button type="button" (click)="toggleStatus(procedure)" class="text-gray-600 hover:text-gray-900 text-sm font-medium">{{ procedure.status === 'ACTIVE' ? 'Desactivar' : 'Activar' }}</button>
+        <button type="button" (click)="openEdit(procedure)" class="text-blue-600 hover:text-blue-800 text-sm font-medium">Editar</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">Cargando procedimientos...</div>
+  <div *ngIf="!isLoading && filteredProcedures.length === 0" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">No hay procedimientos</div>
+
+  <div *ngIf="showForm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-6">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-5xl max-h-[90vh] overflow-y-auto p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ selectedProcedure ? 'Editar procedimiento' : 'Nuevo procedimiento' }}</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <label class="block text-sm"><span class="font-medium text-gray-700">Titulo</span><input [(ngModel)]="form.title" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm"><span class="font-medium text-gray-700">Categoria</span><input [(ngModel)]="form.category" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm"><span class="font-medium text-gray-700">Unidad asignada</span><input [(ngModel)]="form.assignedUnit" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm"><span class="font-medium text-gray-700">Estado</span><select [(ngModel)]="form.status" class="mt-1 w-full border rounded-md px-3 py-2"><option value="DRAFT">DRAFT</option><option value="ACTIVE">ACTIVE</option><option value="INACTIVE">INACTIVE</option></select></label>
+        <label class="block text-sm"><span class="font-medium text-gray-700">Plazo dias</span><input type="number" [(ngModel)]="form.deadlineDays" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm"><span class="font-medium text-gray-700">Tasa</span><input type="number" [(ngModel)]="form.feeAmount" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm md:col-span-2"><span class="font-medium text-gray-700">Descripcion</span><textarea [(ngModel)]="form.description" rows="3" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <section>
+          <div class="flex items-center justify-between mb-3"><h4 class="font-semibold text-gray-900">Tareas BPMN</h4><button type="button" (click)="addTask()" class="text-blue-600 text-sm font-medium">Anadir tarea</button></div>
+          <div class="space-y-3">
+            <div *ngFor="let task of form.tasks" class="border rounded-md p-3 space-y-2">
+              <input [(ngModel)]="task.title" class="w-full border rounded px-2 py-1 text-sm" placeholder="Titulo" />
+              <textarea [(ngModel)]="task.description" class="w-full border rounded px-2 py-1 text-sm" placeholder="Descripcion"></textarea>
+              <div class="grid grid-cols-2 gap-2">
+                <select [(ngModel)]="task.type" class="border rounded px-2 py-1 text-sm"><option>FORM</option><option>UPLOAD</option><option>REVIEW</option><option>SIGNATURE</option><option>RESOLUTION</option></select>
+                <select [(ngModel)]="task.assignedRole" class="border rounded px-2 py-1 text-sm"><option>ROLE_TRAMITADOR</option><option>ROLE_ADMIN</option></select>
+              </div>
+              <button type="button" (click)="removeTask(task.id)" class="text-red-600 text-sm">Eliminar tarea</button>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="flex items-center justify-between mb-3"><h4 class="font-semibold text-gray-900">Formulario dinamico</h4><button type="button" (click)="addField()" class="text-blue-600 text-sm font-medium">Anadir campo</button></div>
+          <div class="space-y-3">
+            <div *ngFor="let field of form.formSchema" class="border rounded-md p-3 space-y-2">
+              <input [(ngModel)]="field.label" class="w-full border rounded px-2 py-1 text-sm" placeholder="Etiqueta" />
+              <div class="grid grid-cols-2 gap-2">
+                <input [(ngModel)]="field.id" class="border rounded px-2 py-1 text-sm" placeholder="id" />
+                <select [(ngModel)]="field.type" class="border rounded px-2 py-1 text-sm"><option>text</option><option>textarea</option><option>number</option><option>date</option><option>select</option><option>checkbox</option><option>file</option></select>
+              </div>
+              <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="field.required" class="mr-2" /> Obligatorio</label>
+              <button type="button" (click)="removeField(field.id)" class="block text-red-600 text-sm">Eliminar campo</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="flex justify-end gap-3 mt-6">
+        <button type="button" (click)="closeForm()" class="px-4 py-2 border rounded-md text-sm">Cancelar</button>
+        <button type="button" (click)="save()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm disabled:opacity-50">{{ isSaving ? 'Guardando...' : 'Guardar' }}</button>
+      </div>
+    </div>
+  </div>
+</div>

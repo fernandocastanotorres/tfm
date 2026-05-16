@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FormFieldDto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">records-api</a> &gt; <a href="index.source.html" class="el_package">es.tfg.records.application.dto</a> &gt; <span class="el_source">FormFieldDto.java</span></div><h1>FormFieldDto.java</h1><pre class="source lang-java linenums">package es.tfg.records.application.dto;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.util.List;
+
+/**
+ * Form field definition for dynamic UI rendering.
+ */
+<span class="nc" id="L10">@Schema(description = &quot;Form field definition for dynamic UI rendering&quot;)</span>
+<span class="nc" id="L11">public record FormFieldDto(</span>
+        @Schema(description = &quot;Field unique identifier&quot;, example = &quot;firstName&quot;)
+        String id,
+        @Schema(description = &quot;Display label&quot;, example = &quot;First Name&quot;)
+        String label,
+        @Schema(description = &quot;Placeholder text&quot;, example = &quot;Enter your first name&quot;)
+        String placeholder,
+        @Schema(description = &quot;Whether this field is required&quot;)
+        boolean required,
+        @Schema(description = &quot;Field type&quot;, example = &quot;text&quot;, allowableValues = {&quot;text&quot;, &quot;number&quot;, &quot;email&quot;, &quot;date&quot;, &quot;select&quot;, &quot;textarea&quot;, &quot;checkbox&quot;})
+        String type,
+        @Schema(description = &quot;Options for select-type fields&quot;)
+        List&lt;FieldOptionDto&gt; options
+) {}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
