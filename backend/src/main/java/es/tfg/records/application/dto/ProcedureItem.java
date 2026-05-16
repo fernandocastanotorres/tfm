@@ -10,8 +10,10 @@ import java.util.List;
  */
 @Schema(description = "Procedure type from the catalog with associated tasks")
 public record ProcedureItem(
-        @Schema(description = "Procedure unique identifier (slug)", example = "birth-certificate")
+        @Schema(description = "Procedure unique identifier (UUID)")
         String id,
+        @Schema(description = "Procedure stable slug", example = "birth-certificate")
+        String slug,
         @Schema(description = "Procedure title", example = "Birth Certificate Application")
         String title,
         @Schema(description = "Procedure description")

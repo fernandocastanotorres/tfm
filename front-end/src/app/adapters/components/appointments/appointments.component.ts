@@ -47,7 +47,8 @@ export class AppointmentsComponent implements OnInit {
         appt.caseId.toLowerCase().includes(search) ||
         appt.caseTitleKey.toLowerCase().includes(search) ||
         appt.locationKey.toLowerCase().includes(search);
-      const matchesStatus = status === 'all' || appt.statusKey === status;
+      const normalizedStatus = appt.statusKey.split('.').pop()?.toLowerCase() ?? '';
+      const matchesStatus = status === 'all' || normalizedStatus === status;
       const matchesType = type === 'all' || appt.typeKey === type;
       const matchesCase = caseId === 'all' || appt.caseId === caseId;
       return matchesSearch && matchesStatus && matchesType && matchesCase;
@@ -57,7 +58,7 @@ export class AppointmentsComponent implements OnInit {
       if (sort === 'time') {
         return a.time.localeCompare(b.time);
       }
-      return a.date.localeCompare(b.date);
+      return this.toSortableDate(a.date) - this.toSortableDate(b.date);
     });
 
     return items;
@@ -103,5 +104,13 @@ export class AppointmentsComponent implements OnInit {
 
   private updatePaginationState(): void {
     this.paginationState = getPaginationState(this.filteredAppointments.length, this.filterForm);
+  }
+
+  private toSortableDate(date: string): number {
+    const [day, month, year] = date.split('/').map((part) => Number(part));
+    if (!day || !month || !year) {
+      return Number.MAX_SAFE_INTEGER;
+    }
+    return new Date(year, month - 1, day).getTime();
   }
 }

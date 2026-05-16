@@ -51,7 +51,7 @@ export interface CaseStatusResponse {
 }
 
 export interface CreateCaseRequest {
-  procedureSlug: string;
+  procedureId: string;
   title: string;
   formData: Record<string, unknown>;
 }

@@ -23,13 +23,13 @@ export class ProcedureFlowComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const procedureSlug = this.route.snapshot.paramMap.get('procedureId');
-    if (!procedureSlug) {
+    const procedureIdentifier = this.route.snapshot.paramMap.get('procedureId');
+    if (!procedureIdentifier) {
       this.router.navigate(['/sede/procedimientos']);
       return;
     }
 
-    this.proceduresApiService.getBySlug(procedureSlug).subscribe({
+    this.proceduresApiService.getByIdentifier(procedureIdentifier).subscribe({
       next: (data) => {
         this.procedure = data;
         this.tasks = data.tasks ?? [];

@@ -34,12 +34,12 @@ class ProcedureControllerTest {
 
     @Test
     void listAllProcedures_shouldReturn200() throws Exception {
-        ProcedureItem item = new ProcedureItem("birth-certificate", "Birth Certificate", "Desc", new BigDecimal("15.00"), 10, "ACTIVE", "Registry", List.of());
+        ProcedureItem item = new ProcedureItem("11111111-1111-1111-1111-111111111111", "birth-certificate", "Birth Certificate", "Desc", new BigDecimal("15.00"), 10, "ACTIVE", "Registry", List.of());
         when(procedureService.listAllProcedures()).thenReturn(List.of(item));
 
         mockMvc.perform(get("/citizen/procedures/catalog"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value("birth-certificate"));
+                .andExpect(jsonPath("$[0].slug").value("birth-certificate"));
     }
 
     @Test

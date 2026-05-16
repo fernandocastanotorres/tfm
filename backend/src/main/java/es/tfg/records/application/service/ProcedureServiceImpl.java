@@ -20,27 +20,24 @@ import java.util.UUID;
 public class ProcedureServiceImpl implements ProcedureService {
 
     private final ProcedureTypeRepository procedureTypeRepository;
+    private final ProcedureCatalogI18nService procedureCatalogI18nService;
 
-    public ProcedureServiceImpl(ProcedureTypeRepository procedureTypeRepository) {
+    public ProcedureServiceImpl(ProcedureTypeRepository procedureTypeRepository,
+                                ProcedureCatalogI18nService procedureCatalogI18nService) {
         this.procedureTypeRepository = procedureTypeRepository;
+        this.procedureCatalogI18nService = procedureCatalogI18nService;
     }
 
     @Override
     public List<ProcedureItem> listAllProcedures() {
         return procedureTypeRepository.findAll().stream()
-                .map(pt -> ProcedureTypeMapper.toProcedureItem(pt, mapTasks(pt.getTasks())))
+                .map(this::toLocalizedProcedureItem)
                 .toList();
     }
 
     @Override
     public ProcedureItem getProcedureBySlug(String slug) {
-        // Find by matching slug against title (lowercase, hyphenated)
-        ProcedureType procedureType = procedureTypeRepository.findAll().stream()
-                .filter(pt -> toSlug(pt.getTitle()).equals(slug))
-                .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException("PROCEDURE", slug));
-
-        return ProcedureTypeMapper.toProcedureItem(procedureType, mapTasks(procedureType.getTasks()));
+        return toLocalizedProcedureItem(findProcedureByIdentifier(slug));
     }
 
     @Override
@@ -64,10 +61,24 @@ public class ProcedureServiceImpl implements ProcedureService {
     }
 
     private ProcedureType findProcedureBySlug(String slug) {
+        return findProcedureByIdentifier(slug);
+    }
+
+    private ProcedureType findProcedureByIdentifier(String identifier) {
+        try {
+            UUID id = UUID.fromString(identifier);
+            return procedureTypeRepository.findAll().stream()
+                    .filter(pt -> pt.getId().equals(id))
+                    .findFirst()
+                    .orElseThrow(() -> new ResourceNotFoundException("PROCEDURE", identifier));
+        } catch (IllegalArgumentException ignored) {
+            // Not UUID, fallback to stable slug
+        }
+
         return procedureTypeRepository.findAll().stream()
-                .filter(pt -> toSlug(pt.getTitle()).equals(slug))
+                .filter(pt -> toSlug(pt.getTitle()).equals(identifier))
                 .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException("PROCEDURE", slug));
+                .orElseThrow(() -> new ResourceNotFoundException("PROCEDURE", identifier));
     }
 
     private List<ProcedureTaskDto> mapTasks(List<ProcedureTask> tasks) {
@@ -75,6 +86,36 @@ public class ProcedureServiceImpl implements ProcedureService {
         return tasks.stream()
                 .map(ProcedureTypeMapper::toProcedureTaskDto)
                 .toList();
+    }
+
+    private ProcedureItem toLocalizedProcedureItem(ProcedureType procedureType) {
+        List<ProcedureTaskDto> localizedTasks = procedureType.getTasks() == null
+                ? List.of()
+                : procedureType.getTasks().stream()
+                .map(task -> {
+                    ProcedureTaskDto base = ProcedureTypeMapper.toProcedureTaskDto(task);
+                    return new ProcedureTaskDto(
+                            base.id(),
+                            base.type(),
+                            procedureCatalogI18nService.localizeTaskTitle(procedureType, task),
+                            procedureCatalogI18nService.localizeTaskDescription(procedureType, task),
+                            base.fields(),
+                            base.uploadRequirements()
+                    );
+                })
+                .toList();
+
+        return new ProcedureItem(
+                procedureType.getId().toString(),
+                toSlug(procedureType.getTitle()),
+                procedureCatalogI18nService.localizeProcedureTitle(procedureType),
+                procedureCatalogI18nService.localizeProcedureDescription(procedureType),
+                procedureType.getFeeAmount(),
+                procedureType.getDeadlineDays(),
+                procedureType.getStatus(),
+                procedureCatalogI18nService.localizeProcedureUnit(procedureType),
+                localizedTasks
+        );
     }
 
     /**

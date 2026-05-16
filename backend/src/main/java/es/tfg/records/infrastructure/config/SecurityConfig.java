@@ -5,6 +5,7 @@ import es.tfg.records.infrastructure.security.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -73,11 +74,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints — no JWT required
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+                        // Public read-only procedure catalog for sede browsing
+                        .requestMatchers(HttpMethod.GET, "/citizen/procedures/catalog/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/citizen/procedures/catalog/**").permitAll()
                         // OpenAPI / Swagger — public read access
                         .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/api-docs/**", "/swagger-ui.html").permitAll()
                         // Admin-only catalog/user management endpoints

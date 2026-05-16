@@ -97,6 +97,41 @@ backend/src/main/java/es/tfg/records/
 
 ## How to Run
 
+### Full System in Dev (backend + sede + backoffice)
+
+Use three terminals so the entire platform is online:
+
+1) Backend API (`backend/`):
+
+```bash
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+```
+
+2) Sede frontend (`front-end/`):
+
+```bash
+npm install
+npx ng serve --configuration development --port 4200
+```
+
+3) Backoffice frontend (`back-office/`):
+
+```bash
+npm install
+npx ng serve --configuration development --port 4300
+```
+
+Quick checks:
+
+- Backend health: `http://localhost:8080/api/v1/health/live`
+- Sede: `http://localhost:4200`
+- Backoffice: `http://localhost:4300`
+
+Dev users seeded by profile `dev`:
+
+- Admin: `admin@tfg.es / Admin1234`
+- Citizen: `citizen@tfg.es / Citizen1`
+
 ### Prerequisites
 
 - Java 21 JDK
@@ -131,7 +166,13 @@ export JWT_SECRET=<base64-encoded-secret-at-least-256-bits>
 export STORAGE_DOCUMENTS_PATH=/var/data/documents
 ```
 
-2. Build and run:
+2. Apply required schema migration(s) before startup (recommended with a privileged DB user):
+
+```bash
+psql "$DB_URL" -U "$DB_USERNAME" -f db/postgresql/001_create_procedure_type_i18n.sql
+```
+
+3. Build and run:
 
 ```bash
 ./mvnw clean package -DskipTests

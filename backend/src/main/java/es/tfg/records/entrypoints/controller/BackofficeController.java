@@ -92,4 +92,18 @@ public class BackofficeController {
             @RequestBody Map<String, String> request) {
         return ResponseEntity.ok(backofficeService.toggleProcedureStatus(id, request.getOrDefault("status", "DRAFT")));
     }
+
+    @GetMapping("/procedure-types/{id}/translations")
+    @Operation(summary = "List managed procedure translations by locale")
+    public ResponseEntity<List<BackofficeDtos.ProcedureTranslation>> listProcedureTypeTranslations(@PathVariable UUID id) {
+        return ResponseEntity.ok(backofficeService.listProcedureTranslations(id));
+    }
+
+    @PutMapping("/procedure-types/{id}/translations")
+    @Operation(summary = "Create or update managed procedure translation")
+    public ResponseEntity<BackofficeDtos.ProcedureTranslation> upsertProcedureTypeTranslation(
+            @PathVariable UUID id,
+            @RequestBody BackofficeDtos.ProcedureTranslationRequest request) {
+        return ResponseEntity.ok(backofficeService.upsertProcedureTranslation(id, request));
+    }
 }

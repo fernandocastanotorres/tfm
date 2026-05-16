@@ -3,6 +3,9 @@ server:
     context-path: /api/v1
 
 spring:
+  messages:
+    basename: i18n/procedure-catalog
+    encoding: UTF-8
   datasource:
     url: jdbc:h2:mem:records_test_db;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driver-class-name: org.h2.Driver

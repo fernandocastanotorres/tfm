@@ -37,3 +37,26 @@
 .sitemap__link {
   @apply text-surface-600 hover:text-brand-600 transition text-sm no-underline;
 }
+
+:host-context(.theme-dark) .sitemap__breadcrumb {
+  @apply text-slate-400;
+}
+
+:host-context(.theme-dark) .sitemap__breadcrumb a,
+:host-context(.theme-dark) .sitemap__link:hover {
+  @apply text-sky-300;
+}
+
+:host-context(.theme-dark) .sitemap__header h1,
+:host-context(.theme-dark) .sitemap__section-title {
+  @apply text-slate-100;
+}
+
+:host-context(.theme-dark) .sitemap__subtitle,
+:host-context(.theme-dark) .sitemap__link {
+  @apply text-slate-300;
+}
+
+:host-context(.theme-dark) .sitemap__section-title {
+  @apply border-slate-700;
+}

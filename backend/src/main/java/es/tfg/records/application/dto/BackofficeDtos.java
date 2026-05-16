@@ -135,6 +135,24 @@ public final class BackofficeDtos {
             String assignedRole
     ) {}
 
+    public record ProcedureTranslation(
+            UUID id,
+            UUID procedureTypeId,
+            String locale,
+            String title,
+            String description,
+            String unit,
+            Instant createdAt,
+            Instant updatedAt
+    ) {}
+
+    public record ProcedureTranslationRequest(
+            String locale,
+            String title,
+            String description,
+            String unit
+    ) {}
+
     public record FormSchemaField(
             String id,
             String label,

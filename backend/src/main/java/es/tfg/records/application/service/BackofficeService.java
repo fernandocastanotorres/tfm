@@ -12,10 +12,12 @@ import es.tfg.records.application.exception.ResourceNotFoundException;
 import es.tfg.records.domain.model.CaseStatus;
 import es.tfg.records.domain.model.TaskType;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureEntity;
+import es.tfg.records.infrastructure.persistence.entity.ProcedureTypeI18nEntity;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTaskEntity;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTypeEntity;
 import es.tfg.records.infrastructure.persistence.entity.UserEntity;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureJpaRepository;
+import es.tfg.records.infrastructure.persistence.repository.ProcedureTypeI18nJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureTaskJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureTypeJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.UserJpaRepository;
@@ -40,6 +42,7 @@ public class BackofficeService {
 
     private final ProcedureJpaRepository procedureRepository;
     private final ProcedureTypeJpaRepository procedureTypeRepository;
+    private final ProcedureTypeI18nJpaRepository procedureTypeI18nRepository;
     private final ProcedureTaskJpaRepository taskRepository;
     private final UserJpaRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -47,12 +50,14 @@ public class BackofficeService {
 
     public BackofficeService(ProcedureJpaRepository procedureRepository,
                              ProcedureTypeJpaRepository procedureTypeRepository,
+                             ProcedureTypeI18nJpaRepository procedureTypeI18nRepository,
                              ProcedureTaskJpaRepository taskRepository,
                              UserJpaRepository userRepository,
                              PasswordEncoder passwordEncoder,
                              ObjectMapper objectMapper) {
         this.procedureRepository = procedureRepository;
         this.procedureTypeRepository = procedureTypeRepository;
+        this.procedureTypeI18nRepository = procedureTypeI18nRepository;
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -228,9 +233,42 @@ public class BackofficeService {
         return toManagedProcedure(procedureTypeRepository.save(entity));
     }
 
+    @Transactional(readOnly = true)
+    public List<BackofficeDtos.ProcedureTranslation> listProcedureTranslations(UUID procedureTypeId) {
+        ensureProcedureTypeExists(procedureTypeId);
+        return procedureTypeI18nRepository.findByProcedureTypeIdOrderByLocaleAsc(procedureTypeId).stream()
+                .map(this::toProcedureTranslation)
+                .toList();
+    }
+
+    @Transactional
+    public BackofficeDtos.ProcedureTranslation upsertProcedureTranslation(UUID procedureTypeId, BackofficeDtos.ProcedureTranslationRequest request) {
+        ensureProcedureTypeExists(procedureTypeId);
+        String locale = normalizeLocale(request.locale());
+        ProcedureTypeI18nEntity entity = procedureTypeI18nRepository.findByProcedureTypeIdAndLocale(procedureTypeId, locale)
+                .orElseGet(() -> {
+                    ProcedureTypeI18nEntity created = new ProcedureTypeI18nEntity();
+                    created.setId(UUID.randomUUID());
+                    created.setProcedureTypeId(procedureTypeId);
+                    created.setLocale(locale);
+                    return created;
+                });
+
+        entity.setTitle(request.title());
+        entity.setDescription(request.description());
+        entity.setUnit(request.unit());
+        return toProcedureTranslation(procedureTypeI18nRepository.save(entity));
+    }
+
     private ProcedureEntity findProcedure(UUID id) {
         return procedureRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("PROC", id.toString()));
+    }
+
+    private void ensureProcedureTypeExists(UUID id) {
+        if (!procedureTypeRepository.existsById(id)) {
+            throw new ResourceNotFoundException("PROCEDURE_TYPE", id.toString());
+        }
     }
 
     private BackofficeDtos.AdminCaseItem toAdminCaseItem(ProcedureEntity procedure, ProcedureTypeEntity type) {
@@ -334,5 +372,25 @@ public class BackofficeService {
             entity.setType(TaskType.valueOf(task.type()));
             taskRepository.save(entity);
         });
+    }
+
+    private BackofficeDtos.ProcedureTranslation toProcedureTranslation(ProcedureTypeI18nEntity entity) {
+        return new BackofficeDtos.ProcedureTranslation(
+                entity.getId(),
+                entity.getProcedureTypeId(),
+                entity.getLocale(),
+                entity.getTitle(),
+                entity.getDescription(),
+                entity.getUnit(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
+        );
+    }
+
+    private String normalizeLocale(String locale) {
+        if (locale == null || locale.isBlank()) {
+            throw new ConflictException("PROCEDURE_TYPE_I18N", "LOCALE_REQUIRED");
+        }
+        return locale.trim();
     }
 }

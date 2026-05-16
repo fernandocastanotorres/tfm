@@ -32,6 +32,7 @@ import { MockProcedureManagementService } from './application/services/mock-proc
 import { HttpErrorInterceptor } from './application/interceptors/http-error.interceptor';
 import { JwtAuthInterceptor } from './application/interceptors/jwt-auth.interceptor';
 import { CorrelationIdInterceptor } from './application/interceptors/correlation-id.interceptor';
+import { AcceptLanguageInterceptor } from './application/interceptors/accept-language.interceptor';
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http);
@@ -72,6 +73,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     { provide: UserManagementService, useClass: environment.useMocks ? MockUserManagementService : UserManagementService },
     { provide: ProcedureManagementService, useClass: environment.useMocks ? MockProcedureManagementService : ProcedureManagementService },
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: AcceptLanguageInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: JwtAuthInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: CorrelationIdInterceptor, multi: true }
   ],

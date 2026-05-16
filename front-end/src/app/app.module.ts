@@ -46,6 +46,7 @@ import { SitemapComponent } from './adapters/components/sitemap/sitemap.componen
 import { HttpErrorInterceptor } from './application/interceptors/http-error.interceptor';
 import { JwtAuthInterceptor } from './application/interceptors/jwt-auth.interceptor';
 import { CorrelationIdInterceptor } from './application/interceptors/correlation-id.interceptor';
+import { AcceptLanguageInterceptor } from './application/interceptors/accept-language.interceptor';
 
 export class CustomLoader implements TranslateLoader {
   constructor(private http: HttpClient) {}
@@ -107,6 +108,7 @@ export function HttpLoaderFactory(http: HttpClient): CustomLoader {
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: AcceptLanguageInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: JwtAuthInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: CorrelationIdInterceptor, multi: true }
   ],

@@ -89,3 +89,44 @@
 .calendar__empty {
   @apply text-surface-500;
 }
+
+:host-context(.theme-dark) .calendar__breadcrumb,
+:host-context(.theme-dark) .calendar__loading,
+:host-context(.theme-dark) .calendar__event-procedure,
+:host-context(.theme-dark) .calendar__empty {
+  @apply text-slate-400;
+}
+
+:host-context(.theme-dark) .calendar__breadcrumb a {
+  @apply text-sky-300;
+}
+
+:host-context(.theme-dark) .calendar__header h1,
+:host-context(.theme-dark) .calendar__event-title {
+  @apply text-slate-100;
+}
+
+:host-context(.theme-dark) .calendar__subtitle,
+:host-context(.theme-dark) .calendar__event-desc {
+  @apply text-slate-300;
+}
+
+:host-context(.theme-dark) .calendar__event-date {
+  @apply bg-slate-800 text-sky-300;
+}
+
+:host-context(.theme-dark) .calendar__type--deadline {
+  @apply bg-red-950 text-red-300;
+}
+
+:host-context(.theme-dark) .calendar__type--holiday {
+  @apply bg-blue-950 text-blue-300;
+}
+
+:host-context(.theme-dark) .calendar__type--reminder {
+  @apply bg-amber-950 text-amber-300;
+}
+
+:host-context(.theme-dark) .calendar__type--info {
+  @apply bg-emerald-950 text-emerald-300;
+}

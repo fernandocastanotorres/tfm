@@ -33,13 +33,13 @@ export class CaseWizardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const procedureSlug = this.route.snapshot.paramMap.get('procedureId');
-    if (!procedureSlug) {
+    const procedureIdentifier = this.route.snapshot.paramMap.get('procedureId');
+    if (!procedureIdentifier) {
       this.router.navigate(['/sede/procedimientos']);
       return;
     }
 
-    this.proceduresApiService.getBySlug(procedureSlug).subscribe({
+    this.proceduresApiService.getByIdentifier(procedureIdentifier).subscribe({
       next: (data) => {
         this.procedure = data;
         this.tasks = data.tasks ?? [];
@@ -109,7 +109,7 @@ export class CaseWizardComponent implements OnInit {
     this.isSubmitting = true;
 
     const request: CreateCaseRequest = {
-      procedureSlug: this.procedure.slug,
+      procedureId: this.procedure.id,
       title: this.procedure.name,
       formData: this.wizardForm.getRawValue()
     };

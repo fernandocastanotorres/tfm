@@ -6,7 +6,7 @@ import { AuthService } from '../services/auth.service';
  * Functional route guard that verifies JWT validity before allowing navigation.
  * Redirects to /login if the token is missing, expired, or invalid.
  */
-export const authGuard: CanActivateFn = () => {
+export const authGuard: CanActivateFn = (_route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
@@ -15,5 +15,7 @@ export const authGuard: CanActivateFn = () => {
   }
 
   // Token is missing or expired — redirect to login
-  return router.parseUrl('/sede/login');
+  return router.createUrlTree(['/sede/login'], {
+    queryParams: { returnUrl: state.url }
+  });
 };

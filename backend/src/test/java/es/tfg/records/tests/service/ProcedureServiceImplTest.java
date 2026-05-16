@@ -3,6 +3,7 @@ package es.tfg.records.tests.service;
 import es.tfg.records.application.dto.ProcedureItem;
 import es.tfg.records.application.dto.ProcedureTaskDto;
 import es.tfg.records.application.exception.ResourceNotFoundException;
+import es.tfg.records.application.service.ProcedureCatalogI18nService;
 import es.tfg.records.application.service.ProcedureServiceImpl;
 import es.tfg.records.domain.model.ProcedureTask;
 import es.tfg.records.domain.model.ProcedureType;
@@ -32,6 +33,9 @@ class ProcedureServiceImplTest {
     @Mock
     private ProcedureTypeRepository procedureTypeRepository;
 
+    @Mock
+    private ProcedureCatalogI18nService procedureCatalogI18nService;
+
     @InjectMocks
     private ProcedureServiceImpl procedureService;
 
@@ -46,6 +50,12 @@ class ProcedureServiceImplTest {
         formTaskId = UUID.randomUUID();
         uploadTaskId = UUID.randomUUID();
         reviewTaskId = UUID.randomUUID();
+
+        lenient().when(procedureCatalogI18nService.localizeProcedureTitle(any())).thenAnswer(invocation -> invocation.getArgument(0, ProcedureType.class).getTitle());
+        lenient().when(procedureCatalogI18nService.localizeProcedureDescription(any())).thenAnswer(invocation -> invocation.getArgument(0, ProcedureType.class).getDescription());
+        lenient().when(procedureCatalogI18nService.localizeProcedureUnit(any())).thenAnswer(invocation -> invocation.getArgument(0, ProcedureType.class).getUnit());
+        lenient().when(procedureCatalogI18nService.localizeTaskTitle(any(), any())).thenAnswer(invocation -> invocation.getArgument(1, ProcedureTask.class).getTitle());
+        lenient().when(procedureCatalogI18nService.localizeTaskDescription(any(), any())).thenAnswer(invocation -> invocation.getArgument(1, ProcedureTask.class).getDescription());
     }
 
     private ProcedureType createProcedureType(String title, List<ProcedureTask> tasks) {

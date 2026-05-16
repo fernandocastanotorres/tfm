@@ -17,6 +17,7 @@ public final class ProcedureTypeMapper {
     public static ProcedureItem toProcedureItem(ProcedureType procedureType, List<ProcedureTaskDto> tasks) {
         return new ProcedureItem(
                 procedureType.getId().toString(),
+                toSlug(procedureType.getTitle()),
                 procedureType.getTitle(),
                 procedureType.getDescription(),
                 procedureType.getFeeAmount(),
@@ -52,5 +53,12 @@ public final class ProcedureTypeMapper {
      */
     private static List<UploadRequirementDto> parseUploadRequirements(String requirements) {
         return requirements != null ? List.of() : List.of();
+    }
+
+    private static String toSlug(String title) {
+        return title.toLowerCase()
+                .replaceAll("[^a-z0-9\\s-]", "")
+                .replaceAll("\\s+", "-")
+                .replaceAll("-+", "-");
     }
 }

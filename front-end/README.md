@@ -6,6 +6,29 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
+### Run with backend in dev mode (recommended)
+
+This frontend is configured to call `'/api/v1'` and proxy API requests to the backend.
+
+1) Start backend (`backend/`):
+
+```bash
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+```
+
+2) Start this frontend (`front-end/`):
+
+```bash
+npm install
+npx ng serve --configuration development --port 4200
+```
+
+3) Open:
+
+- `http://localhost:4200`
+
+If proxy or environment settings change, restart `ng serve`.
+
 ## Code scaffolding
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.

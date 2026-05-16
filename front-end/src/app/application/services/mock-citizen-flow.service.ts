@@ -212,7 +212,7 @@ export class MockCitizenFlowService {
   }
 
   createCase(request: CreateCaseRequest): Observable<CaseItem> {
-    const procedure = this.procedures.find((p) => p.slug === request.procedureSlug);
+    const procedure = this.procedures.find((p) => p.id === request.procedureId || p.slug === request.procedureId);
     const now = new Date().toISOString();
     const caseId = `EXP-${new Date().getFullYear()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
     const title = request.title || procedure?.name || 'Nuevo expediente';
@@ -222,7 +222,7 @@ export class MockCitizenFlowService {
 
     const item: CaseItem = {
       id: caseId,
-      procedureType: procedure?.name ?? request.procedureSlug,
+      procedureType: procedure?.name ?? request.procedureId,
       status: 'PENDING',
       createdAt: now,
       lastUpdated: now,

@@ -7,13 +7,13 @@
     </header>
 
     <div class="mt-6 flex flex-wrap gap-3" [formGroup]="filterForm">
-      <button class="btn-primary" type="button" (click)="toggleFilter('all')" [ngClass]="filterForm.value.status === 'all' ? '' : 'bg-surface-200 text-surface-700 hover:bg-surface-300'">
+      <button class="btn-primary" type="button" (click)="toggleFilter('all')" [ngClass]="filterForm.value.status === 'all' ? '' : 'btn-secondary'">
         {{ 'APPOINTMENTS.FILTER_ALL' | translate }}
       </button>
-      <button class="btn-primary" type="button" (click)="toggleFilter('confirmed')" [ngClass]="filterForm.value.status === 'confirmed' ? '' : 'bg-surface-200 text-surface-700 hover:bg-surface-300'">
+      <button class="btn-primary" type="button" (click)="toggleFilter('confirmed')" [ngClass]="filterForm.value.status === 'confirmed' ? '' : 'btn-secondary'">
         {{ 'APPOINTMENTS.FILTER_CONFIRMED' | translate }}
       </button>
-      <button class="btn-primary" type="button" (click)="toggleFilter('pending')" [ngClass]="filterForm.value.status === 'pending' ? '' : 'bg-surface-200 text-surface-700 hover:bg-surface-300'">
+      <button class="btn-primary" type="button" (click)="toggleFilter('pending')" [ngClass]="filterForm.value.status === 'pending' ? '' : 'btn-secondary'">
         {{ 'APPOINTMENTS.FILTER_PENDING' | translate }}
       </button>
       <label class="sr-only" for="appointments-search">{{ 'APPOINTMENTS.SEARCH_LABEL' | translate }}</label>
@@ -55,18 +55,18 @@
         </div>
         <div class="mt-4 flex flex-wrap gap-3">
           <button class="btn-primary" type="button">{{ 'APPOINTMENTS.RESCHEDULE' | translate }}</button>
-          <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button">{{ 'APPOINTMENTS.CANCEL' | translate }}</button>
+          <button class="btn-secondary" type="button">{{ 'APPOINTMENTS.CANCEL' | translate }}</button>
         </div>
       </article>
       <div *ngIf="pagedAppointments.length === 0" class="card p-6 text-surface-600">
         {{ 'APPOINTMENTS.EMPTY' | translate }}
       </div>
       <div class="mt-4 flex items-center justify-between" *ngIf="filteredAppointments.length > 0">
-        <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage - 1)" [disabled]="paginationState.currentPage === 1">
+        <button class="btn-secondary" type="button" (click)="changePage(paginationState.currentPage - 1)" [disabled]="paginationState.currentPage === 1">
           {{ 'APPOINTMENTS.PREVIOUS' | translate }}
         </button>
         <span class="text-sm text-surface-600">{{ 'APPOINTMENTS.PAGE' | translate }} {{ paginationState.currentPage }} / {{ paginationState.totalPages }}</span>
-        <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage + 1)" [disabled]="paginationState.currentPage === paginationState.totalPages">
+        <button class="btn-secondary" type="button" (click)="changePage(paginationState.currentPage + 1)" [disabled]="paginationState.currentPage === paginationState.totalPages">
           {{ 'APPOINTMENTS.NEXT' | translate }}
         </button>
       </div>
@@ -75,7 +75,7 @@
       <h2 id="slot-title" class="text-lg font-semibold text-surface-900">{{ 'APPOINTMENTS.SLOTS_TITLE' | translate }}</h2>
       <p class="text-surface-600">{{ 'APPOINTMENTS.SLOTS_SUBTITLE' | translate }}</p>
       <div class="mt-4 flex flex-wrap gap-3">
-        <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" *ngFor="let slot of slots" (click)="selectSlot(slot)">
+        <button class="btn-secondary" type="button" *ngFor="let slot of slots" (click)="selectSlot(slot)">
           {{ slot }}
         </button>
       </div>

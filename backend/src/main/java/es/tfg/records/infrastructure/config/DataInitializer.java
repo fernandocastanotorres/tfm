@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -76,52 +77,144 @@ public class DataInitializer {
             log.info("Created admin user: admin@tfg.es / Admin1234");
 
             // --- Seed procedure types ---
-            UUID licenseId = seedProcedureType(
+            List<UUID> seededProcedureTypeIds = new ArrayList<>();
+            seededProcedureTypeIds.add(seedProcedureType(
                     typeJpaRepository, taskJpaRepository,
                     "License Application",
-                    "Apply for a new business or activity license",
+                    "Apply for a new business or activity license. Starts generic BPM citizen procedure flow.",
                     new BigDecimal("25.00"),
                     30,
                     "ACTIVE",
                     "Licensing Unit",
-                    List.of(
-                            createTask("Personal Information", TaskType.FORM, "Fill in your personal details", 0),
-                            createTask("Upload Documents", TaskType.UPLOAD, "Upload required supporting documents", 1),
-                            createTask("Review and Submit", TaskType.REVIEW, "Review your application before submission", 2)
-                    )
-            );
+                    standardCitizenTasks("license application")
+            ));
 
-            UUID registryId = seedProcedureType(
+            seededProcedureTypeIds.add(seedProcedureType(
                     typeJpaRepository, taskJpaRepository,
                     "Registry Certificate",
-                    "Request an official registry certificate",
+                    "Request an official registry certificate. Starts generic BPM citizen procedure flow.",
                     new BigDecimal("10.00"),
                     15,
                     "ACTIVE",
                     "Registry Office",
-                    List.of(
-                            createTask("Certificate Details", TaskType.FORM, "Specify the type of certificate needed", 0),
-                            createTask("Identity Verification", TaskType.UPLOAD, "Upload identity verification documents", 1),
-                            createTask("Review and Submit", TaskType.REVIEW, "Review your request before submission", 2)
-                    )
-            );
+                    standardCitizenTasks("registry certificate")
+            ));
 
-            UUID addressId = seedProcedureType(
+            seededProcedureTypeIds.add(seedProcedureType(
                     typeJpaRepository, taskJpaRepository,
                     "Address Update",
-                    "Update your registered address",
+                    "Update your registered address. Starts generic BPM citizen procedure flow.",
                     BigDecimal.ZERO,
                     7,
                     "ACTIVE",
                     "Citizen Services",
-                    List.of(
-                            createTask("New Address", TaskType.FORM, "Enter your new address details", 0),
-                            createTask("Proof of Address", TaskType.UPLOAD, "Upload proof of your new address", 1),
-                            createTask("Review and Submit", TaskType.REVIEW, "Review your update before submission", 2)
-                    )
-            );
+                    standardCitizenTasks("address update")
+            ));
 
-            log.info("Seeded 3 procedure types with tasks");
+            seededProcedureTypeIds.add(seedProcedureType(
+                    typeJpaRepository, taskJpaRepository,
+                    "Building Permit",
+                    "Request a municipal building permit. Starts generic BPM citizen procedure flow.",
+                    new BigDecimal("120.00"),
+                    45,
+                    "ACTIVE",
+                    "Urban Planning",
+                    standardCitizenTasks("building permit")
+            ));
+
+            seededProcedureTypeIds.add(seedProcedureType(
+                    typeJpaRepository, taskJpaRepository,
+                    "Noise Complaint",
+                    "Report recurring noise incidents for municipal inspection. Starts generic BPM citizen procedure flow.",
+                    BigDecimal.ZERO,
+                    20,
+                    "ACTIVE",
+                    "Environmental Unit",
+                    standardCitizenTasks("noise complaint")
+            ));
+
+            seededProcedureTypeIds.add(seedProcedureType(
+                    typeJpaRepository, taskJpaRepository,
+                    "Street Occupancy Authorization",
+                    "Apply to temporarily occupy public space. Starts generic BPM citizen procedure flow.",
+                    new BigDecimal("35.00"),
+                    20,
+                    "ACTIVE",
+                    "Public Space Office",
+                    standardCitizenTasks("street occupancy authorization")
+            ));
+
+            seededProcedureTypeIds.add(seedProcedureType(
+                    typeJpaRepository, taskJpaRepository,
+                    "Business Opening Declaration",
+                    "Submit a declaration to open a commercial activity. Starts generic BPM citizen procedure flow.",
+                    new BigDecimal("80.00"),
+                    25,
+                    "ACTIVE",
+                    "Economic Development",
+                    standardCitizenTasks("business opening declaration")
+            ));
+
+            seededProcedureTypeIds.add(seedProcedureType(
+                    typeJpaRepository, taskJpaRepository,
+                    "Tax Rebate Request",
+                    "Request a municipal tax rebate due to eligible circumstances. Starts generic BPM citizen procedure flow.",
+                    BigDecimal.ZERO,
+                    30,
+                    "ACTIVE",
+                    "Tax Office",
+                    standardCitizenTasks("tax rebate request")
+            ));
+
+            seededProcedureTypeIds.add(seedProcedureType(
+                    typeJpaRepository, taskJpaRepository,
+                    "Household Registration",
+                    "Register a household member at a municipal address. Starts generic BPM citizen procedure flow.",
+                    BigDecimal.ZERO,
+                    10,
+                    "ACTIVE",
+                    "Population Registry",
+                    standardCitizenTasks("household registration")
+            ));
+
+            seededProcedureTypeIds.add(seedProcedureType(
+                    typeJpaRepository, taskJpaRepository,
+                    "Social Aid Application",
+                    "Apply for municipal social aid support. Starts generic BPM citizen procedure flow.",
+                    BigDecimal.ZERO,
+                    40,
+                    "ACTIVE",
+                    "Social Services",
+                    standardCitizenTasks("social aid application")
+            ));
+
+            seededProcedureTypeIds.add(seedProcedureType(
+                    typeJpaRepository, taskJpaRepository,
+                    "Cultural Event Authorization",
+                    "Request authorization for a public cultural event. Starts generic BPM citizen procedure flow.",
+                    new BigDecimal("60.00"),
+                    35,
+                    "ACTIVE",
+                    "Culture Department",
+                    standardCitizenTasks("cultural event authorization")
+            ));
+
+            seededProcedureTypeIds.add(seedProcedureType(
+                    typeJpaRepository, taskJpaRepository,
+                    "Tree Pruning Request",
+                    "Request pruning of trees in public areas. Starts generic BPM citizen procedure flow.",
+                    BigDecimal.ZERO,
+                    18,
+                    "ACTIVE",
+                    "Parks and Gardens",
+                    standardCitizenTasks("tree pruning request")
+            ));
+
+            UUID licenseId = seededProcedureTypeIds.get(0);
+            UUID registryId = seededProcedureTypeIds.get(1);
+            UUID addressId = seededProcedureTypeIds.get(2);
+
+            log.info("Seeded {} procedure types with tasks", seededProcedureTypeIds.size());
 
             // --- Seed sample cases for the citizen user ---
             Procedure licenseCase = new Procedure();
@@ -199,5 +292,13 @@ public class DataInitializer {
         task.setDescription(description);
         task.setOrderIndex(orderIndex);
         return task;
+    }
+
+    private List<ProcedureTask> standardCitizenTasks(String procedureName) {
+        return List.of(
+                createTask("Applicant Data", TaskType.FORM, "Provide applicant data for " + procedureName, 0),
+                createTask("Supporting Documents", TaskType.UPLOAD, "Upload required documents for " + procedureName, 1),
+                createTask("Confirmation", TaskType.REVIEW, "Review and submit " + procedureName, 2)
+        );
     }
 }

@@ -116,7 +116,7 @@ export class CasesApiService {
       return this.mockCitizenFlowService.createCase(request);
     }
     const backendRequest = {
-      procedureId: request.procedureSlug,
+      procedureId: request.procedureId,
       formData: request.formData,
       documentIds: []
     };

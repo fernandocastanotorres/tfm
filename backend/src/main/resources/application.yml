@@ -6,6 +6,9 @@ server:
 spring:
   application:
     name: records-api
+  messages:
+    basename: i18n/procedure-catalog
+    encoding: UTF-8
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/records_db}
     username: ${DB_USERNAME:records_user}

@@ -17,6 +17,17 @@ export class ProceduresApiService {
   private readonly mockCitizenFlowService = inject(MockCitizenFlowService);
   private readonly baseUrl = `${environment.apiBaseUrl}/citizen/procedures/catalog`;
 
+  private toSlug(value: string | null | undefined): string {
+    if (!value) return '';
+    return value
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
+  }
+
   private mapTask(raw: any): ProcedureTaskDto {
     return {
       id: raw.id,
@@ -29,10 +40,11 @@ export class ProceduresApiService {
   }
 
   private mapProcedure(raw: any): ProcedureItem {
+    const title = raw.title ?? raw.name ?? '';
     return {
       id: raw.id,
-      slug: raw.id,
-      name: raw.title,
+      slug: raw.slug ?? this.toSlug(title),
+      name: title,
       description: raw.description ?? '',
       category: raw.unit ?? 'General',
       fee: raw.feeAmount ?? 0,
@@ -63,11 +75,11 @@ export class ProceduresApiService {
   /**
    * GET /api/v1/citizen/procedures/catalog/{slug} — Get procedure detail with tasks.
    */
-  getBySlug(slug: string): Observable<ProcedureDetail> {
+  getByIdentifier(identifier: string): Observable<ProcedureDetail> {
     if (environment.useMockCitizenFlow) {
-      return this.mockCitizenFlowService.getProcedureBySlug(slug);
+      return this.mockCitizenFlowService.getProcedureBySlug(identifier);
     }
-    return this.http.get<any>(`${this.baseUrl}/${slug}`).pipe(
+    return this.http.get<any>(`${this.baseUrl}/${identifier}`).pipe(
       map((response) => this.mapProcedureDetail(response))
     );
   }
