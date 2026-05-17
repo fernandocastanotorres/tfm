@@ -22,7 +22,8 @@ export interface UserProfile {
   fullName: string;
   nationalId: string;
   phone: string;
-  createdAt: string;
+  address: string;
+  roles: string[];
 }
 
 export interface LoginResponse {

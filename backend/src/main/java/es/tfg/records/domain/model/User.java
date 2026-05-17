@@ -14,6 +14,9 @@ public class User {
     private String email;
     private String passwordHash;
     private String displayName;
+    private String nationalId;
+    private String phone;
+    private String address;
     private Set<String> roles;
     private boolean active;
     private String otpCode;
@@ -72,6 +75,30 @@ public class User {
 
     public void setRoles(Set<String> roles) {
         this.roles = roles;
+    }
+
+    public String getNationalId() {
+        return nationalId;
+    }
+
+    public void setNationalId(String nationalId) {
+        this.nationalId = nationalId;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public boolean isActive() {

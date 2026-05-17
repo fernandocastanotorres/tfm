@@ -11,7 +11,9 @@ import { AuthService } from '../../../application/services/auth.service';
 export class LoginComponent {
   loginForm: FormGroup;
   errorMessageKey = '';
+  infoMessage = '';
   isSubmitting = false;
+  isResending = false;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -55,6 +57,27 @@ export class LoginComponent {
         } else {
           this.errorMessageKey = 'LOGIN.ERROR_GENERIC';
         }
+      }
+    });
+  }
+
+  resendVerificationEmail(): void {
+    const emailControl = this.loginForm.get('email');
+    if (!emailControl || emailControl.invalid) {
+      emailControl?.markAsTouched();
+      return;
+    }
+
+    this.infoMessage = '';
+    this.isResending = true;
+    this.authService.resendVerificationEmail(emailControl.value).subscribe({
+      next: () => {
+        this.isResending = false;
+        this.infoMessage = 'Si la cuenta existe y no esta activa, hemos reenviado el enlace de verificacion.';
+      },
+      error: () => {
+        this.isResending = false;
+        this.infoMessage = 'No se pudo procesar la solicitud en este momento.';
       }
     });
   }

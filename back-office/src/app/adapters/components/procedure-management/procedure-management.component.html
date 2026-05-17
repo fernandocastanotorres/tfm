@@ -47,14 +47,40 @@
     <div class="bg-white rounded-lg shadow-lg w-full max-w-5xl max-h-[90vh] overflow-y-auto p-6">
       <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ selectedProcedure ? 'Editar procedimiento' : 'Nuevo procedimiento' }}</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <label class="block text-sm"><span class="font-medium text-gray-700">Titulo</span><input [(ngModel)]="form.title" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm"><span class="font-medium text-gray-700">Titulo</span><input [(ngModel)]="form.title" (ngModelChange)="onBaseFieldsChanged()" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
         <label class="block text-sm"><span class="font-medium text-gray-700">Categoria</span><input [(ngModel)]="form.category" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
-        <label class="block text-sm"><span class="font-medium text-gray-700">Unidad asignada</span><input [(ngModel)]="form.assignedUnit" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm"><span class="font-medium text-gray-700">Unidad asignada</span><input [(ngModel)]="form.assignedUnit" (ngModelChange)="onBaseFieldsChanged()" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
         <label class="block text-sm"><span class="font-medium text-gray-700">Estado</span><select [(ngModel)]="form.status" class="mt-1 w-full border rounded-md px-3 py-2"><option value="DRAFT">DRAFT</option><option value="ACTIVE">ACTIVE</option><option value="INACTIVE">INACTIVE</option></select></label>
         <label class="block text-sm"><span class="font-medium text-gray-700">Plazo dias</span><input type="number" [(ngModel)]="form.deadlineDays" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
         <label class="block text-sm"><span class="font-medium text-gray-700">Tasa</span><input type="number" [(ngModel)]="form.feeAmount" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
-        <label class="block text-sm md:col-span-2"><span class="font-medium text-gray-700">Descripcion</span><textarea [(ngModel)]="form.description" rows="3" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
+        <label class="block text-sm md:col-span-2"><span class="font-medium text-gray-700">Descripcion</span><textarea [(ngModel)]="form.description" (ngModelChange)="onBaseFieldsChanged()" rows="3" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
       </div>
+
+      <section class="mb-6 border rounded-lg p-4">
+        <div class="flex items-center justify-between gap-3 mb-3">
+          <h4 class="font-semibold text-gray-900">Internacionalizacion</h4>
+          <span class="text-xs text-gray-500">El locale es-ES se sincroniza con los campos principales</span>
+        </div>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <button
+            type="button"
+            *ngFor="let locale of supportedLocales"
+            (click)="selectLocale(locale)"
+            class="px-3 py-1.5 rounded-md text-xs font-medium border"
+            [class.bg-blue-600]="selectedLocale === locale"
+            [class.text-white]="selectedLocale === locale"
+            [class.border-blue-600]="selectedLocale === locale"
+            [class.bg-white]="selectedLocale !== locale"
+            [class.text-gray-700]="selectedLocale !== locale"
+            [class.border-gray-300]="selectedLocale !== locale"
+          >{{ locale }}</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <label class="block text-sm"><span class="font-medium text-gray-700">Titulo ({{ selectedLocale }})</span><input [(ngModel)]="selectedTranslation.title" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+          <label class="block text-sm"><span class="font-medium text-gray-700">Unidad ({{ selectedLocale }})</span><input [(ngModel)]="selectedTranslation.unit" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+          <label class="block text-sm md:col-span-2"><span class="font-medium text-gray-700">Descripcion ({{ selectedLocale }})</span><textarea [(ngModel)]="selectedTranslation.description" rows="3" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
+        </div>
+      </section>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <section>

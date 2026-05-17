@@ -21,8 +21,10 @@ export class RegisterComponent {
   }, { validators: [RegisterComponent.passwordsMatch] });
 
   isSubmitting = false;
+  isResending = false;
   successMessageKey = '';
   errorMessageKey = '';
+  infoMessage = '';
 
   constructor(
     private readonly fb: FormBuilder,
@@ -59,7 +61,7 @@ export class RegisterComponent {
       next: () => {
         this.isSubmitting = false;
         this.successMessageKey = 'REGISTER.SUCCESS';
-        this.router.navigate(['/sede/login'], { queryParams: { returnUrl: this.returnUrl } });
+        this.infoMessage = 'Te hemos enviado un enlace de verificacion al correo indicado.';
       },
       error: (error) => {
         this.isSubmitting = false;
@@ -86,6 +88,24 @@ export class RegisterComponent {
         } else {
           this.errorMessageKey = 'REGISTER.ERROR_GENERIC';
         }
+      }
+    });
+  }
+
+  resendVerificationEmail(): void {
+    const email = this.registerForm.value.email;
+    if (!email) {
+      return;
+    }
+    this.isResending = true;
+    this.authService.resendVerificationEmail(email).subscribe({
+      next: () => {
+        this.isResending = false;
+        this.infoMessage = 'Si la cuenta existe y no esta activa, hemos reenviado el enlace de verificacion.';
+      },
+      error: () => {
+        this.isResending = false;
+        this.infoMessage = 'No se pudo procesar la solicitud en este momento.';
       }
     });
   }

@@ -211,7 +211,7 @@ public class BackofficeService {
         entity.setId(UUID.randomUUID());
         applyProcedureRequest(entity, request);
         ProcedureTypeEntity saved = procedureTypeRepository.save(entity);
-        replaceTasks(saved.getId(), request.tasks());
+        replaceTasks(saved.getId(), request.tasks(), request.formSchema());
         return toManagedProcedure(saved);
     }
 
@@ -221,7 +221,7 @@ public class BackofficeService {
                 .orElseThrow(() -> new ResourceNotFoundException("PROCEDURE_TYPE", id.toString()));
         applyProcedureRequest(entity, request);
         ProcedureTypeEntity saved = procedureTypeRepository.save(entity);
-        replaceTasks(saved.getId(), request.tasks());
+        replaceTasks(saved.getId(), request.tasks(), request.formSchema());
         return toManagedProcedure(saved);
     }
 
@@ -341,9 +341,16 @@ public class BackofficeService {
 
     private BackofficeDtos.ManagedProcedure toManagedProcedure(ProcedureTypeEntity entity) {
         List<ProcedureTaskEntity> tasks = taskRepository.findByProcedureTypeIdOrderByOrderIndexAsc(entity.getId());
+        List<BackofficeDtos.FormSchemaField> formSchema = tasks.stream()
+                .filter(task -> task.getType() == TaskType.FORM)
+                .map(ProcedureTaskEntity::getFormSchema)
+                .filter(schema -> schema != null && !schema.isBlank())
+                .findFirst()
+                .map(this::parseFormSchema)
+                .orElse(List.of());
         return new BackofficeDtos.ManagedProcedure(
                 entity.getId(), entity.getTitle(), entity.getDescription(), entity.getTitle(), entity.getStatus(), entity.getUnit(),
-                entity.getDeadlineDays(), entity.getFeeAmount(), entity.getCreatedAt(), entity.getUpdatedAt(), tasks.stream().map(this::toTaskConfig).toList(), List.of());
+                entity.getDeadlineDays(), entity.getFeeAmount(), entity.getCreatedAt(), entity.getUpdatedAt(), tasks.stream().map(this::toTaskConfig).toList(), formSchema);
     }
 
     private BackofficeDtos.ProcedureTaskConfig toTaskConfig(ProcedureTaskEntity task) {
@@ -359,9 +366,12 @@ public class BackofficeService {
         entity.setFeeAmount(request.feeAmount());
     }
 
-    private void replaceTasks(UUID procedureTypeId, List<BackofficeDtos.ProcedureTaskConfig> tasks) {
+    private void replaceTasks(UUID procedureTypeId,
+                              List<BackofficeDtos.ProcedureTaskConfig> tasks,
+                              List<BackofficeDtos.FormSchemaField> formSchema) {
         taskRepository.deleteAll(taskRepository.findByProcedureTypeIdOrderByOrderIndexAsc(procedureTypeId));
         if (tasks == null) return;
+        String serializedFormSchema = serializeFormSchema(formSchema);
         tasks.stream().sorted(Comparator.comparingInt(BackofficeDtos.ProcedureTaskConfig::orderIndex)).forEach(task -> {
             ProcedureTaskEntity entity = new ProcedureTaskEntity();
             entity.setId(task.id() == null ? UUID.randomUUID() : task.id());
@@ -370,8 +380,30 @@ public class BackofficeService {
             entity.setDescription(task.description());
             entity.setOrderIndex(task.orderIndex());
             entity.setType(TaskType.valueOf(task.type()));
+            if (entity.getType() == TaskType.FORM && serializedFormSchema != null) {
+                entity.setFormSchema(serializedFormSchema);
+            }
             taskRepository.save(entity);
         });
+    }
+
+    private List<BackofficeDtos.FormSchemaField> parseFormSchema(String formSchemaJson) {
+        try {
+            return objectMapper.readValue(formSchemaJson, new TypeReference<>() {});
+        } catch (Exception ignored) {
+            return List.of();
+        }
+    }
+
+    private String serializeFormSchema(List<BackofficeDtos.FormSchemaField> formSchema) {
+        if (formSchema == null || formSchema.isEmpty()) {
+            return null;
+        }
+        try {
+            return objectMapper.writeValueAsString(formSchema);
+        } catch (Exception ignored) {
+            return null;
+        }
     }
 
     private BackofficeDtos.ProcedureTranslation toProcedureTranslation(ProcedureTypeI18nEntity entity) {

@@ -2,7 +2,12 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { ManagedProcedure, ProcedureRequest } from '../models/backoffice.models';
+import {
+  ManagedProcedure,
+  ProcedureRequest,
+  ProcedureTranslation,
+  ProcedureTranslationRequest
+} from '../models/backoffice.models';
 
 @Injectable({ providedIn: 'root' })
 export class ProcedureManagementService {
@@ -23,5 +28,13 @@ export class ProcedureManagementService {
 
   toggleStatus(id: string, status: ManagedProcedure['status']): Observable<ManagedProcedure> {
     return this.http.patch<ManagedProcedure>(`${this.baseUrl}/${id}/status`, { status });
+  }
+
+  listTranslations(id: string): Observable<ProcedureTranslation[]> {
+    return this.http.get<ProcedureTranslation[]>(`${this.baseUrl}/${id}/translations`);
+  }
+
+  upsertTranslation(id: string, request: ProcedureTranslationRequest): Observable<ProcedureTranslation> {
+    return this.http.put<ProcedureTranslation>(`${this.baseUrl}/${id}/translations`, request);
   }
 }

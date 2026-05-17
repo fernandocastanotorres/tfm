@@ -80,3 +80,12 @@ logging:
 # File Storage
 storage:
   documents-path: ${STORAGE_DOCUMENTS_PATH:./data/documents}
+
+mailing:
+  enabled: ${MAILING_ENABLED:false}
+  verification-base-url: ${MAILING_VERIFICATION_BASE_URL:http://localhost:4200/sede/verificar-email}
+  from:
+    email: ${MAILING_FROM_EMAIL:no-reply@records.local}
+    name: ${MAILING_FROM_NAME:Records}
+  brevo:
+    api-key: ${BREVO_API_KEY:}

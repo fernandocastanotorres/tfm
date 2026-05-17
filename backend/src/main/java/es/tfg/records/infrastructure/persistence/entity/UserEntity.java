@@ -39,6 +39,15 @@ public class UserEntity {
     @Column(name = "display_name", length = 255)
     private String displayName;
 
+    @Column(name = "national_id", length = 32)
+    private String nationalId;
+
+    @Column(name = "phone", length = 32)
+    private String phone;
+
+    @Column(name = "address", length = 512)
+    private String address;
+
     @Column(nullable = false)
     private boolean active = false;
 
@@ -102,6 +111,30 @@ public class UserEntity {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public String getNationalId() {
+        return nationalId;
+    }
+
+    public void setNationalId(String nationalId) {
+        this.nationalId = nationalId;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public Set<String> getRoles() {

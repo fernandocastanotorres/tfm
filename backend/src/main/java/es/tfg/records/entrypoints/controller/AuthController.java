@@ -12,7 +12,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 /**
  * REST controller for authentication endpoints.
@@ -45,7 +48,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    @Operation(summary = "Register new user", description = "Create a new user account. An OTP verification code will be sent to the provided email.")
+    @Operation(summary = "Register new user", description = "Create a new user account and send email verification link.")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "User registered successfully",
                     content = @Content(schema = @Schema(implementation = UserProfile.class))),
@@ -85,6 +88,13 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/resend-verification")
+    @Operation(summary = "Resend verification email", description = "Re-sends activation email for non-active accounts.")
+    public ResponseEntity<Void> resendVerification(@Valid @RequestBody PasswordResetRequest request) {
+        authService.resendVerificationEmail(request);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/verify-otp")
     @Operation(summary = "Verify OTP code", description = "Verify the 6-digit OTP code sent during registration to activate the account.")
     @ApiResponses({
@@ -96,6 +106,28 @@ public class AuthController {
             @Valid @RequestBody OtpRequest request) {
         authService.verifyOtp(request);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/verify-email")
+    @Operation(summary = "Verify email token", description = "Activate account using verification token from registration email")
+    public ResponseEntity<Void> verifyEmail(@RequestParam("token") String token) {
+        authService.verifyEmailToken(token);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/me")
+    @Operation(summary = "Get authenticated profile")
+    public ResponseEntity<UserProfile> getProfile(Authentication authentication) {
+        UUID userId = UUID.fromString(authentication.getName());
+        return ResponseEntity.ok(authService.getProfile(userId));
+    }
+
+    @PutMapping("/me")
+    @Operation(summary = "Update authenticated profile")
+    public ResponseEntity<UserProfile> updateProfile(Authentication authentication,
+                                                     @Valid @RequestBody UpdateCitizenProfileRequest request) {
+        UUID userId = UUID.fromString(authentication.getName());
+        return ResponseEntity.ok(authService.updateProfile(userId, request));
     }
 
     @PostMapping("/reset-password")

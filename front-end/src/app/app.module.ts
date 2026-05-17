@@ -12,6 +12,7 @@ import { AppRoutingModule } from './app-routing.module';
 // Auth components
 import { LoginComponent } from './adapters/components/login/login.component';
 import { RegisterComponent } from './adapters/components/register/register.component';
+import { EmailVerificationComponent } from './adapters/components/email-verification/email-verification.component';
 import { PasswordRecoveryComponent } from './adapters/components/password-recovery/password-recovery.component';
 
 // Authenticated components
@@ -65,6 +66,7 @@ export function HttpLoaderFactory(http: HttpClient): CustomLoader {
     AppComponent,
     LoginComponent,
     RegisterComponent,
+    EmailVerificationComponent,
     PasswordRecoveryComponent,
     DashboardComponent,
     ProfileComponent,

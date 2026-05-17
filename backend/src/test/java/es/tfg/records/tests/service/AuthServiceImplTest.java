@@ -3,6 +3,7 @@ package es.tfg.records.tests.service;
 import es.tfg.records.application.dto.LoginRequest;
 import es.tfg.records.application.dto.RegisterRequest;
 import es.tfg.records.application.exception.AuthenticationException;
+import es.tfg.records.application.service.EmailGateway;
 import es.tfg.records.application.service.AuthServiceImpl;
 import es.tfg.records.domain.model.User;
 import es.tfg.records.domain.port.UserRepository;
@@ -10,7 +11,6 @@ import es.tfg.records.infrastructure.security.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -24,6 +24,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,7 +40,9 @@ class AuthServiceImplTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
-    @InjectMocks
+    @Mock
+    private EmailGateway emailGateway;
+
     private AuthServiceImpl authService;
 
     private UUID userId;
@@ -51,6 +54,8 @@ class AuthServiceImplTest {
         userId = UUID.randomUUID();
         email = "test@example.com";
         password = "Password123";
+        authService = new AuthServiceImpl(userRepository, jwtTokenProvider, passwordEncoder, emailGateway, "http://localhost:4200/sede/verificar-email");
+        doNothing().when(emailGateway).sendVerificationEmail(any(), any(), any());
     }
 
     @Test
@@ -88,8 +93,11 @@ class AuthServiceImplTest {
         // Given
         RegisterRequest request = new RegisterRequest(
                 email,
-                password,
-                "Test User"
+                "Test User",
+                "12345678A",
+                "600123456",
+                "Calle Mayor 10",
+                password
         );
 
         when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
@@ -117,8 +125,11 @@ class AuthServiceImplTest {
 
         RegisterRequest request = new RegisterRequest(
                 email,
-                password,
-                "Test User"
+                "Test User",
+                "12345678A",
+                "600123456",
+                "Calle Mayor 10",
+                password
         );
 
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(existingUser));
@@ -182,8 +193,11 @@ class AuthServiceImplTest {
         // Given - password less than 8 characters
         RegisterRequest request = new RegisterRequest(
                 "new@example.com",
-                "Pass1", // Only 5 characters
-                "New User"
+                "New User",
+                "12345678A",
+                "600123456",
+                "Calle Mayor 10",
+                "Pass1" // Only 5 characters
         );
 
         // When/Then
@@ -196,8 +210,11 @@ class AuthServiceImplTest {
         // Given - password without uppercase
         RegisterRequest request = new RegisterRequest(
                 "new@example.com",
-                "password123", // No uppercase
-                "New User"
+                "New User",
+                "12345678A",
+                "600123456",
+                "Calle Mayor 10",
+                "password123" // No uppercase
         );
 
         // When/Then
@@ -210,8 +227,11 @@ class AuthServiceImplTest {
         // Given - password without digit
         RegisterRequest request = new RegisterRequest(
                 "new@example.com",
-                "Password", // No digit
-                "New User"
+                "New User",
+                "12345678A",
+                "600123456",
+                "Calle Mayor 10",
+                "Password" // No digit
         );
 
         // When/Then
@@ -224,8 +244,11 @@ class AuthServiceImplTest {
         // Given
         RegisterRequest request = new RegisterRequest(
                 "new@example.com",
-                "Password123",
-                "New User"
+                "New User",
+                "12345678A",
+                "600123456",
+                "Calle Mayor 10",
+                "Password123"
         );
 
         when(userRepository.findByEmail("new@example.com")).thenReturn(Optional.empty());

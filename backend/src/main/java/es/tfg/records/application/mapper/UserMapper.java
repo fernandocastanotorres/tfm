@@ -17,6 +17,10 @@ public final class UserMapper {
         return new UserProfile(
                 user.getId(),
                 user.getEmail(),
+                user.getDisplayName(),
+                user.getNationalId(),
+                user.getPhone(),
+                user.getAddress(),
                 user.getRoles() != null ? new ArrayList<>(user.getRoles()) : new ArrayList<>()
         );
     }

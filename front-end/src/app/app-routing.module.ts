@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './adapters/components/login/login.component';
 import { RegisterComponent } from './adapters/components/register/register.component';
+import { EmailVerificationComponent } from './adapters/components/email-verification/email-verification.component';
 import { PasswordRecoveryComponent } from './adapters/components/password-recovery/password-recovery.component';
 import { DashboardComponent } from './adapters/components/dashboard/dashboard.component';
 import { ProfileComponent } from './adapters/components/profile/profile.component';
@@ -53,6 +54,7 @@ const routes: Routes = [
       // Auth pages inside public layout so they share header/footer
       { path: 'login', component: LoginComponent, title: 'Iniciar sesion' },
       { path: 'registro', component: RegisterComponent, title: 'Crear cuenta' },
+      { path: 'verificar-email', component: EmailVerificationComponent, title: 'Verificacion de cuenta' },
       { path: 'recuperacion', component: PasswordRecoveryComponent, title: 'Recuperar contrasena' }
     ]
   },

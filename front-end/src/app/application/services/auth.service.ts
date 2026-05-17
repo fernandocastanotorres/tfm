@@ -48,6 +48,14 @@ export class AuthService {
     return this.http.post<UserProfile>(`${this.apiUrl}/auth/register`, request);
   }
 
+  verifyEmailToken(token: string): Observable<void> {
+    return this.http.get<void>(`${this.apiUrl}/auth/verify-email`, { params: { token } });
+  }
+
+  resendVerificationEmail(email: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/auth/resend-verification`, { email });
+  }
+
   /**
    * POST /api/v1/auth/logout — Invalidate server-side refresh token and clear local tokens.
    */

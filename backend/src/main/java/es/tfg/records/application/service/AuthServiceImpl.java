@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.time.Instant;
 import java.util.*;
@@ -31,22 +32,27 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
-
-    // In-memory OTP store for development (console log mode)
-    private final Map<String, OtpEntry> otpStore = new HashMap<>();
+    private final EmailGateway emailGateway;
+    private final String verificationBaseUrl;
 
     // In-memory password reset token store for development
     private final Map<String, ResetTokenEntry> resetTokenStore = new HashMap<>();
+
+    private final Map<String, Instant> resendVerificationThrottle = new HashMap<>();
 
     // In-memory refresh token store for rotation
     private final Set<String> activeRefreshTokens = new HashSet<>();
 
     public AuthServiceImpl(UserRepository userRepository,
                            JwtTokenProvider jwtTokenProvider,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,
+                           EmailGateway emailGateway,
+                           @Value("${mailing.verification-base-url:http://localhost:4200/sede/verificar-email}") String verificationBaseUrl) {
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.passwordEncoder = passwordEncoder;
+        this.emailGateway = emailGateway;
+        this.verificationBaseUrl = verificationBaseUrl;
     }
 
     @Override
@@ -95,21 +101,22 @@ public class AuthServiceImpl implements AuthService {
         user.setId(UUID.randomUUID());
         user.setEmail(request.email());
         user.setPasswordHash(passwordEncoder.encode(request.password()));
-        user.setDisplayName(request.displayName());
+        user.setDisplayName(request.fullName());
+        user.setNationalId(request.nationalId());
+        user.setPhone(request.phone());
+        user.setAddress(request.address());
         user.setRoles(Set.of("ROLE_CITIZEN"));
         user.setActive(false);
 
-        // Generate OTP
-        String otpCode = generateOtp();
+        String otpCode = UUID.randomUUID().toString();
         user.setOtpCode(otpCode);
-        user.setOtpExpiry(Instant.now().plusSeconds(900)); // 15 minutes
+        user.setOtpExpiry(Instant.now().plusSeconds(86400));
 
         User saved = userRepository.save(user);
 
-        // Store OTP for verification (dev mode - console log)
-        otpStore.put(request.email(), new OtpEntry(otpCode, user.getOtpExpiry()));
-        log.info("=== OTP FOR {} === Code: {} (expires at {}) ===",
-                request.email(), otpCode, user.getOtpExpiry());
+        String verificationUrl = verificationBaseUrl + "?token=" + otpCode;
+        emailGateway.sendVerificationEmail(request.email(), request.fullName(), verificationUrl);
+        log.info("Verification email generated for {} with expiry {}", request.email(), user.getOtpExpiry());
 
         return UserMapper.toUserProfile(saved);
     }
@@ -182,6 +189,30 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public void resendVerificationEmail(PasswordResetRequest request) {
+        userRepository.findByEmail(request.email()).ifPresent(user -> {
+            if (user.isActive()) {
+                return;
+            }
+
+            Instant now = Instant.now();
+            Instant nextAllowed = resendVerificationThrottle.get(request.email());
+            if (nextAllowed != null && now.isBefore(nextAllowed)) {
+                return;
+            }
+
+            String verificationToken = UUID.randomUUID().toString();
+            user.setOtpCode(verificationToken);
+            user.setOtpExpiry(now.plusSeconds(86400));
+            userRepository.save(user);
+
+            String verificationUrl = verificationBaseUrl + "?token=" + verificationToken;
+            emailGateway.sendVerificationEmail(user.getEmail(), user.getDisplayName(), verificationUrl);
+            resendVerificationThrottle.put(request.email(), now.plusSeconds(60));
+        });
+    }
+
+    @Override
     public void verifyOtp(OtpRequest request) {
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new AuthenticationException(
@@ -194,15 +225,13 @@ public class AuthServiceImpl implements AuthService {
                     "Account is already verified");
         }
 
-        OtpEntry entry = otpStore.get(request.email());
-        if (entry == null || !entry.code().equals(request.code())) {
+        if (user.getOtpCode() == null || !user.getOtpCode().equals(request.code())) {
             throw new AuthenticationException(
                     "AUTH-400-INVALID_OTP",
                     "Invalid OTP code");
         }
 
-        if (Instant.now().isAfter(entry.expiry())) {
-            otpStore.remove(request.email());
+        if (user.getOtpExpiry() == null || Instant.now().isAfter(user.getOtpExpiry())) {
             throw new AuthenticationException(
                     "AUTH-400-INVALID_OTP",
                     "OTP code has expired");
@@ -213,9 +242,44 @@ public class AuthServiceImpl implements AuthService {
         user.setOtpCode(null);
         user.setOtpExpiry(null);
         userRepository.save(user);
-
-        otpStore.remove(request.email());
         log.info("Account verified for: {}", request.email());
+    }
+
+    @Override
+    public void verifyEmailToken(String token) {
+        User user = userRepository.findByOtpCode(token)
+                .orElseThrow(() -> new AuthenticationException(
+                        "AUTH-400-INVALID_OTP",
+                        "Invalid verification token"));
+
+        if (user.getOtpExpiry() == null || Instant.now().isAfter(user.getOtpExpiry())) {
+            throw new AuthenticationException(
+                    "AUTH-400-INVALID_OTP",
+                    "Verification token has expired");
+        }
+
+        user.setActive(true);
+        user.setOtpCode(null);
+        user.setOtpExpiry(null);
+        userRepository.save(user);
+    }
+
+    @Override
+    public UserProfile getProfile(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AuthenticationException("AUTH-401-USER_NOT_FOUND", "User not found"));
+        return UserMapper.toUserProfile(user);
+    }
+
+    @Override
+    public UserProfile updateProfile(UUID userId, UpdateCitizenProfileRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AuthenticationException("AUTH-401-USER_NOT_FOUND", "User not found"));
+        user.setDisplayName(request.fullName());
+        user.setPhone(request.phone());
+        user.setNationalId(request.nationalId());
+        user.setAddress(request.address());
+        return UserMapper.toUserProfile(userRepository.save(user));
     }
 
     @Override
@@ -270,13 +334,6 @@ public class AuthServiceImpl implements AuthService {
             throw new ValidationException(errors);
         }
     }
-
-    private String generateOtp() {
-        Random random = new Random();
-        return String.format("%06d", random.nextInt(1000000));
-    }
-
-    private record OtpEntry(String code, Instant expiry) {}
 
     private record ResetTokenEntry(UUID userId, Instant expiry) {}
 }

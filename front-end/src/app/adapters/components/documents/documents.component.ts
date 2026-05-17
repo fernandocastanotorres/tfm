@@ -8,6 +8,7 @@ import { CasesApiService } from '../../../application/services/cases-api.service
 import { DocumentItem } from '../../../application/models/document.models';
 import { CaseItem } from '../../../application/models/case.models';
 import { changePage, updatePageSize, getPaginationState, PaginationState } from '../../../application/utils/pagination';
+import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
 
 @Component({
   selector: 'app-documents',
@@ -46,7 +47,8 @@ export class DocumentsComponent implements OnInit, OnDestroy {
     private readonly documentsApiService: DocumentsApiService,
     private readonly casesApiService: CasesApiService,
     private readonly fb: FormBuilder,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly confirmDialogService: ConfirmDialogService
   ) {}
 
   ngOnInit(): void {
@@ -213,8 +215,17 @@ export class DocumentsComponent implements OnInit, OnDestroy {
   }
 
   // Delete handling
-  deleteDocument(docId: string): void {
+  async deleteDocument(docId: string): Promise<void> {
     if (!docId) {
+      return;
+    }
+
+    const confirmed = await this.confirmDialogService.confirm(
+      'Eliminar documento',
+      'Esta accion eliminara el documento de forma permanente.',
+      'Si, eliminar'
+    );
+    if (!confirmed) {
       return;
     }
 

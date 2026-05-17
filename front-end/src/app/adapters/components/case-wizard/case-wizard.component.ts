@@ -5,6 +5,7 @@ import { CasesApiService } from '../../../application/services/cases-api.service
 import { ProceduresApiService } from '../../../application/services/procedures-api.service';
 import { ProcedureDetail, ProcedureTaskDto, FormFieldDto, UploadRequirementDto } from '../../../application/models/procedure.models';
 import { CreateCaseRequest } from '../../../application/models/case.models';
+import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
 
 @Component({
   selector: 'app-case-wizard',
@@ -29,7 +30,8 @@ export class CaseWizardComponent implements OnInit {
     private readonly casesApiService: CasesApiService,
     private readonly proceduresApiService: ProceduresApiService,
     private readonly route: ActivatedRoute,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly confirmDialogService: ConfirmDialogService
   ) {}
 
   ngOnInit(): void {
@@ -100,9 +102,18 @@ export class CaseWizardComponent implements OnInit {
     this.uploadForm.get(requirementId)?.setValue(next.map((file) => file.name));
   }
 
-  submit(): void {
+  async submit(): Promise<void> {
     if (!this.procedure || !this.isCurrentTaskValid()) {
       this.markCurrentTaskTouched();
+      return;
+    }
+
+    const confirmed = await this.confirmDialogService.confirm(
+      'Confirmar envio',
+      'Esta accion enviara el expediente y no podras editarlo despues.',
+      'Si, enviar'
+    );
+    if (!confirmed) {
       return;
     }
 

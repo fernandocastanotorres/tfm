@@ -41,6 +41,12 @@ public class UserJpaAdapter implements UserRepository {
     }
 
     @Override
+    public Optional<User> findByOtpCode(String otpCode) {
+        return jpaRepository.findByOtpCode(otpCode)
+                .map(UserEntityMapper::toDomain);
+    }
+
+    @Override
     public boolean existsByEmail(String email) {
         return jpaRepository.existsByEmail(email);
     }

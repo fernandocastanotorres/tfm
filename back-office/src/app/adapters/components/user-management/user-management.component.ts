@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { BackofficeUser, CreateUserRequest, UpdateUserRequest } from '../../../application/models/backoffice.models';
 import { UserManagementService } from '../../../application/services/user-management.service';
+import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
 
 @Component({
   selector: 'bo-user-management',
@@ -9,6 +10,7 @@ import { UserManagementService } from '../../../application/services/user-manage
 })
 export class UserManagementComponent implements OnInit {
   private readonly userManagementService = inject(UserManagementService);
+  private readonly confirmDialogService = inject(ConfirmDialogService);
 
   users: BackofficeUser[] = [];
   selectedUser: BackofficeUser | null = null;
@@ -78,8 +80,11 @@ export class UserManagementComponent implements OnInit {
     this.form.roles = [...this.form.roles, role];
   }
 
-  save(): void {
+  async save(): Promise<void> {
     if (!this.form.email || this.form.roles.length === 0) return;
+
+    const confirmed = await this.confirmDialogService.confirm('Confirmar guardado', 'Se aplicaran los cambios del usuario de backoffice.', 'Si, guardar');
+    if (!confirmed) return;
 
     this.isSaving = true;
     if (this.selectedUser) {
@@ -107,7 +112,10 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
-  toggleActive(user: BackofficeUser): void {
+  async toggleActive(user: BackofficeUser): Promise<void> {
+    const action = user.isActive ? 'desactivar' : 'activar';
+    const confirmed = await this.confirmDialogService.confirm('Confirmar accion', `Vas a ${action} este usuario.`, 'Si, continuar');
+    if (!confirmed) return;
     this.userManagementService.toggleActive(user.id, !user.isActive).subscribe({
       next: updated => user.isActive = updated.isActive
     });

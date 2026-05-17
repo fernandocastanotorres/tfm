@@ -49,9 +49,13 @@
       </button>
 
       <p class="error-text text-center" role="alert" *ngIf="errorMessageKey">{{ errorMessageKey | translate }}</p>
+      <p class="text-sm text-surface-700 text-center" role="status" *ngIf="infoMessage">{{ infoMessage }}</p>
       <div class="flex flex-col gap-2 text-sm text-surface-600">
         <a [routerLink]="['/sede/registro']" [queryParams]="{ returnUrl: returnUrl }" class="text-brand-600 hover:underline">{{ 'LOGIN.CREATE_ACCOUNT' | translate }}</a>
         <a [routerLink]="['/sede/recuperacion']" class="text-brand-600 hover:underline">{{ 'LOGIN.FORGOT' | translate }}</a>
+        <button type="button" class="text-left text-brand-600 hover:underline" (click)="resendVerificationEmail()" [disabled]="isResending">
+          {{ isResending ? 'Reenviando enlace...' : 'Reenviar enlace de verificacion' }}
+        </button>
       </div>
     </form>
   </div>

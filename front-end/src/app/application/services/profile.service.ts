@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface ProfileData {
   fullName: string;
@@ -12,13 +15,15 @@ export interface ProfileData {
   providedIn: 'root'
 })
 export class ProfileService {
-  getProfile(): ProfileData {
-    return {
-      fullName: 'María López',
-      email: 'maria.lopez@example.com',
-      phone: '600123456',
-      nationalId: '12345678A',
-      address: 'Calle Mayor 10, Madrid'
-    };
+  private readonly authBaseUrl = `${environment.apiBaseUrl}/auth`;
+
+  constructor(private readonly http: HttpClient) {}
+
+  getProfile(): Observable<ProfileData> {
+    return this.http.get<ProfileData>(`${this.authBaseUrl}/me`);
+  }
+
+  updateProfile(profile: Omit<ProfileData, 'email'>): Observable<ProfileData> {
+    return this.http.put<ProfileData>(`${this.authBaseUrl}/me`, profile);
   }
 }

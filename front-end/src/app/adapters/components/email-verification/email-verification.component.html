@@ -1,0 +1,9 @@
+<section class="auth-page" aria-labelledby="verify-title">
+  <div class="card w-full max-w-2xl p-10 text-center space-y-4">
+    <h1 id="verify-title" class="text-2xl font-semibold text-surface-900">Verificacion de cuenta</h1>
+    <p *ngIf="isLoading" class="text-surface-600">Estamos validando tu enlace de activacion...</p>
+    <p *ngIf="!isLoading && success" class="text-success font-semibold">Tu cuenta ha sido activada correctamente. Ya puedes iniciar sesion.</p>
+    <p *ngIf="!isLoading && !success" class="error-text">El enlace no es valido o ha caducado.</p>
+    <a routerLink="/sede/login" class="btn-primary inline-block" *ngIf="!isLoading">Ir a iniciar sesion</a>
+  </div>
+</section>

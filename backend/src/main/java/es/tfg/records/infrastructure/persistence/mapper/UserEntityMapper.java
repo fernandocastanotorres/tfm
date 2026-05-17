@@ -20,6 +20,9 @@ public final class UserEntityMapper {
         user.setEmail(entity.getEmail());
         user.setPasswordHash(entity.getPasswordHash());
         user.setDisplayName(entity.getDisplayName());
+        user.setNationalId(entity.getNationalId());
+        user.setPhone(entity.getPhone());
+        user.setAddress(entity.getAddress());
         user.setActive(entity.isActive());
         user.setOtpCode(entity.getOtpCode());
         user.setOtpExpiry(entity.getOtpExpiry());
@@ -38,6 +41,9 @@ public final class UserEntityMapper {
         entity.setEmail(domain.getEmail());
         entity.setPasswordHash(domain.getPasswordHash());
         entity.setDisplayName(domain.getDisplayName());
+        entity.setNationalId(domain.getNationalId());
+        entity.setPhone(domain.getPhone());
+        entity.setAddress(domain.getAddress());
         entity.setActive(domain.isActive());
         entity.setRoles(domain.getRoles() == null ? Set.of("ROLE_CITIZEN") : Set.copyOf(domain.getRoles()));
         entity.setOtpCode(domain.getOtpCode());

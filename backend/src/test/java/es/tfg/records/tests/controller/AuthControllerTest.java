@@ -40,7 +40,7 @@ class AuthControllerTest {
 
     @Test
     void login_shouldReturn200() throws Exception {
-        UserProfile user = new UserProfile(UUID.randomUUID(), "citizen@example.com", List.of("ROLE_CITIZEN"));
+        UserProfile user = new UserProfile(UUID.randomUUID(), "citizen@example.com", "Citizen", "12345678A", "600123456", "Calle Mayor 10", List.of("ROLE_CITIZEN"));
         LoginResponse response = new LoginResponse("access", "refresh", 900, user);
         when(authService.login(any(LoginRequest.class))).thenReturn(response);
 
@@ -54,12 +54,12 @@ class AuthControllerTest {
 
     @Test
     void register_shouldReturn201() throws Exception {
-        UserProfile profile = new UserProfile(UUID.randomUUID(), "new@example.com", List.of("ROLE_CITIZEN"));
+        UserProfile profile = new UserProfile(UUID.randomUUID(), "new@example.com", "New User", "12345678A", "600123456", "Calle Mayor 10", List.of("ROLE_CITIZEN"));
         when(authService.register(any(RegisterRequest.class))).thenReturn(profile);
 
         mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new RegisterRequest("new@example.com", "Password123", "New User"))))
+                        .content(objectMapper.writeValueAsString(new RegisterRequest("new@example.com", "New User", "12345678A", "600123456", "Calle Mayor 10", "Password123"))))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.email").value("new@example.com"));
     }

@@ -174,3 +174,21 @@ export interface ProcedureRequest {
   tasks: ProcedureTaskConfig[];
   formSchema: FormSchemaField[];
 }
+
+export interface ProcedureTranslation {
+  id: string;
+  procedureTypeId: string;
+  locale: string;
+  title: string;
+  description: string;
+  unit: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProcedureTranslationRequest {
+  locale: string;
+  title: string;
+  description: string;
+  unit: string;
+}
