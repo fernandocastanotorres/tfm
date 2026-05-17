@@ -50,7 +50,7 @@
 
       <p class="error-text text-center" role="alert" *ngIf="errorMessageKey">{{ errorMessageKey | translate }}</p>
       <div class="flex flex-col gap-2 text-sm text-surface-600">
-        <a [routerLink]="['/sede/registro']" class="text-brand-600 hover:underline">{{ 'LOGIN.CREATE_ACCOUNT' | translate }}</a>
+        <a [routerLink]="['/sede/registro']" [queryParams]="{ returnUrl: returnUrl }" class="text-brand-600 hover:underline">{{ 'LOGIN.CREATE_ACCOUNT' | translate }}</a>
         <a [routerLink]="['/sede/recuperacion']" class="text-brand-600 hover:underline">{{ 'LOGIN.FORGOT' | translate }}</a>
       </div>
     </form>

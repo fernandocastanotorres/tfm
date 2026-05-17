@@ -27,7 +27,7 @@ describe('DashboardComponent', () => {
 
   it('should filter cases by status', () => {
     component.filterForm.patchValue({ status: 'CASE_STATUS.REVIEW' });
-    expect(component.filteredCases.every((c) => c.statusKey === 'CASE_STATUS.REVIEW')).toBeTrue();
+    expect(component.filteredCases.every((c) => c.status === 'REVIEW')).toBeTrue();
   });
 
   it('should load mock data', () => {

@@ -20,7 +20,7 @@ The system is divided into three decoupled core modules:
 ## 3. Technology Stack & Tooling
 *   **UI/UX:** Tailwind CSS (styling) + Angular Material (components) + `@ngx-translate` (i18n).
 *   **Business Logic:** Spring Boot 3.x, Spring Security (JWT-based).
-*   **Process Engine:** Camunda 7/8 or Activiti (BPMN 2.0).
+*   **Process Engine:** Flowable embedded engine (BPMN 2.0).
 *   **Persistence:** PostgreSQL via Spring Data JPA.
 *   **DMS (Document Management):** Alfresco Content Services (CMIS/REST API).
 *   **Orchestration:** **Docker & Docker Compose**. Essential services to containerize:
@@ -35,6 +35,14 @@ The system is divided into three decoupled core modules:
 ### 4.1. Dynamic Process & UI
 *   **JSON Schema Forms:** UI components must be generated dynamically. The Backend provides a schema based on the current BPMN `taskId`.
 *   **Workflow Logic:** Support for linear and non-linear flows, including correction loops (returning files to the citizen for amendment and resubmission).
+*   **Stable Procedure Start:** Procedure start and wizard resolution must use a stable identifier (`procedureId` UUID), not localized slugs.
+*   **Login-First Start Policy:** If a citizen starts a protected procedure while unauthenticated, the UI must redirect to login and then continue automatically to the original route.
+
+### 4.1.1. Catalog Localization
+*   **Request Locale:** Catalog localization must be driven by `Accept-Language`.
+*   **Supported Locales:** `es-ES`, `ca-ES`, `eu-ES`, `gl-ES`, `va-ES`.
+*   **Translation Persistence:** Procedure translations must be editable from backoffice and persisted in database (`procedure_type_i18n`).
+*   **Fallback:** If DB translation is missing, fallback to server bundle/default language.
 
 ### 4.2. Document Management Pipeline
 *   **Automated Conversion:** Server-side conversion of all uploaded documents to **PDF/A** (standard for long-term preservation).
@@ -51,6 +59,7 @@ The system is divided into three decoupled core modules:
 *   **Public Identifiers:** Use **UUID v4** exclusively (no sequential IDs in URLs).
 *   **Audit Trail:** Detailed logging of `timestamp`, `user_id`, `action`, `resource_uuid`, `client_ip`, and `app_context`.
 *   **Authentication:** JWT with distinct roles: `ROLE_CITIZEN`, `ROLE_TRAMITADOR`, `ROLE_ADMIN`.
+*   **Session Resilience:** Backoffice protected requests must support token refresh + retry on `401` to avoid forced logout on normal token expiry.
 
 ## 6. Deployment & DevOps
 *   **Dockerization:** Multi-stage `Dockerfile` for each module.

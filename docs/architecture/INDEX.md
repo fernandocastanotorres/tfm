@@ -3,10 +3,13 @@
 ## Governance
 - [Boundary Rules](./BOUNDARY_RULES.md) — enforceable dependency and module boundary rules.
 - [PR Template Snippet (Architecture Impact)](./PR_TEMPLATE_ARCHITECTURE.md) — checklist block for architecture-impacting PRs.
+- [System Design](./SYSTEM_DESIGN.md) — current runtime architecture, flows, and data design baseline.
 
 ## Related ADRs
 - [ADR-0001](../adr/0001-modular-architecture-public-backoffice-core.md) — three-module system architecture.
 - [ADR-0007](../adr/0007-architectural-style-hexagonal-boundaries.md) — hexagonal/clean boundary model.
+- [ADR-0008](../adr/0008-select-flowable-as-bpmn-engine.md) — BPM engine standardization.
+- [ADR-0009](../adr/0009-stable-procedure-id-and-db-backed-catalog-i18n.md) — procedure start and localization persistence model.
 
 ## How to Propose Architecture Changes
 

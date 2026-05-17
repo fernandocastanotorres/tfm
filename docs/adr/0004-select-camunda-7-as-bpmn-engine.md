@@ -1,7 +1,7 @@
 # ADR-0004: Select Camunda 7 as the BPMN Engine
 
 ## Status
-Accepted
+Superseded by ADR-0008
 
 ## Date
 2026-05-13

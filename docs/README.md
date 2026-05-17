@@ -13,6 +13,7 @@ This folder contains project-level technical documentation.
 ## Architecture Rules
 - Architecture entry point: [Architecture Index](./architecture/INDEX.md)
 - Boundary enforcement guide: [Boundary Rules](./architecture/BOUNDARY_RULES.md)
+- Current technical baseline: [System Design](./architecture/SYSTEM_DESIGN.md)
 
 ## Security
 - Authorization policy: [Authorization Matrix](./security/AUTHORIZATION_MATRIX.md)
@@ -24,7 +25,7 @@ This folder contains project-level technical documentation.
 - API error model: [Error Model](./api/ERROR_MODEL.md)
 
 ## BPM
-- Camunda 7 process conventions: [BPMN Conventions](./bpm/BPMN_CONVENTIONS.md)
+- Flowable process conventions: [BPMN Conventions](./bpm/BPMN_CONVENTIONS.md)
 
 ## Interoperability
 - ENIDOC package specification: [ENIDOC Spec](./interoperability/ENIDOC_SPEC.md)

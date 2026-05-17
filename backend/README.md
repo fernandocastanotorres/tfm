@@ -10,17 +10,19 @@ This API provides the backend services for managing electronic citizen records (
 - **Case Management** — Full CRUD for citizen cases (expedientes) with ownership enforcement, status transitions, and timeline tracking
 - **Document Management** — Upload, download, listing, and deletion of documents associated with cases
 - **Procedure Catalog** — Browse available procedure types with dynamic form/task schemas for UI rendering
+- **Catalog i18n** — Locale-aware catalog with DB-backed translations and bundle fallback
 
 ## Tech Stack
 
 | Component | Technology |
 |-----------|------------|
 | Framework | Spring Boot 3.2.5 |
-| Language | Java 21 |
+| Language | Java 17 |
 | Build Tool | Maven |
 | Database | PostgreSQL 15+ (production), H2 (development) |
 | ORM | Spring Data JPA + Hibernate |
 | Security | Spring Security + JWT (jjwt 0.12.5) |
+| BPM Engine | Flowable (embedded) |
 | Validation | Jakarta Bean Validation |
 | API Docs | SpringDoc OpenAPI 2.5.0 (Swagger UI) |
 | Testing | JUnit 5, Mockito, Testcontainers |
@@ -134,7 +136,7 @@ Dev users seeded by profile `dev`:
 
 ### Prerequisites
 
-- Java 21 JDK
+- Java 17 JDK
 - Maven 3.9+
 - PostgreSQL 15+ (or use H2 for development)
 

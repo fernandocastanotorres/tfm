@@ -6,7 +6,8 @@ It complements:
 - `REQUIREMENTS.md`
 - ADR-0001 (modular architecture)
 - ADR-0003 (Spring Security/JWT + JPA/PostgreSQL)
-- ADR-0004 (Camunda 7)
+- ADR-0008 (Flowable)
+- ADR-0009 (stable procedure ID + DB-backed i18n)
 - `docs/security/AUTHORIZATION_MATRIX.md`
 
 ## 1) Base Conventions
@@ -34,7 +35,7 @@ It complements:
 
 - Authentication: `/auth/*`
 - Citizen procedures and documents: `/citizen/*`
-- Backoffice tasks and processing: `/backoffice/*`
+- Backoffice tasks and processing: `/admin/*`
 - Administration: `/admin/*`
 - Health checks: `/health/*`
 
@@ -55,27 +56,28 @@ It complements:
 | Endpoint | Method | Description |
 |---|---|---|
 | `/api/v1/citizen/procedures` | POST | Create procedure draft |
+| `/api/v1/citizen/procedures` | GET | List own procedures (paginated) |
 | `/api/v1/citizen/procedures/{procedureUuid}` | GET | Get own procedure details |
 | `/api/v1/citizen/procedures/{procedureUuid}/status` | GET | Get own procedure status |
 | `/api/v1/citizen/procedures/{procedureUuid}/submit` | POST | Submit procedure |
 | `/api/v1/citizen/procedures/{procedureUuid}/amend` | POST | Amend procedure in correction loop |
 | `/api/v1/citizen/procedures/{procedureUuid}/documents` | POST | Upload document |
 | `/api/v1/citizen/procedures/{procedureUuid}/documents/{docUuid}` | GET | Download/get document metadata |
+| `/api/v1/citizen/procedures/catalog` | GET | Public procedure catalog list |
+| `/api/v1/citizen/procedures/catalog/{identifier}` | GET | Public procedure detail by UUID or slug |
+| `/api/v1/citizen/procedures/catalog/{identifier}/form-schema` | GET | Public form-task schema |
+| `/api/v1/citizen/procedures/catalog/{identifier}/tasks/{taskId}/schema` | GET | Public task schema by task ID |
 
 ### 4.3 Backoffice
 
 | Endpoint | Method | Description |
 |---|---|---|
-| `/api/v1/backoffice/tasks` | GET | List tasks (filterable/paginated) |
-| `/api/v1/backoffice/tasks/{taskId}` | GET | Get task detail |
-| `/api/v1/backoffice/tasks/{taskId}/claim` | POST | Claim task |
-| `/api/v1/backoffice/tasks/{taskId}/complete` | POST | Complete task |
-| `/api/v1/backoffice/tasks/{taskId}/return-for-amendment` | POST | Return case to citizen for amendment |
-| `/api/v1/backoffice/procedures/{procedureUuid}` | GET | Internal procedure detail |
-| `/api/v1/backoffice/procedures/{procedureUuid}/metadata` | PATCH | Update ENI-related metadata (policy constrained) |
-| `/api/v1/backoffice/procedures/{procedureUuid}/sign` | POST | Trigger XAdES-T signature |
-| `/api/v1/backoffice/procedures/{procedureUuid}/enidoc` | POST | Generate ENIDOC package |
-| `/api/v1/backoffice/procedures/{procedureUuid}/enidoc` | GET | Download generated ENIDOC |
+| `/api/v1/admin/dashboard/stats` | GET | Backoffice dashboard metrics |
+| `/api/v1/admin/tasks/pending` | GET | List pending internal tasks |
+| `/api/v1/admin/cases` | GET | List cases for processing |
+| `/api/v1/admin/cases/{caseId}` | GET | Get internal case detail |
+| `/api/v1/admin/cases/{caseId}/status` | PATCH | Update case status |
+| `/api/v1/admin/cases/{caseId}/tasks/resolve` | POST | Resolve current task |
 
 ### 4.4 Administration
 
@@ -83,11 +85,14 @@ It complements:
 |---|---|---|
 | `/api/v1/admin/users` | GET | List users |
 | `/api/v1/admin/users` | POST | Create user |
-| `/api/v1/admin/users/{userId}` | PATCH | Update user/roles |
-| `/api/v1/admin/users/{userId}` | DELETE | Disable/delete user |
-| `/api/v1/admin/bpmn/deployments` | POST | Deploy BPMN definitions |
-| `/api/v1/admin/bpmn/process-definitions` | GET | List process definitions/deployments |
-| `/api/v1/admin/audit/events` | GET | Query audit events |
+| `/api/v1/admin/users/{userId}` | PUT | Update user/roles |
+| `/api/v1/admin/users/{userId}/status` | PATCH | Activate/deactivate user |
+| `/api/v1/admin/procedure-types` | GET | List managed procedures |
+| `/api/v1/admin/procedure-types` | POST | Create managed procedure |
+| `/api/v1/admin/procedure-types/{id}` | PUT | Update managed procedure |
+| `/api/v1/admin/procedure-types/{id}/status` | PATCH | Update managed procedure status |
+| `/api/v1/admin/procedure-types/{id}/translations` | GET | List persisted translations by locale |
+| `/api/v1/admin/procedure-types/{id}/translations` | PUT | Upsert persisted translation for locale |
 
 ### 4.5 Health
 

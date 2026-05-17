@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators, ValidationErrors } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../application/services/auth.service';
 import { RegisterRequest } from '../../../application/models/auth.models';
 
@@ -27,8 +27,14 @@ export class RegisterComponent {
   constructor(
     private readonly fb: FormBuilder,
     private readonly authService: AuthService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly route: ActivatedRoute
   ) {}
+
+  get returnUrl(): string {
+    const candidate = this.route.snapshot.queryParamMap.get('returnUrl');
+    return candidate && candidate.startsWith('/') ? candidate : '/';
+  }
 
   onSubmit(): void {
     this.successMessageKey = '';
@@ -53,7 +59,7 @@ export class RegisterComponent {
       next: () => {
         this.isSubmitting = false;
         this.successMessageKey = 'REGISTER.SUCCESS';
-        this.router.navigate(['/sede/login']);
+        this.router.navigate(['/sede/login'], { queryParams: { returnUrl: this.returnUrl } });
       },
       error: (error) => {
         this.isSubmitting = false;

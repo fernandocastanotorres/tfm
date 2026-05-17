@@ -14,6 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.http.HttpStatus;
 
 /**
  * Spring Security configuration with JWT filter chain and role-based access.
@@ -93,6 +95,9 @@ public class SecurityConfig {
                         .requestMatchers(CITIZEN_ENDPOINTS).hasAnyRole("CITIZEN", "ADMIN")
                         // Everything else requires authentication
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 )
                 .headers(headers -> headers
                         // Allow H2 console iframe in dev

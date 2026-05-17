@@ -25,6 +25,11 @@ export class LoginComponent {
     });
   }
 
+  get returnUrl(): string {
+    const candidate = this.route.snapshot.queryParamMap.get('returnUrl');
+    return candidate && candidate.startsWith('/') ? candidate : '/';
+  }
+
   onSubmit(): void {
     this.errorMessageKey = '';
 
@@ -39,8 +44,7 @@ export class LoginComponent {
     this.authService.login({ email, password }).subscribe({
       next: () => {
         this.isSubmitting = false;
-        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-        this.router.navigateByUrl(returnUrl && returnUrl.startsWith('/') ? returnUrl : '/');
+        this.router.navigateByUrl(this.returnUrl);
       },
       error: (error) => {
         this.isSubmitting = false;

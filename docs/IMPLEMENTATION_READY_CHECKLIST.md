@@ -11,12 +11,9 @@ This checklist ensures the project is ready for reliable AI-assisted implementat
 
 ## 1) Project Baseline
 
-- ❌ Source code baseline exists for all modules (citizen UI, backoffice UI, core API)
-- ❌ Standard project structure is created in repository
-- ❌ Shared coding conventions are documented (formatting, naming, lint)
-
-Notes:
-- Current repository state is documentation-first; implementation scaffolding is still required.
+- ✅ Source code baseline exists for all modules (citizen UI, backoffice UI, core API)
+- ✅ Standard project structure is created in repository
+- 🟡 Shared coding conventions are partially documented (architecture/security/testing docs exist; lint/format policy can be expanded)
 
 ---
 
@@ -42,37 +39,28 @@ Recommended next step:
 
 ## 4) API and Contract Definition
 
-- 🟡 High-level API behavior is implied by requirements
-- ❌ Endpoint inventory exists (path, method, auth, request/response, errors)
-- ❌ JSON schema contract governance exists (versioning, compatibility, deprecation)
-- ❌ Error model and API pagination/filtering conventions are defined
-
-Recommended next step:
-- Create `docs/api/API_CONTRACT.md` + `docs/api/ERROR_MODEL.md`.
+- ✅ API endpoint inventory exists (`docs/api/API_CONTRACT.md`)
+- ✅ Contract governance policy exists (versioning, compatibility, deprecation)
+- ✅ Error model and pagination/filtering conventions are defined (`docs/api/ERROR_MODEL.md`, `docs/api/API_CONTRACT.md`)
+- 🟡 Contract test coverage should keep growing for new endpoints
 
 ---
 
-## 5) BPMN Execution Model (Camunda 7)
+## 5) BPMN Execution Model (Flowable)
 
-- ✅ BPM engine decision accepted (ADR-0004)
-- ❌ BPMN packaging/deployment conventions are defined
-- ❌ Task variable contract between BPMN and API/UI is defined
-- ❌ Process versioning and migration policy is documented
-
-Recommended next step:
-- Create `docs/bpm/BPMN_CONVENTIONS.md`.
+- ✅ BPM engine decision accepted (ADR-0008)
+- ✅ BPMN conventions are documented (`docs/bpm/BPMN_CONVENTIONS.md`)
+- ✅ Task variable contract between BPMN and API/UI is documented
+- 🟡 Process instance migration strategy should be formalized per release
 
 ---
 
 ## 6) Security and Access Control
 
 - ✅ Role set is defined (`ROLE_CITIZEN`, `ROLE_TRAMITADOR`, `ROLE_ADMIN`)
-- 🟡 JWT/RBAC is specified at principle level
-- ❌ Endpoint-level authorization matrix is defined
-- ❌ Security event/audit event catalog is defined by action type
-
-Recommended next step:
-- Create `docs/security/AUTHORIZATION_MATRIX.md` + `docs/security/AUDIT_EVENT_CATALOG.md`.
+- ✅ JWT/RBAC is specified at principle and endpoint level
+- ✅ Endpoint-level authorization matrix is defined (`docs/security/AUTHORIZATION_MATRIX.md`)
+- ✅ Security event/audit event catalog is defined (`docs/security/AUDIT_EVENT_CATALOG.md`)
 
 ---
 
@@ -102,13 +90,10 @@ Recommended next step:
 
 ## 9) Testing and Quality Gates
 
-- ❌ Test strategy by module is documented (unit/integration/e2e)
-- ❌ Required CI quality gates are defined (lint, test, architecture checks, security)
-- ❌ Minimum coverage expectations are defined
-- ❌ Test data strategy and fixtures policy are defined
-
-Recommended next step:
-- Create `docs/quality/TEST_STRATEGY.md` and CI gate definitions.
+- ✅ Test strategy by module is documented (`docs/quality/TEST_STRATEGY.md`)
+- ✅ CI quality gate blueprint is documented (`docs/quality/CI_COVERAGE_GATES.md`)
+- ✅ Coverage scope and expectations are documented (`docs/quality/COVERAGE_SCOPE_MAP.md`)
+- 🟡 Security/architecture automated gates can be expanded progressively
 
 ---
 

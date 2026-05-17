@@ -28,29 +28,33 @@ It complements `REQUIREMENTS.md`, ADR-0003 (security stack), and boundary rules.
 | Auth | `/api/v1/auth/refresh` | POST | ✅ | ✅ | ✅ | Requires valid refresh token |
 | Auth | `/api/v1/auth/logout` | POST | ✅ | ✅ | ✅ | Authenticated session/token required |
 | Citizen Procedures | `/api/v1/citizen/procedures` | POST | ✅ | ❌ | ✅ | Create new citizen procedure |
+| Citizen Procedures | `/api/v1/citizen/procedures` | GET | ✅ | ❌ | ✅ | List own procedures |
 | Citizen Procedures | `/api/v1/citizen/procedures/{procedureUuid}` | GET | ✅ | ❌ | ✅ | Citizen: own resource only |
 | Citizen Procedures | `/api/v1/citizen/procedures/{procedureUuid}/status` | GET | ✅ | ❌ | ✅ | Citizen: own resource only |
 | Citizen Procedures | `/api/v1/citizen/procedures/{procedureUuid}/submit` | POST | ✅ | ❌ | ✅ | Citizen: own draft only |
 | Citizen Procedures | `/api/v1/citizen/procedures/{procedureUuid}/amend` | POST | ✅ | ❌ | ✅ | Allowed only when procedure is in amendment state |
 | Citizen Documents | `/api/v1/citizen/procedures/{procedureUuid}/documents` | POST | ✅ | ❌ | ✅ | Citizen: own resource only |
 | Citizen Documents | `/api/v1/citizen/procedures/{procedureUuid}/documents/{docUuid}` | GET | ✅ | ❌ | ✅ | Citizen: own resource only |
-| Backoffice Queue | `/api/v1/backoffice/tasks` | GET | ❌ | ✅ | ✅ | Task list with filters/pagination |
-| Backoffice Queue | `/api/v1/backoffice/tasks/{taskId}` | GET | ❌ | ✅ | ✅ | Internal task details |
-| Backoffice Actions | `/api/v1/backoffice/tasks/{taskId}/claim` | POST | ❌ | ✅ | ✅ | Claim task |
-| Backoffice Actions | `/api/v1/backoffice/tasks/{taskId}/complete` | POST | ❌ | ✅ | ✅ | Complete workflow step |
-| Backoffice Actions | `/api/v1/backoffice/tasks/{taskId}/return-for-amendment` | POST | ❌ | ✅ | ✅ | Sends case back to citizen |
-| Backoffice Procedures | `/api/v1/backoffice/procedures/{procedureUuid}` | GET | ❌ | ✅ | ✅ | Internal processing view |
-| Backoffice Procedures | `/api/v1/backoffice/procedures/{procedureUuid}/metadata` | PATCH | ❌ | ✅ | ✅ | ENI metadata updates under policy constraints |
-| Signature | `/api/v1/backoffice/procedures/{procedureUuid}/sign` | POST | ❌ | ✅ | ✅ | Requires signing permission + policy checks |
-| ENIDOC | `/api/v1/backoffice/procedures/{procedureUuid}/enidoc` | POST | ❌ | ✅ | ✅ | Generate package |
-| ENIDOC | `/api/v1/backoffice/procedures/{procedureUuid}/enidoc` | GET | ❌ | ✅ | ✅ | Download generated package |
+| Public Catalog | `/api/v1/citizen/procedures/catalog` | GET | ✅ | ✅ | ✅ | Public endpoint, no auth required |
+| Public Catalog | `/api/v1/citizen/procedures/catalog/{identifier}` | GET | ✅ | ✅ | ✅ | Public endpoint, supports UUID or slug identifier |
+| Public Catalog | `/api/v1/citizen/procedures/catalog/{identifier}/form-schema` | GET | ✅ | ✅ | ✅ | Public read-only schema |
+| Public Catalog | `/api/v1/citizen/procedures/catalog/{identifier}/tasks/{taskId}/schema` | GET | ✅ | ✅ | ✅ | Public read-only schema |
+| Backoffice Dashboard | `/api/v1/admin/dashboard/stats` | GET | ❌ | ✅ | ✅ | Internal dashboard |
+| Backoffice Queue | `/api/v1/admin/tasks/pending` | GET | ❌ | ✅ | ✅ | Pending queue |
+| Backoffice Cases | `/api/v1/admin/cases` | GET | ❌ | ✅ | ✅ | Case list |
+| Backoffice Cases | `/api/v1/admin/cases/{caseId}` | GET | ❌ | ✅ | ✅ | Case detail |
+| Backoffice Cases | `/api/v1/admin/cases/{caseId}/status` | PATCH | ❌ | ✅ | ✅ | Status updates |
+| Backoffice Cases | `/api/v1/admin/cases/{caseId}/tasks/resolve` | POST | ❌ | ✅ | ✅ | Task resolution |
 | Admin Users | `/api/v1/admin/users` | GET | ❌ | ❌ | ✅ | User management scope |
 | Admin Users | `/api/v1/admin/users` | POST | ❌ | ❌ | ✅ | Create user/assign roles |
-| Admin Users | `/api/v1/admin/users/{userId}` | PATCH | ❌ | ❌ | ✅ | Update user/roles |
-| Admin Users | `/api/v1/admin/users/{userId}` | DELETE | ❌ | ❌ | ✅ | Disable/delete user policy |
-| Admin BPMN | `/api/v1/admin/bpmn/deployments` | POST | ❌ | ❌ | ✅ | Deploy process definitions |
-| Admin BPMN | `/api/v1/admin/bpmn/process-definitions` | GET | ❌ | ❌ | ✅ | List versions/deployments |
-| Admin Audit | `/api/v1/admin/audit/events` | GET | ❌ | ❌ | ✅ | Access to audit trail with strict filtering |
+| Admin Users | `/api/v1/admin/users/{userId}` | PUT | ❌ | ❌ | ✅ | Update user/roles |
+| Admin Users | `/api/v1/admin/users/{userId}/status` | PATCH | ❌ | ❌ | ✅ | Activate/deactivate user |
+| Admin Procedures | `/api/v1/admin/procedure-types` | GET | ❌ | ❌ | ✅ | List procedures |
+| Admin Procedures | `/api/v1/admin/procedure-types` | POST | ❌ | ❌ | ✅ | Create procedure |
+| Admin Procedures | `/api/v1/admin/procedure-types/{id}` | PUT | ❌ | ❌ | ✅ | Update procedure |
+| Admin Procedures | `/api/v1/admin/procedure-types/{id}/status` | PATCH | ❌ | ❌ | ✅ | Update status |
+| Admin Procedures | `/api/v1/admin/procedure-types/{id}/translations` | GET | ❌ | ❌ | ✅ | List persisted locale translations |
+| Admin Procedures | `/api/v1/admin/procedure-types/{id}/translations` | PUT | ❌ | ❌ | ✅ | Upsert locale translation |
 | Health | `/api/v1/health/live` | GET | ✅ | ✅ | ✅ | Liveness (sanitized payload) |
 | Health | `/api/v1/health/ready` | GET | ❌ | ❌ | ✅ | Readiness details restricted |
 

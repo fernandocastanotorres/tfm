@@ -1,9 +1,9 @@
-# BPMN Conventions (Camunda 7)
+# BPMN Conventions (Flowable)
 
 This document defines BPMN modeling, deployment, and runtime conventions for the platform.
 
 It complements:
-- ADR-0004 (Camunda 7 selection)
+- ADR-0008 (Flowable selection)
 - `docs/api/API_CONTRACT.md`
 - `docs/security/AUTHORIZATION_MATRIX.md`
 

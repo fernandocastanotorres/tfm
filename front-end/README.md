@@ -8,7 +8,7 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The appli
 
 ### Run with backend in dev mode (recommended)
 
-This frontend is configured to call `'/api/v1'` and proxy API requests to the backend.
+This frontend is configured to call backend API directly at `http://localhost:8080/api/v1` in development.
 
 1) Start backend (`backend/`):
 
@@ -28,6 +28,13 @@ npx ng serve --configuration development --port 4200
 - `http://localhost:4200`
 
 If proxy or environment settings change, restart `ng serve`.
+
+## Procedure Start Flow (Auth + Continuity)
+
+- Procedure start uses stable `procedureId` (UUID) routing.
+- Start navigation goes to protected wizard route: `/expedientes/nuevo/:procedureId`.
+- If the user is not authenticated, guard redirects to `/sede/login?returnUrl=...`.
+- After successful login, navigation resumes to the original wizard route automatically.
 
 ## Code scaffolding
 
