@@ -11,6 +11,7 @@ import es.tfg.records.application.exception.InvalidProcedureException;
 import es.tfg.records.application.exception.ResourceNotFoundException;
 import es.tfg.records.application.exception.ValidationException;
 import es.tfg.records.application.service.CaseServiceImpl;
+import es.tfg.records.application.service.EniMetadataService;
 import es.tfg.records.domain.model.CaseStatus;
 import es.tfg.records.domain.model.Procedure;
 import es.tfg.records.domain.model.ProcedureType;
@@ -40,6 +41,9 @@ class CaseServiceImplTest {
 
     @Mock
     private ProcedureTypeRepository procedureTypeRepository;
+
+    @Mock
+    private EniMetadataService eniMetadataService;
 
     @InjectMocks
     private CaseServiceImpl caseService;
@@ -109,6 +113,7 @@ class CaseServiceImplTest {
         assertThat(result).isNotNull();
         assertThat(result.id()).isEqualTo(caseId);
         verify(procedureRepository).save(any(Procedure.class));
+        verify(eniMetadataService).upsertProcedureMetadata(any(Procedure.class));
     }
 
     @Test
@@ -178,6 +183,7 @@ class CaseServiceImplTest {
         // Then
         assertThat(result).isNotNull();
         assertThat(result.status()).isEqualTo("SUBMITTED");
+        verify(eniMetadataService).upsertProcedureMetadata(any(Procedure.class));
     }
 
     @Test
@@ -222,6 +228,7 @@ class CaseServiceImplTest {
         // Then
         assertThat(result).isNotNull();
         assertThat(result.status()).isEqualTo("RESUBMITTED");
+        verify(eniMetadataService).upsertProcedureMetadata(any(Procedure.class));
     }
 
     @Test
@@ -243,6 +250,7 @@ class CaseServiceImplTest {
         // Then
         assertThat(result).isNotNull();
         assertThat(result.status()).isEqualTo("SUBMITTED");
+        verify(eniMetadataService).upsertProcedureMetadata(any(Procedure.class));
     }
 
     @Test

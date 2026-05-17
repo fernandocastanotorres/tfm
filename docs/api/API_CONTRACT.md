@@ -67,6 +67,13 @@ It complements:
 | `/api/v1/citizen/procedures/catalog/{identifier}` | GET | Public procedure detail by UUID or slug |
 | `/api/v1/citizen/procedures/catalog/{identifier}/form-schema` | GET | Public form-task schema |
 | `/api/v1/citizen/procedures/catalog/{identifier}/tasks/{taskId}/schema` | GET | Public task schema by task ID |
+| `/api/v1/citizen/public-content/legislation` | GET | Public legislation feed (filter by type) |
+| `/api/v1/citizen/public-content/faq/categories` | GET | Public FAQ categories |
+| `/api/v1/citizen/public-content/faq` | GET | Public FAQ entries (filter by category/query) |
+| `/api/v1/citizen/public-content/calendar` | GET | Public deadlines/events feed |
+| `/api/v1/citizen/public-content/institutional` | GET | Public institutional information sections |
+| `/api/v1/citizen/public-content/organisms` | GET | Public organisms directory (filter by category/query) |
+| `/api/v1/citizen/public-content/resources` | GET | Public resources feed (filter by type/query) |
 
 ### 4.3 Backoffice
 
@@ -96,6 +103,28 @@ It complements:
 | `/api/v1/admin/procedure-types/{id}/status` | PATCH | Update managed procedure status |
 | `/api/v1/admin/procedure-types/{id}/translations` | GET | List persisted translations by locale |
 | `/api/v1/admin/procedure-types/{id}/translations` | PUT | Upsert persisted translation for locale |
+| `/api/v1/admin/public-content/legislation` | GET/POST | List or create legislation base content (`es-ES`) |
+| `/api/v1/admin/public-content/legislation/{id}` | PUT/DELETE | Update/delete legislation by logical content UUID |
+| `/api/v1/admin/public-content/legislation/{id}/translations` | GET | List legislation translations by logical content UUID |
+| `/api/v1/admin/public-content/faq/categories` | GET/POST | List or create FAQ categories base content (`es-ES`) |
+| `/api/v1/admin/public-content/faq/categories/{id}` | PUT/DELETE | Update/delete FAQ category by logical content UUID |
+| `/api/v1/admin/public-content/faq/categories/{id}/translations` | GET | List FAQ category translations by logical content UUID |
+| `/api/v1/admin/public-content/faq` | GET/POST | List or create FAQ entries base content (`es-ES`) |
+| `/api/v1/admin/public-content/faq/{id}` | PUT/DELETE | Update/delete FAQ entry by logical content UUID |
+| `/api/v1/admin/public-content/faq/{id}/translations` | GET | List FAQ translations by logical content UUID |
+| `/api/v1/admin/public-content/calendar` | GET/POST | List or create calendar entries base content (`es-ES`) |
+| `/api/v1/admin/public-content/calendar/{id}` | PUT/DELETE | Update/delete calendar entry by logical content UUID |
+| `/api/v1/admin/public-content/calendar/{id}/translations` | GET | List calendar translations by logical content UUID |
+| `/api/v1/admin/public-content/institutional` | GET/POST | List or create institutional sections base content (`es-ES`) |
+| `/api/v1/admin/public-content/institutional/{id}` | PUT/DELETE | Update/delete institutional section by logical content UUID |
+| `/api/v1/admin/public-content/institutional/{id}/translations` | GET | List institutional translations by logical content UUID |
+| `/api/v1/admin/public-content/organism-categories` | GET | List organism categories for relation selects |
+| `/api/v1/admin/public-content/organisms` | GET/POST | List or create organisms base content (`es-ES`) |
+| `/api/v1/admin/public-content/organisms/{id}` | PUT/DELETE | Update/delete organism by logical content UUID |
+| `/api/v1/admin/public-content/organisms/{id}/translations` | GET | List organism translations by logical content UUID |
+| `/api/v1/admin/public-content/resources` | GET/POST | List or create resources base content (`es-ES`) |
+| `/api/v1/admin/public-content/resources/{id}` | PUT/DELETE | Update/delete resource by logical content UUID |
+| `/api/v1/admin/public-content/resources/{id}/translations` | GET | List resource translations by logical content UUID |
 
 ### 4.5 Health
 

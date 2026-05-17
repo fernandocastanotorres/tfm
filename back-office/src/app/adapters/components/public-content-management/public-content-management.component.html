@@ -1,0 +1,204 @@
+<div class="space-y-6">
+  <div class="bg-white rounded-lg shadow p-6">
+    <h3 class="text-lg font-semibold text-gray-900">Contenido Publico Configurable</h3>
+    <p class="text-sm text-gray-500 mt-1">Gestion de normativa, FAQ, plazos y eventos internacionalizables para la sede.</p>
+  </div>
+
+  <div class="bg-white rounded-lg shadow p-4 flex flex-wrap gap-2">
+    <button
+      *ngFor="let tab of tabs"
+      type="button"
+      (click)="selectTab(tab.value)"
+      class="px-4 py-2 rounded-md text-sm font-medium border"
+      [class.bg-blue-600]="activeTab === tab.value"
+      [class.text-white]="activeTab === tab.value"
+      [class.border-blue-600]="activeTab === tab.value"
+      [class.bg-white]="activeTab !== tab.value"
+      [class.text-gray-700]="activeTab !== tab.value"
+      [class.border-gray-300]="activeTab !== tab.value"
+    >{{ tab.label }}</button>
+  </div>
+
+  <div *ngIf="isLoading" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">Cargando contenido...</div>
+
+  <div *ngIf="!isLoading && activeTab === 'legislation'" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <div class="flex items-center justify-between">
+        <h4 class="font-semibold">Normativa registrada</h4>
+        <button type="button" (click)="newLegislation()" class="text-blue-600 text-sm">Nueva</button>
+      </div>
+      <div *ngFor="let item of legislation" class="border rounded-md p-3">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <div class="text-sm font-semibold">{{ item.title }}</div>
+            <div class="text-xs text-gray-500">{{ item.locale }} · {{ item.type }} · {{ item.publicationDate }}</div>
+          </div>
+          <div class="flex gap-3">
+            <button type="button" (click)="editLegislation(item)" class="text-blue-600 text-sm">Editar</button>
+            <button type="button" (click)="deleteLegislation(item)" class="text-red-600 text-sm">Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <h4 class="font-semibold">{{ selectedLegislation ? 'Editar normativa' : 'Nueva normativa' }}</h4>
+      <label class="block text-sm">Locale<select [(ngModel)]="legislationForm.locale" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }}</option></select></label>
+      <label class="block text-sm">Tipo<select [(ngModel)]="legislationForm.type" class="mt-1 w-full border rounded-md px-3 py-2"><option value="law">law</option><option value="decree">decree</option><option value="order">order</option><option value="resolution">resolution</option></select></label>
+      <label class="block text-sm">Titulo<input [(ngModel)]="legislationForm.title" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Descripcion<textarea [(ngModel)]="legislationForm.description" rows="4" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
+      <label class="block text-sm">Fecha publicacion<input type="date" [(ngModel)]="legislationForm.publicationDate" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">URL externa<input [(ngModel)]="legislationForm.externalUrl" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">URL descarga<input [(ngModel)]="legislationForm.downloadUrl" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Orden<input type="number" [(ngModel)]="legislationForm.sortOrder" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="legislationForm.published" class="mr-2" /> Publicado</label>
+      <button type="button" (click)="saveLegislation()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">{{ isSaving ? 'Guardando...' : 'Guardar normativa' }}</button>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && activeTab === 'faq'" class="space-y-6">
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+      <div class="bg-white rounded-lg shadow p-6 space-y-3">
+        <div class="flex items-center justify-between"><h4 class="font-semibold">Categorias FAQ</h4><button type="button" (click)="newFaqCategory()" class="text-blue-600 text-sm">Nueva</button></div>
+        <div *ngFor="let item of faqCategories" class="border rounded-md p-3 flex items-start justify-between">
+          <div><div class="text-sm font-semibold">{{ item.categoryName }}</div><div class="text-xs text-gray-500">{{ item.categoryCode }} · {{ item.locale }}</div></div>
+          <div class="flex gap-3">
+            <button type="button" (click)="editFaqCategory(item)" class="text-blue-600 text-sm">Editar</button>
+            <button type="button" (click)="deleteFaqCategory(item)" class="text-red-600 text-sm">Eliminar</button>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-lg shadow p-6 space-y-3">
+        <h4 class="font-semibold">{{ selectedFaqCategory ? 'Editar categoria' : 'Nueva categoria' }}</h4>
+        <label class="block text-sm">Locale<select [(ngModel)]="faqCategoryForm.locale" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }}</option></select></label>
+        <label class="block text-sm">Codigo categoria<input [(ngModel)]="faqCategoryForm.categoryCode" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm">Nombre categoria<input [(ngModel)]="faqCategoryForm.categoryName" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm">Orden<input type="number" [(ngModel)]="faqCategoryForm.sortOrder" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="faqCategoryForm.published" class="mr-2" /> Publicado</label>
+        <button type="button" (click)="saveFaqCategory()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">Guardar categoria</button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+      <div class="bg-white rounded-lg shadow p-6 space-y-3">
+        <div class="flex items-center justify-between"><h4 class="font-semibold">Entradas FAQ</h4><button type="button" (click)="newFaq()" class="text-blue-600 text-sm">Nueva</button></div>
+        <div *ngFor="let item of faqEntries" class="border rounded-md p-3 flex items-start justify-between gap-3">
+          <div><div class="text-sm font-semibold">{{ item.question }}</div><div class="text-xs text-gray-500">{{ item.categoryCode }} · {{ item.locale }}</div></div>
+          <div class="flex gap-3">
+            <button type="button" (click)="editFaq(item)" class="text-blue-600 text-sm">Editar</button>
+            <button type="button" (click)="deleteFaq(item)" class="text-red-600 text-sm">Eliminar</button>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-lg shadow p-6 space-y-3">
+        <h4 class="font-semibold">{{ selectedFaqEntry ? 'Editar FAQ' : 'Nueva FAQ' }}</h4>
+        <label class="block text-sm">Locale<select [(ngModel)]="faqForm.locale" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }}</option></select></label>
+        <label class="block text-sm">Categoria
+          <select [(ngModel)]="faqForm.categoryCode" class="mt-1 w-full border rounded-md px-3 py-2">
+            <option *ngFor="let cat of faqCategories" [value]="cat.id">{{ cat.categoryName }} ({{ cat.locale }})</option>
+          </select>
+        </label>
+        <label class="block text-sm">Pregunta<input [(ngModel)]="faqForm.question" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm">Respuesta<textarea [(ngModel)]="faqForm.answer" rows="4" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
+        <label class="block text-sm">Orden<input type="number" [(ngModel)]="faqForm.sortOrder" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="faqForm.published" class="mr-2" /> Publicado</label>
+        <button type="button" (click)="saveFaq()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">Guardar FAQ</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && activeTab === 'calendar'" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <div class="flex items-center justify-between"><h4 class="font-semibold">Plazos y eventos</h4><button type="button" (click)="newCalendar()" class="text-blue-600 text-sm">Nuevo</button></div>
+      <div *ngFor="let item of calendarEntries" class="border rounded-md p-3 flex items-start justify-between">
+        <div><div class="text-sm font-semibold">{{ item.title }}</div><div class="text-xs text-gray-500">{{ item.type }} · {{ item.eventDate }} · {{ item.locale }}</div></div>
+        <div class="flex gap-3">
+          <button type="button" (click)="editCalendar(item)" class="text-blue-600 text-sm">Editar</button>
+          <button type="button" (click)="deleteCalendar(item)" class="text-red-600 text-sm">Eliminar</button>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <h4 class="font-semibold">{{ selectedCalendarEntry ? 'Editar evento' : 'Nuevo evento' }}</h4>
+      <label class="block text-sm">Locale<select [(ngModel)]="calendarForm.locale" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }}</option></select></label>
+      <label class="block text-sm">Tipo<select [(ngModel)]="calendarForm.type" class="mt-1 w-full border rounded-md px-3 py-2"><option value="deadline">deadline</option><option value="holiday">holiday</option><option value="info">info</option><option value="reminder">reminder</option></select></label>
+      <label class="block text-sm">Titulo<input [(ngModel)]="calendarForm.title" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Descripcion<textarea [(ngModel)]="calendarForm.description" rows="4" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
+      <label class="block text-sm">Fecha<input type="date" [(ngModel)]="calendarForm.eventDate" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Procedimiento relacionado<input [(ngModel)]="calendarForm.relatedProcedure" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Orden<input type="number" [(ngModel)]="calendarForm.sortOrder" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="calendarForm.published" class="mr-2" /> Publicado</label>
+      <button type="button" (click)="saveCalendar()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">Guardar evento</button>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && activeTab === 'institutional'" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <div class="flex items-center justify-between"><h4 class="font-semibold">Informacion institucional</h4><button type="button" (click)="newInstitutional()" class="text-blue-600 text-sm">Nueva</button></div>
+      <div *ngFor="let item of institutionalEntries" class="border rounded-md p-3 flex items-start justify-between">
+        <div><div class="text-sm font-semibold">{{ item.title }}</div><div class="text-xs text-gray-500">{{ item.sectionCode }} · {{ item.locale }}</div></div>
+        <div class="flex gap-3"><button type="button" (click)="editInstitutional(item)" class="text-blue-600 text-sm">Editar</button><button type="button" (click)="deleteInstitutional(item)" class="text-red-600 text-sm">Eliminar</button></div>
+      </div>
+    </div>
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <h4 class="font-semibold">{{ selectedInstitutionalEntry ? 'Editar informacion' : 'Nueva informacion' }}</h4>
+      <label class="block text-sm">Locale<select [(ngModel)]="institutionalForm.locale" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }}</option></select></label>
+      <label class="block text-sm">Codigo seccion<input [(ngModel)]="institutionalForm.sectionCode" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Titulo<input [(ngModel)]="institutionalForm.title" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Contenido<textarea [(ngModel)]="institutionalForm.content" rows="4" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
+      <label class="block text-sm">Icono<input [(ngModel)]="institutionalForm.icon" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Orden<input type="number" [(ngModel)]="institutionalForm.sortOrder" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="institutionalForm.published" class="mr-2" /> Publicado</label>
+      <button type="button" (click)="saveInstitutional()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">Guardar informacion</button>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && activeTab === 'organisms'" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <div class="flex items-center justify-between"><h4 class="font-semibold">Directorio de organismos</h4><button type="button" (click)="newOrganism()" class="text-blue-600 text-sm">Nuevo</button></div>
+      <div *ngFor="let item of organismEntries" class="border rounded-md p-3 flex items-start justify-between gap-3">
+        <div><div class="text-sm font-semibold">{{ item.name }}</div><div class="text-xs text-gray-500">{{ item.categoryCode }} · {{ item.locale }}</div></div>
+        <div class="flex gap-3"><button type="button" (click)="editOrganism(item)" class="text-blue-600 text-sm">Editar</button><button type="button" (click)="deleteOrganism(item)" class="text-red-600 text-sm">Eliminar</button></div>
+      </div>
+    </div>
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <h4 class="font-semibold">{{ selectedOrganismEntry ? 'Editar organismo' : 'Nuevo organismo' }}</h4>
+      <label class="block text-sm">Locale<select [(ngModel)]="organismForm.locale" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }}</option></select></label>
+      <label class="block text-sm">Categoria
+        <select [(ngModel)]="organismForm.categoryCode" class="mt-1 w-full border rounded-md px-3 py-2">
+          <option *ngFor="let cat of organismCategories" [value]="cat.id">{{ cat.categoryName }} ({{ cat.locale }})</option>
+        </select>
+      </label>
+      <label class="block text-sm">Nombre<input [(ngModel)]="organismForm.name" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Descripcion<textarea [(ngModel)]="organismForm.description" rows="3" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
+      <label class="block text-sm">Telefono<input [(ngModel)]="organismForm.phone" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Email<input [(ngModel)]="organismForm.email" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Direccion<input [(ngModel)]="organismForm.address" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Web<input [(ngModel)]="organismForm.websiteUrl" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Orden<input type="number" [(ngModel)]="organismForm.sortOrder" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="organismForm.published" class="mr-2" /> Publicado</label>
+      <button type="button" (click)="saveOrganism()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">Guardar organismo</button>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && activeTab === 'resources'" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <div class="flex items-center justify-between"><h4 class="font-semibold">Recursos publicos</h4><button type="button" (click)="newResource()" class="text-blue-600 text-sm">Nuevo</button></div>
+      <div *ngFor="let item of resourceEntries" class="border rounded-md p-3 flex items-start justify-between gap-3">
+        <div><div class="text-sm font-semibold">{{ item.title }}</div><div class="text-xs text-gray-500">{{ item.resourceType }} · {{ item.locale }}</div></div>
+        <div class="flex gap-3"><button type="button" (click)="editResource(item)" class="text-blue-600 text-sm">Editar</button><button type="button" (click)="deleteResource(item)" class="text-red-600 text-sm">Eliminar</button></div>
+      </div>
+    </div>
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <h4 class="font-semibold">{{ selectedResourceEntry ? 'Editar recurso' : 'Nuevo recurso' }}</h4>
+      <label class="block text-sm">Locale<select [(ngModel)]="resourceForm.locale" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }}</option></select></label>
+      <label class="block text-sm">Tipo recurso<input [(ngModel)]="resourceForm.resourceType" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Titulo<input [(ngModel)]="resourceForm.title" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Descripcion<textarea [(ngModel)]="resourceForm.description" rows="3" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
+      <label class="block text-sm">Contenido<textarea [(ngModel)]="resourceForm.content" rows="4" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
+      <label class="block text-sm">URL externa<input [(ngModel)]="resourceForm.externalUrl" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Orden<input type="number" [(ngModel)]="resourceForm.sortOrder" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="resourceForm.published" class="mr-2" /> Publicado</label>
+      <button type="button" (click)="saveResource()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">Guardar recurso</button>
+    </div>
+  </div>
+</div>

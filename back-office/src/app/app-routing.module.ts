@@ -10,6 +10,7 @@ import { TasksComponent } from './adapters/components/tasks/tasks.component';
 import { TaskResolutionComponent } from './adapters/components/task-resolution/task-resolution.component';
 import { UserManagementComponent } from './adapters/components/user-management/user-management.component';
 import { ProcedureManagementComponent } from './adapters/components/procedure-management/procedure-management.component';
+import { PublicContentManagementComponent } from './adapters/components/public-content-management/public-content-management.component';
 
 import { authGuard, tramitadorGuard, adminGuard } from './application/guards/auth.guard';
 
@@ -31,7 +32,8 @@ const routes: Routes = [
         canActivate: [adminGuard],
         children: [
           { path: 'users', component: UserManagementComponent, title: 'Gestion de Usuarios' },
-          { path: 'procedures', component: ProcedureManagementComponent, title: 'Gestion de Procedimientos' }
+          { path: 'procedures', component: ProcedureManagementComponent, title: 'Gestion de Procedimientos' },
+          { path: 'public-content', component: PublicContentManagementComponent, title: 'Contenido Publico' }
         ]
       }
     ]

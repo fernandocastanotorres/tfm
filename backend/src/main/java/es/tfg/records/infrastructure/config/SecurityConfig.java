@@ -87,6 +87,8 @@ public class SecurityConfig {
                         // Public read-only procedure catalog for sede browsing
                         .requestMatchers(HttpMethod.GET, "/citizen/procedures/catalog/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/citizen/procedures/catalog/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/citizen/public-content/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/citizen/public-content/**").permitAll()
                         // OpenAPI / Swagger — public read access
                         .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/api-docs/**", "/swagger-ui.html").permitAll()
                         // Admin-only catalog/user management endpoints

@@ -48,28 +48,28 @@
       <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="card p-6 contact__form" novalidate>
         <div class="contact__form-group">
           <label class="field-label" for="contact-name">{{ 'CONTACT.FORM_NAME' | translate }}</label>
-          <input id="contact-name" type="text" formControlName="name" class="field-input" />
+          <input id="contact-name" type="text" formControlName="name" class="field-input" placeholder="Tu nombre completo" />
           <div *ngIf="contactForm.get('name')?.invalid && contactForm.get('name')?.touched" class="error-text">
             {{ 'CONTACT.FORM_NAME_ERROR' | translate }}
           </div>
         </div>
         <div class="contact__form-group">
           <label class="field-label" for="contact-email">{{ 'CONTACT.FORM_EMAIL' | translate }}</label>
-          <input id="contact-email" type="email" formControlName="email" class="field-input" />
+          <input id="contact-email" type="email" formControlName="email" class="field-input" placeholder="usuario@dominio.es" />
           <div *ngIf="contactForm.get('email')?.invalid && contactForm.get('email')?.touched" class="error-text">
             {{ 'CONTACT.FORM_EMAIL_ERROR' | translate }}
           </div>
         </div>
         <div class="contact__form-group">
           <label class="field-label" for="contact-subject">{{ 'CONTACT.FORM_SUBJECT' | translate }}</label>
-          <input id="contact-subject" type="text" formControlName="subject" class="field-input" />
+          <input id="contact-subject" type="text" formControlName="subject" class="field-input" placeholder="Asunto de la consulta" />
           <div *ngIf="contactForm.get('subject')?.invalid && contactForm.get('subject')?.touched" class="error-text">
             {{ 'CONTACT.FORM_SUBJECT_ERROR' | translate }}
           </div>
         </div>
         <div class="contact__form-group">
           <label class="field-label" for="contact-message">{{ 'CONTACT.FORM_MESSAGE' | translate }}</label>
-          <textarea id="contact-message" formControlName="message" class="field-input" rows="5"></textarea>
+          <textarea id="contact-message" formControlName="message" class="field-input" rows="5" placeholder="Describe tu consulta con el mayor detalle posible"></textarea>
           <div *ngIf="contactForm.get('message')?.invalid && contactForm.get('message')?.touched" class="error-text">
             {{ 'CONTACT.FORM_MESSAGE_ERROR' | translate }}
           </div>

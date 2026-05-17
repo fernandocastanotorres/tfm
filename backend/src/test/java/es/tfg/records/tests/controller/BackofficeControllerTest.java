@@ -3,6 +3,7 @@ package es.tfg.records.tests.controller;
 import es.tfg.records.application.dto.BackofficeDtos;
 import es.tfg.records.application.service.BackofficeService;
 import es.tfg.records.application.service.EniMetadataService;
+import es.tfg.records.application.service.PublicContentService;
 import es.tfg.records.entrypoints.advice.GlobalExceptionHandler;
 import es.tfg.records.entrypoints.controller.BackofficeController;
 import org.junit.jupiter.api.Test;
@@ -39,6 +40,9 @@ class BackofficeControllerTest {
     @MockBean
     private EniMetadataService eniMetadataService;
 
+    @MockBean
+    private PublicContentService publicContentService;
+
     @Test
     void dashboardReport_shouldReturn200WithPayload() throws Exception {
         LocalDate from = LocalDate.of(2026, 1, 1);
@@ -74,5 +78,17 @@ class BackofficeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resourceType").value("PROCEDURE"))
                 .andExpect(jsonPath("$.metadata.status").value("SUBMITTED"));
+    }
+
+    @Test
+    void getDocumentEniMetadata_shouldReturn200() throws Exception {
+        UUID id = UUID.randomUUID();
+        when(eniMetadataService.getDocumentMetadata(eq(id)))
+                .thenReturn(new BackofficeDtos.EniMetadataEntry("DOCUMENT", id, Instant.now(), Map.of("mimeType", "application/pdf")));
+
+        mockMvc.perform(get("/admin/eni/metadata/documents/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resourceType").value("DOCUMENT"))
+                .andExpect(jsonPath("$.metadata.mimeType").value("application/pdf"));
     }
 }

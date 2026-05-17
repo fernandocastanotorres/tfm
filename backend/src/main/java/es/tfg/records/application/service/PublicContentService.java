@@ -1,0 +1,548 @@
+package es.tfg.records.application.service;
+
+import es.tfg.records.application.dto.PublicContentDtos;
+import es.tfg.records.application.exception.ResourceNotFoundException;
+import es.tfg.records.infrastructure.persistence.entity.PublicContentEntryEntity;
+import es.tfg.records.infrastructure.persistence.repository.PublicContentEntryJpaRepository;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.UUID;
+
+@Service
+public class PublicContentService {
+
+    private static final String KIND_LEGISLATION = "LEGISLATION";
+    private static final String KIND_FAQ_CATEGORY = "FAQ_CATEGORY";
+    private static final String KIND_FAQ = "FAQ";
+    private static final String KIND_CALENDAR = "CALENDAR";
+    private static final String KIND_INSTITUTIONAL = "INSTITUTIONAL";
+    private static final String KIND_ORGANISM = "ORGANISM";
+    private static final String KIND_RESOURCE = "RESOURCE";
+    private static final String KIND_ORGANISM_CATEGORY = "ORGANISM_CATEGORY";
+    private static final String DEFAULT_LOCALE = "es-ES";
+
+    private final PublicContentEntryJpaRepository repository;
+
+    public PublicContentService(PublicContentEntryJpaRepository repository) {
+        this.repository = repository;
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicContentDtos.LegislationEntry> listLegislationAdmin() {
+        return repository.findByEntryKindAndLocaleOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_LEGISLATION, DEFAULT_LOCALE).stream().map(this::toLegislation).toList();
+    }
+
+    @Transactional
+    public PublicContentDtos.LegislationEntry createLegislation(PublicContentDtos.LegislationUpsertRequest request) {
+        PublicContentEntryEntity entity = baseEntity(KIND_LEGISLATION, request.locale());
+        applyLegislation(entity, request);
+        return toLegislation(repository.save(entity));
+    }
+
+    @Transactional
+    public PublicContentDtos.LegislationEntry updateLegislation(UUID id, PublicContentDtos.LegislationUpsertRequest request) {
+        PublicContentEntryEntity entity = findByGroup(KIND_LEGISLATION, id, normalizeLocale(request.locale()));
+        applyLegislation(entity, request);
+        return toLegislation(repository.save(entity));
+    }
+
+    @Transactional
+    public void deleteLegislation(UUID id) {
+        repository.deleteByEntryKindAndTranslationGroupId(KIND_LEGISLATION, id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicContentDtos.FaqCategoryEntry> listFaqCategoriesAdmin() {
+        return repository.findByEntryKindAndLocaleOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_FAQ_CATEGORY, DEFAULT_LOCALE).stream().map(this::toFaqCategory).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicContentDtos.FaqEntry> listFaqAdmin() {
+        return repository.findByEntryKindAndLocaleOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_FAQ, DEFAULT_LOCALE).stream().map(this::toFaq).toList();
+    }
+
+    @Transactional
+    public PublicContentDtos.FaqCategoryEntry createFaqCategory(PublicContentDtos.FaqCategoryUpsertRequest request) {
+        PublicContentEntryEntity entity = baseEntity(KIND_FAQ_CATEGORY, request.locale());
+        applyFaqCategory(entity, request);
+        return toFaqCategory(repository.save(entity));
+    }
+
+    @Transactional
+    public PublicContentDtos.FaqCategoryEntry updateFaqCategory(UUID id, PublicContentDtos.FaqCategoryUpsertRequest request) {
+        PublicContentEntryEntity entity = findByGroup(KIND_FAQ_CATEGORY, id, normalizeLocale(request.locale()));
+        applyFaqCategory(entity, request);
+        return toFaqCategory(repository.save(entity));
+    }
+
+    @Transactional
+    public void deleteFaqCategory(UUID id) {
+        repository.deleteByEntryKindAndTranslationGroupId(KIND_FAQ_CATEGORY, id);
+    }
+
+    @Transactional
+    public PublicContentDtos.FaqEntry createFaq(PublicContentDtos.FaqUpsertRequest request) {
+        PublicContentEntryEntity entity = baseEntity(KIND_FAQ, request.locale());
+        applyFaq(entity, request);
+        return toFaq(repository.save(entity));
+    }
+
+    @Transactional
+    public PublicContentDtos.FaqEntry updateFaq(UUID id, PublicContentDtos.FaqUpsertRequest request) {
+        PublicContentEntryEntity entity = findByGroup(KIND_FAQ, id, normalizeLocale(request.locale()));
+        applyFaq(entity, request);
+        return toFaq(repository.save(entity));
+    }
+
+    @Transactional
+    public void deleteFaq(UUID id) {
+        repository.deleteByEntryKindAndTranslationGroupId(KIND_FAQ, id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicContentDtos.CalendarEntry> listCalendarAdmin() {
+        return repository.findByEntryKindAndLocaleOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_CALENDAR, DEFAULT_LOCALE).stream().map(this::toCalendar).toList();
+    }
+
+    @Transactional
+    public PublicContentDtos.CalendarEntry createCalendar(PublicContentDtos.CalendarUpsertRequest request) {
+        PublicContentEntryEntity entity = baseEntity(KIND_CALENDAR, request.locale());
+        applyCalendar(entity, request);
+        return toCalendar(repository.save(entity));
+    }
+
+    @Transactional
+    public PublicContentDtos.CalendarEntry updateCalendar(UUID id, PublicContentDtos.CalendarUpsertRequest request) {
+        PublicContentEntryEntity entity = findByGroup(KIND_CALENDAR, id, normalizeLocale(request.locale()));
+        applyCalendar(entity, request);
+        return toCalendar(repository.save(entity));
+    }
+
+    @Transactional
+    public void deleteCalendar(UUID id) {
+        repository.deleteByEntryKindAndTranslationGroupId(KIND_CALENDAR, id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicContentDtos.InstitutionalEntry> listInstitutionalAdmin() {
+        return repository.findByEntryKindAndLocaleOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_INSTITUTIONAL, DEFAULT_LOCALE).stream().map(this::toInstitutional).toList();
+    }
+
+    @Transactional
+    public PublicContentDtos.InstitutionalEntry createInstitutional(PublicContentDtos.InstitutionalUpsertRequest request) {
+        PublicContentEntryEntity entity = baseEntity(KIND_INSTITUTIONAL, request.locale());
+        applyInstitutional(entity, request);
+        return toInstitutional(repository.save(entity));
+    }
+
+    @Transactional
+    public PublicContentDtos.InstitutionalEntry updateInstitutional(UUID id, PublicContentDtos.InstitutionalUpsertRequest request) {
+        PublicContentEntryEntity entity = findByGroup(KIND_INSTITUTIONAL, id, normalizeLocale(request.locale()));
+        applyInstitutional(entity, request);
+        return toInstitutional(repository.save(entity));
+    }
+
+    @Transactional
+    public void deleteInstitutional(UUID id) {
+        repository.deleteByEntryKindAndTranslationGroupId(KIND_INSTITUTIONAL, id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicContentDtos.OrganismEntry> listOrganismsAdmin() {
+        return repository.findByEntryKindAndLocaleOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_ORGANISM, DEFAULT_LOCALE).stream().map(this::toOrganism).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicContentDtos.FaqCategoryEntry> listOrganismCategoriesAdmin() {
+        return repository.findByEntryKindAndLocaleOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_ORGANISM_CATEGORY, DEFAULT_LOCALE).stream().map(this::toFaqCategory).toList();
+    }
+
+    @Transactional
+    public PublicContentDtos.OrganismEntry createOrganism(PublicContentDtos.OrganismUpsertRequest request) {
+        PublicContentEntryEntity entity = baseEntity(KIND_ORGANISM, request.locale());
+        applyOrganism(entity, request);
+        return toOrganism(repository.save(entity));
+    }
+
+    @Transactional
+    public PublicContentDtos.OrganismEntry updateOrganism(UUID id, PublicContentDtos.OrganismUpsertRequest request) {
+        PublicContentEntryEntity entity = findByGroup(KIND_ORGANISM, id, normalizeLocale(request.locale()));
+        applyOrganism(entity, request);
+        return toOrganism(repository.save(entity));
+    }
+
+    @Transactional
+    public void deleteOrganism(UUID id) {
+        repository.deleteByEntryKindAndTranslationGroupId(KIND_ORGANISM, id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicContentDtos.ResourceEntry> listResourcesAdmin() {
+        return repository.findByEntryKindOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_RESOURCE).stream().map(this::toResource).toList();
+    }
+
+    @Transactional
+    public PublicContentDtos.ResourceEntry createResource(PublicContentDtos.ResourceUpsertRequest request) {
+        PublicContentEntryEntity entity = baseEntity(KIND_RESOURCE, request.locale());
+        applyResource(entity, request);
+        return toResource(repository.save(entity));
+    }
+
+    @Transactional
+    public PublicContentDtos.ResourceEntry updateResource(UUID id, PublicContentDtos.ResourceUpsertRequest request) {
+        PublicContentEntryEntity entity = findByGroup(KIND_RESOURCE, id, normalizeLocale(request.locale()));
+        applyResource(entity, request);
+        return toResource(repository.save(entity));
+    }
+
+    @Transactional
+    public void deleteResource(UUID id) {
+        repository.deleteByEntryKindAndTranslationGroupId(KIND_RESOURCE, id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicContentDtos.LegislationEntry> listPublicLegislation(String type) {
+        List<PublicContentEntryEntity> localized = localize(repository.findByEntryKindAndPublishedTrueOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_LEGISLATION));
+        return localized.stream()
+                .filter(item -> isBlank(type) || Objects.equals(normalize(item.getValueType()), normalize(type)))
+                .map(this::toLegislation)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicContentDtos.LegislationEntry> listLegislationTranslations(UUID groupId) {
+        return repository.findByEntryKindAndTranslationGroupIdOrderByLocaleAsc(KIND_LEGISLATION, groupId).stream().map(this::toLegislation).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicContentDtos.FaqCategoryEntry> listFaqCategoryTranslations(UUID groupId) {
+        return repository.findByEntryKindAndTranslationGroupIdOrderByLocaleAsc(KIND_FAQ_CATEGORY, groupId).stream().map(this::toFaqCategory).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicContentDtos.FaqEntry> listFaqTranslations(UUID groupId) {
+        return repository.findByEntryKindAndTranslationGroupIdOrderByLocaleAsc(KIND_FAQ, groupId).stream().map(this::toFaq).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicContentDtos.CalendarEntry> listCalendarTranslations(UUID groupId) {
+        return repository.findByEntryKindAndTranslationGroupIdOrderByLocaleAsc(KIND_CALENDAR, groupId).stream().map(this::toCalendar).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicContentDtos.InstitutionalEntry> listInstitutionalTranslations(UUID groupId) {
+        return repository.findByEntryKindAndTranslationGroupIdOrderByLocaleAsc(KIND_INSTITUTIONAL, groupId).stream().map(this::toInstitutional).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicContentDtos.OrganismEntry> listOrganismTranslations(UUID groupId) {
+        return repository.findByEntryKindAndTranslationGroupIdOrderByLocaleAsc(KIND_ORGANISM, groupId).stream().map(this::toOrganism).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicContentDtos.ResourceEntry> listResourceTranslations(UUID groupId) {
+        return repository.findByEntryKindAndTranslationGroupIdOrderByLocaleAsc(KIND_RESOURCE, groupId).stream().map(this::toResource).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicContentDtos.FaqCategoryEntry> listPublicFaqCategories() {
+        return localize(repository.findByEntryKindAndPublishedTrueOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_FAQ_CATEGORY)).stream()
+                .map(this::toFaqCategory)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicContentDtos.FaqEntry> listPublicFaq(String categoryCode, String q) {
+        String query = normalize(q);
+        return localize(repository.findByEntryKindAndPublishedTrueOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_FAQ)).stream()
+                .filter(item -> isBlank(categoryCode) || Objects.equals(normalize(item.getCategoryCode()), normalize(categoryCode)))
+                .filter(item -> isBlank(query)
+                        || normalize(item.getTitleText()).contains(query)
+                        || normalize(item.getBodyText()).contains(query))
+                .map(this::toFaq)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicContentDtos.CalendarEntry> listPublicCalendar(String type, Integer upcomingLimit) {
+        List<PublicContentDtos.CalendarEntry> items = localize(repository.findByEntryKindAndPublishedTrueOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_CALENDAR)).stream()
+                .filter(item -> isBlank(type) || Objects.equals(normalize(item.getValueType()), normalize(type)))
+                .sorted(Comparator.comparing(PublicContentEntryEntity::getEventDate, Comparator.nullsLast(Comparator.naturalOrder())))
+                .map(this::toCalendar)
+                .toList();
+        if (upcomingLimit != null && upcomingLimit > 0 && items.size() > upcomingLimit) {
+            return items.subList(0, upcomingLimit);
+        }
+        return items;
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicContentDtos.InstitutionalEntry> listPublicInstitutional() {
+        return localize(repository.findByEntryKindAndPublishedTrueOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_INSTITUTIONAL)).stream()
+                .map(this::toInstitutional)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicContentDtos.OrganismEntry> listPublicOrganisms(String category, String q) {
+        String query = normalize(q);
+        return localize(repository.findByEntryKindAndPublishedTrueOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_ORGANISM)).stream()
+                .filter(item -> isBlank(category) || Objects.equals(normalize(item.getCategoryCode()), normalize(category)))
+                .filter(item -> isBlank(query)
+                        || normalize(item.getTitleText()).contains(query)
+                        || normalize(item.getBodyText()).contains(query)
+                        || normalize(item.getDownloadUrl()).contains(query)
+                        || normalize(item.getRelatedProcedure()).contains(query))
+                .map(this::toOrganism)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicContentDtos.ResourceEntry> listPublicResources(String resourceType, String q) {
+        String query = normalize(q);
+        return localize(repository.findByEntryKindAndPublishedTrueOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_RESOURCE)).stream()
+                .filter(item -> isBlank(resourceType) || Objects.equals(normalize(item.getValueType()), normalize(resourceType)))
+                .filter(item -> isBlank(query)
+                        || normalize(item.getTitleText()).contains(query)
+                        || normalize(item.getBodyText()).contains(query)
+                        || normalize(item.getRelatedProcedure()).contains(query))
+                .map(this::toResource)
+                .toList();
+    }
+
+    private List<PublicContentEntryEntity> localize(List<PublicContentEntryEntity> entries) {
+        String requested = resolveLocaleTag();
+        return entries.stream()
+                .collect(java.util.stream.Collectors.groupingBy(item -> localeGroupingKey(item)))
+                .values().stream()
+                .map(group -> pickBestLocale(group, requested))
+                .toList();
+    }
+
+    private String localeGroupingKey(PublicContentEntryEntity item) {
+        return item.getEntryKind() + "|" + normalize(item.getCategoryCode()) + "|" + normalize(item.getValueType()) + "|" + item.getSortOrder();
+    }
+
+    private PublicContentEntryEntity pickBestLocale(List<PublicContentEntryEntity> group, String requested) {
+        return group.stream()
+                .filter(item -> Objects.equals(item.getLocale(), requested))
+                .findFirst()
+                .orElseGet(() -> group.stream()
+                        .filter(item -> item.getLocale() != null && item.getLocale().startsWith(language(requested) + "-"))
+                        .findFirst()
+                        .orElseGet(() -> group.stream()
+                                .filter(item -> Objects.equals(item.getLocale(), DEFAULT_LOCALE))
+                                .findFirst()
+                                .orElse(group.get(0))));
+    }
+
+    private String language(String localeTag) {
+        Locale locale = Locale.forLanguageTag(localeTag);
+        return locale.getLanguage();
+    }
+
+    private String resolveLocaleTag() {
+        String tag = LocaleContextHolder.getLocale().toLanguageTag();
+        if (isBlank(tag)) {
+            return DEFAULT_LOCALE;
+        }
+        Locale locale = Locale.forLanguageTag(tag);
+        if (isBlank(locale.getLanguage())) {
+            return DEFAULT_LOCALE;
+        }
+        if (isBlank(locale.getCountry())) {
+            return locale.getLanguage() + "-ES";
+        }
+        return locale.getLanguage() + "-" + locale.getCountry();
+    }
+
+    private PublicContentEntryEntity baseEntity(String kind, String locale) {
+        Instant now = Instant.now();
+        PublicContentEntryEntity entity = new PublicContentEntryEntity();
+        entity.setId(UUID.randomUUID());
+        entity.setEntryKind(kind);
+        entity.setLocale(normalizeLocale(locale));
+        entity.setSortOrder(0);
+        entity.setTranslationGroupId(entity.getId());
+        entity.setParentGroupId(null);
+        entity.setPublished(true);
+        entity.setCreatedAt(now);
+        entity.setUpdatedAt(now);
+        return entity;
+    }
+
+    private void applyLegislation(PublicContentEntryEntity entity, PublicContentDtos.LegislationUpsertRequest request) {
+        entity.setLocale(normalizeLocale(request.locale()));
+        entity.setValueType(normalize(request.type()));
+        entity.setTitleText(require(request.title(), "title"));
+        entity.setBodyText(request.description());
+        entity.setEventDate(request.publicationDate());
+        entity.setExternalUrl(request.externalUrl());
+        entity.setDownloadUrl(request.downloadUrl());
+        entity.setSortOrder(request.sortOrder() == null ? entity.getSortOrder() : request.sortOrder());
+        entity.setPublished(request.published() == null ? entity.isPublished() : request.published());
+        entity.setUpdatedAt(Instant.now());
+    }
+
+    private void applyFaqCategory(PublicContentEntryEntity entity, PublicContentDtos.FaqCategoryUpsertRequest request) {
+        entity.setLocale(normalizeLocale(request.locale()));
+        entity.setCategoryCode(normalize(request.categoryCode()));
+        entity.setParentGroupId(parseUuidOrNull(request.categoryCode()));
+        entity.setTitleText(require(request.categoryName(), "categoryName"));
+        entity.setBodyText("");
+        entity.setSortOrder(request.sortOrder() == null ? entity.getSortOrder() : request.sortOrder());
+        entity.setPublished(request.published() == null ? entity.isPublished() : request.published());
+        entity.setUpdatedAt(Instant.now());
+    }
+
+    private void applyFaq(PublicContentEntryEntity entity, PublicContentDtos.FaqUpsertRequest request) {
+        entity.setLocale(normalizeLocale(request.locale()));
+        entity.setCategoryCode(normalize(request.categoryCode()));
+        entity.setParentGroupId(parseUuidOrNull(request.categoryCode()));
+        entity.setTitleText(require(request.question(), "question"));
+        entity.setBodyText(require(request.answer(), "answer"));
+        entity.setSortOrder(request.sortOrder() == null ? entity.getSortOrder() : request.sortOrder());
+        entity.setPublished(request.published() == null ? entity.isPublished() : request.published());
+        entity.setUpdatedAt(Instant.now());
+    }
+
+    private void applyCalendar(PublicContentEntryEntity entity, PublicContentDtos.CalendarUpsertRequest request) {
+        entity.setLocale(normalizeLocale(request.locale()));
+        entity.setValueType(normalize(request.type()));
+        entity.setTitleText(require(request.title(), "title"));
+        entity.setBodyText(request.description());
+        entity.setEventDate(request.eventDate());
+        entity.setRelatedProcedure(request.relatedProcedure());
+        entity.setSortOrder(request.sortOrder() == null ? entity.getSortOrder() : request.sortOrder());
+        entity.setPublished(request.published() == null ? entity.isPublished() : request.published());
+        entity.setUpdatedAt(Instant.now());
+    }
+
+    private void applyInstitutional(PublicContentEntryEntity entity, PublicContentDtos.InstitutionalUpsertRequest request) {
+        entity.setLocale(normalizeLocale(request.locale()));
+        entity.setCategoryCode(normalize(request.sectionCode()));
+        entity.setValueType(request.icon());
+        entity.setTitleText(require(request.title(), "title"));
+        entity.setBodyText(require(request.content(), "content"));
+        entity.setSortOrder(request.sortOrder() == null ? entity.getSortOrder() : request.sortOrder());
+        entity.setPublished(request.published() == null ? entity.isPublished() : request.published());
+        entity.setUpdatedAt(Instant.now());
+    }
+
+    private void applyOrganism(PublicContentEntryEntity entity, PublicContentDtos.OrganismUpsertRequest request) {
+        entity.setLocale(normalizeLocale(request.locale()));
+        entity.setCategoryCode(normalize(request.categoryCode()));
+        entity.setParentGroupId(parseUuidOrNull(request.categoryCode()));
+        entity.setTitleText(require(request.name(), "name"));
+        entity.setBodyText(request.description());
+        entity.setRelatedProcedure(request.phone());
+        entity.setDownloadUrl(request.email());
+        entity.setValueType(request.address());
+        entity.setExternalUrl(request.websiteUrl());
+        entity.setSortOrder(request.sortOrder() == null ? entity.getSortOrder() : request.sortOrder());
+        entity.setPublished(request.published() == null ? entity.isPublished() : request.published());
+        entity.setUpdatedAt(Instant.now());
+    }
+
+    private void applyResource(PublicContentEntryEntity entity, PublicContentDtos.ResourceUpsertRequest request) {
+        entity.setLocale(normalizeLocale(request.locale()));
+        entity.setValueType(normalize(request.resourceType()));
+        entity.setTitleText(require(request.title(), "title"));
+        entity.setBodyText(request.description());
+        entity.setRelatedProcedure(request.content());
+        entity.setExternalUrl(request.externalUrl());
+        entity.setSortOrder(request.sortOrder() == null ? entity.getSortOrder() : request.sortOrder());
+        entity.setPublished(request.published() == null ? entity.isPublished() : request.published());
+        entity.setUpdatedAt(Instant.now());
+    }
+
+    private PublicContentEntryEntity find(UUID id) {
+        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("PUBLIC_CONTENT", id.toString()));
+    }
+
+    private PublicContentEntryEntity findByGroup(String kind, UUID groupId, String locale) {
+        return repository.findByEntryKindAndTranslationGroupIdAndLocale(kind, groupId, locale)
+                .orElseGet(() -> {
+                    PublicContentEntryEntity created = baseEntity(kind, locale);
+                    created.setTranslationGroupId(groupId);
+                    return created;
+                });
+    }
+
+    private UUID parseUuidOrNull(String value) {
+        if (isBlank(value)) {
+            return null;
+        }
+        try {
+            return UUID.fromString(value.trim());
+        } catch (IllegalArgumentException ex) {
+            return null;
+        }
+    }
+
+    private String normalizeLocale(String locale) {
+        if (isBlank(locale)) {
+            return DEFAULT_LOCALE;
+        }
+        Locale parsed = Locale.forLanguageTag(locale.trim());
+        if (isBlank(parsed.getLanguage())) {
+            return DEFAULT_LOCALE;
+        }
+        if (isBlank(parsed.getCountry())) {
+            return parsed.getLanguage() + "-ES";
+        }
+        return parsed.getLanguage() + "-" + parsed.getCountry();
+    }
+
+    private String require(String value, String field) {
+        if (isBlank(value)) {
+            throw new IllegalArgumentException(field + " is required");
+        }
+        return value.trim();
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
+    }
+
+    private String normalize(String value) {
+        return value == null ? "" : value.trim().toLowerCase(Locale.ROOT);
+    }
+
+    private PublicContentDtos.LegislationEntry toLegislation(PublicContentEntryEntity entity) {
+        return new PublicContentDtos.LegislationEntry(entity.getTranslationGroupId(), entity.getLocale(), entity.getValueType(), entity.getTitleText(), entity.getBodyText(), entity.getEventDate(), entity.getExternalUrl(), entity.getDownloadUrl(), entity.getSortOrder(), entity.isPublished(), entity.getCreatedAt(), entity.getUpdatedAt());
+    }
+
+    private PublicContentDtos.FaqCategoryEntry toFaqCategory(PublicContentEntryEntity entity) {
+        return new PublicContentDtos.FaqCategoryEntry(entity.getTranslationGroupId(), entity.getLocale(), entity.getCategoryCode(), entity.getTitleText(), entity.getSortOrder(), entity.isPublished(), entity.getCreatedAt(), entity.getUpdatedAt());
+    }
+
+    private PublicContentDtos.FaqEntry toFaq(PublicContentEntryEntity entity) {
+        String categoryGroup = entity.getParentGroupId() == null ? entity.getCategoryCode() : entity.getParentGroupId().toString();
+        return new PublicContentDtos.FaqEntry(entity.getTranslationGroupId(), entity.getLocale(), categoryGroup, entity.getTitleText(), entity.getBodyText(), entity.getSortOrder(), entity.isPublished(), entity.getCreatedAt(), entity.getUpdatedAt());
+    }
+
+    private PublicContentDtos.CalendarEntry toCalendar(PublicContentEntryEntity entity) {
+        return new PublicContentDtos.CalendarEntry(entity.getTranslationGroupId(), entity.getLocale(), entity.getValueType(), entity.getTitleText(), entity.getBodyText(), entity.getEventDate(), entity.getRelatedProcedure(), entity.getSortOrder(), entity.isPublished(), entity.getCreatedAt(), entity.getUpdatedAt());
+    }
+
+    private PublicContentDtos.InstitutionalEntry toInstitutional(PublicContentEntryEntity entity) {
+        return new PublicContentDtos.InstitutionalEntry(entity.getTranslationGroupId(), entity.getLocale(), entity.getCategoryCode(), entity.getTitleText(), entity.getBodyText(), entity.getValueType(), entity.getSortOrder(), entity.isPublished(), entity.getCreatedAt(), entity.getUpdatedAt());
+    }
+
+    private PublicContentDtos.OrganismEntry toOrganism(PublicContentEntryEntity entity) {
+        String categoryGroup = entity.getParentGroupId() == null ? entity.getCategoryCode() : entity.getParentGroupId().toString();
+        return new PublicContentDtos.OrganismEntry(entity.getTranslationGroupId(), entity.getLocale(), categoryGroup, entity.getTitleText(), entity.getBodyText(), entity.getRelatedProcedure(), entity.getDownloadUrl(), entity.getValueType(), entity.getExternalUrl(), entity.getSortOrder(), entity.isPublished(), entity.getCreatedAt(), entity.getUpdatedAt());
+    }
+
+    private PublicContentDtos.ResourceEntry toResource(PublicContentEntryEntity entity) {
+        return new PublicContentDtos.ResourceEntry(entity.getTranslationGroupId(), entity.getLocale(), entity.getValueType(), entity.getTitleText(), entity.getBodyText(), entity.getRelatedProcedure(), entity.getExternalUrl(), entity.getSortOrder(), entity.isPublished(), entity.getCreatedAt(), entity.getUpdatedAt());
+    }
+}

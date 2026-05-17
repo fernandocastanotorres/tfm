@@ -19,6 +19,7 @@ import { TasksComponent } from './adapters/components/tasks/tasks.component';
 import { TaskResolutionComponent } from './adapters/components/task-resolution/task-resolution.component';
 import { UserManagementComponent } from './adapters/components/user-management/user-management.component';
 import { ProcedureManagementComponent } from './adapters/components/procedure-management/procedure-management.component';
+import { PublicContentManagementComponent } from './adapters/components/public-content-management/public-content-management.component';
 
 import { AuthService } from './application/services/auth.service';
 import { MockAuthService } from './application/services/mock-auth.service';
@@ -49,7 +50,8 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     TasksComponent,
     TaskResolutionComponent,
     UserManagementComponent,
-    ProcedureManagementComponent
+    ProcedureManagementComponent,
+    PublicContentManagementComponent
   ],
   imports: [
     BrowserModule,

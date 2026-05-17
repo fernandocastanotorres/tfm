@@ -43,7 +43,7 @@
     <dl class="glossary__list" *ngIf="!isLoading">
       <div class="glossary__item card p-5" *ngFor="let term of terms">
         <dt class="glossary__term">{{ term.term }}</dt>
-        <dd class="glossary__definition">{{ term.definitionKey | translate }}</dd>
+        <dd class="glossary__definition">{{ term.definition }}</dd>
         <div class="glossary__related" *ngIf="term.relatedTerms && term.relatedTerms.length > 0">
           <strong class="glossary__related-label">{{ 'GLOSSARY.RELATED_TERMS' | translate }}:</strong>
           <span class="glossary__related-list">{{ term.relatedTerms.join(', ') }}</span>

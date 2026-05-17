@@ -31,7 +31,7 @@
           (change)="onCategoryChange($any($event.target).value)"
         >
           <option value="all">{{ 'FAQ.CAT_ALL' | translate }}</option>
-          <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.nameKey | translate }}</option>
+          <option *ngFor="let cat of categories" [value]="cat.code">{{ cat.name }}</option>
         </select>
       </div>
     </div>
@@ -49,7 +49,7 @@
           [attr.aria-controls]="'faq-answer-' + faq.id"
           (click)="toggleFaq(faq.id)"
         >
-          <span class="faq__question-text">{{ faq.questionKey | translate }}</span>
+          <span class="faq__question-text">{{ faq.question }}</span>
           <span class="faq__icon" aria-hidden="true">{{ expandedFaq === faq.id ? '-' : '+' }}</span>
         </button>
         <div
@@ -58,7 +58,7 @@
           [class.faq__answer--open]="expandedFaq === faq.id"
           role="region"
         >
-          <p>{{ faq.answerKey | translate }}</p>
+          <p>{{ faq.answer }}</p>
         </div>
       </div>
     </div>

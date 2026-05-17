@@ -32,12 +32,12 @@
           <span class="legislation__type-badge" [ngClass]="'legislation__type--' + item.type">
             {{ getTypeLabel(item.type) | translate }}
           </span>
-          <h2 class="legislation__item-title">{{ item.titleKey | translate }}</h2>
+          <h2 class="legislation__item-title">{{ item.title }}</h2>
           <time class="legislation__item-date" [attr.datetime]="item.date">
             {{ formatDate(item.date) }}
           </time>
         </div>
-        <p class="legislation__item-desc">{{ item.descriptionKey | translate }}</p>
+        <p class="legislation__item-desc">{{ item.description }}</p>
         <div class="legislation__item-actions">
           <a *ngIf="item.externalUrl" [href]="item.externalUrl" target="_blank" rel="noopener noreferrer" class="btn-primary btn-primary--sm btn-primary--outline">
             {{ 'LEGISLATION.VIEW_EXTERNAL' | translate }}

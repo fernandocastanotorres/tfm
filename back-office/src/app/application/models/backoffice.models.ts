@@ -222,3 +222,172 @@ export interface ProcedureTranslationRequest {
   description: string;
   unit: string;
 }
+
+export interface PublicLegislationEntry {
+  id: string;
+  locale: string;
+  type: 'law' | 'decree' | 'order' | 'resolution';
+  title: string;
+  description: string;
+  publicationDate: string;
+  externalUrl?: string;
+  downloadUrl?: string;
+  sortOrder: number;
+  published: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PublicLegislationUpsertRequest {
+  locale: string;
+  type: 'law' | 'decree' | 'order' | 'resolution';
+  title: string;
+  description: string;
+  publicationDate: string;
+  externalUrl?: string;
+  downloadUrl?: string;
+  sortOrder: number;
+  published: boolean;
+}
+
+export interface PublicFaqCategoryEntry {
+  id: string;
+  locale: string;
+  categoryCode: string;
+  categoryName: string;
+  sortOrder: number;
+  published: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PublicFaqCategoryUpsertRequest {
+  locale: string;
+  categoryCode: string;
+  categoryName: string;
+  sortOrder: number;
+  published: boolean;
+}
+
+export interface PublicFaqEntry {
+  id: string;
+  locale: string;
+  categoryCode: string;
+  question: string;
+  answer: string;
+  sortOrder: number;
+  published: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PublicFaqUpsertRequest {
+  locale: string;
+  categoryCode: string;
+  question: string;
+  answer: string;
+  sortOrder: number;
+  published: boolean;
+}
+
+export interface PublicCalendarEntry {
+  id: string;
+  locale: string;
+  type: 'deadline' | 'holiday' | 'info' | 'reminder';
+  title: string;
+  description: string;
+  eventDate: string;
+  relatedProcedure?: string;
+  sortOrder: number;
+  published: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PublicCalendarUpsertRequest {
+  locale: string;
+  type: 'deadline' | 'holiday' | 'info' | 'reminder';
+  title: string;
+  description: string;
+  eventDate: string;
+  relatedProcedure?: string;
+  sortOrder: number;
+  published: boolean;
+}
+
+export interface PublicInstitutionalEntry {
+  id: string;
+  locale: string;
+  sectionCode: string;
+  title: string;
+  content: string;
+  icon?: string;
+  sortOrder: number;
+  published: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PublicInstitutionalUpsertRequest {
+  locale: string;
+  sectionCode: string;
+  title: string;
+  content: string;
+  icon?: string;
+  sortOrder: number;
+  published: boolean;
+}
+
+export interface PublicOrganismEntry {
+  id: string;
+  locale: string;
+  categoryCode: string;
+  name: string;
+  description: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  websiteUrl?: string;
+  sortOrder: number;
+  published: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PublicOrganismUpsertRequest {
+  locale: string;
+  categoryCode: string;
+  name: string;
+  description: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  websiteUrl?: string;
+  sortOrder: number;
+  published: boolean;
+}
+
+export interface PublicResourceEntry {
+  id: string;
+  locale: string;
+  resourceType: string;
+  title: string;
+  description: string;
+  content: string;
+  externalUrl?: string;
+  sortOrder: number;
+  published: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PublicResourceUpsertRequest {
+  locale: string;
+  resourceType: string;
+  title: string;
+  description: string;
+  content: string;
+  externalUrl?: string;
+  sortOrder: number;
+  published: boolean;
+}

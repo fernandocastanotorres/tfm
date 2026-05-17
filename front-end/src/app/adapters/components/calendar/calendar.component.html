@@ -37,8 +37,8 @@
             {{ 'CALENDAR.TYPE_' + event.type.toUpperCase() | translate }}
           </span>
         </div>
-        <h2 class="calendar__event-title">{{ event.titleKey | translate }}</h2>
-        <p class="calendar__event-desc">{{ event.descriptionKey | translate }}</p>
+        <h2 class="calendar__event-title">{{ event.title }}</h2>
+        <p class="calendar__event-desc">{{ event.description }}</p>
         <p *ngIf="event.relatedProcedure" class="calendar__event-procedure">
           <strong>{{ 'CALENDAR.RELATED_PROCEDURE' | translate }}:</strong> {{ event.relatedProcedure }}
         </p>

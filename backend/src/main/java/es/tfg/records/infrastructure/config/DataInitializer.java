@@ -12,6 +12,8 @@ import es.tfg.records.domain.port.UserRepository;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTaskEntity;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTypeI18nEntity;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTypeEntity;
+import es.tfg.records.infrastructure.persistence.entity.PublicContentEntryEntity;
+import es.tfg.records.infrastructure.persistence.repository.PublicContentEntryJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureTypeI18nJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureTaskJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureTypeJpaRepository;
@@ -52,6 +54,7 @@ public class DataInitializer {
                                   ProcedureTypeJpaRepository typeJpaRepository,
                                   ProcedureTypeI18nJpaRepository procedureTypeI18nJpaRepository,
                                   ProcedureTaskJpaRepository taskJpaRepository,
+                                  PublicContentEntryJpaRepository publicContentEntryJpaRepository,
                                   ProcedureRepository procedureRepository) {
         return args -> {
             log.info("=== DEV DATA INITIALIZER ===");
@@ -262,7 +265,122 @@ public class DataInitializer {
             procedureRepository.save(addressCase);
             log.info("Created sample case: Address Update (AMENDMENT_REQUIRED)");
 
+            seedPublicContent(publicContentEntryJpaRepository);
+
             log.info("=== DEV DATA INITIALIZATION COMPLETE ===");
+        };
+    }
+
+    private void seedPublicContent(PublicContentEntryJpaRepository repository) {
+        if (repository.count() > 0) {
+            return;
+        }
+        List<String> locales = List.of("es-ES", "ca-ES", "eu-ES", "gl-ES", "va-ES");
+        Instant now = Instant.now();
+        int sort = 0;
+
+        for (String locale : locales) {
+            repository.save(createPublicContentEntry("LEGISLATION", locale, null, "law", titleFor(locale, "Marco de procedimiento administrativo"),
+                    bodyFor(locale, "Normativa base de tramitacion electronica municipal."), null, "https://www.boe.es/buscar/act.php?id=BOE-A-2015-10565", null, null, sort++, true, now));
+            repository.save(createPublicContentEntry("LEGISLATION", locale, null, "decree", titleFor(locale, "Esquema Nacional de Seguridad"),
+                    bodyFor(locale, "Aplicacion del ENS en servicios digitales del ayuntamiento."), null, "https://www.boe.es/buscar/act.php?id=BOE-A-2022-7191", null, null, sort++, true, now));
+            repository.save(createPublicContentEntry("LEGISLATION", locale, null, "order", titleFor(locale, "Orden de gestion documental"),
+                    bodyFor(locale, "Criterios internos de archivo y conservacion documental."), null, null, null, null, sort++, true, now));
+            repository.save(createPublicContentEntry("LEGISLATION", locale, null, "resolution", titleFor(locale, "Resolucion de accesibilidad"),
+                    bodyFor(locale, "Compromiso institucional con WCAG y mejora continua."), null, null, null, null, sort++, true, now));
+
+            repository.save(createPublicContentEntry("FAQ_CATEGORY", locale, "general", null, titleFor(locale, "General"), "", null, null, null, null, 0, true, now));
+            repository.save(createPublicContentEntry("FAQ_CATEGORY", locale, "procedures", null, titleFor(locale, "Procedimientos"), "", null, null, null, null, 1, true, now));
+            repository.save(createPublicContentEntry("FAQ_CATEGORY", locale, "certificate", null, titleFor(locale, "Identidad digital"), "", null, null, null, null, 2, true, now));
+            repository.save(createPublicContentEntry("FAQ_CATEGORY", locale, "payments", null, titleFor(locale, "Pagos"), "", null, null, null, null, 3, true, now));
+
+            repository.save(createPublicContentEntry("FAQ", locale, "general", null, titleFor(locale, "Que es la sede electronica?"),
+                    bodyFor(locale, "Es el canal oficial para tramites, consultas y notificaciones digitales."), null, null, null, null, 0, true, now));
+            repository.save(createPublicContentEntry("FAQ", locale, "procedures", null, titleFor(locale, "Como inicio un tramite?"),
+                    bodyFor(locale, "Seleccione el procedimiento y complete el formulario guiado por pasos."), null, null, null, null, 1, true, now));
+            repository.save(createPublicContentEntry("FAQ", locale, "certificate", null, titleFor(locale, "Necesito certificado digital?"),
+                    bodyFor(locale, "Algunos tramites requieren certificado o sistema equivalente de identificacion."), null, null, null, null, 2, true, now));
+            repository.save(createPublicContentEntry("FAQ", locale, "payments", null, titleFor(locale, "Como obtengo justificante de pago?"),
+                    bodyFor(locale, "Al finalizar el pago puede descargar el recibo desde su expediente."), null, null, null, null, 3, true, now));
+
+            repository.save(createPublicContentEntry("CALENDAR", locale, null, "deadline", titleFor(locale, "Fin de plazo de tasas"),
+                    bodyFor(locale, "Fecha limite para tramites con liquidacion de tasas."), java.time.LocalDate.now().plusDays(15), null, null, "tax-payment", 0, true, now));
+            repository.save(createPublicContentEntry("CALENDAR", locale, null, "holiday", titleFor(locale, "Festivo local"),
+                    bodyFor(locale, "Dia no habil para atencion administrativa presencial."), java.time.LocalDate.now().plusDays(22), null, null, null, 1, true, now));
+            repository.save(createPublicContentEntry("CALENDAR", locale, null, "info", titleFor(locale, "Sesion informativa digital"),
+                    bodyFor(locale, "Jornada abierta para resolver dudas sobre tramitacion."), java.time.LocalDate.now().plusDays(10), null, null, null, 2, true, now));
+            repository.save(createPublicContentEntry("CALENDAR", locale, null, "reminder", titleFor(locale, "Recordatorio de subsanacion"),
+                    bodyFor(locale, "Revise expedientes en subsanacion para evitar caducidad."), java.time.LocalDate.now().plusDays(7), null, null, null, 3, true, now));
+
+            repository.save(createPublicContentEntry("INSTITUTIONAL", locale, "mission", "target", titleFor(locale, "Mision institucional"),
+                    bodyFor(locale, "Garantizar una tramitacion digital segura, accesible y orientada al ciudadano."), null, null, null, null, 0, true, now));
+            repository.save(createPublicContentEntry("INSTITUTIONAL", locale, "structure", "building", titleFor(locale, "Estructura organizativa"),
+                    bodyFor(locale, "Unidades de atencion, tramitacion y soporte coordinadas por sede electronica."), null, null, null, null, 1, true, now));
+
+            repository.save(createPublicContentEntry("ORGANISM", locale, "planning", titleFor(locale, "Plaza Mayor 1"), titleFor(locale, "Urbanismo"),
+                    bodyFor(locale, "Gestion de licencias urbanisticas y disciplina territorial."), null, "https://sede.example.org/urbanismo", "urbanismo@ayto.example.org", "900100100", 0, true, now));
+            repository.save(createPublicContentEntry("ORGANISM", locale, "citizen", titleFor(locale, "Avenida Centro 12"), titleFor(locale, "Registro General"),
+                    bodyFor(locale, "Atencion al ciudadano para tramites de registro y certificaciones."), null, "https://sede.example.org/registro", "registro@ayto.example.org", "900100200", 1, true, now));
+
+            repository.save(createPublicContentEntry("RESOURCE", locale, null, "glossary", titleFor(locale, "Certificado digital"),
+                    bodyFor(locale, "Mecanismo de identificacion electronica para firma y autenticacion."), null, null, null, "FNMT, Cl@ve", 0, true, now));
+            repository.save(createPublicContentEntry("RESOURCE", locale, null, "glossary", titleFor(locale, "Expediente"),
+                    bodyFor(locale, "Conjunto de documentos y actuaciones asociadas a un procedimiento."), null, null, null, "Procedimiento, Tramite", 1, true, now));
+        }
+        log.info("Seeded public content base in {} locales", locales.size());
+    }
+
+    private PublicContentEntryEntity createPublicContentEntry(String kind,
+                                                              String locale,
+                                                              String categoryCode,
+                                                              String valueType,
+                                                              String title,
+                                                              String body,
+                                                              java.time.LocalDate eventDate,
+                                                              String externalUrl,
+                                                              String downloadUrl,
+                                                              String relatedProcedure,
+                                                              int sortOrder,
+                                                              boolean published,
+                                                              Instant now) {
+        PublicContentEntryEntity entity = new PublicContentEntryEntity();
+        entity.setId(UUID.randomUUID());
+        entity.setTranslationGroupId(entity.getId());
+        entity.setParentGroupId(null);
+        entity.setEntryKind(kind);
+        entity.setLocale(locale);
+        entity.setCategoryCode(categoryCode);
+        entity.setValueType(valueType);
+        entity.setTitleText(title);
+        entity.setBodyText(body);
+        entity.setEventDate(eventDate);
+        entity.setExternalUrl(externalUrl);
+        entity.setDownloadUrl(downloadUrl);
+        entity.setRelatedProcedure(relatedProcedure);
+        entity.setSortOrder(sortOrder);
+        entity.setPublished(published);
+        entity.setCreatedAt(now);
+        entity.setUpdatedAt(now);
+        return entity;
+    }
+
+    private String titleFor(String locale, String text) {
+        return switch (locale) {
+            case "ca-ES" -> "[CA] " + text;
+            case "eu-ES" -> "[EU] " + text;
+            case "gl-ES" -> "[GL] " + text;
+            case "va-ES" -> "[VA] " + text;
+            default -> text;
+        };
+    }
+
+    private String bodyFor(String locale, String text) {
+        return switch (locale) {
+            case "ca-ES" -> "[CA] " + text;
+            case "eu-ES" -> "[EU] " + text;
+            case "gl-ES" -> "[GL] " + text;
+            case "va-ES" -> "[VA] " + text;
+            default -> text;
         };
     }
 

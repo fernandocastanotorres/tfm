@@ -97,6 +97,10 @@ docker compose up -d
    - `backend/db/postgresql/002_add_user_profile_fields.sql`
    - `backend/db/postgresql/003_add_resend_verification_throttle.sql`
    - `backend/db/postgresql/004_create_eni_metadata_table.sql`
+   - `backend/db/postgresql/005_create_public_content_entries_table.sql`
+   - `backend/db/postgresql/006_seed_public_content_base.sql`
+   - `backend/db/postgresql/007_public_content_translation_groups.sql`
+   - `backend/db/postgresql/008_backfill_public_content_relations.sql`
 3. Keep `ddl-auto: validate` in non-dev profiles.
 4. Enable queue mode (`mailing.queue.enabled=true`) when RabbitMQ is available.
 

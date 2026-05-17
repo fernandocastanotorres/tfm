@@ -9,23 +9,23 @@
     <form class="mt-8 grid gap-6 md:grid-cols-2" [formGroup]="profileForm">
       <div class="space-y-2">
         <label class="field-label" for="profile-name">{{ 'PROFILE.FULL_NAME' | translate }}</label>
-        <input id="profile-name" class="field-input" type="text" formControlName="fullName" />
+        <input id="profile-name" class="field-input" type="text" formControlName="fullName" placeholder="Nombre y apellidos" />
       </div>
       <div class="space-y-2">
         <label class="field-label" for="profile-email">{{ 'PROFILE.EMAIL' | translate }}</label>
-        <input id="profile-email" class="field-input" type="email" formControlName="email" />
+        <input id="profile-email" class="field-input" type="email" formControlName="email" placeholder="usuario@dominio.es" />
       </div>
       <div class="space-y-2">
         <label class="field-label" for="profile-phone">{{ 'PROFILE.PHONE' | translate }}</label>
-        <input id="profile-phone" class="field-input" type="tel" formControlName="phone" />
+        <input id="profile-phone" class="field-input" type="tel" formControlName="phone" placeholder="600123123" />
       </div>
       <div class="space-y-2">
         <label class="field-label" for="profile-id">{{ 'PROFILE.NATIONAL_ID' | translate }}</label>
-        <input id="profile-id" class="field-input" type="text" formControlName="nationalId" />
+        <input id="profile-id" class="field-input" type="text" formControlName="nationalId" placeholder="DNI/NIE" />
       </div>
       <div class="space-y-2 md:col-span-2">
         <label class="field-label" for="profile-address">{{ 'PROFILE.ADDRESS' | translate }}</label>
-        <input id="profile-address" class="field-input" type="text" formControlName="address" />
+        <input id="profile-address" class="field-input" type="text" formControlName="address" placeholder="Direccion completa" />
       </div>
       <div class="md:col-span-2 flex flex-col gap-3 md:flex-row">
         <button class="btn-primary" type="button" (click)="toggleEdit()">

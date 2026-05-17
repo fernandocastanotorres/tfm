@@ -30,7 +30,7 @@
           [value]="selectedCategory"
           (change)="onCategoryChange($any($event.target).value)"
         >
-          <option *ngFor="let cat of categories" [value]="cat">{{ getCategoryLabel(cat) | translate }}</option>
+          <option *ngFor="let cat of categories" [value]="cat">{{ getCategoryLabel(cat) }}</option>
         </select>
       </div>
     </div>
@@ -41,13 +41,13 @@
 
     <div class="organisms__grid" *ngIf="!isLoading">
       <article class="card p-6 organisms__item" *ngFor="let org of organisms">
-        <h2 class="organisms__item-name">{{ org.nameKey | translate }}</h2>
-        <span class="organisms__item-category">{{ org.categoryKey | translate }}</span>
-        <p class="organisms__item-desc">{{ org.descriptionKey | translate }}</p>
+        <h2 class="organisms__item-name">{{ org.name }}</h2>
+        <span class="organisms__item-category">{{ org.category }}</span>
+        <p class="organisms__item-desc">{{ org.description }}</p>
         <address class="organisms__item-contact">
           <p><strong>{{ 'ORGANISMS.PHONE' | translate }}:</strong> <a [href]="'tel:' + org.phone">{{ org.phone }}</a></p>
           <p><strong>{{ 'ORGANISMS.EMAIL' | translate }}:</strong> <a [href]="'mailto:' + org.email">{{ org.email }}</a></p>
-          <p>{{ org.addressKey | translate }}</p>
+          <p>{{ org.address }}</p>
         </address>
         <a *ngIf="org.websiteUrl" [href]="org.websiteUrl" class="organisms__item-link btn-primary btn-primary--sm btn-primary--outline mt-4">
           {{ 'ORGANISMS.VIEW_WEBSITE' | translate }}

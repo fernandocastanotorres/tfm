@@ -17,8 +17,8 @@
     <div class="institutional__grid" *ngIf="!isLoading">
       <article class="card p-6 institutional__card" *ngFor="let section of sections">
         <div class="institutional__card-icon" aria-hidden="true">{{ section.icon }}</div>
-        <h2 class="institutional__card-title">{{ section.titleKey | translate }}</h2>
-        <p class="institutional__card-content">{{ section.contentKey | translate }}</p>
+        <h2 class="institutional__card-title">{{ section.title }}</h2>
+        <p class="institutional__card-content">{{ section.content }}</p>
       </article>
     </div>
   </div>

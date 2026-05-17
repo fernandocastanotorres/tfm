@@ -149,7 +149,7 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
   }
 
   startTour(): void {
-    this.guidedTourService.startCitizenTour();
+    this.guidedTourService.startCitizenTour(this.router.url);
   }
 
   private updateRouteState(url: string): void {

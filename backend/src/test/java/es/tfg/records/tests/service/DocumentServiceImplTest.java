@@ -1,6 +1,7 @@
 package es.tfg.records.tests.service;
 
 import es.tfg.records.application.dto.DocumentItem;
+import es.tfg.records.application.service.EniMetadataService;
 import es.tfg.records.application.service.DocumentServiceImpl;
 import es.tfg.records.domain.model.CaseStatus;
 import es.tfg.records.domain.model.Document;
@@ -37,6 +38,9 @@ class DocumentServiceImplTest {
 
     @Mock
     private FileStorageService fileStorageService;
+
+    @Mock
+    private EniMetadataService eniMetadataService;
 
     @InjectMocks
     private DocumentServiceImpl documentService;
@@ -83,6 +87,7 @@ class DocumentServiceImplTest {
         assertThat(result.id()).isEqualTo(documentId);
         assertThat(result.name()).isEqualTo("test.pdf");
         verify(documentRepository).save(any(Document.class));
+        verify(eniMetadataService).upsertDocumentMetadata(any(Document.class));
     }
 
     @Test

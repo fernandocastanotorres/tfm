@@ -4,15 +4,16 @@
 
 export interface FaqCategory {
   id: string;
-  nameKey: string;
+  name: string;
+  code: string;
   icon: string;
 }
 
 export interface FaqItem {
   id: string;
-  categoryId: string;
-  questionKey: string;
-  answerKey: string;
+  categoryCode: string;
+  question: string;
+  answer: string;
 }
 
 export interface ContactOffice {
@@ -43,12 +44,12 @@ export interface ServiceStatusItem {
 
 export interface OrganismItem {
   id: string;
-  nameKey: string;
-  descriptionKey: string;
-  categoryKey: string;
+  name: string;
+  description: string;
+  category: string;
   phone: string;
   email: string;
-  addressKey: string;
+  address: string;
   websiteUrl?: string;
 }
 
@@ -70,34 +71,34 @@ export interface TransparencyReport {
 
 export interface CalendarEvent {
   id: string;
-  titleKey: string;
+  title: string;
   date: string;
   type: 'deadline' | 'holiday' | 'info' | 'reminder';
-  descriptionKey: string;
+  description: string;
   relatedProcedure?: string;
 }
 
 export interface GlossaryTerm {
   id: string;
   term: string;
-  definitionKey: string;
+  definition: string;
   relatedTerms?: string[];
 }
 
 export interface LegislationItem {
   id: string;
-  titleKey: string;
+  title: string;
   type: 'law' | 'decree' | 'order' | 'resolution';
   date: string;
-  descriptionKey: string;
+  description: string;
   downloadUrl?: string;
   externalUrl?: string;
 }
 
 export interface InstitutionalSection {
   id: string;
-  titleKey: string;
-  contentKey: string;
+  title: string;
+  content: string;
   icon?: string;
 }
 

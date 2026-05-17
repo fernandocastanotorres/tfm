@@ -29,7 +29,8 @@ export class BackofficeLayoutComponent implements OnInit {
     { label: 'Expedientes', icon: 'folder', route: '/cases' },
     { label: 'Tareas Pendientes', icon: 'task', route: '/tasks' },
     { label: 'Usuarios', icon: 'people', route: '/admin/users', roles: ['ROLE_ADMIN'] },
-    { label: 'Procedimientos', icon: 'settings', route: '/admin/procedures', roles: ['ROLE_ADMIN'] }
+    { label: 'Procedimientos', icon: 'settings', route: '/admin/procedures', roles: ['ROLE_ADMIN'] },
+    { label: 'Contenido Publico', icon: 'public', route: '/admin/public-content', roles: ['ROLE_ADMIN'] }
   ];
 
   ngOnInit(): void {
@@ -60,7 +61,8 @@ export class BackofficeLayoutComponent implements OnInit {
       folder: '📁',
       task: '✅',
       people: '👥',
-      settings: '⚙️'
+      settings: '⚙️',
+      public: '🌐'
     };
     return icons[icon] || '📄';
   }
