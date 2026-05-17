@@ -11,6 +11,8 @@ import { TaskResolutionComponent } from './adapters/components/task-resolution/t
 import { UserManagementComponent } from './adapters/components/user-management/user-management.component';
 import { ProcedureManagementComponent } from './adapters/components/procedure-management/procedure-management.component';
 import { PublicContentManagementComponent } from './adapters/components/public-content-management/public-content-management.component';
+import { TransparencyManagementComponent } from './adapters/components/transparency-management/transparency-management.component';
+import { StatisticsDashboardComponent } from './adapters/components/statistics-dashboard/statistics-dashboard.component';
 
 import { authGuard, tramitadorGuard, adminGuard } from './application/guards/auth.guard';
 
@@ -23,6 +25,7 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent, title: 'Panel Principal' },
+      { path: 'statistics', component: StatisticsDashboardComponent, title: 'Estadisticas' },
       { path: 'cases', component: CaseListComponent, title: 'Expedientes' },
       { path: 'tasks', component: TasksComponent, title: 'Tareas Pendientes' },
       { path: 'cases/:id', component: CaseDetailComponent, title: 'Detalle del Expediente' },
@@ -33,7 +36,8 @@ const routes: Routes = [
         children: [
           { path: 'users', component: UserManagementComponent, title: 'Gestion de Usuarios' },
           { path: 'procedures', component: ProcedureManagementComponent, title: 'Gestion de Procedimientos' },
-          { path: 'public-content', component: PublicContentManagementComponent, title: 'Contenido Publico' }
+          { path: 'public-content', component: PublicContentManagementComponent, title: 'Contenido Publico' },
+          { path: 'transparency', component: TransparencyManagementComponent, title: 'Informes de Transparencia' }
         ]
       }
     ]

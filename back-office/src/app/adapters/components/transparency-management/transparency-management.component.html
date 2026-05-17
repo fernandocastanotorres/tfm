@@ -1,0 +1,86 @@
+<div class="space-y-6">
+  <div class="bg-white rounded-lg shadow p-6">
+    <h3 class="text-lg font-semibold text-gray-900">Gestion de Informes de Transparencia</h3>
+    <p class="text-sm text-gray-500 mt-1">Sube y gestiona los informes PDF publicos de transparencia.</p>
+  </div>
+
+  <div class="bg-white rounded-lg shadow p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h4 class="font-semibold">Informes registrados</h4>
+      <button type="button" (click)="openCreateForm()" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700">Nuevo informe</button>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center text-gray-500 py-8">Cargando informes...</div>
+
+    <div *ngIf="!isLoading && reports.length === 0" class="text-center text-gray-500 py-8">No hay informes registrados.</div>
+
+    <div *ngIf="!isLoading && reports.length > 0" class="space-y-3">
+      <div *ngFor="let report of reports" class="border rounded-md p-4 flex items-start justify-between gap-4" [class.bg-blue-50]="selectedReport?.id === report.id">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <span class="text-sm font-semibold text-gray-900">{{ report.title }}</span>
+            <span class="text-xs px-2 py-0.5 rounded-full" [class.bg-green-100]="report.published" [class.text-green-700]="report.published" [class.bg-gray-100]="!report.published" [class.text-gray-500]="!report.published">{{ report.published ? 'Publicado' : 'Borrador' }}</span>
+          </div>
+          <div class="text-xs text-gray-500 mt-1">{{ report.year }} · {{ formatFileSize(report.fileSize) }} · {{ report.fileName }}</div>
+          <div *ngIf="report.description" class="text-sm text-gray-600 mt-1 line-clamp-2">{{ report.description }}</div>
+        </div>
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <button type="button" (click)="downloadReport(report)" class="text-blue-600 text-sm hover:underline" title="Descargar">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          </button>
+          <button type="button" (click)="openEditForm(report)" class="text-blue-600 text-sm hover:underline">Editar</button>
+          <button type="button" (click)="deleteReport(report)" class="text-red-600 text-sm hover:underline">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Modal -->
+  <div *ngIf="showForm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+      <div class="p-6 border-b">
+        <h4 class="text-lg font-semibold">{{ formMode === 'create' ? 'Nuevo informe' : 'Editar informe' }}</h4>
+      </div>
+      <div class="p-6 space-y-4">
+        <div *ngIf="formError" class="bg-red-50 text-red-700 text-sm p-3 rounded-md">{{ formError }}</div>
+
+        <label class="block text-sm">
+          <span class="font-medium">Titulo *</span>
+          <input [(ngModel)]="formTitle" class="mt-1 w-full border rounded-md px-3 py-2" placeholder="Informe Anual 2025" />
+        </label>
+
+        <label class="block text-sm">
+          <span class="font-medium">Año *</span>
+          <input type="number" [(ngModel)]="formYear" class="mt-1 w-full border rounded-md px-3 py-2" min="2000" max="2100" />
+        </label>
+
+        <label class="block text-sm">
+          <span class="font-medium">Descripcion</span>
+          <textarea [(ngModel)]="formDescription" rows="3" class="mt-1 w-full border rounded-md px-3 py-2" placeholder="Descripcion del informe..."></textarea>
+        </label>
+
+        <div class="grid grid-cols-2 gap-4">
+          <label class="block text-sm">
+            <span class="font-medium">Orden</span>
+            <input type="number" [(ngModel)]="formSortOrder" class="mt-1 w-full border rounded-md px-3 py-2" />
+          </label>
+          <label class="inline-flex items-center text-sm mt-6">
+            <input type="checkbox" [(ngModel)]="formPublished" class="mr-2" /> Publicado
+          </label>
+        </div>
+
+        <label class="block text-sm">
+          <span class="font-medium">{{ formMode === 'create' ? 'Archivo PDF *' : 'Reemplazar archivo PDF (opcional)' }}</span>
+          <input type="file" accept="application/pdf" (change)="onFileSelected($event)" class="mt-1 w-full border rounded-md px-3 py-2" [required]="formMode === 'create'" />
+          <p class="text-xs text-gray-500 mt-1">Solo archivos PDF, maximo 50MB.</p>
+        </label>
+      </div>
+      <div class="p-6 border-t flex justify-end gap-3">
+        <button type="button" (click)="closeForm()" class="px-4 py-2 border rounded-md text-sm">Cancelar</button>
+        <button type="button" (click)="saveReport()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 disabled:opacity-50">
+          {{ isSaving ? 'Guardando...' : (formMode === 'create' ? 'Crear informe' : 'Guardar cambios') }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

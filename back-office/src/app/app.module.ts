@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { NgChartsModule } from 'ng2-charts';
 
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
@@ -20,6 +21,8 @@ import { TaskResolutionComponent } from './adapters/components/task-resolution/t
 import { UserManagementComponent } from './adapters/components/user-management/user-management.component';
 import { ProcedureManagementComponent } from './adapters/components/procedure-management/procedure-management.component';
 import { PublicContentManagementComponent } from './adapters/components/public-content-management/public-content-management.component';
+import { TransparencyManagementComponent } from './adapters/components/transparency-management/transparency-management.component';
+import { StatisticsDashboardComponent } from './adapters/components/statistics-dashboard/statistics-dashboard.component';
 
 import { AuthService } from './application/services/auth.service';
 import { MockAuthService } from './application/services/mock-auth.service';
@@ -51,7 +54,9 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     TaskResolutionComponent,
     UserManagementComponent,
     ProcedureManagementComponent,
-    PublicContentManagementComponent
+    PublicContentManagementComponent,
+    TransparencyManagementComponent,
+    StatisticsDashboardComponent
   ],
   imports: [
     BrowserModule,
@@ -60,6 +65,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     ReactiveFormsModule,
     AppRoutingModule,
     RouterModule,
+    NgChartsModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
