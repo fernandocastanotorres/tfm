@@ -171,4 +171,123 @@ public class FileStorageService {
         }
         return "";
     }
+
+    /**
+     * Stores an uploaded file in a named subdirectory (e.g. "transparency").
+     *
+     * @param subDirectory the subdirectory name (validated against path traversal)
+     * @param file         the uploaded multipart file
+     * @return the stored filename (UUID-based with original extension)
+     */
+    public String store(String subDirectory, MultipartFile file) {
+        String safeSubDir = normalizeSubDirectory(subDirectory);
+        Path targetDirectory = baseDirectory.resolve(safeSubDir).normalize();
+
+        if (!targetDirectory.startsWith(baseDirectory)) {
+            throw new ConflictException("STORAGE", "Invalid subdirectory path");
+        }
+
+        try {
+            Files.createDirectories(targetDirectory);
+        } catch (IOException e) {
+            throw new ConflictException("STORAGE", "Could not create directory: " + targetDirectory);
+        }
+
+        String originalFilename = file.getOriginalFilename();
+        String extension = extractExtension(originalFilename);
+        String storedFilename = UUID.randomUUID().toString() + extension;
+
+        Path targetPath = targetDirectory.resolve(storedFilename).normalize();
+
+        if (!targetPath.startsWith(baseDirectory)) {
+            throw new ConflictException("STORAGE", "Invalid file storage path");
+        }
+
+        try (InputStream inputStream = file.getInputStream()) {
+            Files.copy(inputStream, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            log.debug("Stored file: {} in subdirectory: {}", storedFilename, safeSubDir);
+        } catch (IOException e) {
+            throw new ConflictException("STORAGE", "Could not store file: " + storedFilename);
+        }
+
+        return safeSubDir + "/" + storedFilename;
+    }
+
+    /**
+     * Opens an input stream for a stored file by its relative path.
+     *
+     * @param relativePath the relative path from base directory (e.g. "transparency/uuid.pdf")
+     * @return an InputStream for the file content
+     */
+    public InputStream openStreamByPath(String relativePath) {
+        Path filePath = resolvePath(relativePath);
+        try {
+            return Files.newInputStream(filePath);
+        } catch (IOException e) {
+            throw new ResourceNotFoundException("DOC", relativePath);
+        }
+    }
+
+    /**
+     * Returns the file size in bytes by relative path.
+     */
+    public long getFileSizeByPath(String relativePath) {
+        Path filePath = resolvePath(relativePath);
+        try {
+            return Files.size(filePath);
+        } catch (IOException e) {
+            throw new ResourceNotFoundException("DOC", relativePath);
+        }
+    }
+
+    /**
+     * Checks if a file exists by relative path.
+     */
+    public boolean existsByPath(String relativePath) {
+        Path filePath = baseDirectory.resolve(relativePath).normalize();
+        return filePath.startsWith(baseDirectory) && Files.exists(filePath);
+    }
+
+    /**
+     * Deletes a file by relative path.
+     */
+    public void deleteByPath(String relativePath) {
+        Path filePath = resolvePathIfExists(relativePath);
+        try {
+            Files.deleteIfExists(filePath);
+            log.debug("Deleted file: {}", relativePath);
+        } catch (IOException e) {
+            throw new ConflictException("STORAGE", "Could not delete file: " + relativePath);
+        }
+    }
+
+    private String normalizeSubDirectory(String subDirectory) {
+        if (subDirectory == null || subDirectory.isBlank()) {
+            throw new ConflictException("STORAGE", "Subdirectory name is required");
+        }
+        String normalized = subDirectory.trim().replaceAll("[^a-zA-Z0-9_-]", "");
+        if (normalized.isBlank()) {
+            throw new ConflictException("STORAGE", "Invalid subdirectory name");
+        }
+        return normalized;
+    }
+
+    private Path resolvePath(String relativePath) {
+        Path filePath = baseDirectory.resolve(relativePath).normalize();
+        if (!filePath.startsWith(baseDirectory)) {
+            throw new ConflictException("STORAGE", "Invalid file path: path traversal detected");
+        }
+        if (!Files.exists(filePath)) {
+            throw new ResourceNotFoundException("DOC", relativePath);
+        }
+        return filePath;
+    }
+
+    private Path resolvePathIfExists(String relativePath) {
+        Path filePath = baseDirectory.resolve(relativePath).normalize();
+        if (!filePath.startsWith(baseDirectory)) {
+            throw new ConflictException("STORAGE", "Invalid file path: path traversal detected");
+        }
+        return filePath;
+    }
 }
