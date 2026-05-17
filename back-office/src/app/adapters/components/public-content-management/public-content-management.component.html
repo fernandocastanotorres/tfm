@@ -42,7 +42,7 @@
     </div>
     <div class="bg-white rounded-lg shadow p-6 space-y-3">
       <h4 class="font-semibold">{{ selectedLegislation ? 'Editar normativa' : 'Nueva normativa' }}</h4>
-      <label class="block text-sm">Locale<select [(ngModel)]="legislationForm.locale" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }}</option></select></label>
+      <label class="block text-sm">Locale<select [ngModel]="legislationLocale" (ngModelChange)="switchLegislationLocale($event)" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }} · {{ localeStatusFor('legislation', locale) === 'translated' ? 'Traducido' : 'Pendiente' }}</option></select></label>
       <label class="block text-sm">Tipo<select [(ngModel)]="legislationForm.type" class="mt-1 w-full border rounded-md px-3 py-2"><option value="law">law</option><option value="decree">decree</option><option value="order">order</option><option value="resolution">resolution</option></select></label>
       <label class="block text-sm">Titulo<input [(ngModel)]="legislationForm.title" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
       <label class="block text-sm">Descripcion<textarea [(ngModel)]="legislationForm.description" rows="4" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
@@ -69,7 +69,7 @@
       </div>
       <div class="bg-white rounded-lg shadow p-6 space-y-3">
         <h4 class="font-semibold">{{ selectedFaqCategory ? 'Editar categoria' : 'Nueva categoria' }}</h4>
-        <label class="block text-sm">Locale<select [(ngModel)]="faqCategoryForm.locale" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }}</option></select></label>
+        <label class="block text-sm">Locale<select [ngModel]="faqCategoryLocale" (ngModelChange)="switchFaqCategoryLocale($event)" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }} · {{ localeStatusFor('faq', locale) === 'translated' ? 'Traducido' : 'Pendiente' }}</option></select></label>
         <label class="block text-sm">Codigo categoria<input [(ngModel)]="faqCategoryForm.categoryCode" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
         <label class="block text-sm">Nombre categoria<input [(ngModel)]="faqCategoryForm.categoryName" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
         <label class="block text-sm">Orden<input type="number" [(ngModel)]="faqCategoryForm.sortOrder" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
@@ -91,7 +91,7 @@
       </div>
       <div class="bg-white rounded-lg shadow p-6 space-y-3">
         <h4 class="font-semibold">{{ selectedFaqEntry ? 'Editar FAQ' : 'Nueva FAQ' }}</h4>
-        <label class="block text-sm">Locale<select [(ngModel)]="faqForm.locale" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }}</option></select></label>
+        <label class="block text-sm">Locale<select [ngModel]="faqLocale" (ngModelChange)="switchFaqLocale($event)" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }} · {{ localeStatusFor('faq', locale) === 'translated' ? 'Traducido' : 'Pendiente' }}</option></select></label>
         <label class="block text-sm">Categoria
           <select [(ngModel)]="faqForm.categoryCode" class="mt-1 w-full border rounded-md px-3 py-2">
             <option *ngFor="let cat of faqCategories" [value]="cat.id">{{ cat.categoryName }} ({{ cat.locale }})</option>
@@ -119,7 +119,7 @@
     </div>
     <div class="bg-white rounded-lg shadow p-6 space-y-3">
       <h4 class="font-semibold">{{ selectedCalendarEntry ? 'Editar evento' : 'Nuevo evento' }}</h4>
-      <label class="block text-sm">Locale<select [(ngModel)]="calendarForm.locale" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }}</option></select></label>
+      <label class="block text-sm">Locale<select [ngModel]="calendarLocale" (ngModelChange)="switchCalendarLocale($event)" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }} · {{ localeStatusFor('calendar', locale) === 'translated' ? 'Traducido' : 'Pendiente' }}</option></select></label>
       <label class="block text-sm">Tipo<select [(ngModel)]="calendarForm.type" class="mt-1 w-full border rounded-md px-3 py-2"><option value="deadline">deadline</option><option value="holiday">holiday</option><option value="info">info</option><option value="reminder">reminder</option></select></label>
       <label class="block text-sm">Titulo<input [(ngModel)]="calendarForm.title" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
       <label class="block text-sm">Descripcion<textarea [(ngModel)]="calendarForm.description" rows="4" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
@@ -141,7 +141,7 @@
     </div>
     <div class="bg-white rounded-lg shadow p-6 space-y-3">
       <h4 class="font-semibold">{{ selectedInstitutionalEntry ? 'Editar informacion' : 'Nueva informacion' }}</h4>
-      <label class="block text-sm">Locale<select [(ngModel)]="institutionalForm.locale" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }}</option></select></label>
+      <label class="block text-sm">Locale<select [ngModel]="institutionalLocale" (ngModelChange)="switchInstitutionalLocale($event)" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }} · {{ localeStatusFor('institutional', locale) === 'translated' ? 'Traducido' : 'Pendiente' }}</option></select></label>
       <label class="block text-sm">Codigo seccion<input [(ngModel)]="institutionalForm.sectionCode" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
       <label class="block text-sm">Titulo<input [(ngModel)]="institutionalForm.title" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
       <label class="block text-sm">Contenido<textarea [(ngModel)]="institutionalForm.content" rows="4" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
@@ -162,7 +162,7 @@
     </div>
     <div class="bg-white rounded-lg shadow p-6 space-y-3">
       <h4 class="font-semibold">{{ selectedOrganismEntry ? 'Editar organismo' : 'Nuevo organismo' }}</h4>
-      <label class="block text-sm">Locale<select [(ngModel)]="organismForm.locale" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }}</option></select></label>
+      <label class="block text-sm">Locale<select [ngModel]="organismLocale" (ngModelChange)="switchOrganismLocale($event)" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }} · {{ localeStatusFor('organisms', locale) === 'translated' ? 'Traducido' : 'Pendiente' }}</option></select></label>
       <label class="block text-sm">Categoria
         <select [(ngModel)]="organismForm.categoryCode" class="mt-1 w-full border rounded-md px-3 py-2">
           <option *ngFor="let cat of organismCategories" [value]="cat.id">{{ cat.categoryName }} ({{ cat.locale }})</option>
@@ -190,7 +190,7 @@
     </div>
     <div class="bg-white rounded-lg shadow p-6 space-y-3">
       <h4 class="font-semibold">{{ selectedResourceEntry ? 'Editar recurso' : 'Nuevo recurso' }}</h4>
-      <label class="block text-sm">Locale<select [(ngModel)]="resourceForm.locale" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }}</option></select></label>
+      <label class="block text-sm">Locale<select [ngModel]="resourceLocale" (ngModelChange)="switchResourceLocale($event)" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }} · {{ localeStatusFor('resources', locale) === 'translated' ? 'Traducido' : 'Pendiente' }}</option></select></label>
       <label class="block text-sm">Tipo recurso<input [(ngModel)]="resourceForm.resourceType" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
       <label class="block text-sm">Titulo<input [(ngModel)]="resourceForm.title" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
       <label class="block text-sm">Descripcion<textarea [(ngModel)]="resourceForm.description" rows="3" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
@@ -199,6 +199,105 @@
       <label class="block text-sm">Orden<input type="number" [(ngModel)]="resourceForm.sortOrder" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
       <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="resourceForm.published" class="mr-2" /> Publicado</label>
       <button type="button" (click)="saveResource()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">Guardar recurso</button>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && activeTab === 'theme'" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <h4 class="font-semibold">Paleta actual</h4>
+      <p class="text-xs text-gray-500" *ngIf="themePalette.updatedAt">Actualizada: {{ themePalette.updatedAt | date:'short' }}</p>
+      <div *ngFor="let color of currentThemeColors" class="border rounded-md p-3 flex items-center justify-between gap-3">
+        <div>
+          <div class="text-sm font-semibold">{{ color.token }}</div>
+          <div class="text-xs text-gray-500">{{ color.value }}</div>
+        </div>
+        <span class="w-8 h-8 rounded border border-gray-300" [style.backgroundColor]="color.value"></span>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <h4 class="font-semibold">Editar paleta</h4>
+      <div *ngFor="let color of themeForm; let i = index" class="grid grid-cols-1 md:grid-cols-2 gap-2 items-end">
+        <label class="block text-sm">Token
+          <input [(ngModel)]="themeForm[i].token" class="mt-1 w-full border rounded-md px-3 py-2" />
+        </label>
+        <label class="block text-sm">Color
+          <input [(ngModel)]="themeForm[i].value" type="color" class="mt-1 w-full border rounded-md px-3 py-2 h-10" />
+        </label>
+      </div>
+      <button type="button" (click)="saveThemePalette()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">{{ isSaving ? 'Guardando...' : 'Guardar paleta' }}</button>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && activeTab === 'theme'" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <h4 class="font-semibold">Temas disponibles</h4>
+      <p class="text-xs text-gray-500" *ngIf="themePalette.updatedAt">Actualizada: {{ themePalette.updatedAt | date:'short' }}</p>
+      <div *ngFor="let theme of themeVariants" class="border rounded-md p-3 flex items-center justify-between gap-3">
+        <div>
+          <div class="text-sm font-semibold">{{ theme.name }}</div>
+          <div class="text-xs text-gray-500">{{ theme.id }} · {{ theme.colors.length }} colores</div>
+        </div>
+        <div class="flex items-center gap-2">
+          <input type="radio" name="activeTheme" [value]="theme.id" [(ngModel)]="activeThemeId" aria-label="Tema activo" />
+          <button type="button" class="text-blue-600 text-sm" (click)="selectThemeVariant(theme.id)">Editar</button>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <button type="button" class="px-3 py-2 text-sm border rounded-md" (click)="createThemeVariant()">Nuevo tema</button>
+        <button type="button" class="px-3 py-2 text-sm border rounded-md" (click)="duplicateCurrentThemeVariant()">Duplicar tema</button>
+        <button type="button" class="px-3 py-2 text-sm border rounded-md text-red-600" (click)="removeCurrentThemeVariant()">Eliminar tema</button>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-6 space-y-4">
+      <h4 class="font-semibold">Editar paleta</h4>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <label class="block text-sm">ID tema
+          <input [ngModel]="currentThemeId" (ngModelChange)="updateCurrentThemeMeta('id', $event)" class="mt-1 w-full border rounded-md px-3 py-2" />
+        </label>
+        <label class="block text-sm">Nombre tema
+          <input [ngModel]="currentThemeName" (ngModelChange)="updateCurrentThemeMeta('name', $event)" class="mt-1 w-full border rounded-md px-3 py-2" />
+        </label>
+      </div>
+
+      <label class="block text-sm">Plantilla rapida
+        <select [(ngModel)]="selectedThemePreset" (change)="applyThemePreset()" class="mt-1 w-full border rounded-md px-3 py-2">
+          <option value="">Selecciona una plantilla...</option>
+          <option *ngFor="let preset of themePresets" [value]="preset.name">{{ preset.name }}</option>
+        </select>
+      </label>
+      <div class="flex gap-2">
+        <button type="button" class="px-3 py-2 text-sm border rounded-md" (click)="applyPresetAsNewTheme()" [disabled]="!selectedThemePreset">Aplicar preset como nuevo</button>
+        <button type="button" class="px-3 py-2 text-sm border rounded-md" (click)="resetCurrentThemeToDefaults()">Restaurar por defecto</button>
+        <button type="button" class="px-3 py-2 text-sm border rounded-md" (click)="exportThemesAsJson()">Exportar JSON</button>
+        <label class="px-3 py-2 text-sm border rounded-md cursor-pointer">
+          Importar JSON
+          <input type="file" accept="application/json" class="hidden" (change)="importThemesFromJson($event)" />
+        </label>
+      </div>
+
+      <div *ngFor="let color of themeForm; let i = index" class="grid grid-cols-1 md:grid-cols-2 gap-2 items-end">
+        <label class="block text-sm">Token
+          <input [(ngModel)]="themeForm[i].token" class="mt-1 w-full border rounded-md px-3 py-2" />
+        </label>
+        <label class="block text-sm">Color
+          <input [(ngModel)]="themeForm[i].value" type="color" class="mt-1 w-full border rounded-md px-3 py-2 h-10" />
+        </label>
+      </div>
+
+      <p *ngIf="themeValidationError" class="text-sm text-red-600">{{ themeValidationError }}</p>
+
+      <div class="theme-preview" [ngStyle]="themePreviewStyle">
+        <p class="theme-preview__title">Vista previa</p>
+        <p class="theme-preview__text">Asi se veria el estilo principal de la sede con este tema.</p>
+        <div class="theme-preview__actions">
+          <button type="button" class="btn-primary">Boton primario</button>
+          <a href="#" class="theme-preview__link" (click)="$event.preventDefault()">Enlace de muestra</a>
+        </div>
+      </div>
+
+      <button type="button" (click)="saveThemePalette()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">{{ isSaving ? 'Guardando...' : 'Guardar paleta' }}</button>
     </div>
   </div>
 </div>
