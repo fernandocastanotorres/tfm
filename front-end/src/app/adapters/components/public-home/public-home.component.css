@@ -1,5 +1,8 @@
 .public-home__hero {
-  @apply bg-gradient-to-br from-brand-600 to-brand-800 text-white;
+  background:
+    radial-gradient(1200px 280px at 50% -40%, rgba(255, 255, 255, 0.22), transparent 60%),
+    linear-gradient(140deg, var(--sede-color-hero-bg) 0%, color-mix(in srgb, var(--sede-color-hero-bg) 80%, #ffffff) 52%, color-mix(in srgb, var(--sede-color-hero-bg) 90%, #000000) 100%);
+  color: var(--sede-color-hero-text);
   @apply py-16 sm:py-24;
 }
 
@@ -12,7 +15,8 @@
 }
 
 .public-home__subtitle {
-  @apply text-lg sm:text-xl text-brand-100 mb-8 max-w-2xl mx-auto;
+  color: var(--sede-color-hero-subtitle);
+  @apply text-lg sm:text-xl mb-8 max-w-2xl mx-auto;
 }
 
 .public-home__hero-actions {
@@ -72,7 +76,9 @@
 }
 
 .public-home__event-date {
-  @apply flex flex-col items-center bg-brand-50 text-brand-700 rounded-xl p-3 min-w-16;
+  @apply flex flex-col items-center rounded-xl p-3 min-w-16;
+  background-color: var(--sede-color-calendar-date-bg);
+  color: var(--sede-color-calendar-date-text);
 }
 
 .public-home__event-day {
@@ -88,20 +94,21 @@
 }
 
 :host-context(.theme-dark) .public-home__section--alt {
-  @apply bg-slate-900;
+  background-color: var(--sede-color-bg);
 }
 
 :host-context(.theme-dark) .public-home__section-title,
 :host-context(.theme-dark) .public-home__quick-card,
 :host-context(.theme-dark) .public-home__quick-title {
-  @apply text-slate-100;
+  color: var(--sede-color-text);
 }
 
 :host-context(.theme-dark) .public-home__quick-desc,
 :host-context(.theme-dark) .public-home__loading {
-  @apply text-slate-300;
+  color: var(--sede-color-muted);
 }
 
 :host-context(.theme-dark) .public-home__event-date {
-  @apply bg-slate-800 text-sky-300;
+  background-color: var(--sede-color-calendar-date-bg);
+  color: var(--sede-color-calendar-date-text);
 }

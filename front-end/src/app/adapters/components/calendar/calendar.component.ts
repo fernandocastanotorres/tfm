@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CalendarService } from '../../../application/services/calendar.service';
+import { I18nService } from '../../../application/services/i18n.service';
 import { CalendarEvent } from '../../../application/models/sede.models';
 
 @Component({
@@ -7,10 +9,11 @@ import { CalendarEvent } from '../../../application/models/sede.models';
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css']
 })
-export class CalendarComponent implements OnInit {
+export class CalendarComponent implements OnInit, OnDestroy {
   events: CalendarEvent[] = [];
   selectedType = 'all';
   isLoading = true;
+  private localeSub?: Subscription;
 
   readonly types = [
     { value: 'all', labelKey: 'CALENDAR.TYPE_ALL' },
@@ -20,10 +23,20 @@ export class CalendarComponent implements OnInit {
     { value: 'info', labelKey: 'CALENDAR.TYPE_INFO' }
   ];
 
-  constructor(private readonly calendarService: CalendarService) {}
+  constructor(
+    private readonly calendarService: CalendarService,
+    private readonly i18nService: I18nService
+  ) {}
 
   ngOnInit(): void {
     this.loadEvents();
+    this.localeSub = this.i18nService.getCurrentLocale$().subscribe(() => {
+      this.loadEvents();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.localeSub?.unsubscribe();
   }
 
   loadEvents(): void {

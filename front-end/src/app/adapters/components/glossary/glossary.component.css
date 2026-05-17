@@ -79,31 +79,41 @@
 :host-context(.theme-dark) .glossary__loading,
 :host-context(.theme-dark) .glossary__empty,
 :host-context(.theme-dark) .glossary__related {
-  @apply text-slate-400;
+  color: var(--sede-color-muted);
 }
 
 :host-context(.theme-dark) .glossary__breadcrumb a {
-  @apply text-sky-300;
+  color: var(--sede-color-link);
 }
 
 :host-context(.theme-dark) .glossary__header h1,
 :host-context(.theme-dark) .glossary__term {
-  @apply text-slate-100;
+  color: var(--sede-color-text);
 }
 
 :host-context(.theme-dark) .glossary__subtitle,
 :host-context(.theme-dark) .glossary__definition {
-  @apply text-slate-300;
+  color: var(--sede-color-muted);
 }
 
 :host-context(.theme-dark) .glossary__letter {
-  @apply bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800 hover:border-sky-700 hover:text-sky-300;
+  background-color: var(--sede-color-surface);
+  border-color: var(--sede-color-border);
+  color: var(--sede-color-text);
+}
+
+:host-context(.theme-dark) .glossary__letter:hover {
+  background-color: var(--sede-color-primary-50);
+  border-color: var(--sede-color-primary);
+  color: var(--sede-color-primary);
 }
 
 :host-context(.theme-dark) .glossary__letter--active {
-  @apply bg-sky-700 border-sky-700 text-white;
+  background-color: var(--sede-color-primary);
+  border-color: var(--sede-color-primary);
+  color: var(--sede-color-primary-contrast);
 }
 
 :host-context(.theme-dark) .glossary__related {
-  @apply border-slate-700;
+  border-color: var(--sede-color-border);
 }

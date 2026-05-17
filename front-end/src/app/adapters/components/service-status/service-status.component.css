@@ -110,20 +110,20 @@
 :host-context(.theme-dark) .service-status__summary-updated,
 :host-context(.theme-dark) .service-status__loading,
 :host-context(.theme-dark) .service-status__item-updated {
-  @apply text-slate-400;
+  color: var(--sede-color-muted);
 }
 
 :host-context(.theme-dark) .service-status__header h1,
 :host-context(.theme-dark) .service-status__summary-text,
 :host-context(.theme-dark) .service-status__item-name {
-  @apply text-slate-100;
+  color: var(--sede-color-text);
 }
 
 :host-context(.theme-dark) .service-status__subtitle,
 :host-context(.theme-dark) .service-status__item-desc {
-  @apply text-slate-300;
+  color: var(--sede-color-muted);
 }
 
 :host-context(.theme-dark) .service-status__breadcrumb a {
-  @apply text-sky-300;
+  color: var(--sede-color-link);
 }

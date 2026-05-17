@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { GlossaryService } from '../../../application/services/glossary.service';
+import { I18nService } from '../../../application/services/i18n.service';
 import { GlossaryTerm } from '../../../application/models/sede.models';
 
 @Component({
@@ -7,16 +9,32 @@ import { GlossaryTerm } from '../../../application/models/sede.models';
   templateUrl: './glossary.component.html',
   styleUrls: ['./glossary.component.css']
 })
-export class GlossaryComponent implements OnInit {
+export class GlossaryComponent implements OnInit, OnDestroy {
   terms: GlossaryTerm[] = [];
   letters: string[] = [];
   selectedLetter: string | null = null;
   searchQuery = '';
   isLoading = true;
+  private localeSub?: Subscription;
 
-  constructor(private readonly glossaryService: GlossaryService) {}
+  constructor(
+    private readonly glossaryService: GlossaryService,
+    private readonly i18nService: I18nService
+  ) {}
 
   ngOnInit(): void {
+    this.loadData();
+    this.localeSub = this.i18nService.getCurrentLocale$().subscribe(() => {
+      this.loadData();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.localeSub?.unsubscribe();
+  }
+
+  loadData(): void {
+    this.isLoading = true;
     this.glossaryService.getLetters().subscribe((letters) => {
       this.letters = letters;
     });

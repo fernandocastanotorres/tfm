@@ -48,19 +48,19 @@
 
 :host-context(.theme-dark) .institutional__breadcrumb,
 :host-context(.theme-dark) .institutional__loading {
-  @apply text-slate-400;
+  color: var(--sede-color-muted);
 }
 
 :host-context(.theme-dark) .institutional__breadcrumb a {
-  @apply text-sky-300;
+  color: var(--sede-color-link);
 }
 
 :host-context(.theme-dark) .institutional__header h1,
 :host-context(.theme-dark) .institutional__card-title {
-  @apply text-slate-100;
+  color: var(--sede-color-text);
 }
 
 :host-context(.theme-dark) .institutional__subtitle,
 :host-context(.theme-dark) .institutional__card-content {
-  @apply text-slate-300;
+  color: var(--sede-color-muted);
 }

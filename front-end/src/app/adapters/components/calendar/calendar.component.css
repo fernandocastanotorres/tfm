@@ -43,7 +43,9 @@
 }
 
 .calendar__event-date {
-  @apply flex flex-col items-center bg-brand-50 text-brand-700 rounded-xl p-3 min-w-16;
+  @apply flex flex-col items-center rounded-xl p-3 min-w-16;
+  background-color: var(--sede-color-calendar-date-bg);
+  color: var(--sede-color-calendar-date-text);
 }
 
 .calendar__event-day {
@@ -94,25 +96,26 @@
 :host-context(.theme-dark) .calendar__loading,
 :host-context(.theme-dark) .calendar__event-procedure,
 :host-context(.theme-dark) .calendar__empty {
-  @apply text-slate-400;
+  color: var(--sede-color-muted);
 }
 
 :host-context(.theme-dark) .calendar__breadcrumb a {
-  @apply text-sky-300;
+  color: var(--sede-color-link);
 }
 
 :host-context(.theme-dark) .calendar__header h1,
 :host-context(.theme-dark) .calendar__event-title {
-  @apply text-slate-100;
+  color: var(--sede-color-text);
 }
 
 :host-context(.theme-dark) .calendar__subtitle,
 :host-context(.theme-dark) .calendar__event-desc {
-  @apply text-slate-300;
+  color: var(--sede-color-muted);
 }
 
 :host-context(.theme-dark) .calendar__event-date {
-  @apply bg-slate-800 text-sky-300;
+  background-color: var(--sede-color-calendar-date-bg);
+  color: var(--sede-color-calendar-date-text);
 }
 
 :host-context(.theme-dark) .calendar__type--deadline {

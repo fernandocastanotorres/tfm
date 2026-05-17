@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { LegislationService } from '../../../application/services/legislation.service';
+import { I18nService } from '../../../application/services/i18n.service';
 import { LegislationItem } from '../../../application/models/sede.models';
 
 @Component({
@@ -7,15 +9,31 @@ import { LegislationItem } from '../../../application/models/sede.models';
   templateUrl: './legislation.component.html',
   styleUrls: ['./legislation.component.css']
 })
-export class LegislationComponent implements OnInit {
+export class LegislationComponent implements OnInit, OnDestroy {
   legislation: LegislationItem[] = [];
   types: string[] = [];
   selectedType = 'all';
   isLoading = true;
+  private localeSub?: Subscription;
 
-  constructor(private readonly legislationService: LegislationService) {}
+  constructor(
+    private readonly legislationService: LegislationService,
+    private readonly i18nService: I18nService
+  ) {}
 
   ngOnInit(): void {
+    this.loadData();
+    this.localeSub = this.i18nService.getCurrentLocale$().subscribe(() => {
+      this.loadData();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.localeSub?.unsubscribe();
+  }
+
+  loadData(): void {
+    this.isLoading = true;
     this.legislationService.getTypes().subscribe((types) => {
       this.types = types;
     });

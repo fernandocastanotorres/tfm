@@ -73,25 +73,26 @@
 :host-context(.theme-dark) .organisms__breadcrumb,
 :host-context(.theme-dark) .organisms__loading,
 :host-context(.theme-dark) .organisms__empty {
-  @apply text-slate-400;
+  color: var(--sede-color-muted);
 }
 
 :host-context(.theme-dark) .organisms__breadcrumb a,
 :host-context(.theme-dark) .organisms__item-contact a {
-  @apply text-sky-300;
+  color: var(--sede-color-link);
 }
 
 :host-context(.theme-dark) .organisms__header h1,
 :host-context(.theme-dark) .organisms__item-name {
-  @apply text-slate-100;
+  color: var(--sede-color-text);
 }
 
 :host-context(.theme-dark) .organisms__subtitle,
 :host-context(.theme-dark) .organisms__item-desc,
 :host-context(.theme-dark) .organisms__item-contact {
-  @apply text-slate-300;
+  color: var(--sede-color-muted);
 }
 
 :host-context(.theme-dark) .organisms__item-category {
-  @apply text-sky-300 bg-slate-800;
+  color: var(--sede-color-link);
+  background-color: var(--sede-color-primary-50);
 }

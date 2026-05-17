@@ -15,6 +15,43 @@ body.theme-dark {
 
 :root {
   color-scheme: light;
+  --sede-color-primary: #2563eb;
+  --sede-color-primary-hover: #1d4ed8;
+  --sede-color-primary-50: #eff6ff;
+  --sede-color-primary-contrast: #ffffff;
+  --sede-color-link: #0ea5e9;
+  --sede-color-bg: #f8fafc;
+  --sede-color-surface: #ffffff;
+  --sede-color-text: #0f172a;
+  --sede-color-muted: #475569;
+  --sede-color-border: #e2e8f0;
+  --sede-color-hero-bg: #0e2a47;
+  --sede-color-hero-text: #f8fafc;
+  --sede-color-hero-subtitle: #d9e2ec;
+  --sede-color-calendar-date-bg: rgba(14, 116, 144, 0.10);
+  --sede-color-calendar-date-text: #0ea5e9;
+  --sede-color-footer-bg: #0f172a;
+  --sede-color-footer-text: #cbd5e1;
+}
+
+body.theme-dark {
+  --sede-color-primary: var(--sede-color-primary-dark, #7dd3fc);
+  --sede-color-primary-hover: var(--sede-color-primary-hover-dark, #38bdf8);
+  --sede-color-primary-50: var(--sede-color-primary-50-dark, #1e293b);
+  --sede-color-primary-contrast: var(--sede-color-primary-contrast-dark, #0f172a);
+  --sede-color-link: var(--sede-color-link-dark, #7dd3fc);
+  --sede-color-bg: var(--sede-color-bg-dark, #020617);
+  --sede-color-surface: var(--sede-color-surface-dark, #0f172a);
+  --sede-color-text: var(--sede-color-text-dark, #e2e8f0);
+  --sede-color-muted: var(--sede-color-muted-dark, #94a3b8);
+  --sede-color-border: var(--sede-color-border-dark, #334155);
+  --sede-color-hero-bg: var(--sede-color-hero-bg-dark, #0c1222);
+  --sede-color-hero-text: var(--sede-color-hero-text-dark, #e2e8f0);
+  --sede-color-hero-subtitle: var(--sede-color-hero-subtitle-dark, #94a3b8);
+  --sede-color-calendar-date-bg: var(--sede-color-calendar-date-bg-dark, rgba(100, 116, 139, 0.15));
+  --sede-color-calendar-date-text: var(--sede-color-calendar-date-text-dark, #7dd3fc);
+  --sede-color-footer-bg: var(--sede-color-footer-bg-dark, #020617);
+  --sede-color-footer-text: var(--sede-color-footer-text-dark, #94a3b8);
 }
 
 @layer base {
@@ -25,7 +62,8 @@ body.theme-dark {
   body {
     margin: 0;
     font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
-    @apply bg-surface-50 text-surface-900;
+    background-color: var(--sede-color-bg);
+    color: var(--sede-color-text);
   }
 
   :focus-visible {
@@ -39,11 +77,19 @@ body.theme-dark {
   }
 
   .card {
-    @apply bg-white rounded-2xl shadow-lg shadow-surface-900/10 border border-surface-100;
+    @apply rounded-2xl shadow-lg shadow-surface-900/10 border border-surface-100;
+    background-color: var(--sede-color-surface);
+    color: var(--sede-color-text);
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-3 text-white font-semibold transition hover:bg-brand-700 focus-visible:outline-brand-300 disabled:bg-surface-300 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center rounded-xl px-4 py-3 font-semibold transition focus-visible:outline-brand-300 disabled:bg-surface-300 disabled:cursor-not-allowed;
+    background-color: var(--sede-color-primary);
+    color: var(--sede-color-primary-contrast);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--sede-color-primary-hover);
   }
 
   .btn-secondary {
@@ -69,11 +115,15 @@ body.theme-dark {
 }
 
 body.theme-dark .card {
-  @apply bg-slate-900 border-slate-700 shadow-none text-slate-100;
+  background-color: var(--sede-color-surface);
+  border-color: var(--sede-color-border);
+  @apply shadow-none text-slate-100;
 }
 
 body.theme-dark .field-input {
-  @apply bg-slate-800 border-slate-600 text-slate-100;
+  background-color: var(--sede-color-surface);
+  border-color: var(--sede-color-border);
+  @apply text-slate-100;
 }
 
 body.theme-dark .field-input::placeholder {
@@ -89,33 +139,33 @@ body.theme-dark .btn-secondary {
 }
 
 body.theme-dark .bg-white {
-  @apply bg-slate-900;
+  background-color: var(--sede-color-surface);
 }
 
 body.theme-dark .bg-surface-50,
 body.theme-dark .bg-surface-100 {
-  @apply bg-slate-900;
+  background-color: var(--sede-color-bg);
 }
 
 body.theme-dark .bg-brand-50 {
-  @apply bg-slate-800;
+  background-color: var(--sede-color-primary-50);
 }
 
 body.theme-dark .text-surface-900,
 body.theme-dark .text-surface-800,
 body.theme-dark .text-surface-700 {
-  @apply text-slate-100;
+  color: var(--sede-color-text);
 }
 
 body.theme-dark .text-surface-600,
 body.theme-dark .text-surface-500,
 body.theme-dark .text-surface-400 {
-  @apply text-slate-300;
+  color: var(--sede-color-muted);
 }
 
 body.theme-dark .text-brand-700,
 body.theme-dark .text-brand-600 {
-  @apply text-sky-300;
+  color: var(--sede-color-link);
 }
 
 body.theme-dark .text-brand-500 {
@@ -124,7 +174,7 @@ body.theme-dark .text-brand-500 {
 
 body.theme-dark .border-surface-100,
 body.theme-dark .border-surface-200 {
-  @apply border-slate-700;
+  border-color: var(--sede-color-border);
 }
 
 body.theme-dark .border-brand-300,
@@ -133,15 +183,24 @@ body.theme-dark .border-brand-200 {
 }
 
 body.theme-dark a:not(.btn-primary) {
-  @apply text-sky-300;
+  color: var(--sede-color-link);
 }
 
 body.theme-dark a:not(.btn-primary):hover {
-  @apply text-sky-200;
+  opacity: 0.85;
 }
 
 body.theme-dark .btn-primary--outline {
   @apply border-slate-500 text-slate-100 hover:bg-slate-800;
+}
+
+a {
+  color: var(--sede-color-link);
+}
+
+.text-brand-600,
+.text-brand-700 {
+  color: var(--sede-color-link) !important;
 }
 
 /* Guided tour styles aligned with Sede visual language */
