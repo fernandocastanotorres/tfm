@@ -7,6 +7,7 @@ import {
   CaseItem,
   CaseStatusResponse,
   DashboardStats,
+  DashboardReport,
   PagedResponse,
   PendingTask,
   TaskResolutionRequest
@@ -91,5 +92,12 @@ export class AdminCasesService {
 
   getDashboardStats(): Observable<DashboardStats> {
     return this.http.get<DashboardStats>(`${this.baseUrl}/dashboard/stats`);
+  }
+
+  getDashboardReport(from?: string, to?: string): Observable<DashboardReport> {
+    const params: Record<string, string> = {};
+    if (from) params['from'] = from;
+    if (to) params['to'] = to;
+    return this.http.get<DashboardReport>(`${this.baseUrl}/dashboard/report`, { params });
   }
 }

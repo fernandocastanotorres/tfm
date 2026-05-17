@@ -1,6 +1,7 @@
 package es.tfg.records.application.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +74,43 @@ public final class BackofficeDtos {
             long completedToday,
             long overdueCases,
             String avgResolutionTime
+    ) {}
+
+    public record DashboardReportSummary(
+            long totalCases,
+            long pendingCases,
+            long inProgressCases,
+            long resolvedCases,
+            long overdueCases,
+            double slaComplianceRate,
+            double averageResolutionHours
+    ) {}
+
+    public record DashboardDistributionItem(
+            String key,
+            String label,
+            long count
+    ) {}
+
+    public record DashboardDailyTrendPoint(
+            LocalDate day,
+            long createdCases,
+            long resolvedCases
+    ) {}
+
+    public record DashboardReport(
+            DashboardReportSummary summary,
+            List<DashboardDistributionItem> byStatus,
+            List<DashboardDistributionItem> byProcedureType,
+            List<DashboardDistributionItem> byAssignedUnit,
+            List<DashboardDailyTrendPoint> dailyTrend
+    ) {}
+
+    public record EniMetadataEntry(
+            String resourceType,
+            UUID resourceId,
+            Instant updatedAt,
+            Map<String, Object> metadata
     ) {}
 
     public record BackofficeUser(

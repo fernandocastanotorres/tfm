@@ -1,6 +1,4 @@
 package es.tfg.records.infrastructure.mailing;
-
-import es.tfg.records.application.service.EmailGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +10,7 @@ import org.springframework.web.client.RestClient;
 import java.util.Map;
 
 @Component
-public class BrevoEmailGateway implements EmailGateway {
+public class BrevoEmailGateway {
 
     private static final Logger log = LoggerFactory.getLogger(BrevoEmailGateway.class);
 
@@ -37,7 +35,6 @@ public class BrevoEmailGateway implements EmailGateway {
                 .build();
     }
 
-    @Override
     public void sendVerificationEmail(String recipientEmail, String recipientName, String verificationUrl) {
         if (!enabled || apiKey.isBlank()) {
             log.info("Mail disabled. Verification URL for {}: {}", recipientEmail, verificationUrl);

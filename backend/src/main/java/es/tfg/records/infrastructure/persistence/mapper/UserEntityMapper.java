@@ -26,6 +26,7 @@ public final class UserEntityMapper {
         user.setActive(entity.isActive());
         user.setOtpCode(entity.getOtpCode());
         user.setOtpExpiry(entity.getOtpExpiry());
+        user.setLastVerificationEmailSentAt(entity.getLastVerificationEmailSentAt());
         user.setCreatedAt(entity.getCreatedAt());
         user.setUpdatedAt(entity.getUpdatedAt());
         user.setRoles(entity.getRoles() == null || entity.getRoles().isEmpty()
@@ -48,6 +49,7 @@ public final class UserEntityMapper {
         entity.setRoles(domain.getRoles() == null ? Set.of("ROLE_CITIZEN") : Set.copyOf(domain.getRoles()));
         entity.setOtpCode(domain.getOtpCode());
         entity.setOtpExpiry(domain.getOtpExpiry());
+        entity.setLastVerificationEmailSentAt(domain.getLastVerificationEmailSentAt());
         return entity;
     }
 }

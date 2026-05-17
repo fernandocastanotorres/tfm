@@ -21,6 +21,7 @@ public class User {
     private boolean active;
     private String otpCode;
     private Instant otpExpiry;
+    private Instant lastVerificationEmailSentAt;
     private Instant createdAt;
     private Instant updatedAt;
 
@@ -127,6 +128,14 @@ public class User {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public Instant getLastVerificationEmailSentAt() {
+        return lastVerificationEmailSentAt;
+    }
+
+    public void setLastVerificationEmailSentAt(Instant lastVerificationEmailSentAt) {
+        this.lastVerificationEmailSentAt = lastVerificationEmailSentAt;
     }
 
     public void setCreatedAt(Instant createdAt) {

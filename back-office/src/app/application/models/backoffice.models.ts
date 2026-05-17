@@ -98,6 +98,36 @@ export interface DashboardStats {
   avgResolutionTime: string;
 }
 
+export interface DashboardReportSummary {
+  totalCases: number;
+  pendingCases: number;
+  inProgressCases: number;
+  resolvedCases: number;
+  overdueCases: number;
+  slaComplianceRate: number;
+  averageResolutionHours: number;
+}
+
+export interface DashboardDistributionItem {
+  key: string;
+  label: string;
+  count: number;
+}
+
+export interface DashboardDailyTrendPoint {
+  day: string;
+  createdCases: number;
+  resolvedCases: number;
+}
+
+export interface DashboardReport {
+  summary: DashboardReportSummary;
+  byStatus: DashboardDistributionItem[];
+  byProcedureType: DashboardDistributionItem[];
+  byAssignedUnit: DashboardDistributionItem[];
+  dailyTrend: DashboardDailyTrendPoint[];
+}
+
 export interface PagedResponse<T> {
   items: T[];
   page: number;

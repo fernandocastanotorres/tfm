@@ -2,13 +2,16 @@ package es.tfg.records.entrypoints.controller;
 
 import es.tfg.records.application.dto.BackofficeDtos;
 import es.tfg.records.application.service.BackofficeService;
+import es.tfg.records.application.service.EniMetadataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -20,15 +23,38 @@ import java.util.UUID;
 public class BackofficeController {
 
     private final BackofficeService backofficeService;
+    private final EniMetadataService eniMetadataService;
 
-    public BackofficeController(BackofficeService backofficeService) {
+    public BackofficeController(BackofficeService backofficeService,
+                                EniMetadataService eniMetadataService) {
         this.backofficeService = backofficeService;
+        this.eniMetadataService = eniMetadataService;
     }
 
     @GetMapping("/dashboard/stats")
     @Operation(summary = "Get backoffice dashboard stats")
     public ResponseEntity<BackofficeDtos.DashboardStats> dashboardStats() {
         return ResponseEntity.ok(backofficeService.dashboardStats());
+    }
+
+    @GetMapping("/dashboard/report")
+    @Operation(summary = "Get backoffice dashboard report")
+    public ResponseEntity<BackofficeDtos.DashboardReport> dashboardReport(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+        return ResponseEntity.ok(backofficeService.dashboardReport(from, to));
+    }
+
+    @GetMapping("/eni/metadata/procedures/{id}")
+    @Operation(summary = "Get ENI metadata for procedure")
+    public ResponseEntity<BackofficeDtos.EniMetadataEntry> getProcedureEniMetadata(@PathVariable UUID id) {
+        return ResponseEntity.ok(eniMetadataService.getProcedureMetadata(id));
+    }
+
+    @GetMapping("/eni/metadata/documents/{id}")
+    @Operation(summary = "Get ENI metadata for document")
+    public ResponseEntity<BackofficeDtos.EniMetadataEntry> getDocumentEniMetadata(@PathVariable UUID id) {
+        return ResponseEntity.ok(eniMetadataService.getDocumentMetadata(id));
     }
 
     @GetMapping("/tasks/pending")

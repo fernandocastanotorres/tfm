@@ -11,6 +11,8 @@
 | [ADR-0007](./0007-architectural-style-hexagonal-boundaries.md) | Adopt Hexagonal-Clean Boundaries Across Core Modules | Accepted | 2026-05-13 |
 | [ADR-0008](./0008-select-flowable-as-bpmn-engine.md) | Select Flowable as the BPMN Engine | Accepted | 2026-05-17 |
 | [ADR-0009](./0009-stable-procedure-id-and-db-backed-catalog-i18n.md) | Stable Procedure Identifier and DB-Backed Catalog i18n | Accepted | 2026-05-17 |
+| [ADR-0010](./0010-async-verification-email-with-rabbitmq-and-db-throttle.md) | Async Verification Email Delivery with RabbitMQ and DB-Backed Resend Throttle | Accepted | 2026-05-17 |
+| [ADR-0011](./0011-self-contained-eni-metadata-store-with-postgresql.md) | Self-Contained ENI Metadata Store with PostgreSQL (Alfresco Optional) | Accepted | 2026-05-17 |
 
 ## Supporting Files
 - [ADR Guidelines](./README.md)

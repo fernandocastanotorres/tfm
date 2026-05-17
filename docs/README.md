@@ -4,6 +4,7 @@ This folder contains project-level technical documentation.
 
 ## Delivery Readiness
 - AI implementation readiness: [Implementation Ready Checklist](./IMPLEMENTATION_READY_CHECKLIST.md)
+- Build and deployment operations: [Deployment and Build Guide](./DEPLOYMENT_AND_BUILD.md)
 
 ## Architecture Decision Records (ADRs)
 - ADR entry point: [ADR Index](./adr/INDEX.md)

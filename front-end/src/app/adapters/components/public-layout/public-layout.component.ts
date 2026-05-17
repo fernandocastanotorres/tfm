@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { I18nService, SupportedLocale } from '../../../application/services/i18n.service';
+import { GuidedTourService } from '../../../application/services/guided-tour.service';
 import { Observable, Subscription } from 'rxjs';
 
 export interface MenuGroup {
@@ -59,7 +60,8 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly i18nService: I18nService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly guidedTourService: GuidedTourService
   ) {
     this.currentLocale$ = this.i18nService.getCurrentLocale$();
   }
@@ -144,6 +146,10 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
     if (!relatedTarget || !relatedTarget.closest('.public-header__dropdown')) {
       this.closeDropdown();
     }
+  }
+
+  startTour(): void {
+    this.guidedTourService.startCitizenTour();
   }
 
   private updateRouteState(url: string): void {

@@ -19,6 +19,10 @@ spring:
 jwt:
   secret: ZGV2LXNlY3JldC1rZXktZm9yLXRlc3RpbmctcHVycG9zZXMtb25seS1kb25vdC11c2UtaW4tcHJvZHVjdGlvbg==
 
+mailing:
+  queue:
+    enabled: false
+
 logging:
   level:
     es.tfg.records: DEBUG

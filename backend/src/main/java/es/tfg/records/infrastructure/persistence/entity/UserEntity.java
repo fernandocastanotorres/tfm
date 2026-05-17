@@ -62,6 +62,9 @@ public class UserEntity {
     @Column(name = "otp_expiry")
     private Instant otpExpiry;
 
+    @Column(name = "last_verification_email_sent_at")
+    private Instant lastVerificationEmailSentAt;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
@@ -159,6 +162,14 @@ public class UserEntity {
 
     public void setOtpExpiry(Instant otpExpiry) {
         this.otpExpiry = otpExpiry;
+    }
+
+    public Instant getLastVerificationEmailSentAt() {
+        return lastVerificationEmailSentAt;
+    }
+
+    public void setLastVerificationEmailSentAt(Instant lastVerificationEmailSentAt) {
+        this.lastVerificationEmailSentAt = lastVerificationEmailSentAt;
     }
 
     public Instant getCreatedAt() {

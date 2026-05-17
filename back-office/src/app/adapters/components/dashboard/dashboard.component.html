@@ -23,6 +23,21 @@
     </div>
   </div>
 
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white rounded-lg shadow p-6">
+      <div class="text-sm text-gray-500 mb-1">Resueltos</div>
+      <div class="text-2xl font-bold text-emerald-700">{{ report?.summary?.resolvedCases || 0 }}</div>
+    </div>
+    <div class="bg-white rounded-lg shadow p-6">
+      <div class="text-sm text-gray-500 mb-1">SLA Cumplido</div>
+      <div class="text-2xl font-bold text-indigo-700">{{ report?.summary?.slaComplianceRate || 0 }}%</div>
+    </div>
+    <div class="bg-white rounded-lg shadow p-6">
+      <div class="text-sm text-gray-500 mb-1">Media Resolucion</div>
+      <div class="text-2xl font-bold text-sky-700">{{ report?.summary?.averageResolutionHours || 0 }}h</div>
+    </div>
+  </div>
+
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Pending tasks -->
     <div class="bg-white rounded-lg shadow">
@@ -62,6 +77,70 @@
         <div class="text-gray-500 text-sm">
           Los expedientes apareceran aqui cuando se reciban datos del backend.
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+    <div class="bg-white rounded-lg shadow">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-900">Distribucion por Estado</h3>
+      </div>
+      <div class="p-6">
+        <div *ngIf="statusDistribution.length === 0" class="text-gray-500 text-sm">Sin datos</div>
+        <ul class="space-y-2" *ngIf="statusDistribution.length > 0">
+          <li *ngFor="let item of statusDistribution" class="flex items-center justify-between text-sm">
+            <span class="text-gray-700">{{ item.label }}</span>
+            <span class="font-semibold text-gray-900">{{ item.count }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-900">Tendencia Ultimos 7 Dias</h3>
+      </div>
+      <div class="p-6">
+        <div *ngIf="dailyTrend.length === 0" class="text-gray-500 text-sm">Sin datos</div>
+        <ul class="space-y-2" *ngIf="dailyTrend.length > 0">
+          <li *ngFor="let day of dailyTrend" class="flex items-center justify-between text-sm">
+            <span class="text-gray-700">{{ day.day }}</span>
+            <span class="text-gray-900">C: {{ day.createdCases }} | R: {{ day.resolvedCases }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+    <div class="bg-white rounded-lg shadow">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-900">Top Procedimientos</h3>
+      </div>
+      <div class="p-6">
+        <div *ngIf="procedureDistribution.length === 0" class="text-gray-500 text-sm">Sin datos</div>
+        <ul class="space-y-2" *ngIf="procedureDistribution.length > 0">
+          <li *ngFor="let item of procedureDistribution" class="flex items-center justify-between text-sm">
+            <span class="text-gray-700">{{ item.label }}</span>
+            <span class="font-semibold text-gray-900">{{ item.count }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-900">Carga por Unidad</h3>
+      </div>
+      <div class="p-6">
+        <div *ngIf="unitDistribution.length === 0" class="text-gray-500 text-sm">Sin datos</div>
+        <ul class="space-y-2" *ngIf="unitDistribution.length > 0">
+          <li *ngFor="let item of unitDistribution" class="flex items-center justify-between text-sm">
+            <span class="text-gray-700">{{ item.label }}</span>
+            <span class="font-semibold text-gray-900">{{ item.count }}</span>
+          </li>
+        </ul>
       </div>
     </div>
   </div>

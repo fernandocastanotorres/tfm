@@ -7,7 +7,7 @@
 
     <!-- Full navigation (hidden on auth pages) -->
     <ng-container *ngIf="!isAuthPage">
-      <nav class="public-header__nav" aria-label="Navegacion principal">
+      <nav class="public-header__nav" aria-label="Navegacion principal" data-tour="citizen-nav">
         <button
           type="button"
           class="public-header__menu-toggle"
@@ -82,8 +82,8 @@
       >
         <span aria-hidden="true">{{ isDarkMode ? '☀' : '☾' }}</span>
       </button>
-      <a *ngIf="!isAuthPage" [routerLink]="['/sede/login']" class="btn-primary btn-primary--sm">{{ 'PUBLIC.LOGIN' | translate }}</a>
-      <div class="public-header__locale">
+      <a *ngIf="!isAuthPage" [routerLink]="['/sede/login']" class="btn-primary btn-primary--sm" data-tour="citizen-login">{{ 'PUBLIC.LOGIN' | translate }}</a>
+      <div class="public-header__locale" data-tour="citizen-locale">
         <label class="sr-only" for="locale-select-public">Idioma</label>
         <select
           id="locale-select-public"
@@ -97,6 +97,15 @@
           </option>
         </select>
       </div>
+      <button
+        *ngIf="!isAuthPage"
+        type="button"
+        class="btn-primary btn-primary--sm"
+        data-tour="citizen-help"
+        (click)="startTour()"
+      >
+        Guia
+      </button>
     </div>
   </div>
 </header>

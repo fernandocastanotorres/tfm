@@ -27,10 +27,16 @@ npx ng serve --configuration development --port 4300
 
 ## Admin Endpoints Used
 
+- `GET /api/v1/admin/dashboard/stats`
+- `GET /api/v1/admin/dashboard/report`
+- `GET /api/v1/admin/tasks/pending`
 - `GET /api/v1/admin/users`
 - `POST /api/v1/admin/users`
 - `PUT /api/v1/admin/users/{id}`
 - `PATCH /api/v1/admin/users/{id}/status`
+- `GET /api/v1/admin/procedure-types`
+- `POST /api/v1/admin/procedure-types`
+- `PUT /api/v1/admin/procedure-types/{id}`
 - `GET /api/v1/admin/procedure-types/{id}/translations`
 - `PUT /api/v1/admin/procedure-types/{id}/translations`
 
@@ -38,3 +44,8 @@ npx ng serve --configuration development --port 4300
 
 - TypeScript app: `npx tsc --noEmit`
 - TypeScript specs: `npx tsc --noEmit -p tsconfig.spec.json`
+
+## Interactive Tour
+
+- Backoffice header includes a `Guia` button.
+- The guide highlights sidebar navigation, header context, and main workspace.

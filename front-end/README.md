@@ -27,6 +27,11 @@ npx ng serve --configuration development --port 4200
 
 - `http://localhost:4200`
 
+## Interactive Tour
+
+- The citizen header includes a `Guia` button that launches an interactive Intro.js tour.
+- Current guided steps cover navigation menu, language selector, login access, and help entry point.
+
 If proxy or environment settings change, restart `ng serve`.
 
 ## Procedure Start Flow (Auth + Continuity)

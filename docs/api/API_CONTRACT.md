@@ -73,11 +73,14 @@ It complements:
 | Endpoint | Method | Description |
 |---|---|---|
 | `/api/v1/admin/dashboard/stats` | GET | Backoffice dashboard metrics |
+| `/api/v1/admin/dashboard/report` | GET | Backoffice report (distribution, SLA, trend) |
+| `/api/v1/admin/eni/metadata/procedures/{id}` | GET | ENI metadata snapshot for a procedure |
+| `/api/v1/admin/eni/metadata/documents/{id}` | GET | ENI metadata snapshot for a document |
 | `/api/v1/admin/tasks/pending` | GET | List pending internal tasks |
-| `/api/v1/admin/cases` | GET | List cases for processing |
-| `/api/v1/admin/cases/{caseId}` | GET | Get internal case detail |
-| `/api/v1/admin/cases/{caseId}/status` | PATCH | Update case status |
-| `/api/v1/admin/cases/{caseId}/tasks/resolve` | POST | Resolve current task |
+| `/api/v1/admin/procedures` | GET | List cases for processing |
+| `/api/v1/admin/procedures/{caseId}` | GET | Get internal case detail |
+| `/api/v1/admin/procedures/{caseId}/status` | PATCH | Update case status |
+| `/api/v1/admin/procedures/{caseId}/tasks/{taskId}/resolve` | POST | Resolve current task |
 
 ### 4.4 Administration
 

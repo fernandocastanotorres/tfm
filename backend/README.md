@@ -229,9 +229,17 @@ http://localhost:8080/api/v1/api-docs
 | GET | `/citizen/procedures/documents/{id}/download` | Download document | Required |
 | DELETE | `/citizen/procedures/documents/{id}` | Delete document | Required |
 | GET | `/citizen/procedures/catalog` | List procedure types | Required |
-| GET | `/citizen/procedures/catalog/{slug}` | Get procedure detail | Required |
-| GET | `/citizen/procedures/catalog/{slug}/form-schema` | Get form schema | Required |
-| GET | `/citizen/procedures/catalog/{slug}/tasks/{taskId}/schema` | Get task schema | Required |
+| GET | `/citizen/procedures/catalog/{procedureId}` | Get procedure detail | Public |
+| GET | `/citizen/procedures/catalog/{procedureId}/form-schema` | Get form schema | Public |
+| GET | `/citizen/procedures/catalog/{procedureId}/tasks/{taskId}/schema` | Get task schema | Public |
+| GET | `/auth/verify-email` | Verify account email with token | Public |
+| POST | `/auth/resend-verification` | Resend verification email (throttled) | Public |
+| GET | `/auth/me` | Get authenticated user profile | Required |
+| PUT | `/auth/me` | Update authenticated user profile | Required |
+| GET | `/admin/dashboard/stats` | Dashboard KPI cards | Required |
+| GET | `/admin/dashboard/report` | Dashboard distributions, SLA and trend report | Required |
+| GET | `/admin/eni/metadata/procedures/{id}` | ENI metadata snapshot for a procedure | Required |
+| GET | `/admin/eni/metadata/documents/{id}` | ENI metadata snapshot for a document | Required |
 | GET | `/health/live` | Liveness probe | Public |
 | GET | `/health/ready` | Readiness probe | Required |
 

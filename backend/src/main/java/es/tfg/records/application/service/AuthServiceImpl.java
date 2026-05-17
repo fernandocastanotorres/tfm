@@ -38,8 +38,6 @@ public class AuthServiceImpl implements AuthService {
     // In-memory password reset token store for development
     private final Map<String, ResetTokenEntry> resetTokenStore = new HashMap<>();
 
-    private final Map<String, Instant> resendVerificationThrottle = new HashMap<>();
-
     // In-memory refresh token store for rotation
     private final Set<String> activeRefreshTokens = new HashSet<>();
 
@@ -111,6 +109,7 @@ public class AuthServiceImpl implements AuthService {
         String otpCode = UUID.randomUUID().toString();
         user.setOtpCode(otpCode);
         user.setOtpExpiry(Instant.now().plusSeconds(86400));
+        user.setLastVerificationEmailSentAt(Instant.now());
 
         User saved = userRepository.save(user);
 
@@ -196,19 +195,19 @@ public class AuthServiceImpl implements AuthService {
             }
 
             Instant now = Instant.now();
-            Instant nextAllowed = resendVerificationThrottle.get(request.email());
-            if (nextAllowed != null && now.isBefore(nextAllowed)) {
+            Instant lastSentAt = user.getLastVerificationEmailSentAt();
+            if (lastSentAt != null && now.isBefore(lastSentAt.plusSeconds(60))) {
                 return;
             }
 
             String verificationToken = UUID.randomUUID().toString();
             user.setOtpCode(verificationToken);
             user.setOtpExpiry(now.plusSeconds(86400));
+            user.setLastVerificationEmailSentAt(now);
             userRepository.save(user);
 
             String verificationUrl = verificationBaseUrl + "?token=" + verificationToken;
             emailGateway.sendVerificationEmail(user.getEmail(), user.getDisplayName(), verificationUrl);
-            resendVerificationThrottle.put(request.email(), now.plusSeconds(60));
         });
     }
 

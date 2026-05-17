@@ -25,11 +25,14 @@ public class CaseServiceImpl implements CaseService {
 
     private final ProcedureRepository procedureRepository;
     private final ProcedureTypeRepository procedureTypeRepository;
+    private final EniMetadataService eniMetadataService;
 
     public CaseServiceImpl(ProcedureRepository procedureRepository,
-                           ProcedureTypeRepository procedureTypeRepository) {
+                           ProcedureTypeRepository procedureTypeRepository,
+                           EniMetadataService eniMetadataService) {
         this.procedureRepository = procedureRepository;
         this.procedureTypeRepository = procedureTypeRepository;
+        this.eniMetadataService = eniMetadataService;
     }
 
     @Override
@@ -87,6 +90,7 @@ public class CaseServiceImpl implements CaseService {
         procedure.setSubmittedAt(null);
 
         Procedure saved = procedureRepository.save(procedure);
+        eniMetadataService.upsertProcedureMetadata(saved);
 
         Map<UUID, String> categoryMap = buildCategoryMap();
         return ProcedureMapper.toCaseItem(saved, categoryMap.get(saved.getProcedureTypeId()));
@@ -103,6 +107,7 @@ public class CaseServiceImpl implements CaseService {
         procedure.setStatus(CaseStatus.SUBMITTED);
         procedure.setSubmittedAt(Instant.now());
         Procedure saved = procedureRepository.save(procedure);
+        eniMetadataService.upsertProcedureMetadata(saved);
 
         return ProcedureMapper.toCaseStatusResponse(saved, null);
     }
@@ -120,6 +125,7 @@ public class CaseServiceImpl implements CaseService {
             procedure.setFormData(serializeFormData(request.formData()));
         }
         Procedure saved = procedureRepository.save(procedure);
+        eniMetadataService.upsertProcedureMetadata(saved);
 
         return ProcedureMapper.toCaseStatusResponse(saved, null);
     }
@@ -139,6 +145,7 @@ public class CaseServiceImpl implements CaseService {
 
         procedure.setStatus(status);
         Procedure saved = procedureRepository.save(procedure);
+        eniMetadataService.upsertProcedureMetadata(saved);
 
         return ProcedureMapper.toCaseStatusResponse(saved, null);
     }

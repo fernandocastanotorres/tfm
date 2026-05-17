@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../application/services/auth.service';
+import { GuidedTourService } from '../../../application/services/guided-tour.service';
 
 interface NavItem {
   label: string;
@@ -17,6 +18,7 @@ interface NavItem {
 export class BackofficeLayoutComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly guidedTourService = inject(GuidedTourService);
 
   username = '';
   userRoles: string[] = [];
@@ -67,5 +69,9 @@ export class BackofficeLayoutComponent implements OnInit {
     const currentRoute = this.router.url;
     const item = this.navItems.find(n => currentRoute.startsWith(n.route));
     return item?.label || 'Backoffice';
+  }
+
+  startTour(): void {
+    this.guidedTourService.startBackofficeTour();
   }
 }

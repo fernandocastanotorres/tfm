@@ -28,8 +28,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -157,6 +162,66 @@ public class BackofficeService {
                 .filter(p -> p.getUpdatedAt() != null && p.getUpdatedAt().isAfter(Instant.now().minusSeconds(86400)))
                 .count();
         return new BackofficeDtos.DashboardStats(procedures.size(), pending, inProgress, completedToday, 0, "N/D");
+    }
+
+    @Transactional(readOnly = true)
+    public BackofficeDtos.DashboardReport dashboardReport(LocalDate from, LocalDate to) {
+        LocalDate resolvedTo = to == null ? LocalDate.now(ZoneOffset.UTC) : to;
+        LocalDate resolvedFrom = from == null ? resolvedTo.minusDays(29) : from;
+        if (resolvedFrom.isAfter(resolvedTo)) {
+            LocalDate swap = resolvedFrom;
+            resolvedFrom = resolvedTo;
+            resolvedTo = swap;
+        }
+
+        Instant fromInclusive = resolvedFrom.atStartOfDay().toInstant(ZoneOffset.UTC);
+        Instant toExclusive = resolvedTo.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC);
+
+        List<ProcedureEntity> procedures = procedureRepository.findAll().stream()
+                .filter(procedure -> !procedure.getCreatedAt().isBefore(fromInclusive))
+                .filter(procedure -> procedure.getCreatedAt().isBefore(toExclusive))
+                .toList();
+
+        Map<UUID, ProcedureTypeEntity> typesById = procedureTypeRepository.findAll().stream()
+                .collect(Collectors.toMap(ProcedureTypeEntity::getId, Function.identity()));
+
+        long pending = procedures.stream().filter(this::isPendingStatus).count();
+        long inProgress = procedures.stream().filter(this::isInProgressStatus).count();
+        long resolved = procedures.stream().filter(this::isResolvedStatus).count();
+        long overdue = procedures.stream().filter(p -> isOverdue(p, typesById.get(p.getProcedureTypeId()))).count();
+
+        List<Double> resolutionHours = procedures.stream()
+                .filter(this::isResolvedStatus)
+                .map(this::resolutionHours)
+                .flatMapToDouble(java.util.OptionalDouble::stream)
+                .boxed()
+                .toList();
+
+        double averageResolutionHours = resolutionHours.isEmpty()
+                ? 0D
+                : resolutionHours.stream().mapToDouble(Double::doubleValue).average().orElse(0D);
+
+        long resolvedWithSla = procedures.stream()
+                .filter(this::isResolvedStatus)
+                .filter(procedure -> isWithinSla(procedure, typesById.get(procedure.getProcedureTypeId())))
+                .count();
+        double slaComplianceRate = resolved == 0 ? 0D : (resolvedWithSla * 100D) / resolved;
+
+        return new BackofficeDtos.DashboardReport(
+                new BackofficeDtos.DashboardReportSummary(
+                        procedures.size(),
+                        pending,
+                        inProgress,
+                        resolved,
+                        overdue,
+                        round2(slaComplianceRate),
+                        round2(averageResolutionHours)
+                ),
+                buildStatusDistribution(procedures),
+                buildProcedureTypeDistribution(procedures, typesById),
+                buildAssignedUnitDistribution(procedures, typesById),
+                buildDailyTrend(procedures, resolvedFrom, resolvedTo)
+        );
     }
 
     @Transactional(readOnly = true)
@@ -424,5 +489,136 @@ public class BackofficeService {
             throw new ConflictException("PROCEDURE_TYPE_I18N", "LOCALE_REQUIRED");
         }
         return locale.trim();
+    }
+
+    private List<BackofficeDtos.DashboardDistributionItem> buildStatusDistribution(List<ProcedureEntity> procedures) {
+        return Arrays.stream(CaseStatus.values())
+                .map(status -> new BackofficeDtos.DashboardDistributionItem(
+                        status.name(),
+                        statusLabel(status),
+                        procedures.stream().filter(procedure -> procedure.getStatus() == status).count()))
+                .toList();
+    }
+
+    private List<BackofficeDtos.DashboardDistributionItem> buildProcedureTypeDistribution(
+            List<ProcedureEntity> procedures,
+            Map<UUID, ProcedureTypeEntity> typesById) {
+        Map<String, Long> totals = procedures.stream()
+                .collect(Collectors.groupingBy(
+                        procedure -> {
+                            ProcedureTypeEntity type = typesById.get(procedure.getProcedureTypeId());
+                            return type == null ? "Procedimiento" : type.getTitle();
+                        },
+                        Collectors.counting()));
+        return totals.entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                .map(entry -> new BackofficeDtos.DashboardDistributionItem(entry.getKey(), entry.getKey(), entry.getValue()))
+                .toList();
+    }
+
+    private List<BackofficeDtos.DashboardDistributionItem> buildAssignedUnitDistribution(
+            List<ProcedureEntity> procedures,
+            Map<UUID, ProcedureTypeEntity> typesById) {
+        Map<String, Long> totals = procedures.stream()
+                .collect(Collectors.groupingBy(
+                        procedure -> {
+                            if (procedure.getAssignedUnit() != null && !procedure.getAssignedUnit().isBlank()) {
+                                return procedure.getAssignedUnit();
+                            }
+                            ProcedureTypeEntity type = typesById.get(procedure.getProcedureTypeId());
+                            return type == null ? "Sin unidad" : type.getUnit();
+                        },
+                        Collectors.counting()));
+        return totals.entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                .map(entry -> new BackofficeDtos.DashboardDistributionItem(entry.getKey(), entry.getKey(), entry.getValue()))
+                .toList();
+    }
+
+    private List<BackofficeDtos.DashboardDailyTrendPoint> buildDailyTrend(
+            List<ProcedureEntity> procedures,
+            LocalDate from,
+            LocalDate to) {
+        Map<LocalDate, Long> createdByDay = procedures.stream()
+                .collect(Collectors.groupingBy(
+                        procedure -> procedure.getCreatedAt().atOffset(ZoneOffset.UTC).toLocalDate(),
+                        LinkedHashMap::new,
+                        Collectors.counting()));
+
+        Map<LocalDate, Long> resolvedByDay = procedures.stream()
+                .filter(this::isResolvedStatus)
+                .collect(Collectors.groupingBy(
+                        procedure -> procedure.getUpdatedAt().atOffset(ZoneOffset.UTC).toLocalDate(),
+                        LinkedHashMap::new,
+                        Collectors.counting()));
+
+        List<BackofficeDtos.DashboardDailyTrendPoint> trend = new ArrayList<>();
+        LocalDate cursor = from;
+        while (!cursor.isAfter(to)) {
+            trend.add(new BackofficeDtos.DashboardDailyTrendPoint(
+                    cursor,
+                    createdByDay.getOrDefault(cursor, 0L),
+                    resolvedByDay.getOrDefault(cursor, 0L)
+            ));
+            cursor = cursor.plusDays(1);
+        }
+        return trend;
+    }
+
+    private boolean isPendingStatus(ProcedureEntity procedure) {
+        return procedure.getStatus() == CaseStatus.SUBMITTED;
+    }
+
+    private boolean isInProgressStatus(ProcedureEntity procedure) {
+        return procedure.getStatus() == CaseStatus.IN_REVIEW
+                || procedure.getStatus() == CaseStatus.RESUBMITTED
+                || procedure.getStatus() == CaseStatus.AMENDMENT_REQUIRED;
+    }
+
+    private boolean isResolvedStatus(ProcedureEntity procedure) {
+        return procedure.getStatus() == CaseStatus.APPROVED || procedure.getStatus() == CaseStatus.REJECTED;
+    }
+
+    private boolean isOverdue(ProcedureEntity procedure, ProcedureTypeEntity type) {
+        if (!isPendingStatus(procedure) && !isInProgressStatus(procedure)) {
+            return false;
+        }
+        Instant start = procedure.getSubmittedAt() == null ? procedure.getCreatedAt() : procedure.getSubmittedAt();
+        int deadlineDays = Math.max(1, type == null ? 10 : type.getDeadlineDays());
+        return start.plus(deadlineDays, ChronoUnit.DAYS).isBefore(Instant.now());
+    }
+
+    private java.util.OptionalDouble resolutionHours(ProcedureEntity procedure) {
+        Instant start = procedure.getSubmittedAt() == null ? procedure.getCreatedAt() : procedure.getSubmittedAt();
+        if (start == null || procedure.getUpdatedAt() == null) {
+            return java.util.OptionalDouble.empty();
+        }
+        long minutes = ChronoUnit.MINUTES.between(start, procedure.getUpdatedAt());
+        return java.util.OptionalDouble.of(minutes / 60D);
+    }
+
+    private boolean isWithinSla(ProcedureEntity procedure, ProcedureTypeEntity type) {
+        Instant start = procedure.getSubmittedAt() == null ? procedure.getCreatedAt() : procedure.getSubmittedAt();
+        if (start == null || procedure.getUpdatedAt() == null) {
+            return false;
+        }
+        int deadlineDays = Math.max(1, type == null ? 10 : type.getDeadlineDays());
+        return !start.plus(deadlineDays, ChronoUnit.DAYS).isBefore(procedure.getUpdatedAt());
+    }
+
+    private double round2(double value) {
+        return Math.round(value * 100D) / 100D;
+    }
+
+    private String statusLabel(CaseStatus status) {
+        return switch (status) {
+            case DRAFT -> "Borrador";
+            case SUBMITTED -> "Presentado";
+            case IN_REVIEW -> "En revision";
+            case AMENDMENT_REQUIRED -> "Subsanacion requerida";
+            case RESUBMITTED -> "Reenviado";
+            case APPROVED -> "Aprobado";
+            case REJECTED -> "Rechazado";
+        };
     }
 }

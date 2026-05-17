@@ -25,7 +25,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/intro.js/minified/introjs.min.css"
             ],
             "scripts": []
           },
@@ -96,7 +97,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/intro.js/minified/introjs.min.css"
             ],
             "scripts": []
           }

@@ -54,13 +54,16 @@ public class DocumentServiceImpl implements DocumentService {
     private final DocumentRepository documentRepository;
     private final ProcedureRepository procedureRepository;
     private final FileStorageService fileStorageService;
+    private final EniMetadataService eniMetadataService;
 
     public DocumentServiceImpl(DocumentRepository documentRepository,
                                ProcedureRepository procedureRepository,
-                               FileStorageService fileStorageService) {
+                               FileStorageService fileStorageService,
+                               EniMetadataService eniMetadataService) {
         this.documentRepository = documentRepository;
         this.procedureRepository = procedureRepository;
         this.fileStorageService = fileStorageService;
+        this.eniMetadataService = eniMetadataService;
     }
 
     @Override
@@ -87,6 +90,7 @@ public class DocumentServiceImpl implements DocumentService {
         document.setUploadedAt(Instant.now());
 
         Document saved = documentRepository.save(document);
+        eniMetadataService.upsertDocumentMetadata(saved);
 
         return DocumentMapper.toDocumentItem(saved);
     }
@@ -129,7 +133,10 @@ public class DocumentServiceImpl implements DocumentService {
             fileStorageService.delete(document.getProcedureId(), document.getStoragePath());
         }
 
-        documentRepository.save(document);
+        document.setStatus(DocumentStatus.REJECTED);
+
+        Document saved = documentRepository.save(document);
+        eniMetadataService.upsertDocumentMetadata(saved);
     }
 
     @Override
