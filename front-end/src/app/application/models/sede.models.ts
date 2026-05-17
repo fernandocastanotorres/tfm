@@ -64,9 +64,13 @@ export interface TransparencyMetric {
 export interface TransparencyReport {
   id: string;
   titleKey: string;
+  title?: string;
   year: number;
   descriptionKey: string;
+  description?: string;
   downloadUrl?: string;
+  fileName?: string;
+  fileSize?: number;
 }
 
 export interface CalendarEvent {
@@ -111,4 +115,14 @@ export interface SitemapSection {
 export interface SitemapLink {
   labelKey: string;
   route: string;
+}
+
+export interface ThemeColor {
+  token: string;
+  value: string;
+}
+
+export interface ThemePalette {
+  colors: ThemeColor[];
+  updatedAt: string | null;
 }

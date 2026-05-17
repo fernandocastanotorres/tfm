@@ -34,15 +34,16 @@
       <ul class="transparency__reports-list">
         <li class="card p-6 transparency__report" *ngFor="let report of reports">
           <div class="transparency__report-header">
-            <h3 class="transparency__report-title">{{ report.titleKey | translate }}</h3>
+            <h3 class="transparency__report-title">{{ report.title || (report.titleKey | translate) }}</h3>
             <span class="transparency__report-year">{{ report.year }}</span>
           </div>
-          <p class="transparency__report-desc">{{ report.descriptionKey | translate }}</p>
+          <p class="transparency__report-desc">{{ report.description || (report.descriptionKey | translate) }}</p>
           <a *ngIf="report.downloadUrl" [href]="report.downloadUrl" class="btn-primary btn-primary--sm mt-3">
             {{ 'TRANSPARENCY.DOWNLOAD_REPORT' | translate }}
           </a>
         </li>
       </ul>
+      <p *ngIf="reports.length === 0" class="transparency__empty">{{ 'TRANSPARENCY.NO_REPORTS' | translate }}</p>
     </div>
   </div>
 </section>
