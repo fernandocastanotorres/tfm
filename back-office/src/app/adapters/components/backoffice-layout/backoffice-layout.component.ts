@@ -26,11 +26,13 @@ export class BackofficeLayoutComponent implements OnInit {
 
   navItems: NavItem[] = [
     { label: 'Panel Principal', icon: 'dashboard', route: '/dashboard' },
+    { label: 'Estadisticas', icon: 'chart', route: '/statistics' },
     { label: 'Expedientes', icon: 'folder', route: '/cases' },
     { label: 'Tareas Pendientes', icon: 'task', route: '/tasks' },
     { label: 'Usuarios', icon: 'people', route: '/admin/users', roles: ['ROLE_ADMIN'] },
     { label: 'Procedimientos', icon: 'settings', route: '/admin/procedures', roles: ['ROLE_ADMIN'] },
-    { label: 'Contenido Publico', icon: 'public', route: '/admin/public-content', roles: ['ROLE_ADMIN'] }
+    { label: 'Contenido Publico', icon: 'public', route: '/admin/public-content', roles: ['ROLE_ADMIN'] },
+    { label: 'Transparencia', icon: 'transparency', route: '/admin/transparency', roles: ['ROLE_ADMIN'] }
   ];
 
   ngOnInit(): void {
@@ -58,11 +60,13 @@ export class BackofficeLayoutComponent implements OnInit {
   getIcon(icon: string): string {
     const icons: Record<string, string> = {
       dashboard: '📊',
+      chart: '📈',
       folder: '📁',
       task: '✅',
       people: '👥',
       settings: '⚙️',
-      public: '🌐'
+      public: '🌐',
+      transparency: '📋'
     };
     return icons[icon] || '📄';
   }
