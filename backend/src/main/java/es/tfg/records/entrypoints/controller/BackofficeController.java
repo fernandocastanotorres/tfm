@@ -2,6 +2,7 @@ package es.tfg.records.entrypoints.controller;
 
 import es.tfg.records.application.dto.BackofficeDtos;
 import es.tfg.records.application.dto.PublicContentDtos;
+import es.tfg.records.application.dto.TransparencyDtos;
 import es.tfg.records.application.service.BackofficeService;
 import es.tfg.records.application.service.EniMetadataService;
 import es.tfg.records.application.service.PublicContentService;
@@ -273,6 +274,18 @@ public class BackofficeController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/public-content/theme")
+    @Operation(summary = "Get configurable sede theme palette")
+    public ResponseEntity<PublicContentDtos.ThemeCatalog> getThemePaletteAdmin() {
+        return ResponseEntity.ok(publicContentService.getThemePaletteAdmin());
+    }
+
+    @PutMapping("/public-content/theme")
+    @Operation(summary = "Save configurable sede theme palette")
+    public ResponseEntity<PublicContentDtos.ThemeCatalog> saveThemePaletteAdmin(@RequestBody PublicContentDtos.ThemePaletteUpsertRequest request) {
+        return ResponseEntity.ok(publicContentService.saveThemePalette(request));
+    }
+
     @GetMapping("/dashboard/stats")
     @Operation(summary = "Get backoffice dashboard stats")
     public ResponseEntity<BackofficeDtos.DashboardStats> dashboardStats() {
@@ -285,6 +298,14 @@ public class BackofficeController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
         return ResponseEntity.ok(backofficeService.dashboardReport(from, to));
+    }
+
+    @GetMapping("/analytics/report")
+    @Operation(summary = "Get extended analytics report with monthly trends and SLA breakdowns")
+    public ResponseEntity<TransparencyDtos.AnalyticsReport> analyticsReport(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+        return ResponseEntity.ok(backofficeService.analyticsReport(from, to));
     }
 
     @GetMapping("/eni/metadata/procedures/{id}")

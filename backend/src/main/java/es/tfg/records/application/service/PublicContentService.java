@@ -10,8 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -26,6 +28,7 @@ public class PublicContentService {
     private static final String KIND_ORGANISM = "ORGANISM";
     private static final String KIND_RESOURCE = "RESOURCE";
     private static final String KIND_ORGANISM_CATEGORY = "ORGANISM_CATEGORY";
+    private static final String KIND_THEME = "THEME";
     private static final String DEFAULT_LOCALE = "es-ES";
 
     private final PublicContentEntryJpaRepository repository;
@@ -41,7 +44,7 @@ public class PublicContentService {
 
     @Transactional
     public PublicContentDtos.LegislationEntry createLegislation(PublicContentDtos.LegislationUpsertRequest request) {
-        PublicContentEntryEntity entity = baseEntity(KIND_LEGISLATION, request.locale());
+        PublicContentEntryEntity entity = baseEntity(KIND_LEGISLATION, request.locale(), request.translationGroupId());
         applyLegislation(entity, request);
         return toLegislation(repository.save(entity));
     }
@@ -70,7 +73,7 @@ public class PublicContentService {
 
     @Transactional
     public PublicContentDtos.FaqCategoryEntry createFaqCategory(PublicContentDtos.FaqCategoryUpsertRequest request) {
-        PublicContentEntryEntity entity = baseEntity(KIND_FAQ_CATEGORY, request.locale());
+        PublicContentEntryEntity entity = baseEntity(KIND_FAQ_CATEGORY, request.locale(), request.translationGroupId());
         applyFaqCategory(entity, request);
         return toFaqCategory(repository.save(entity));
     }
@@ -89,7 +92,7 @@ public class PublicContentService {
 
     @Transactional
     public PublicContentDtos.FaqEntry createFaq(PublicContentDtos.FaqUpsertRequest request) {
-        PublicContentEntryEntity entity = baseEntity(KIND_FAQ, request.locale());
+        PublicContentEntryEntity entity = baseEntity(KIND_FAQ, request.locale(), request.translationGroupId());
         applyFaq(entity, request);
         return toFaq(repository.save(entity));
     }
@@ -113,7 +116,7 @@ public class PublicContentService {
 
     @Transactional
     public PublicContentDtos.CalendarEntry createCalendar(PublicContentDtos.CalendarUpsertRequest request) {
-        PublicContentEntryEntity entity = baseEntity(KIND_CALENDAR, request.locale());
+        PublicContentEntryEntity entity = baseEntity(KIND_CALENDAR, request.locale(), request.translationGroupId());
         applyCalendar(entity, request);
         return toCalendar(repository.save(entity));
     }
@@ -137,7 +140,7 @@ public class PublicContentService {
 
     @Transactional
     public PublicContentDtos.InstitutionalEntry createInstitutional(PublicContentDtos.InstitutionalUpsertRequest request) {
-        PublicContentEntryEntity entity = baseEntity(KIND_INSTITUTIONAL, request.locale());
+        PublicContentEntryEntity entity = baseEntity(KIND_INSTITUTIONAL, request.locale(), request.translationGroupId());
         applyInstitutional(entity, request);
         return toInstitutional(repository.save(entity));
     }
@@ -166,7 +169,7 @@ public class PublicContentService {
 
     @Transactional
     public PublicContentDtos.OrganismEntry createOrganism(PublicContentDtos.OrganismUpsertRequest request) {
-        PublicContentEntryEntity entity = baseEntity(KIND_ORGANISM, request.locale());
+        PublicContentEntryEntity entity = baseEntity(KIND_ORGANISM, request.locale(), request.translationGroupId());
         applyOrganism(entity, request);
         return toOrganism(repository.save(entity));
     }
@@ -185,12 +188,12 @@ public class PublicContentService {
 
     @Transactional(readOnly = true)
     public List<PublicContentDtos.ResourceEntry> listResourcesAdmin() {
-        return repository.findByEntryKindOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_RESOURCE).stream().map(this::toResource).toList();
+        return repository.findByEntryKindAndLocaleOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_RESOURCE, DEFAULT_LOCALE).stream().map(this::toResource).toList();
     }
 
     @Transactional
     public PublicContentDtos.ResourceEntry createResource(PublicContentDtos.ResourceUpsertRequest request) {
-        PublicContentEntryEntity entity = baseEntity(KIND_RESOURCE, request.locale());
+        PublicContentEntryEntity entity = baseEntity(KIND_RESOURCE, request.locale(), request.translationGroupId());
         applyResource(entity, request);
         return toResource(repository.save(entity));
     }
@@ -317,6 +320,72 @@ public class PublicContentService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public PublicContentDtos.ThemePalette getPublicThemePalette() {
+        PublicContentDtos.ThemeCatalog catalog = toThemeCatalog(repository.findByEntryKindOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_THEME));
+        String activeThemeId = isBlank(catalog.activeThemeId())
+                ? (catalog.themes().isEmpty() ? null : catalog.themes().get(0).id())
+                : catalog.activeThemeId();
+
+        List<PublicContentDtos.ThemeColor> lightColors = catalog.themes().stream()
+                .filter(t -> Objects.equals(t.id(), activeThemeId) && Objects.equals(t.mode(), "light"))
+                .findFirst().map(PublicContentDtos.ThemeVariant::colors).orElse(List.of());
+
+        List<PublicContentDtos.ThemeColor> darkColors = catalog.themes().stream()
+                .filter(t -> Objects.equals(t.id(), activeThemeId) && Objects.equals(t.mode(), "dark"))
+                .findFirst().map(PublicContentDtos.ThemeVariant::colors).orElse(List.of());
+
+        List<PublicContentDtos.ThemeColor> allColors = new java.util.ArrayList<>();
+        allColors.addAll(lightColors);
+        for (PublicContentDtos.ThemeColor dc : darkColors) {
+            allColors.add(new PublicContentDtos.ThemeColor(dc.token() + "-dark", dc.value()));
+        }
+
+        return new PublicContentDtos.ThemePalette(allColors, catalog.updatedAt());
+    }
+
+    @Transactional(readOnly = true)
+    public PublicContentDtos.ThemeCatalog getThemePaletteAdmin() {
+        return toThemeCatalog(repository.findByEntryKindOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_THEME));
+    }
+
+    @Transactional
+    public PublicContentDtos.ThemeCatalog saveThemePalette(PublicContentDtos.ThemePaletteUpsertRequest request) {
+        List<PublicContentDtos.ThemeVariant> themes = request == null || request.themes() == null
+                ? List.of()
+                : request.themes();
+        String activeThemeId = request == null ? null : normalize(request.activeThemeId());
+
+        repository.deleteAll(repository.findByEntryKindOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_THEME));
+
+        int themeIndex = 0;
+        for (PublicContentDtos.ThemeVariant theme : themes) {
+            if (theme == null || isBlank(theme.id()) || isBlank(theme.name()) || theme.colors() == null || theme.colors().isEmpty()) {
+                continue;
+            }
+
+            String mode = isBlank(theme.mode()) ? "light" : theme.mode().trim();
+            int colorIndex = 0;
+            for (PublicContentDtos.ThemeColor color : theme.colors()) {
+                if (color == null || isBlank(color.token()) || isBlank(color.value())) {
+                    continue;
+                }
+                PublicContentEntryEntity entity = baseEntity(KIND_THEME, mode, UUID.randomUUID());
+                entity.setCategoryCode(theme.id().trim());
+                entity.setRelatedProcedure(theme.name().trim());
+                entity.setValueType(color.token().trim());
+                entity.setTitleText(color.value().trim());
+                entity.setBodyText("");
+                entity.setSortOrder(themeIndex * 1000 + colorIndex++);
+                entity.setPublished(Objects.equals(normalize(theme.id()), activeThemeId));
+                repository.save(entity);
+            }
+            themeIndex++;
+        }
+
+        return getThemePaletteAdmin();
+    }
+
     private List<PublicContentEntryEntity> localize(List<PublicContentEntryEntity> entries) {
         String requested = resolveLocaleTag();
         return entries.stream()
@@ -327,6 +396,11 @@ public class PublicContentService {
     }
 
     private String localeGroupingKey(PublicContentEntryEntity item) {
+        // Use translationGroupId as the primary grouping key when available
+        if (item.getTranslationGroupId() != null) {
+            return item.getEntryKind() + "|" + item.getTranslationGroupId().toString();
+        }
+        // Fallback to legacy grouping for data without translationGroupId
         return item.getEntryKind() + "|" + normalize(item.getCategoryCode()) + "|" + normalize(item.getValueType()) + "|" + item.getSortOrder();
     }
 
@@ -363,14 +437,14 @@ public class PublicContentService {
         return locale.getLanguage() + "-" + locale.getCountry();
     }
 
-    private PublicContentEntryEntity baseEntity(String kind, String locale) {
+    private PublicContentEntryEntity baseEntity(String kind, String locale, UUID groupId) {
         Instant now = Instant.now();
         PublicContentEntryEntity entity = new PublicContentEntryEntity();
         entity.setId(UUID.randomUUID());
         entity.setEntryKind(kind);
         entity.setLocale(normalizeLocale(locale));
         entity.setSortOrder(0);
-        entity.setTranslationGroupId(entity.getId());
+        entity.setTranslationGroupId(groupId != null ? groupId : entity.getId());
         entity.setParentGroupId(null);
         entity.setPublished(true);
         entity.setCreatedAt(now);
@@ -470,8 +544,7 @@ public class PublicContentService {
     private PublicContentEntryEntity findByGroup(String kind, UUID groupId, String locale) {
         return repository.findByEntryKindAndTranslationGroupIdAndLocale(kind, groupId, locale)
                 .orElseGet(() -> {
-                    PublicContentEntryEntity created = baseEntity(kind, locale);
-                    created.setTranslationGroupId(groupId);
+                    PublicContentEntryEntity created = baseEntity(kind, locale, groupId);
                     return created;
                 });
     }
@@ -544,5 +617,54 @@ public class PublicContentService {
 
     private PublicContentDtos.ResourceEntry toResource(PublicContentEntryEntity entity) {
         return new PublicContentDtos.ResourceEntry(entity.getTranslationGroupId(), entity.getLocale(), entity.getValueType(), entity.getTitleText(), entity.getBodyText(), entity.getRelatedProcedure(), entity.getExternalUrl(), entity.getSortOrder(), entity.isPublished(), entity.getCreatedAt(), entity.getUpdatedAt());
+    }
+
+    private PublicContentDtos.ThemeCatalog toThemeCatalog(List<PublicContentEntryEntity> entities) {
+        Map<String, List<PublicContentEntryEntity>> grouped = entities.stream()
+                .filter(entity -> !isBlank(entity.getCategoryCode()))
+                .collect(java.util.stream.Collectors.groupingBy(
+                        entity -> entity.getCategoryCode().trim() + "|" + normalizeMode(entity.getLocale()),
+                        LinkedHashMap::new,
+                        java.util.stream.Collectors.toList()
+                ));
+
+        List<PublicContentDtos.ThemeVariant> themes = grouped.entrySet().stream()
+                .map(entry -> {
+                    String key = entry.getKey();
+                    String[] parts = key.split("\\|", 2);
+                    String id = parts[0];
+                    String mode = parts.length > 1 ? parts[1] : "light";
+                    List<PublicContentEntryEntity> items = entry.getValue();
+                    String name = items.stream()
+                            .map(PublicContentEntryEntity::getRelatedProcedure)
+                            .filter(value -> !isBlank(value))
+                            .findFirst()
+                            .orElse(id);
+                    List<PublicContentDtos.ThemeColor> colors = items.stream()
+                            .filter(entity -> !isBlank(entity.getValueType()) && !isBlank(entity.getTitleText()))
+                            .sorted(Comparator.comparing(PublicContentEntryEntity::getSortOrder))
+                            .map(entity -> new PublicContentDtos.ThemeColor(entity.getValueType(), entity.getTitleText()))
+                            .toList();
+                    boolean active = items.stream().anyMatch(PublicContentEntryEntity::isPublished);
+                    return new PublicContentDtos.ThemeVariant(id, name, mode, colors, active);
+                })
+                .toList();
+
+        String activeThemeId = themes.stream().filter(PublicContentDtos.ThemeVariant::active).map(PublicContentDtos.ThemeVariant::id).findFirst().orElse(null);
+
+        Instant updatedAt = entities.stream()
+                .map(PublicContentEntryEntity::getUpdatedAt)
+                .filter(Objects::nonNull)
+                .max(Instant::compareTo)
+                .orElse(null);
+
+        return new PublicContentDtos.ThemeCatalog(themes, activeThemeId, updatedAt);
+    }
+
+    private String normalizeMode(String raw) {
+        if (isBlank(raw)) return "light";
+        String trimmed = raw.trim();
+        if ("light".equalsIgnoreCase(trimmed) || "dark".equalsIgnoreCase(trimmed)) return trimmed.toLowerCase();
+        return "light";
     }
 }

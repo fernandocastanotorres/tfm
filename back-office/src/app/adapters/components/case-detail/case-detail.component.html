@@ -7,12 +7,12 @@
   <div class="bg-white rounded-lg shadow p-6 mb-6">
     <div class="flex items-start justify-between mb-4">
       <div>
-        <h2 class="text-xl font-bold text-gray-900">{{ caseDetail.title }}</h2>
-        <p class="text-sm text-gray-500 mt-1">ID: {{ caseDetail.id }}</p>
+        <h2 class="text-xl font-bold text-gray-900">{{ caseDetail!.title }}</h2>
+        <p class="text-sm text-gray-500 mt-1">ID: {{ caseDetail!.id }}</p>
       </div>
       <div class="flex items-center gap-3">
-        <span class="px-3 py-1 text-sm font-medium rounded-full" [ngClass]="getStatusClass(caseDetail.status)">
-          {{ getStatusLabel(caseDetail.status) }}
+        <span class="px-3 py-1 text-sm font-medium rounded-full" [ngClass]="getStatusClass(caseDetail!.status)">
+          {{ getStatusLabel(caseDetail!.status) }}
         </span>
         <button
           (click)="openStatusModal()"
@@ -26,19 +26,19 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
       <div>
         <span class="text-gray-500">Tipo:</span>
-        <span class="ml-2 font-medium">{{ caseDetail.procedureType }}</span>
+        <span class="ml-2 font-medium">{{ caseDetail!.procedureType }}</span>
       </div>
       <div>
         <span class="text-gray-500">Ciudadano:</span>
-        <span class="ml-2 font-medium">{{ caseDetail.citizenName }}</span>
+        <span class="ml-2 font-medium">{{ caseDetail!.citizenName }}</span>
       </div>
       <div>
         <span class="text-gray-500">Unidad:</span>
-        <span class="ml-2 font-medium">{{ caseDetail.assignedUnit || '-' }}</span>
+        <span class="ml-2 font-medium">{{ caseDetail!.assignedUnit || '-' }}</span>
       </div>
       <div>
         <span class="text-gray-500">Tarea Actual:</span>
-        <span class="ml-2 font-medium">{{ caseDetail.currentTask || '-' }}</span>
+        <span class="ml-2 font-medium">{{ caseDetail!.currentTask || '-' }}</span>
       </div>
     </div>
   </div>
@@ -64,7 +64,7 @@
     <!-- Timeline tab -->
     <div *ngIf="activeTab === 'timeline'" class="p-6">
       <ul class="space-y-4">
-        <li *ngFor="let event of caseDetail.timeline" class="flex gap-4">
+        <li *ngFor="let event of caseDetail!.timeline" class="flex gap-4">
           <div class="flex-shrink-0 w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
           <div>
             <div class="font-medium text-gray-900">{{ event.title }}</div>
@@ -74,7 +74,7 @@
             </div>
           </div>
         </li>
-        <li *ngIf="caseDetail.timeline.length === 0" class="text-gray-500 text-sm">
+        <li *ngIf="caseDetail!.timeline.length === 0" class="text-gray-500 text-sm">
           No hay eventos en el historial
         </li>
       </ul>
@@ -93,14 +93,14 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
-          <tr *ngFor="let doc of caseDetail.attachments">
+          <tr *ngFor="let doc of caseDetail!.attachments">
             <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ doc.name }}</td>
             <td class="px-4 py-3 text-sm text-gray-500">{{ doc.type }}</td>
             <td class="px-4 py-3 text-sm text-gray-500">{{ formatFileSize(doc.size) }}</td>
             <td class="px-4 py-3 text-sm text-gray-500">{{ doc.uploadedBy }}</td>
             <td class="px-4 py-3 text-sm text-gray-500">{{ doc.uploadedAt | date: 'dd/MM/yyyy' }}</td>
           </tr>
-          <tr *ngIf="caseDetail.attachments.length === 0">
+          <tr *ngIf="caseDetail!.attachments.length === 0">
             <td colspan="5" class="px-4 py-6 text-center text-gray-500 text-sm">
               No hay documentos adjuntos
             </td>
@@ -111,7 +111,7 @@
 
     <!-- Data tab -->
     <div *ngIf="activeTab === 'data'" class="p-6">
-      <pre class="bg-gray-50 p-4 rounded text-sm overflow-auto max-h-96">{{ caseDetail.formData | json }}</pre>
+      <pre class="bg-gray-50 p-4 rounded text-sm overflow-auto max-h-96">{{ caseDetail!.formData | json }}</pre>
     </div>
 
     <!-- Actions tab -->
@@ -120,13 +120,13 @@
         <div>
           <h4 class="font-medium text-gray-900 mb-2">Acciones Disponibles</h4>
           <p class="text-sm text-gray-500">
-            Tarea actual: <strong>{{ caseDetail.currentTask || 'Ninguna' }}</strong>
+            Tarea actual: <strong>{{ caseDetail!.currentTask || 'Ninguna' }}</strong>
           </p>
         </div>
         <div class="flex gap-3">
           <button
-            [routerLink]="['/cases', caseDetail.id, 'task', caseDetail.currentTask]"
-            [disabled]="!caseDetail.currentTask"
+            [routerLink]="['/cases', caseDetail!.id, 'task', caseDetail!.currentTask]"
+            [disabled]="!caseDetail!.currentTask"
             class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Resolver Tarea

@@ -42,15 +42,19 @@
     </div>
     <div class="bg-white rounded-lg shadow p-6 space-y-3">
       <h4 class="font-semibold">{{ selectedLegislation ? 'Editar normativa' : 'Nueva normativa' }}</h4>
-      <label class="block text-sm">Locale<select [ngModel]="legislationLocale" (ngModelChange)="switchLegislationLocale($event)" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }} · {{ localeStatusFor('legislation', locale) === 'translated' ? 'Traducido' : 'Pendiente' }}</option></select></label>
-      <label class="block text-sm">Tipo<select [(ngModel)]="legislationForm.type" class="mt-1 w-full border rounded-md px-3 py-2"><option value="law">law</option><option value="decree">decree</option><option value="order">order</option><option value="resolution">resolution</option></select></label>
+      <div class="flex gap-1 border-b mb-3">
+        <button *ngFor="let locale of supportedLocales" type="button" (click)="switchLegislationLocale(locale)" class="px-3 py-1 text-sm border-b-2 transition" [class.border-blue-600]="legislationLocale === locale" [class.text-blue-600]="legislationLocale === locale" [class.border-transparent]="legislationLocale !== locale" [class.text-gray-500]="legislationLocale !== locale">{{ locale }}</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <label class="block text-sm">Tipo<select [(ngModel)]="legislationForm.type" (ngModelChange)="syncLegislationCommon('type', $event)" class="mt-1 w-full border rounded-md px-3 py-2"><option value="law">law</option><option value="decree">decree</option><option value="order">order</option><option value="resolution">resolution</option></select></label>
+        <label class="block text-sm">Orden<input type="number" [(ngModel)]="legislationForm.sortOrder" (ngModelChange)="syncLegislationCommon('sortOrder', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      </div>
       <label class="block text-sm">Titulo<input [(ngModel)]="legislationForm.title" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
       <label class="block text-sm">Descripcion<textarea [(ngModel)]="legislationForm.description" rows="4" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
       <label class="block text-sm">Fecha publicacion<input type="date" [(ngModel)]="legislationForm.publicationDate" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
       <label class="block text-sm">URL externa<input [(ngModel)]="legislationForm.externalUrl" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
       <label class="block text-sm">URL descarga<input [(ngModel)]="legislationForm.downloadUrl" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
-      <label class="block text-sm">Orden<input type="number" [(ngModel)]="legislationForm.sortOrder" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
-      <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="legislationForm.published" class="mr-2" /> Publicado</label>
+      <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="legislationForm.published" (ngModelChange)="syncLegislationCommon('published', $event)" class="mr-2" /> Publicado</label>
       <button type="button" (click)="saveLegislation()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">{{ isSaving ? 'Guardando...' : 'Guardar normativa' }}</button>
     </div>
   </div>
@@ -69,11 +73,13 @@
       </div>
       <div class="bg-white rounded-lg shadow p-6 space-y-3">
         <h4 class="font-semibold">{{ selectedFaqCategory ? 'Editar categoria' : 'Nueva categoria' }}</h4>
-        <label class="block text-sm">Locale<select [ngModel]="faqCategoryLocale" (ngModelChange)="switchFaqCategoryLocale($event)" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }} · {{ localeStatusFor('faq', locale) === 'translated' ? 'Traducido' : 'Pendiente' }}</option></select></label>
-        <label class="block text-sm">Codigo categoria<input [(ngModel)]="faqCategoryForm.categoryCode" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <div class="flex gap-1 border-b mb-3">
+          <button *ngFor="let locale of supportedLocales" type="button" (click)="switchFaqCategoryLocale(locale)" class="px-3 py-1 text-sm border-b-2 transition" [class.border-blue-600]="faqCategoryLocale === locale" [class.text-blue-600]="faqCategoryLocale === locale" [class.border-transparent]="faqCategoryLocale !== locale" [class.text-gray-500]="faqCategoryLocale !== locale">{{ locale }}</button>
+        </div>
+        <label class="block text-sm">Codigo categoria<input [(ngModel)]="faqCategoryForm.categoryCode" (ngModelChange)="syncFaqCategoryCommon('categoryCode', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
         <label class="block text-sm">Nombre categoria<input [(ngModel)]="faqCategoryForm.categoryName" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
-        <label class="block text-sm">Orden<input type="number" [(ngModel)]="faqCategoryForm.sortOrder" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
-        <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="faqCategoryForm.published" class="mr-2" /> Publicado</label>
+        <label class="block text-sm">Orden<input type="number" [(ngModel)]="faqCategoryForm.sortOrder" (ngModelChange)="syncFaqCategoryCommon('sortOrder', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="faqCategoryForm.published" (ngModelChange)="syncFaqCategoryCommon('published', $event)" class="mr-2" /> Publicado</label>
         <button type="button" (click)="saveFaqCategory()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">Guardar categoria</button>
       </div>
     </div>
@@ -91,16 +97,20 @@
       </div>
       <div class="bg-white rounded-lg shadow p-6 space-y-3">
         <h4 class="font-semibold">{{ selectedFaqEntry ? 'Editar FAQ' : 'Nueva FAQ' }}</h4>
-        <label class="block text-sm">Locale<select [ngModel]="faqLocale" (ngModelChange)="switchFaqLocale($event)" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }} · {{ localeStatusFor('faq', locale) === 'translated' ? 'Traducido' : 'Pendiente' }}</option></select></label>
-        <label class="block text-sm">Categoria
-          <select [(ngModel)]="faqForm.categoryCode" class="mt-1 w-full border rounded-md px-3 py-2">
-            <option *ngFor="let cat of faqCategories" [value]="cat.id">{{ cat.categoryName }} ({{ cat.locale }})</option>
-          </select>
-        </label>
+        <div class="flex gap-1 border-b mb-3">
+          <button *ngFor="let locale of supportedLocales" type="button" (click)="switchFaqLocale(locale)" class="px-3 py-1 text-sm border-b-2 transition" [class.border-blue-600]="faqLocale === locale" [class.text-blue-600]="faqLocale === locale" [class.border-transparent]="faqLocale !== locale" [class.text-gray-500]="faqLocale !== locale">{{ locale }}</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <label class="block text-sm">Categoria
+            <select [(ngModel)]="faqForm.categoryCode" (ngModelChange)="syncFaqCommon('categoryCode', $event)" class="mt-1 w-full border rounded-md px-3 py-2">
+              <option *ngFor="let cat of faqCategories" [value]="cat.id">{{ cat.categoryName }} ({{ cat.locale }})</option>
+            </select>
+          </label>
+          <label class="block text-sm">Orden<input type="number" [(ngModel)]="faqForm.sortOrder" (ngModelChange)="syncFaqCommon('sortOrder', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        </div>
         <label class="block text-sm">Pregunta<input [(ngModel)]="faqForm.question" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
         <label class="block text-sm">Respuesta<textarea [(ngModel)]="faqForm.answer" rows="4" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
-        <label class="block text-sm">Orden<input type="number" [(ngModel)]="faqForm.sortOrder" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
-        <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="faqForm.published" class="mr-2" /> Publicado</label>
+        <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="faqForm.published" (ngModelChange)="syncFaqCommon('published', $event)" class="mr-2" /> Publicado</label>
         <button type="button" (click)="saveFaq()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">Guardar FAQ</button>
       </div>
     </div>
@@ -119,14 +129,18 @@
     </div>
     <div class="bg-white rounded-lg shadow p-6 space-y-3">
       <h4 class="font-semibold">{{ selectedCalendarEntry ? 'Editar evento' : 'Nuevo evento' }}</h4>
-      <label class="block text-sm">Locale<select [ngModel]="calendarLocale" (ngModelChange)="switchCalendarLocale($event)" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }} · {{ localeStatusFor('calendar', locale) === 'translated' ? 'Traducido' : 'Pendiente' }}</option></select></label>
-      <label class="block text-sm">Tipo<select [(ngModel)]="calendarForm.type" class="mt-1 w-full border rounded-md px-3 py-2"><option value="deadline">deadline</option><option value="holiday">holiday</option><option value="info">info</option><option value="reminder">reminder</option></select></label>
+      <div class="flex gap-1 border-b mb-3">
+        <button *ngFor="let locale of supportedLocales" type="button" (click)="switchCalendarLocale(locale)" class="px-3 py-1 text-sm border-b-2 transition" [class.border-blue-600]="calendarLocale === locale" [class.text-blue-600]="calendarLocale === locale" [class.border-transparent]="calendarLocale !== locale" [class.text-gray-500]="calendarLocale !== locale">{{ locale }}</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <label class="block text-sm">Tipo<select [(ngModel)]="calendarForm.type" (ngModelChange)="syncCalendarCommon('type', $event)" class="mt-1 w-full border rounded-md px-3 py-2"><option value="deadline">deadline</option><option value="holiday">holiday</option><option value="info">info</option><option value="reminder">reminder</option></select></label>
+        <label class="block text-sm">Fecha<input type="date" [(ngModel)]="calendarForm.eventDate" (ngModelChange)="syncCalendarCommon('eventDate', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm">Orden<input type="number" [(ngModel)]="calendarForm.sortOrder" (ngModelChange)="syncCalendarCommon('sortOrder', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      </div>
+      <label class="block text-sm">Procedimiento relacionado<input [(ngModel)]="calendarForm.relatedProcedure" (ngModelChange)="syncCalendarCommon('relatedProcedure', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
       <label class="block text-sm">Titulo<input [(ngModel)]="calendarForm.title" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
       <label class="block text-sm">Descripcion<textarea [(ngModel)]="calendarForm.description" rows="4" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
-      <label class="block text-sm">Fecha<input type="date" [(ngModel)]="calendarForm.eventDate" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
-      <label class="block text-sm">Procedimiento relacionado<input [(ngModel)]="calendarForm.relatedProcedure" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
-      <label class="block text-sm">Orden<input type="number" [(ngModel)]="calendarForm.sortOrder" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
-      <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="calendarForm.published" class="mr-2" /> Publicado</label>
+      <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="calendarForm.published" (ngModelChange)="syncCalendarCommon('published', $event)" class="mr-2" /> Publicado</label>
       <button type="button" (click)="saveCalendar()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">Guardar evento</button>
     </div>
   </div>
@@ -141,13 +155,17 @@
     </div>
     <div class="bg-white rounded-lg shadow p-6 space-y-3">
       <h4 class="font-semibold">{{ selectedInstitutionalEntry ? 'Editar informacion' : 'Nueva informacion' }}</h4>
-      <label class="block text-sm">Locale<select [ngModel]="institutionalLocale" (ngModelChange)="switchInstitutionalLocale($event)" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }} · {{ localeStatusFor('institutional', locale) === 'translated' ? 'Traducido' : 'Pendiente' }}</option></select></label>
-      <label class="block text-sm">Codigo seccion<input [(ngModel)]="institutionalForm.sectionCode" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <div class="flex gap-1 border-b mb-3">
+        <button *ngFor="let locale of supportedLocales" type="button" (click)="switchInstitutionalLocale(locale)" class="px-3 py-1 text-sm border-b-2 transition" [class.border-blue-600]="institutionalLocale === locale" [class.text-blue-600]="institutionalLocale === locale" [class.border-transparent]="institutionalLocale !== locale" [class.text-gray-500]="institutionalLocale !== locale">{{ locale }}</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <label class="block text-sm">Codigo seccion<input [(ngModel)]="institutionalForm.sectionCode" (ngModelChange)="syncInstitutionalCommon('sectionCode', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm">Icono<input [(ngModel)]="institutionalForm.icon" (ngModelChange)="syncInstitutionalCommon('icon', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm">Orden<input type="number" [(ngModel)]="institutionalForm.sortOrder" (ngModelChange)="syncInstitutionalCommon('sortOrder', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      </div>
       <label class="block text-sm">Titulo<input [(ngModel)]="institutionalForm.title" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
       <label class="block text-sm">Contenido<textarea [(ngModel)]="institutionalForm.content" rows="4" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
-      <label class="block text-sm">Icono<input [(ngModel)]="institutionalForm.icon" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
-      <label class="block text-sm">Orden<input type="number" [(ngModel)]="institutionalForm.sortOrder" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
-      <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="institutionalForm.published" class="mr-2" /> Publicado</label>
+      <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="institutionalForm.published" (ngModelChange)="syncInstitutionalCommon('published', $event)" class="mr-2" /> Publicado</label>
       <button type="button" (click)="saveInstitutional()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">Guardar informacion</button>
     </div>
   </div>
@@ -162,20 +180,26 @@
     </div>
     <div class="bg-white rounded-lg shadow p-6 space-y-3">
       <h4 class="font-semibold">{{ selectedOrganismEntry ? 'Editar organismo' : 'Nuevo organismo' }}</h4>
-      <label class="block text-sm">Locale<select [ngModel]="organismLocale" (ngModelChange)="switchOrganismLocale($event)" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }} · {{ localeStatusFor('organisms', locale) === 'translated' ? 'Traducido' : 'Pendiente' }}</option></select></label>
-      <label class="block text-sm">Categoria
-        <select [(ngModel)]="organismForm.categoryCode" class="mt-1 w-full border rounded-md px-3 py-2">
-          <option *ngFor="let cat of organismCategories" [value]="cat.id">{{ cat.categoryName }} ({{ cat.locale }})</option>
-        </select>
-      </label>
+      <div class="flex gap-1 border-b mb-3">
+        <button *ngFor="let locale of supportedLocales" type="button" (click)="switchOrganismLocale(locale)" class="px-3 py-1 text-sm border-b-2 transition" [class.border-blue-600]="organismLocale === locale" [class.text-blue-600]="organismLocale === locale" [class.border-transparent]="organismLocale !== locale" [class.text-gray-500]="organismLocale !== locale">{{ locale }}</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <label class="block text-sm">Categoria
+          <select [(ngModel)]="organismForm.categoryCode" (ngModelChange)="syncOrganismCommon('categoryCode', $event)" class="mt-1 w-full border rounded-md px-3 py-2">
+            <option *ngFor="let cat of organismCategories" [value]="cat.id">{{ cat.categoryName }} ({{ cat.locale }})</option>
+          </select>
+        </label>
+        <label class="block text-sm">Orden<input type="number" [(ngModel)]="organismForm.sortOrder" (ngModelChange)="syncOrganismCommon('sortOrder', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <label class="block text-sm">Telefono<input [(ngModel)]="organismForm.phone" (ngModelChange)="syncOrganismCommon('phone', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm">Email<input [(ngModel)]="organismForm.email" (ngModelChange)="syncOrganismCommon('email', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      </div>
+      <label class="block text-sm">Direccion<input [(ngModel)]="organismForm.address" (ngModelChange)="syncOrganismCommon('address', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Web<input [(ngModel)]="organismForm.websiteUrl" (ngModelChange)="syncOrganismCommon('websiteUrl', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
       <label class="block text-sm">Nombre<input [(ngModel)]="organismForm.name" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
       <label class="block text-sm">Descripcion<textarea [(ngModel)]="organismForm.description" rows="3" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
-      <label class="block text-sm">Telefono<input [(ngModel)]="organismForm.phone" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
-      <label class="block text-sm">Email<input [(ngModel)]="organismForm.email" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
-      <label class="block text-sm">Direccion<input [(ngModel)]="organismForm.address" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
-      <label class="block text-sm">Web<input [(ngModel)]="organismForm.websiteUrl" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
-      <label class="block text-sm">Orden<input type="number" [(ngModel)]="organismForm.sortOrder" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
-      <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="organismForm.published" class="mr-2" /> Publicado</label>
+      <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="organismForm.published" (ngModelChange)="syncOrganismCommon('published', $event)" class="mr-2" /> Publicado</label>
       <button type="button" (click)="saveOrganism()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">Guardar organismo</button>
     </div>
   </div>
@@ -190,14 +214,18 @@
     </div>
     <div class="bg-white rounded-lg shadow p-6 space-y-3">
       <h4 class="font-semibold">{{ selectedResourceEntry ? 'Editar recurso' : 'Nuevo recurso' }}</h4>
-      <label class="block text-sm">Locale<select [ngModel]="resourceLocale" (ngModelChange)="switchResourceLocale($event)" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let locale of supportedLocales" [value]="locale">{{ locale }} · {{ localeStatusFor('resources', locale) === 'translated' ? 'Traducido' : 'Pendiente' }}</option></select></label>
-      <label class="block text-sm">Tipo recurso<input [(ngModel)]="resourceForm.resourceType" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <div class="flex gap-1 border-b mb-3">
+        <button *ngFor="let locale of supportedLocales" type="button" (click)="switchResourceLocale(locale)" class="px-3 py-1 text-sm border-b-2 transition" [class.border-blue-600]="resourceLocale === locale" [class.text-blue-600]="resourceLocale === locale" [class.border-transparent]="resourceLocale !== locale" [class.text-gray-500]="resourceLocale !== locale">{{ locale }}</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <label class="block text-sm">Tipo recurso<input [(ngModel)]="resourceForm.resourceType" (ngModelChange)="syncResourceCommon('resourceType', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm">URL externa<input [(ngModel)]="resourceForm.externalUrl" (ngModelChange)="syncResourceCommon('externalUrl', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      </div>
+      <label class="block text-sm">Orden<input type="number" [(ngModel)]="resourceForm.sortOrder" (ngModelChange)="syncResourceCommon('sortOrder', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
       <label class="block text-sm">Titulo<input [(ngModel)]="resourceForm.title" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
       <label class="block text-sm">Descripcion<textarea [(ngModel)]="resourceForm.description" rows="3" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
       <label class="block text-sm">Contenido<textarea [(ngModel)]="resourceForm.content" rows="4" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
-      <label class="block text-sm">URL externa<input [(ngModel)]="resourceForm.externalUrl" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
-      <label class="block text-sm">Orden<input type="number" [(ngModel)]="resourceForm.sortOrder" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
-      <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="resourceForm.published" class="mr-2" /> Publicado</label>
+      <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="resourceForm.published" (ngModelChange)="syncResourceCommon('published', $event)" class="mr-2" /> Publicado</label>
       <button type="button" (click)="saveResource()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">Guardar recurso</button>
     </div>
   </div>
@@ -206,24 +234,117 @@
     <div class="bg-white rounded-lg shadow p-6 space-y-3">
       <h4 class="font-semibold">Paleta actual</h4>
       <p class="text-xs text-gray-500" *ngIf="themePalette.updatedAt">Actualizada: {{ themePalette.updatedAt | date:'short' }}</p>
-      <div *ngFor="let color of currentThemeColors" class="border rounded-md p-3 flex items-center justify-between gap-3">
+      <div class="space-y-4">
         <div>
-          <div class="text-sm font-semibold">{{ color.token }}</div>
-          <div class="text-xs text-gray-500">{{ color.value }}</div>
+          <h5 class="text-sm font-medium text-gray-700 mb-2">Colores base</h5>
+          <div *ngFor="let color of currentThemeColors | slice:0:8" class="border rounded-md p-3 flex items-center justify-between gap-3">
+            <div>
+              <div class="text-sm font-semibold">{{ color.token }}</div>
+              <div class="text-xs text-gray-500">{{ color.value }}</div>
+            </div>
+            <span class="w-8 h-8 rounded border border-gray-300" [style.backgroundColor]="color.value"></span>
+          </div>
         </div>
-        <span class="w-8 h-8 rounded border border-gray-300" [style.backgroundColor]="color.value"></span>
+        <div>
+          <h5 class="text-sm font-medium text-gray-700 mb-2">Hero (cabecera)</h5>
+          <div *ngFor="let color of currentThemeColors | slice:8:11" class="border rounded-md p-3 flex items-center justify-between gap-3">
+            <div>
+              <div class="text-sm font-semibold">{{ color.token }}</div>
+              <div class="text-xs text-gray-500">{{ color.value }}</div>
+            </div>
+            <span class="w-8 h-8 rounded border border-gray-300" [style.backgroundColor]="color.value"></span>
+          </div>
+        </div>
+        <div>
+          <h5 class="text-sm font-medium text-gray-700 mb-2">Calendario</h5>
+          <div *ngFor="let color of currentThemeColors | slice:11:13" class="border rounded-md p-3 flex items-center justify-between gap-3">
+            <div>
+              <div class="text-sm font-semibold">{{ color.token }}</div>
+              <div class="text-xs text-gray-500">{{ color.value }}</div>
+            </div>
+            <span class="w-8 h-8 rounded border border-gray-300" [style.backgroundColor]="color.value"></span>
+          </div>
+        </div>
+        <div>
+          <h5 class="text-sm font-medium text-gray-700 mb-2">Pie de página</h5>
+          <div *ngFor="let color of currentThemeColors | slice:13:15" class="border rounded-md p-3 flex items-center justify-between gap-3">
+            <div>
+              <div class="text-sm font-semibold">{{ color.token }}</div>
+              <div class="text-xs text-gray-500">{{ color.value }}</div>
+            </div>
+            <span class="w-8 h-8 rounded border border-gray-300" [style.backgroundColor]="color.value"></span>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="bg-white rounded-lg shadow p-6 space-y-3">
       <h4 class="font-semibold">Editar paleta</h4>
-      <div *ngFor="let color of themeForm; let i = index" class="grid grid-cols-1 md:grid-cols-2 gap-2 items-end">
-        <label class="block text-sm">Token
-          <input [(ngModel)]="themeForm[i].token" class="mt-1 w-full border rounded-md px-3 py-2" />
-        </label>
-        <label class="block text-sm">Color
-          <input [(ngModel)]="themeForm[i].value" type="color" class="mt-1 w-full border rounded-md px-3 py-2 h-10" />
-        </label>
+
+      <div class="flex gap-2 mb-4">
+        <button type="button" class="px-4 py-2 text-sm rounded-md border transition"
+          [class.bg-blue-600]="themeMode === 'light'" [class.text-white]="themeMode === 'light'"
+          [class.border-blue-600]="themeMode === 'light'"
+          [class.bg-white]="themeMode !== 'light'" [class.text-gray-700]="themeMode !== 'light'"
+          [class.border-gray-300]="themeMode !== 'light'"
+          (click)="setThemeMode('light')">
+          Tema claro
+        </button>
+        <button type="button" class="px-4 py-2 text-sm rounded-md border transition"
+          [class.bg-gray-800]="themeMode === 'dark'" [class.text-white]="themeMode === 'dark'"
+          [class.border-gray-800]="themeMode === 'dark'"
+          [class.bg-white]="themeMode !== 'dark'" [class.text-gray-700]="themeMode !== 'dark'"
+          [class.border-gray-300]="themeMode !== 'dark'"
+          (click)="setThemeMode('dark')">
+          Tema oscuro
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <h5 class="text-sm font-medium text-gray-700 mb-2">Colores base</h5>
+          <div *ngFor="let color of themeForm | slice:0:9; let i = index" class="grid grid-cols-1 md:grid-cols-2 gap-2 items-end">
+            <label class="block text-sm">Token
+              <input [(ngModel)]="themeForm[i].token" class="mt-1 w-full border rounded-md px-3 py-2" />
+            </label>
+            <label class="block text-sm">Color
+              <input [(ngModel)]="themeForm[i].value" type="color" class="mt-1 w-full border rounded-md px-3 py-2 h-10" />
+            </label>
+          </div>
+        </div>
+        <div>
+          <h5 class="text-sm font-medium text-gray-700 mb-2">Hero (cabecera)</h5>
+          <div *ngFor="let color of themeForm | slice:9:12; let i = index" class="grid grid-cols-1 md:grid-cols-2 gap-2 items-end">
+            <label class="block text-sm">Token
+              <input [(ngModel)]="themeForm[i + 9].token" class="mt-1 w-full border rounded-md px-3 py-2" />
+            </label>
+            <label class="block text-sm">Color
+              <input [(ngModel)]="themeForm[i + 9].value" type="color" class="mt-1 w-full border rounded-md px-3 py-2 h-10" />
+            </label>
+          </div>
+        </div>
+        <div>
+          <h5 class="text-sm font-medium text-gray-700 mb-2">Calendario</h5>
+          <div *ngFor="let color of themeForm | slice:12:14; let i = index" class="grid grid-cols-1 md:grid-cols-2 gap-2 items-end">
+            <label class="block text-sm">Token
+              <input [(ngModel)]="themeForm[i + 12].token" class="mt-1 w-full border rounded-md px-3 py-2" />
+            </label>
+            <label class="block text-sm">Color
+              <input [(ngModel)]="themeForm[i + 12].value" type="text" class="mt-1 w-full border rounded-md px-3 py-2" placeholder="rgba(...) o hex" />
+            </label>
+          </div>
+        </div>
+        <div>
+          <h5 class="text-sm font-medium text-gray-700 mb-2">Pie de página</h5>
+          <div *ngFor="let color of themeForm | slice:14:17; let i = index" class="grid grid-cols-1 md:grid-cols-2 gap-2 items-end">
+            <label class="block text-sm">Token
+              <input [(ngModel)]="themeForm[i + 14].token" class="mt-1 w-full border rounded-md px-3 py-2" />
+            </label>
+            <label class="block text-sm">Color
+              <input [(ngModel)]="themeForm[i + 14].value" type="color" class="mt-1 w-full border rounded-md px-3 py-2 h-10" />
+            </label>
+          </div>
+        </div>
       </div>
       <button type="button" (click)="saveThemePalette()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">{{ isSaving ? 'Guardando...' : 'Guardar paleta' }}</button>
     </div>
@@ -233,10 +354,10 @@
     <div class="bg-white rounded-lg shadow p-6 space-y-3">
       <h4 class="font-semibold">Temas disponibles</h4>
       <p class="text-xs text-gray-500" *ngIf="themePalette.updatedAt">Actualizada: {{ themePalette.updatedAt | date:'short' }}</p>
-      <div *ngFor="let theme of themeVariants" class="border rounded-md p-3 flex items-center justify-between gap-3">
+      <div *ngFor="let theme of getThemeModeVariants()" class="border rounded-md p-3 flex items-center justify-between gap-3">
         <div>
           <div class="text-sm font-semibold">{{ theme.name }}</div>
-          <div class="text-xs text-gray-500">{{ theme.id }} · {{ theme.colors.length }} colores</div>
+          <div class="text-xs text-gray-500">{{ theme.id }}</div>
         </div>
         <div class="flex items-center gap-2">
           <input type="radio" name="activeTheme" [value]="theme.id" [(ngModel)]="activeThemeId" aria-label="Tema activo" />
@@ -252,6 +373,26 @@
 
     <div class="bg-white rounded-lg shadow p-6 space-y-4">
       <h4 class="font-semibold">Editar paleta</h4>
+
+      <div class="flex gap-2 mb-2">
+        <button type="button" class="px-4 py-2 text-sm rounded-md border transition"
+          [class.bg-blue-600]="themeMode === 'light'" [class.text-white]="themeMode === 'light'"
+          [class.border-blue-600]="themeMode === 'light'"
+          [class.bg-white]="themeMode !== 'light'" [class.text-gray-700]="themeMode !== 'light'"
+          [class.border-gray-300]="themeMode !== 'light'"
+          (click)="setThemeMode('light')">
+          Tema claro
+        </button>
+        <button type="button" class="px-4 py-2 text-sm rounded-md border transition"
+          [class.bg-gray-800]="themeMode === 'dark'" [class.text-white]="themeMode === 'dark'"
+          [class.border-gray-800]="themeMode === 'dark'"
+          [class.bg-white]="themeMode !== 'dark'" [class.text-gray-700]="themeMode !== 'dark'"
+          [class.border-gray-300]="themeMode !== 'dark'"
+          (click)="setThemeMode('dark')">
+          Tema oscuro
+        </button>
+      </div>
+
       <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
         <label class="block text-sm">ID tema
           <input [ngModel]="currentThemeId" (ngModelChange)="updateCurrentThemeMeta('id', $event)" class="mt-1 w-full border rounded-md px-3 py-2" />
@@ -282,7 +423,7 @@
           <input [(ngModel)]="themeForm[i].token" class="mt-1 w-full border rounded-md px-3 py-2" />
         </label>
         <label class="block text-sm">Color
-          <input [(ngModel)]="themeForm[i].value" type="color" class="mt-1 w-full border rounded-md px-3 py-2 h-10" />
+          <input [(ngModel)]="themeForm[i].value" [type]="themeForm[i].token.includes('calendar-date-bg') ? 'text' : 'color'" class="mt-1 w-full border rounded-md px-3 py-2 h-10" [placeholder]="themeForm[i].token.includes('calendar-date-bg') ? 'rgba(...)' : ''" />
         </label>
       </div>
 

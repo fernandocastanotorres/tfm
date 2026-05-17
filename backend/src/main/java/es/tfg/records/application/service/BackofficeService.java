@@ -7,6 +7,7 @@ import es.tfg.records.application.dto.CaseAttachmentDto;
 import es.tfg.records.application.dto.CaseStatusResponse;
 import es.tfg.records.application.dto.CaseTimelineEventDto;
 import es.tfg.records.application.dto.PagedResponse;
+import es.tfg.records.application.dto.TransparencyDtos;
 import es.tfg.records.application.exception.ConflictException;
 import es.tfg.records.application.exception.ResourceNotFoundException;
 import es.tfg.records.domain.model.CaseStatus;
@@ -620,5 +621,137 @@ public class BackofficeService {
             case APPROVED -> "Aprobado";
             case REJECTED -> "Rechazado";
         };
+    }
+
+    @Transactional(readOnly = true)
+    public TransparencyDtos.AnalyticsReport analyticsReport(LocalDate from, LocalDate to) {
+        BackofficeDtos.DashboardReport base = dashboardReport(from, to);
+
+        LocalDate resolvedTo = to == null ? LocalDate.now(ZoneOffset.UTC) : to;
+        LocalDate resolvedFrom = from == null ? resolvedTo.minusDays(89) : from;
+        if (resolvedFrom.isAfter(resolvedTo)) {
+            LocalDate swap = resolvedFrom;
+            resolvedFrom = resolvedTo;
+            resolvedTo = swap;
+        }
+
+        Instant fromInclusive = resolvedFrom.atStartOfDay().toInstant(ZoneOffset.UTC);
+        Instant toExclusive = resolvedTo.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC);
+
+        List<ProcedureEntity> procedures = procedureRepository.findAll().stream()
+                .filter(p -> !p.getCreatedAt().isBefore(fromInclusive))
+                .filter(p -> p.getCreatedAt().isBefore(toExclusive))
+                .toList();
+
+        Map<UUID, ProcedureTypeEntity> typesById = procedureTypeRepository.findAll().stream()
+                .collect(Collectors.toMap(ProcedureTypeEntity::getId, Function.identity()));
+
+        return new TransparencyDtos.AnalyticsReport(
+                base.summary(),
+                base.byStatus(),
+                base.byProcedureType(),
+                base.byAssignedUnit(),
+                base.dailyTrend(),
+                computeMonthlyTrend(procedures, resolvedFrom, resolvedTo, typesById),
+                computeProcedureTypeMetrics(procedures, typesById),
+                computeUnitSlaBreakdown(procedures, typesById)
+        );
+    }
+
+    private List<TransparencyDtos.MonthlyTrendPoint> computeMonthlyTrend(
+            List<ProcedureEntity> procedures, LocalDate from, LocalDate to,
+            Map<UUID, ProcedureTypeEntity> typesById) {
+        Map<String, long[]> monthly = new LinkedHashMap<>();
+        LocalDate cursor = from.withDayOfMonth(1);
+        while (!cursor.isAfter(to)) {
+            monthly.put(cursor.toString().substring(0, 7), new long[]{0, 0, 0});
+            cursor = cursor.plusMonths(1);
+        }
+
+        for (ProcedureEntity p : procedures) {
+            String month = p.getCreatedAt().atOffset(ZoneOffset.UTC).toLocalDate().toString().substring(0, 7);
+            long[] counts = monthly.computeIfAbsent(month, k -> new long[]{0, 0, 0});
+            counts[0]++;
+            if (isResolvedStatus(p) && p.getUpdatedAt() != null) {
+                counts[1]++;
+                counts[2] += ChronoUnit.HOURS.between(
+                        p.getSubmittedAt() != null ? p.getSubmittedAt() : p.getCreatedAt(),
+                        p.getUpdatedAt());
+            }
+        }
+
+        return monthly.entrySet().stream()
+                .map(e -> {
+                    long[] c = e.getValue();
+                    double avgHours = c[1] > 0 ? (double) c[2] / c[1] : 0;
+                    return new TransparencyDtos.MonthlyTrendPoint(e.getKey(), c[0], c[1], round2(avgHours));
+                })
+                .toList();
+    }
+
+    private List<TransparencyDtos.ProcedureTypeMetric> computeProcedureTypeMetrics(
+            List<ProcedureEntity> procedures, Map<UUID, ProcedureTypeEntity> typesById) {
+        Map<String, List<ProcedureEntity>> byType = procedures.stream()
+                .filter(this::isResolvedStatus)
+                .collect(Collectors.groupingBy(
+                        p -> {
+                            ProcedureTypeEntity t = typesById.get(p.getProcedureTypeId());
+                            return t == null ? "Procedimiento" : t.getTitle();
+                        }));
+
+        return byType.entrySet().stream()
+                .map(e -> {
+                    List<ProcedureEntity> resolved = e.getValue();
+                    List<Double> hours = resolved.stream()
+                            .map(this::resolutionHours)
+                            .flatMapToDouble(java.util.OptionalDouble::stream)
+                            .boxed()
+                            .toList();
+                    double avg = hours.isEmpty() ? 0 : hours.stream().mapToDouble(Double::doubleValue).average().orElse(0);
+                    double median = median(hours);
+                    long withinSla = resolved.stream()
+                            .filter(p -> isWithinSla(p, typesById.get(p.getProcedureTypeId())))
+                            .count();
+                    double slaRate = resolved.isEmpty() ? 0 : (withinSla * 100.0) / resolved.size();
+                    return new TransparencyDtos.ProcedureTypeMetric(e.getKey(), resolved.size(), round2(avg), round2(median), round2(slaRate));
+                })
+                .sorted(Comparator.comparingLong(TransparencyDtos.ProcedureTypeMetric::totalResolved).reversed())
+                .toList();
+    }
+
+    private List<TransparencyDtos.UnitSlaBreakdown> computeUnitSlaBreakdown(
+            List<ProcedureEntity> procedures, Map<UUID, ProcedureTypeEntity> typesById) {
+        Map<String, List<ProcedureEntity>> byUnit = procedures.stream()
+                .collect(Collectors.groupingBy(
+                        p -> {
+                            if (p.getAssignedUnit() != null && !p.getAssignedUnit().isBlank()) {
+                                return p.getAssignedUnit();
+                            }
+                            ProcedureTypeEntity t = typesById.get(p.getProcedureTypeId());
+                            return t == null ? "Sin unidad" : t.getUnit();
+                        }));
+
+        return byUnit.entrySet().stream()
+                .map(e -> {
+                    List<ProcedureEntity> unitProcedures = e.getValue();
+                    long totalResolved = unitProcedures.stream().filter(this::isResolvedStatus).count();
+                    long withinSla = unitProcedures.stream()
+                            .filter(this::isResolvedStatus)
+                            .filter(p -> isWithinSla(p, typesById.get(p.getProcedureTypeId())))
+                            .count();
+                    double slaRate = totalResolved == 0 ? 0 : (withinSla * 100.0) / totalResolved;
+                    return new TransparencyDtos.UnitSlaBreakdown(e.getKey(), unitProcedures.size(), withinSla, totalResolved, round2(slaRate));
+                })
+                .sorted(Comparator.comparingDouble(TransparencyDtos.UnitSlaBreakdown::slaComplianceRate))
+                .toList();
+    }
+
+    private double median(List<Double> values) {
+        if (values.isEmpty()) return 0;
+        List<Double> sorted = values.stream().sorted().toList();
+        int mid = sorted.size() / 2;
+        return sorted.size() % 2 == 0
+                ? (sorted.get(mid - 1) + sorted.get(mid)) / 2.0
+                : sorted.get(mid);
     }
 }

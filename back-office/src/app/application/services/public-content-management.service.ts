@@ -16,7 +16,9 @@ import {
   PublicOrganismEntry,
   PublicOrganismUpsertRequest,
   PublicResourceEntry,
-  PublicResourceUpsertRequest
+  PublicResourceUpsertRequest,
+  ThemeCatalog,
+  ThemePaletteUpsertRequest
 } from '../models/backoffice.models';
 
 @Injectable({ providedIn: 'root' })
@@ -166,5 +168,13 @@ export class PublicContentManagementService {
 
   deleteResource(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/resources/${id}`);
+  }
+
+  getThemePalette(): Observable<ThemeCatalog> {
+    return this.http.get<ThemeCatalog>(`${this.baseUrl}/theme`);
+  }
+
+  saveThemePalette(request: ThemePaletteUpsertRequest): Observable<ThemeCatalog> {
+    return this.http.put<ThemeCatalog>(`${this.baseUrl}/theme`, request);
   }
 }

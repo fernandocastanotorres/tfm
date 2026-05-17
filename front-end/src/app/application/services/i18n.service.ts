@@ -34,11 +34,8 @@ export class I18nService {
   }
 
   setLocale(locale: SupportedLocale): void {
-    this.translate.use(locale).subscribe({
-      next: () => {
-        localStorage.setItem('tfg.locale', locale);
-      }
-    });
+    localStorage.setItem('tfg.locale', locale);
+    this.translate.use(locale);
   }
 
   getCurrentLocale$(): Observable<SupportedLocale> {

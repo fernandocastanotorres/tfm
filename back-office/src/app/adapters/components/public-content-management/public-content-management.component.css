@@ -1,3 +1,45 @@
 :host {
   display: block;
 }
+
+.theme-preview {
+  background: var(--sede-color-bg, #f8fafc);
+  color: var(--sede-color-text, #0f172a);
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.theme-preview__title {
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+
+.theme-preview__text {
+  margin: 0 0 12px;
+  color: var(--sede-color-muted, #475569);
+  font-size: 14px;
+}
+
+.theme-preview__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.theme-preview .btn-primary {
+  background: var(--sede-color-primary, #2563eb);
+  color: var(--sede-color-primary-contrast, #ffffff);
+  border: 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.theme-preview__link {
+  color: var(--sede-color-link, #0ea5e9);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}

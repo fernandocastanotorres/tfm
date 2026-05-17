@@ -240,6 +240,7 @@ export interface PublicLegislationEntry {
 
 export interface PublicLegislationUpsertRequest {
   locale: string;
+  translationGroupId?: string;
   type: 'law' | 'decree' | 'order' | 'resolution';
   title: string;
   description: string;
@@ -263,6 +264,7 @@ export interface PublicFaqCategoryEntry {
 
 export interface PublicFaqCategoryUpsertRequest {
   locale: string;
+  translationGroupId?: string;
   categoryCode: string;
   categoryName: string;
   sortOrder: number;
@@ -283,6 +285,7 @@ export interface PublicFaqEntry {
 
 export interface PublicFaqUpsertRequest {
   locale: string;
+  translationGroupId?: string;
   categoryCode: string;
   question: string;
   answer: string;
@@ -306,6 +309,7 @@ export interface PublicCalendarEntry {
 
 export interface PublicCalendarUpsertRequest {
   locale: string;
+  translationGroupId?: string;
   type: 'deadline' | 'holiday' | 'info' | 'reminder';
   title: string;
   description: string;
@@ -330,6 +334,7 @@ export interface PublicInstitutionalEntry {
 
 export interface PublicInstitutionalUpsertRequest {
   locale: string;
+  translationGroupId?: string;
   sectionCode: string;
   title: string;
   content: string;
@@ -356,6 +361,7 @@ export interface PublicOrganismEntry {
 
 export interface PublicOrganismUpsertRequest {
   locale: string;
+  translationGroupId?: string;
   categoryCode: string;
   name: string;
   description: string;
@@ -383,6 +389,7 @@ export interface PublicResourceEntry {
 
 export interface PublicResourceUpsertRequest {
   locale: string;
+  translationGroupId?: string;
   resourceType: string;
   title: string;
   description: string;
@@ -390,4 +397,33 @@ export interface PublicResourceUpsertRequest {
   externalUrl?: string;
   sortOrder: number;
   published: boolean;
+}
+
+export interface ThemeColor {
+  token: string;
+  value: string;
+}
+
+export interface ThemePalette {
+  colors: ThemeColor[];
+  updatedAt: string | null;
+}
+
+export interface ThemeVariant {
+  id: string;
+  name: string;
+  mode: 'light' | 'dark';
+  colors: ThemeColor[];
+  active: boolean;
+}
+
+export interface ThemeCatalog {
+  themes: ThemeVariant[];
+  activeThemeId: string | null;
+  updatedAt: string | null;
+}
+
+export interface ThemePaletteUpsertRequest {
+  themes: ThemeVariant[];
+  activeThemeId: string;
 }

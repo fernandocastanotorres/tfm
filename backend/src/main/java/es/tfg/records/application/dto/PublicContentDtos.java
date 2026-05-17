@@ -30,6 +30,7 @@ public final class PublicContentDtos {
 
     public record LegislationUpsertRequest(
             String locale,
+            UUID translationGroupId,
             String type,
             String title,
             String description,
@@ -56,6 +57,7 @@ public final class PublicContentDtos {
 
     public record FaqCategoryUpsertRequest(
             String locale,
+            UUID translationGroupId,
             String categoryCode,
             String categoryName,
             Integer sortOrder,
@@ -79,6 +81,7 @@ public final class PublicContentDtos {
 
     public record FaqUpsertRequest(
             String locale,
+            UUID translationGroupId,
             String categoryCode,
             String question,
             String answer,
@@ -105,6 +108,7 @@ public final class PublicContentDtos {
 
     public record CalendarUpsertRequest(
             String locale,
+            UUID translationGroupId,
             String type,
             String title,
             String description,
@@ -132,6 +136,7 @@ public final class PublicContentDtos {
 
     public record InstitutionalUpsertRequest(
             String locale,
+            UUID translationGroupId,
             String sectionCode,
             String title,
             String content,
@@ -161,6 +166,7 @@ public final class PublicContentDtos {
 
     public record OrganismUpsertRequest(
             String locale,
+            UUID translationGroupId,
             String categoryCode,
             String name,
             String description,
@@ -191,6 +197,7 @@ public final class PublicContentDtos {
 
     public record ResourceUpsertRequest(
             String locale,
+            UUID translationGroupId,
             String resourceType,
             String title,
             String description,
@@ -198,6 +205,41 @@ public final class PublicContentDtos {
             String externalUrl,
             Integer sortOrder,
             Boolean published
+    ) {
+    }
+
+    @Schema(description = "Configurable public theme palette")
+    public record ThemePalette(
+            java.util.List<ThemeColor> colors,
+            Instant updatedAt
+    ) {
+    }
+
+    public record ThemeCatalog(
+            java.util.List<ThemeVariant> themes,
+            String activeThemeId,
+            Instant updatedAt
+    ) {
+    }
+
+    public record ThemeVariant(
+            String id,
+            String name,
+            String mode,
+            java.util.List<ThemeColor> colors,
+            boolean active
+    ) {
+    }
+
+    public record ThemeColor(
+            String token,
+            String value
+    ) {
+    }
+
+    public record ThemePaletteUpsertRequest(
+            java.util.List<ThemeVariant> themes,
+            String activeThemeId
     ) {
     }
 }

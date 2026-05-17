@@ -63,6 +63,7 @@ export class PublicContentManagementComponent implements OnInit {
   themeVariants: ThemeVariant[] = [];
   currentThemeId = 'institucional-azul';
   currentThemeName = 'Institucional Azul';
+  themeMode: 'light' | 'dark' = 'light';
 
   selectedLegislation: PublicLegislationEntry | null = null;
   selectedFaqCategory: PublicFaqCategoryEntry | null = null;
@@ -101,12 +102,21 @@ export class PublicContentManagementComponent implements OnInit {
       colors: [
         { token: '--sede-color-primary', value: '#2563eb' },
         { token: '--sede-color-primary-hover', value: '#1d4ed8' },
+        { token: '--sede-color-primary-50', value: '#eff6ff' },
         { token: '--sede-color-primary-contrast', value: '#ffffff' },
         { token: '--sede-color-link', value: '#0ea5e9' },
         { token: '--sede-color-bg', value: '#f8fafc' },
         { token: '--sede-color-surface', value: '#ffffff' },
         { token: '--sede-color-text', value: '#0f172a' },
-        { token: '--sede-color-muted', value: '#475569' }
+        { token: '--sede-color-muted', value: '#475569' },
+        { token: '--sede-color-border', value: '#e2e8f0' },
+        { token: '--sede-color-hero-bg', value: '#0e2a47' },
+        { token: '--sede-color-hero-text', value: '#f8fafc' },
+        { token: '--sede-color-hero-subtitle', value: '#d9e2ec' },
+        { token: '--sede-color-calendar-date-bg', value: 'rgba(14, 116, 144, 0.10)' },
+        { token: '--sede-color-calendar-date-text', value: '#0ea5e9' },
+        { token: '--sede-color-footer-bg', value: '#0f172a' },
+        { token: '--sede-color-footer-text', value: '#cbd5e1' }
       ]
     },
     {
@@ -114,12 +124,21 @@ export class PublicContentManagementComponent implements OnInit {
       colors: [
         { token: '--sede-color-primary', value: '#0f766e' },
         { token: '--sede-color-primary-hover', value: '#115e59' },
+        { token: '--sede-color-primary-50', value: '#f0fdfa' },
         { token: '--sede-color-primary-contrast', value: '#ffffff' },
         { token: '--sede-color-link', value: '#0d9488' },
         { token: '--sede-color-bg', value: '#f5fffa' },
         { token: '--sede-color-surface', value: '#ffffff' },
         { token: '--sede-color-text', value: '#0f172a' },
-        { token: '--sede-color-muted', value: '#4b5563' }
+        { token: '--sede-color-muted', value: '#4b5563' },
+        { token: '--sede-color-border', value: '#e2e8f0' },
+        { token: '--sede-color-hero-bg', value: '#064e3b' },
+        { token: '--sede-color-hero-text', value: '#f0fdf4' },
+        { token: '--sede-color-hero-subtitle', value: '#bbf7d0' },
+        { token: '--sede-color-calendar-date-bg', value: 'rgba(15, 118, 110, 0.10)' },
+        { token: '--sede-color-calendar-date-text', value: '#0d9488' },
+        { token: '--sede-color-footer-bg', value: '#064e3b' },
+        { token: '--sede-color-footer-text', value: '#a7f3d0' }
       ]
     },
     {
@@ -127,12 +146,21 @@ export class PublicContentManagementComponent implements OnInit {
       colors: [
         { token: '--sede-color-primary', value: '#9f1239' },
         { token: '--sede-color-primary-hover', value: '#881337' },
+        { token: '--sede-color-primary-50', value: '#fff1f2' },
         { token: '--sede-color-primary-contrast', value: '#ffffff' },
         { token: '--sede-color-link', value: '#be123c' },
         { token: '--sede-color-bg', value: '#fff7f9' },
         { token: '--sede-color-surface', value: '#ffffff' },
         { token: '--sede-color-text', value: '#111827' },
-        { token: '--sede-color-muted', value: '#4b5563' }
+        { token: '--sede-color-muted', value: '#4b5563' },
+        { token: '--sede-color-border', value: '#fce7e7' },
+        { token: '--sede-color-hero-bg', value: '#4c0519' },
+        { token: '--sede-color-hero-text', value: '#fff1f2' },
+        { token: '--sede-color-hero-subtitle', value: '#fecdd3' },
+        { token: '--sede-color-calendar-date-bg', value: 'rgba(159, 18, 57, 0.10)' },
+        { token: '--sede-color-calendar-date-text', value: '#be123c' },
+        { token: '--sede-color-footer-bg', value: '#4c0519' },
+        { token: '--sede-color-footer-text', value: '#fda4af' }
       ]
     }
   ];
@@ -152,7 +180,7 @@ export class PublicContentManagementComponent implements OnInit {
 
   reload(): void {
     this.isLoading = true;
-    Promise.all([
+    Promise.allSettled([
       this.service.listLegislation().toPromise(),
       this.service.listFaqCategories().toPromise(),
       this.service.listFaqEntries().toPromise(),
@@ -162,7 +190,17 @@ export class PublicContentManagementComponent implements OnInit {
       this.service.listOrganisms().toPromise(),
       this.service.listResources().toPromise(),
       this.service.getThemePalette().toPromise()
-    ]).then(([legislation, categories, faqs, calendar, institutional, organismCategories, organisms, resources, themePalette]) => {
+    ]).then((results) => {
+      const legislation = results[0].status === 'fulfilled' ? (results[0].value as PublicLegislationEntry[]) : null;
+      const categories = results[1].status === 'fulfilled' ? (results[1].value as PublicFaqCategoryEntry[]) : null;
+      const faqs = results[2].status === 'fulfilled' ? (results[2].value as PublicFaqEntry[]) : null;
+      const calendar = results[3].status === 'fulfilled' ? (results[3].value as PublicCalendarEntry[]) : null;
+      const institutional = results[4].status === 'fulfilled' ? (results[4].value as PublicInstitutionalEntry[]) : null;
+      const organismCategories = results[5].status === 'fulfilled' ? (results[5].value as PublicFaqCategoryEntry[]) : null;
+      const organisms = results[6].status === 'fulfilled' ? (results[6].value as PublicOrganismEntry[]) : null;
+      const resources = results[7].status === 'fulfilled' ? (results[7].value as PublicResourceEntry[]) : null;
+      const themePalette = results[8].status === 'fulfilled' ? (results[8].value as ThemeCatalog) : null;
+
       this.legislation = legislation ?? [];
       this.faqCategories = categories ?? [];
       this.faqEntries = faqs ?? [];
@@ -191,8 +229,26 @@ export class PublicContentManagementComponent implements OnInit {
     });
   }
   newLegislation(): void { this.selectedLegislation = null; this.legislationTranslations = this.emptyMap(() => this.createLegislationForm()); this.switchLegislationLocale('es-ES'); }
-  switchLegislationLocale(locale: string): void { this.legislationTranslations[this.legislationLocale] = { ...this.legislationForm }; this.legislationLocale = locale; this.legislationForm = { ...(this.legislationTranslations[locale] ?? this.createLegislationForm()), locale }; }
-  async saveLegislation(): Promise<void> { await this.saveWithConfirm('Guardar normativa', 'Se guardaran los cambios de normativa publica.', () => this.selectedLegislation ? this.service.updateLegislation(this.selectedLegislation.id, this.legislationForm) : this.service.createLegislation(this.legislationForm), 'legislation'); }
+  switchLegislationLocale(locale: string): void {
+    if (this.legislationLocale !== locale) {
+      this.legislationTranslations[this.legislationLocale] = { ...this.legislationForm };
+    }
+    this.legislationLocale = locale;
+    this.legislationForm = { ...(this.legislationTranslations[locale] ?? this.createLegislationForm()), locale };
+  }
+
+  syncLegislationCommon(field: 'type' | 'sortOrder' | 'published', value: any): void {
+    for (const loc of this.supportedLocales) {
+      if (this.legislationTranslations[loc]) {
+        (this.legislationTranslations[loc] as any)[field] = value;
+      }
+    }
+  }
+  async saveLegislation(): Promise<void> {
+    const payload = { ...this.legislationForm };
+    if (this.selectedLegislation) payload.translationGroupId = this.selectedLegislation.id;
+    await this.saveWithConfirm('Guardar normativa', 'Se guardaran los cambios de normativa publica.', () => this.selectedLegislation ? this.service.updateLegislation(this.selectedLegislation.id, payload) : this.service.createLegislation(payload), 'legislation');
+  }
   async deleteLegislation(item: PublicLegislationEntry): Promise<void> { await this.deleteWithConfirm('Eliminar normativa', 'Esta accion eliminara la normativa seleccionada.', () => this.service.deleteLegislation(item.id)); }
 
   editFaqCategory(item: PublicFaqCategoryEntry): void {
@@ -204,8 +260,26 @@ export class PublicContentManagementComponent implements OnInit {
     });
   }
   newFaqCategory(): void { this.selectedFaqCategory = null; this.faqCategoryTranslations = this.emptyMap(() => this.createFaqCategoryForm()); this.switchFaqCategoryLocale('es-ES'); }
-  switchFaqCategoryLocale(locale: string): void { this.faqCategoryTranslations[this.faqCategoryLocale] = { ...this.faqCategoryForm }; this.faqCategoryLocale = locale; this.faqCategoryForm = { ...(this.faqCategoryTranslations[locale] ?? this.createFaqCategoryForm()), locale }; }
-  async saveFaqCategory(): Promise<void> { await this.saveWithConfirm('Guardar categoria FAQ', 'Se guardaran los cambios de categoria FAQ.', () => this.selectedFaqCategory ? this.service.updateFaqCategory(this.selectedFaqCategory.id, this.faqCategoryForm) : this.service.createFaqCategory(this.faqCategoryForm), 'faq'); }
+  switchFaqCategoryLocale(locale: string): void {
+    if (this.faqCategoryLocale !== locale) {
+      this.faqCategoryTranslations[this.faqCategoryLocale] = { ...this.faqCategoryForm };
+    }
+    this.faqCategoryLocale = locale;
+    this.faqCategoryForm = { ...(this.faqCategoryTranslations[locale] ?? this.createFaqCategoryForm()), locale };
+  }
+
+  syncFaqCategoryCommon(field: 'categoryCode' | 'sortOrder' | 'published', value: any): void {
+    for (const loc of this.supportedLocales) {
+      if (this.faqCategoryTranslations[loc]) {
+        (this.faqCategoryTranslations[loc] as any)[field] = value;
+      }
+    }
+  }
+  async saveFaqCategory(): Promise<void> {
+    const payload = { ...this.faqCategoryForm };
+    if (this.selectedFaqCategory) payload.translationGroupId = this.selectedFaqCategory.id;
+    await this.saveWithConfirm('Guardar categoria FAQ', 'Se guardaran los cambios de categoria FAQ.', () => this.selectedFaqCategory ? this.service.updateFaqCategory(this.selectedFaqCategory.id, payload) : this.service.createFaqCategory(payload), 'faq');
+  }
   async deleteFaqCategory(item: PublicFaqCategoryEntry): Promise<void> { await this.deleteWithConfirm('Eliminar categoria FAQ', 'Esta accion eliminara la categoria seleccionada.', () => this.service.deleteFaqCategory(item.id)); }
 
   editFaq(item: PublicFaqEntry): void {
@@ -217,8 +291,26 @@ export class PublicContentManagementComponent implements OnInit {
     });
   }
   newFaq(): void { this.selectedFaqEntry = null; this.faqTranslations = this.emptyMap(() => this.createFaqForm()); this.switchFaqLocale('es-ES'); }
-  switchFaqLocale(locale: string): void { this.faqTranslations[this.faqLocale] = { ...this.faqForm }; this.faqLocale = locale; this.faqForm = { ...(this.faqTranslations[locale] ?? this.createFaqForm()), locale }; }
-  async saveFaq(): Promise<void> { await this.saveWithConfirm('Guardar FAQ', 'Se guardaran los cambios de la entrada FAQ.', () => this.selectedFaqEntry ? this.service.updateFaqEntry(this.selectedFaqEntry.id, this.faqForm) : this.service.createFaqEntry(this.faqForm), 'faq'); }
+  switchFaqLocale(locale: string): void {
+    if (this.faqLocale !== locale) {
+      this.faqTranslations[this.faqLocale] = { ...this.faqForm };
+    }
+    this.faqLocale = locale;
+    this.faqForm = { ...(this.faqTranslations[locale] ?? this.createFaqForm()), locale };
+  }
+
+  syncFaqCommon(field: 'categoryCode' | 'sortOrder' | 'published', value: any): void {
+    for (const loc of this.supportedLocales) {
+      if (this.faqTranslations[loc]) {
+        (this.faqTranslations[loc] as any)[field] = value;
+      }
+    }
+  }
+  async saveFaq(): Promise<void> {
+    const payload = { ...this.faqForm };
+    if (this.selectedFaqEntry) payload.translationGroupId = this.selectedFaqEntry.id;
+    await this.saveWithConfirm('Guardar FAQ', 'Se guardaran los cambios de la entrada FAQ.', () => this.selectedFaqEntry ? this.service.updateFaqEntry(this.selectedFaqEntry.id, payload) : this.service.createFaqEntry(payload), 'faq');
+  }
   async deleteFaq(item: PublicFaqEntry): Promise<void> { await this.deleteWithConfirm('Eliminar FAQ', 'Esta accion eliminara la FAQ seleccionada.', () => this.service.deleteFaqEntry(item.id)); }
 
   editCalendar(item: PublicCalendarEntry): void {
@@ -230,8 +322,26 @@ export class PublicContentManagementComponent implements OnInit {
     });
   }
   newCalendar(): void { this.selectedCalendarEntry = null; this.calendarTranslations = this.emptyMap(() => this.createCalendarForm()); this.switchCalendarLocale('es-ES'); }
-  switchCalendarLocale(locale: string): void { this.calendarTranslations[this.calendarLocale] = { ...this.calendarForm }; this.calendarLocale = locale; this.calendarForm = { ...(this.calendarTranslations[locale] ?? this.createCalendarForm()), locale }; }
-  async saveCalendar(): Promise<void> { await this.saveWithConfirm('Guardar evento', 'Se guardaran los cambios del plazo o evento.', () => this.selectedCalendarEntry ? this.service.updateCalendarEntry(this.selectedCalendarEntry.id, this.calendarForm) : this.service.createCalendarEntry(this.calendarForm), 'calendar'); }
+  switchCalendarLocale(locale: string): void {
+    if (this.calendarLocale !== locale) {
+      this.calendarTranslations[this.calendarLocale] = { ...this.calendarForm };
+    }
+    this.calendarLocale = locale;
+    this.calendarForm = { ...(this.calendarTranslations[locale] ?? this.createCalendarForm()), locale };
+  }
+
+  syncCalendarCommon(field: 'type' | 'eventDate' | 'relatedProcedure' | 'sortOrder' | 'published', value: any): void {
+    for (const loc of this.supportedLocales) {
+      if (this.calendarTranslations[loc]) {
+        (this.calendarTranslations[loc] as any)[field] = value;
+      }
+    }
+  }
+  async saveCalendar(): Promise<void> {
+    const payload = { ...this.calendarForm };
+    if (this.selectedCalendarEntry) payload.translationGroupId = this.selectedCalendarEntry.id;
+    await this.saveWithConfirm('Guardar evento', 'Se guardaran los cambios del plazo o evento.', () => this.selectedCalendarEntry ? this.service.updateCalendarEntry(this.selectedCalendarEntry.id, payload) : this.service.createCalendarEntry(payload), 'calendar');
+  }
   async deleteCalendar(item: PublicCalendarEntry): Promise<void> { await this.deleteWithConfirm('Eliminar evento', 'Esta accion eliminara el plazo o evento seleccionado.', () => this.service.deleteCalendarEntry(item.id)); }
 
   editInstitutional(item: PublicInstitutionalEntry): void {
@@ -243,8 +353,26 @@ export class PublicContentManagementComponent implements OnInit {
     });
   }
   newInstitutional(): void { this.selectedInstitutionalEntry = null; this.institutionalTranslations = this.emptyMap(() => this.createInstitutionalForm()); this.switchInstitutionalLocale('es-ES'); }
-  switchInstitutionalLocale(locale: string): void { this.institutionalTranslations[this.institutionalLocale] = { ...this.institutionalForm }; this.institutionalLocale = locale; this.institutionalForm = { ...(this.institutionalTranslations[locale] ?? this.createInstitutionalForm()), locale }; }
-  async saveInstitutional(): Promise<void> { await this.saveWithConfirm('Guardar informacion', 'Se guardaran los cambios de informacion institucional.', () => this.selectedInstitutionalEntry ? this.service.updateInstitutional(this.selectedInstitutionalEntry.id, this.institutionalForm) : this.service.createInstitutional(this.institutionalForm), 'institutional'); }
+  switchInstitutionalLocale(locale: string): void {
+    if (this.institutionalLocale !== locale) {
+      this.institutionalTranslations[this.institutionalLocale] = { ...this.institutionalForm };
+    }
+    this.institutionalLocale = locale;
+    this.institutionalForm = { ...(this.institutionalTranslations[locale] ?? this.createInstitutionalForm()), locale };
+  }
+
+  syncInstitutionalCommon(field: 'sectionCode' | 'icon' | 'sortOrder' | 'published', value: any): void {
+    for (const loc of this.supportedLocales) {
+      if (this.institutionalTranslations[loc]) {
+        (this.institutionalTranslations[loc] as any)[field] = value;
+      }
+    }
+  }
+  async saveInstitutional(): Promise<void> {
+    const payload = { ...this.institutionalForm };
+    if (this.selectedInstitutionalEntry) payload.translationGroupId = this.selectedInstitutionalEntry.id;
+    await this.saveWithConfirm('Guardar informacion', 'Se guardaran los cambios de informacion institucional.', () => this.selectedInstitutionalEntry ? this.service.updateInstitutional(this.selectedInstitutionalEntry.id, payload) : this.service.createInstitutional(payload), 'institutional');
+  }
   async deleteInstitutional(item: PublicInstitutionalEntry): Promise<void> { await this.deleteWithConfirm('Eliminar informacion', 'Esta accion eliminara la seccion institucional seleccionada.', () => this.service.deleteInstitutional(item.id)); }
 
   editOrganism(item: PublicOrganismEntry): void {
@@ -256,8 +384,26 @@ export class PublicContentManagementComponent implements OnInit {
     });
   }
   newOrganism(): void { this.selectedOrganismEntry = null; this.organismTranslations = this.emptyMap(() => this.createOrganismForm()); this.switchOrganismLocale('es-ES'); }
-  switchOrganismLocale(locale: string): void { this.organismTranslations[this.organismLocale] = { ...this.organismForm }; this.organismLocale = locale; this.organismForm = { ...(this.organismTranslations[locale] ?? this.createOrganismForm()), locale }; }
-  async saveOrganism(): Promise<void> { await this.saveWithConfirm('Guardar organismo', 'Se guardaran los cambios del organismo.', () => this.selectedOrganismEntry ? this.service.updateOrganism(this.selectedOrganismEntry.id, this.organismForm) : this.service.createOrganism(this.organismForm), 'organisms'); }
+  switchOrganismLocale(locale: string): void {
+    if (this.organismLocale !== locale) {
+      this.organismTranslations[this.organismLocale] = { ...this.organismForm };
+    }
+    this.organismLocale = locale;
+    this.organismForm = { ...(this.organismTranslations[locale] ?? this.createOrganismForm()), locale };
+  }
+
+  syncOrganismCommon(field: 'categoryCode' | 'phone' | 'email' | 'address' | 'websiteUrl' | 'sortOrder' | 'published', value: any): void {
+    for (const loc of this.supportedLocales) {
+      if (this.organismTranslations[loc]) {
+        (this.organismTranslations[loc] as any)[field] = value;
+      }
+    }
+  }
+  async saveOrganism(): Promise<void> {
+    const payload = { ...this.organismForm };
+    if (this.selectedOrganismEntry) payload.translationGroupId = this.selectedOrganismEntry.id;
+    await this.saveWithConfirm('Guardar organismo', 'Se guardaran los cambios del organismo.', () => this.selectedOrganismEntry ? this.service.updateOrganism(this.selectedOrganismEntry.id, payload) : this.service.createOrganism(payload), 'organisms');
+  }
   async deleteOrganism(item: PublicOrganismEntry): Promise<void> { await this.deleteWithConfirm('Eliminar organismo', 'Esta accion eliminara el organismo seleccionado.', () => this.service.deleteOrganism(item.id)); }
 
   editResource(item: PublicResourceEntry): void {
@@ -269,8 +415,26 @@ export class PublicContentManagementComponent implements OnInit {
     });
   }
   newResource(): void { this.selectedResourceEntry = null; this.resourceTranslations = this.emptyMap(() => this.createResourceForm()); this.switchResourceLocale('es-ES'); }
-  switchResourceLocale(locale: string): void { this.resourceTranslations[this.resourceLocale] = { ...this.resourceForm }; this.resourceLocale = locale; this.resourceForm = { ...(this.resourceTranslations[locale] ?? this.createResourceForm()), locale }; }
-  async saveResource(): Promise<void> { await this.saveWithConfirm('Guardar recurso', 'Se guardaran los cambios del recurso publico.', () => this.selectedResourceEntry ? this.service.updateResource(this.selectedResourceEntry.id, this.resourceForm) : this.service.createResource(this.resourceForm), 'resources'); }
+  switchResourceLocale(locale: string): void {
+    if (this.resourceLocale !== locale) {
+      this.resourceTranslations[this.resourceLocale] = { ...this.resourceForm };
+    }
+    this.resourceLocale = locale;
+    this.resourceForm = { ...(this.resourceTranslations[locale] ?? this.createResourceForm()), locale };
+  }
+
+  syncResourceCommon(field: 'resourceType' | 'externalUrl' | 'sortOrder' | 'published', value: any): void {
+    for (const loc of this.supportedLocales) {
+      if (this.resourceTranslations[loc]) {
+        (this.resourceTranslations[loc] as any)[field] = value;
+      }
+    }
+  }
+  async saveResource(): Promise<void> {
+    const payload = { ...this.resourceForm };
+    if (this.selectedResourceEntry) payload.translationGroupId = this.selectedResourceEntry.id;
+    await this.saveWithConfirm('Guardar recurso', 'Se guardaran los cambios del recurso publico.', () => this.selectedResourceEntry ? this.service.updateResource(this.selectedResourceEntry.id, payload) : this.service.createResource(payload), 'resources');
+  }
   async deleteResource(item: PublicResourceEntry): Promise<void> { await this.deleteWithConfirm('Eliminar recurso', 'Esta accion eliminara el recurso seleccionado.', () => this.service.deleteResource(item.id)); }
 
   applyThemePreset(): void {
@@ -291,20 +455,36 @@ export class PublicContentManagementComponent implements OnInit {
     const suffix = this.themeVariants.length + 1;
     const baseId = this.normalizeThemeId(preset.name, suffix - 1);
     const nextId = this.themeVariants.some((theme) => theme.id === baseId) ? `${baseId}-${suffix}` : baseId;
-    const variant: ThemeVariant = {
+    const lightVariant: ThemeVariant = {
       id: nextId,
       name: `${preset.name} ${suffix}`,
+      mode: 'light',
       colors: preset.colors.map((color) => ({ ...color })),
       active: false
     };
+    const darkVariant: ThemeVariant = {
+      id: nextId,
+      name: `${preset.name} ${suffix}`,
+      mode: 'dark',
+      colors: this.createThemeForm(),
+      active: false
+    };
 
-    this.themeVariants = [...this.themeVariants, variant];
-    this.selectThemeVariant(variant.id);
+    this.themeVariants = [...this.themeVariants, lightVariant, darkVariant];
+    this.selectThemeVariant(lightVariant.id);
   }
 
   selectThemeVariant(themeId: string): void {
-    const theme = this.themeVariants.find((item) => item.id === themeId);
+    const theme = this.themeVariants.find((item) => item.id === themeId && item.mode === this.themeMode);
     if (!theme) {
+      const fallback = this.themeVariants.find((item) => item.id === themeId)
+        ?? this.themeVariants.find((item) => item.mode === this.themeMode)
+        ?? this.themeVariants[0];
+      if (!fallback) return;
+      this.currentThemeId = fallback.id;
+      this.currentThemeName = fallback.name;
+      this.themeForm = fallback.colors.map((color) => ({ ...color }));
+      this.themeValidationError = '';
       return;
     }
     this.currentThemeId = theme.id;
@@ -313,21 +493,44 @@ export class PublicContentManagementComponent implements OnInit {
     this.themeValidationError = '';
   }
 
+  setThemeMode(mode: 'light' | 'dark'): void {
+    this.themeMode = mode;
+    this.saveCurrentModeToVariants();
+    this.selectThemeVariant(this.currentThemeId);
+  }
+
+  private saveCurrentModeToVariants(): void {
+    const idx = this.themeVariants.findIndex((t) => t.id === this.currentThemeId && t.mode === this.themeMode);
+    if (idx >= 0) {
+      const updated = [...this.themeVariants];
+      updated[idx] = { ...updated[idx], colors: [...this.themeForm] };
+      this.themeVariants = updated;
+    }
+  }
+
   createThemeVariant(): void {
     const nextId = `tema-${this.themeVariants.length + 1}`;
     const name = `Tema ${this.themeVariants.length + 1}`;
     const variant: ThemeVariant = {
       id: nextId,
       name,
+      mode: 'light',
       colors: this.createThemeForm(),
       active: false
     };
-    this.themeVariants = [...this.themeVariants, variant];
+    const darkVariant: ThemeVariant = {
+      id: nextId,
+      name,
+      mode: 'dark',
+      colors: this.createThemeForm(),
+      active: false
+    };
+    this.themeVariants = [...this.themeVariants, variant, darkVariant];
     this.selectThemeVariant(nextId);
   }
 
   duplicateCurrentThemeVariant(): void {
-    const current = this.themeVariants.find((theme) => theme.id === this.currentThemeId);
+    const current = this.themeVariants.find((theme) => theme.id === this.currentThemeId && theme.mode === this.themeMode);
     if (!current) {
       return;
     }
@@ -336,23 +539,35 @@ export class PublicContentManagementComponent implements OnInit {
     const duplicated: ThemeVariant = {
       id: `${current.id}-copy-${suffix}`,
       name: `${current.name} (copia)`,
+      mode: current.mode,
       colors: current.colors.map((color) => ({ ...color })),
       active: false
     };
 
-    this.themeVariants = [...this.themeVariants, duplicated];
+    const oppositeMode = current.mode === 'light' ? 'dark' : 'light';
+    const duplicatedDark: ThemeVariant = {
+      id: `${current.id}-copy-${suffix}`,
+      name: `${current.name} (copia)`,
+      mode: oppositeMode,
+      colors: this.createThemeForm(),
+      active: false
+    };
+
+    this.themeVariants = [...this.themeVariants, duplicated, duplicatedDark];
     this.selectThemeVariant(duplicated.id);
   }
 
   removeCurrentThemeVariant(): void {
-    if (this.themeVariants.length <= 1) {
+    if (this.themeVariants.length <= 2) {
       return;
     }
     this.themeVariants = this.themeVariants.filter((theme) => theme.id !== this.currentThemeId);
     if (this.activeThemeId === this.currentThemeId) {
-      this.activeThemeId = this.themeVariants[0].id;
+      const remaining = [...new Set(this.themeVariants.map((t) => t.id))];
+      this.activeThemeId = remaining[0];
     }
-    this.selectThemeVariant(this.themeVariants[0].id);
+    const remaining = [...new Set(this.themeVariants.map((t) => t.id))];
+    this.selectThemeVariant(remaining[0]);
   }
 
   resetCurrentThemeToDefaults(): void {
@@ -394,16 +609,26 @@ export class PublicContentManagementComponent implements OnInit {
           return;
         }
 
-        this.themeVariants = raw.themes.map((theme) => ({
-          id: String(theme.id ?? '').trim(),
-          name: String(theme.name ?? '').trim() || 'Tema importado',
-          colors: Array.isArray(theme.colors)
-            ? theme.colors
-                .filter((color) => color && typeof color.token === 'string' && typeof color.value === 'string')
-                .map((color) => ({ token: color.token.trim(), value: color.value.trim() }))
-            : [],
-          active: false
-        }));
+        this.themeVariants = raw.themes.flatMap((theme) => {
+          const base = {
+            id: String(theme.id ?? '').trim(),
+            name: String(theme.name ?? '').trim() || 'Tema importado',
+            colors: Array.isArray(theme.colors)
+              ? theme.colors
+                  .filter((color) => color && typeof color.token === 'string' && typeof color.value === 'string')
+                  .map((color) => ({ token: color.token.trim(), value: color.value.trim() }))
+              : [],
+            active: false
+          };
+          const mode = (theme as any).mode;
+          if (mode === 'light' || mode === 'dark') {
+            return [{ ...base, mode }];
+          }
+          return [
+            { ...base, mode: 'light' as const },
+            { ...base, mode: 'dark' as const, colors: [] }
+          ];
+        });
 
         this.activeThemeId = String(raw.activeThemeId ?? this.themeVariants[0]?.id ?? '').trim();
         this.selectThemeVariant(this.activeThemeId || this.themeVariants[0].id);
@@ -431,12 +656,25 @@ export class PublicContentManagementComponent implements OnInit {
     });
   }
 
+  getThemeModeVariants(): { id: string; name: string }[] {
+    const seen = new Set<string>();
+    return this.themeVariants
+      .filter((t) => {
+        if (seen.has(t.id)) return false;
+        seen.add(t.id);
+        return true;
+      })
+      .map((t) => ({ id: t.id, name: t.name }));
+  }
+
   async saveThemePalette(): Promise<void> {
+    this.saveCurrentModeToVariants();
+
     this.themeVariants = this.themeVariants.map((theme) => {
       if (theme.id !== this.currentThemeId) {
         return theme;
       }
-      return { ...theme, name: this.currentThemeName.trim() || theme.name, id: this.currentThemeId.trim() || theme.id, colors: this.themeForm.map((color) => ({ ...color })) };
+      return { ...theme, name: this.currentThemeName.trim() || theme.name, id: this.currentThemeId.trim() || theme.id };
     });
 
     this.themeValidationError = this.validateThemePalette();
@@ -460,7 +698,9 @@ export class PublicContentManagementComponent implements OnInit {
   }
 
   get currentThemeColors(): ThemeColor[] {
-    const theme = this.themeVariants.find((item) => item.id === this.currentThemeId) ?? this.themeVariants[0];
+    const theme = this.themeVariants.find((item) => item.id === this.currentThemeId && item.mode === this.themeMode)
+      ?? this.themeVariants.find((item) => item.id === this.currentThemeId)
+      ?? this.themeVariants[0];
     return theme?.colors ?? [];
   }
 
@@ -490,22 +730,44 @@ export class PublicContentManagementComponent implements OnInit {
     return [
       { token: '--sede-color-primary', value: '#2563eb' },
       { token: '--sede-color-primary-hover', value: '#1d4ed8' },
+      { token: '--sede-color-primary-50', value: '#eff6ff' },
       { token: '--sede-color-primary-contrast', value: '#ffffff' },
       { token: '--sede-color-link', value: '#0ea5e9' },
       { token: '--sede-color-bg', value: '#f8fafc' },
       { token: '--sede-color-surface', value: '#ffffff' },
       { token: '--sede-color-text', value: '#0f172a' },
-      { token: '--sede-color-muted', value: '#475569' }
+      { token: '--sede-color-muted', value: '#475569' },
+      { token: '--sede-color-border', value: '#e2e8f0' },
+      { token: '--sede-color-hero-bg', value: '#0e2a47' },
+      { token: '--sede-color-hero-text', value: '#f8fafc' },
+      { token: '--sede-color-hero-subtitle', value: '#d9e2ec' },
+      { token: '--sede-color-calendar-date-bg', value: 'rgba(14, 116, 144, 0.10)' },
+      { token: '--sede-color-calendar-date-text', value: '#0ea5e9' },
+      { token: '--sede-color-footer-bg', value: '#0f172a' },
+      { token: '--sede-color-footer-text', value: '#cbd5e1' }
     ];
   }
 
   private defaultThemeVariants(): ThemeVariant[] {
-    return this.themePresets.map((preset, index) => ({
-      id: this.normalizeThemeId(preset.name, index),
-      name: preset.name,
-      colors: preset.colors.map((color) => ({ ...color })),
-      active: index === 0
-    }));
+    return this.themePresets.flatMap((preset, index) => {
+      const id = this.normalizeThemeId(preset.name, index);
+      return [
+        {
+          id,
+          name: preset.name,
+          mode: 'light' as const,
+          colors: preset.colors.map((color) => ({ ...color })),
+          active: index === 0
+        },
+        {
+          id,
+          name: preset.name,
+          mode: 'dark' as const,
+          colors: [],
+          active: false
+        }
+      ];
+    });
   }
 
   private normalizeThemeId(name: string, index: number): string {
@@ -582,11 +844,14 @@ export class PublicContentManagementComponent implements OnInit {
 
     const tokenMap = new Map(this.themeForm.map((color) => [color.token, color.value]));
     const primary = tokenMap.get('--sede-color-primary') ?? '';
+    const primaryHover = tokenMap.get('--sede-color-primary-hover') ?? '';
+    const primary50 = tokenMap.get('--sede-color-primary-50') ?? '';
     const primaryContrast = tokenMap.get('--sede-color-primary-contrast') ?? '';
     const surface = tokenMap.get('--sede-color-surface') ?? '';
     const text = tokenMap.get('--sede-color-text') ?? '';
     const link = tokenMap.get('--sede-color-link') ?? '';
     const muted = tokenMap.get('--sede-color-muted') ?? '';
+    const border = tokenMap.get('--sede-color-border') ?? '';
 
     if (!primary || !primaryContrast || !surface || !text) {
       return 'Faltan colores obligatorios: primary, primary-contrast, surface o text.';
