@@ -72,6 +72,10 @@ export class PublicContentManagementComponent implements OnInit {
     this.sectionsExpanded[section] = !this.sectionsExpanded[section];
   }
 
+  setActiveTheme(themeId: string): void {
+    this.activeThemeId = themeId;
+  }
+
   getThemeSwatchGradient(theme: { id: string; name: string }): string {
     const full = this.themeVariants.find(t => t.id === theme.id && t.mode === this.themeMode)
       ?? this.themeVariants.find(t => t.id === theme.id);
@@ -172,7 +176,7 @@ export class PublicContentManagementComponent implements OnInit {
         { token: '--sede-color-hero-bg', value: '#0c1929' },
         { token: '--sede-color-hero-text', value: '#f8fafc' },
         { token: '--sede-color-hero-subtitle', value: '#94a3b8' },
-        { token: '--sede-color-calendar-date-bg', value: 'rgba(59, 130, 246, 0.20)' },
+        { token: '--sede-color-calendar-date-bg', value: 'rgba(59, 130, 246, 0.15)' },
         { token: '--sede-color-calendar-date-text', value: '#60a5fa' },
         { token: '--sede-color-footer-bg', value: '#020617' },
         { token: '--sede-color-footer-text', value: '#64748b' }
@@ -200,10 +204,10 @@ export class PublicContentManagementComponent implements OnInit {
         { token: '--sede-color-footer-text', value: '#a7f3d0' }
       ],
       darkColors: [
-        { token: '--sede-color-primary', value: '#14b8a6' },
-        { token: '--sede-color-primary-hover', value: '#2dd4bf' },
+        { token: '--sede-color-primary', value: '#2dd4bf' },
+        { token: '--sede-color-primary-hover', value: '#5eead4' },
         { token: '--sede-color-primary-50', value: '#134e4a' },
-        { token: '--sede-color-primary-contrast', value: '#ffffff' },
+        { token: '--sede-color-primary-contrast', value: '#042f2e' },
         { token: '--sede-color-link', value: '#2dd4bf' },
         { token: '--sede-color-bg', value: '#042f2e' },
         { token: '--sede-color-surface', value: '#134e4a' },
@@ -213,7 +217,7 @@ export class PublicContentManagementComponent implements OnInit {
         { token: '--sede-color-hero-bg', value: '#022c22' },
         { token: '--sede-color-hero-text', value: '#f0fdf4' },
         { token: '--sede-color-hero-subtitle', value: '#5eead4' },
-        { token: '--sede-color-calendar-date-bg', value: 'rgba(20, 184, 166, 0.20)' },
+        { token: '--sede-color-calendar-date-bg', value: 'rgba(45, 212, 191, 0.15)' },
         { token: '--sede-color-calendar-date-text', value: '#2dd4bf' },
         { token: '--sede-color-footer-bg', value: '#022c22' },
         { token: '--sede-color-footer-text', value: '#5eead4' }
@@ -241,8 +245,8 @@ export class PublicContentManagementComponent implements OnInit {
         { token: '--sede-color-footer-text', value: '#fda4af' }
       ],
       darkColors: [
-        { token: '--sede-color-primary', value: '#e11d48' },
-        { token: '--sede-color-primary-hover', value: '#f43f5e' },
+        { token: '--sede-color-primary', value: '#f43f5e' },
+        { token: '--sede-color-primary-hover', value: '#fb7185' },
         { token: '--sede-color-primary-50', value: '#4c1025' },
         { token: '--sede-color-primary-contrast', value: '#ffffff' },
         { token: '--sede-color-link', value: '#fb7185' },
@@ -254,7 +258,7 @@ export class PublicContentManagementComponent implements OnInit {
         { token: '--sede-color-hero-bg', value: '#120508' },
         { token: '--sede-color-hero-text', value: '#fff1f2' },
         { token: '--sede-color-hero-subtitle', value: '#fda4af' },
-        { token: '--sede-color-calendar-date-bg', value: 'rgba(225, 29, 72, 0.20)' },
+        { token: '--sede-color-calendar-date-bg', value: 'rgba(244, 63, 94, 0.15)' },
         { token: '--sede-color-calendar-date-text', value: '#fb7185' },
         { token: '--sede-color-footer-bg', value: '#0a0305' },
         { token: '--sede-color-footer-text', value: '#94a3b8' }
@@ -852,7 +856,7 @@ export class PublicContentManagementComponent implements OnInit {
       { token: '--sede-color-hero-bg', value: '#0c1929' },
       { token: '--sede-color-hero-text', value: '#f8fafc' },
       { token: '--sede-color-hero-subtitle', value: '#94a3b8' },
-      { token: '--sede-color-calendar-date-bg', value: 'rgba(59, 130, 246, 0.20)' },
+      { token: '--sede-color-calendar-date-bg', value: 'rgba(59, 130, 246, 0.15)' },
       { token: '--sede-color-calendar-date-text', value: '#60a5fa' },
       { token: '--sede-color-footer-bg', value: '#020617' },
       { token: '--sede-color-footer-text', value: '#64748b' }

@@ -1,292 +1,278 @@
 <div class="space-y-6">
   <div class="bg-white rounded-lg shadow p-6">
-    <h3 class="text-lg font-semibold text-gray-900">Tema de la Sede</h3>
-    <p class="text-sm text-gray-500 mt-1">Personaliza los colores y estilos visuales de la sede electronica.</p>
+    <h3 class="text-lg font-semibold text-gray-900">Contenido Publico Configurable</h3>
+    <p class="text-sm text-gray-500 mt-1">Gestion de normativa, FAQ, plazos y eventos internacionalizables para la sede.</p>
   </div>
 
-  <div *ngIf="isLoading" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">Cargando temas...</div>
+  <div class="bg-white rounded-lg shadow p-4 flex flex-wrap gap-2">
+    <button *ngFor="let tab of tabs" type="button" (click)="selectTab(tab.value)" class="px-4 py-2 rounded-md text-sm font-medium border" [class.bg-blue-600]="activeTab === tab.value" [class.text-white]="activeTab === tab.value" [class.border-blue-600]="activeTab === tab.value" [class.bg-white]="activeTab !== tab.value" [class.text-gray-700]="activeTab !== tab.value" [class.border-gray-300]="activeTab !== tab.value">{{ tab.label }}</button>
+  </div>
 
+  <div *ngIf="isLoading" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">Cargando contenido...</div>
+
+  <!-- LEGISLATION -->
+  <div *ngIf="!isLoading && activeTab === 'legislation'" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <div class="flex items-center justify-between"><h4 class="font-semibold">Normativa registrada</h4><button type="button" (click)="newLegislation()" class="text-blue-600 text-sm">Nueva</button></div>
+      <div *ngFor="let item of legislation" class="border rounded-md p-3">
+        <div class="flex items-start justify-between gap-3">
+          <div><div class="text-sm font-semibold">{{ item.title }}</div><div class="text-xs text-gray-500">{{ item.locale }} · {{ item.type }} · {{ item.publicationDate }}</div></div>
+          <div class="flex gap-3"><button type="button" (click)="editLegislation(item)" class="text-blue-600 text-sm">Editar</button><button type="button" (click)="deleteLegislation(item)" class="text-red-600 text-sm">Eliminar</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <h4 class="font-semibold">{{ selectedLegislation ? 'Editar normativa' : 'Nueva normativa' }}</h4>
+      <div class="flex gap-1 border-b mb-3">
+        <button *ngFor="let locale of supportedLocales" type="button" (click)="switchLegislationLocale(locale)" class="px-3 py-1 text-sm border-b-2 transition" [class.border-blue-600]="legislationLocale === locale" [class.text-blue-600]="legislationLocale === locale" [class.border-transparent]="legislationLocale !== locale" [class.text-gray-500]="legislationLocale !== locale">{{ locale }}</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <label class="block text-sm">Tipo<select [(ngModel)]="legislationForm.type" (ngModelChange)="syncLegislationCommon('type', $event)" class="mt-1 w-full border rounded-md px-3 py-2"><option value="law">law</option><option value="decree">decree</option><option value="order">order</option><option value="resolution">resolution</option></select></label>
+        <label class="block text-sm">Orden<input type="number" [(ngModel)]="legislationForm.sortOrder" (ngModelChange)="syncLegislationCommon('sortOrder', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      </div>
+      <label class="block text-sm">Titulo<input [(ngModel)]="legislationForm.title" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Descripcion<textarea [(ngModel)]="legislationForm.description" rows="4" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
+      <label class="block text-sm">Fecha publicacion<input type="date" [(ngModel)]="legislationForm.publicationDate" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">URL externa<input [(ngModel)]="legislationForm.externalUrl" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">URL descarga<input [(ngModel)]="legislationForm.downloadUrl" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="legislationForm.published" (ngModelChange)="syncLegislationCommon('published', $event)" class="mr-2" /> Publicado</label>
+      <button type="button" (click)="saveLegislation()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">{{ isSaving ? 'Guardando...' : 'Guardar normativa' }}</button>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div *ngIf="!isLoading && activeTab === 'faq'" class="space-y-6">
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+      <div class="bg-white rounded-lg shadow p-6 space-y-3">
+        <div class="flex items-center justify-between"><h4 class="font-semibold">Categorias FAQ</h4><button type="button" (click)="newFaqCategory()" class="text-blue-600 text-sm">Nueva</button></div>
+        <div *ngFor="let item of faqCategories" class="border rounded-md p-3 flex items-start justify-between"><div><div class="text-sm font-semibold">{{ item.categoryName }}</div><div class="text-xs text-gray-500">{{ item.categoryCode }} · {{ item.locale }}</div></div><div class="flex gap-3"><button type="button" (click)="editFaqCategory(item)" class="text-blue-600 text-sm">Editar</button><button type="button" (click)="deleteFaqCategory(item)" class="text-red-600 text-sm">Eliminar</button></div></div>
+      </div>
+      <div class="bg-white rounded-lg shadow p-6 space-y-3">
+        <h4 class="font-semibold">{{ selectedFaqCategory ? 'Editar categoria' : 'Nueva categoria' }}</h4>
+        <div class="flex gap-1 border-b mb-3"><button *ngFor="let locale of supportedLocales" type="button" (click)="switchFaqCategoryLocale(locale)" class="px-3 py-1 text-sm border-b-2 transition" [class.border-blue-600]="faqCategoryLocale === locale" [class.text-blue-600]="faqCategoryLocale === locale" [class.border-transparent]="faqCategoryLocale !== locale" [class.text-gray-500]="faqCategoryLocale !== locale">{{ locale }}</button></div>
+        <label class="block text-sm">Codigo categoria<input [(ngModel)]="faqCategoryForm.categoryCode" (ngModelChange)="syncFaqCategoryCommon('categoryCode', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm">Nombre categoria<input [(ngModel)]="faqCategoryForm.categoryName" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm">Orden<input type="number" [(ngModel)]="faqCategoryForm.sortOrder" (ngModelChange)="syncFaqCategoryCommon('sortOrder', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="faqCategoryForm.published" (ngModelChange)="syncFaqCategoryCommon('published', $event)" class="mr-2" /> Publicado</label>
+        <button type="button" (click)="saveFaqCategory()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">Guardar categoria</button>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+      <div class="bg-white rounded-lg shadow p-6 space-y-3">
+        <div class="flex items-center justify-between"><h4 class="font-semibold">Entradas FAQ</h4><button type="button" (click)="newFaq()" class="text-blue-600 text-sm">Nueva</button></div>
+        <div *ngFor="let item of faqEntries" class="border rounded-md p-3 flex items-start justify-between gap-3"><div><div class="text-sm font-semibold">{{ item.question }}</div><div class="text-xs text-gray-500">{{ item.categoryCode }} · {{ item.locale }}</div></div><div class="flex gap-3"><button type="button" (click)="editFaq(item)" class="text-blue-600 text-sm">Editar</button><button type="button" (click)="deleteFaq(item)" class="text-red-600 text-sm">Eliminar</button></div></div>
+      </div>
+      <div class="bg-white rounded-lg shadow p-6 space-y-3">
+        <h4 class="font-semibold">{{ selectedFaqEntry ? 'Editar FAQ' : 'Nueva FAQ' }}</h4>
+        <div class="flex gap-1 border-b mb-3"><button *ngFor="let locale of supportedLocales" type="button" (click)="switchFaqLocale(locale)" class="px-3 py-1 text-sm border-b-2 transition" [class.border-blue-600]="faqLocale === locale" [class.text-blue-600]="faqLocale === locale" [class.border-transparent]="faqLocale !== locale" [class.text-gray-500]="faqLocale !== locale">{{ locale }}</button></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <label class="block text-sm">Categoria<select [(ngModel)]="faqForm.categoryCode" (ngModelChange)="syncFaqCommon('categoryCode', $event)" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let cat of faqCategories" [value]="cat.id">{{ cat.categoryName }} ({{ cat.locale }})</option></select></label>
+          <label class="block text-sm">Orden<input type="number" [(ngModel)]="faqForm.sortOrder" (ngModelChange)="syncFaqCommon('sortOrder', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        </div>
+        <label class="block text-sm">Pregunta<input [(ngModel)]="faqForm.question" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm">Respuesta<textarea [(ngModel)]="faqForm.answer" rows="4" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
+        <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="faqForm.published" (ngModelChange)="syncFaqCommon('published', $event)" class="mr-2" /> Publicado</label>
+        <button type="button" (click)="saveFaq()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">Guardar FAQ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div *ngIf="!isLoading && activeTab === 'calendar'" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <div class="flex items-center justify-between"><h4 class="font-semibold">Plazos y eventos</h4><button type="button" (click)="newCalendar()" class="text-blue-600 text-sm">Nuevo</button></div>
+      <div *ngFor="let item of calendarEntries" class="border rounded-md p-3 flex items-start justify-between"><div><div class="text-sm font-semibold">{{ item.title }}</div><div class="text-xs text-gray-500">{{ item.type }} · {{ item.eventDate }} · {{ item.locale }}</div></div><div class="flex gap-3"><button type="button" (click)="editCalendar(item)" class="text-blue-600 text-sm">Editar</button><button type="button" (click)="deleteCalendar(item)" class="text-red-600 text-sm">Eliminar</button></div></div>
+    </div>
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <h4 class="font-semibold">{{ selectedCalendarEntry ? 'Editar evento' : 'Nuevo evento' }}</h4>
+      <div class="flex gap-1 border-b mb-3"><button *ngFor="let locale of supportedLocales" type="button" (click)="switchCalendarLocale(locale)" class="px-3 py-1 text-sm border-b-2 transition" [class.border-blue-600]="calendarLocale === locale" [class.text-blue-600]="calendarLocale === locale" [class.border-transparent]="calendarLocale !== locale" [class.text-gray-500]="calendarLocale !== locale">{{ locale }}</button></div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <label class="block text-sm">Tipo<select [(ngModel)]="calendarForm.type" (ngModelChange)="syncCalendarCommon('type', $event)" class="mt-1 w-full border rounded-md px-3 py-2"><option value="deadline">deadline</option><option value="holiday">holiday</option><option value="info">info</option><option value="reminder">reminder</option></select></label>
+        <label class="block text-sm">Fecha<input type="date" [(ngModel)]="calendarForm.eventDate" (ngModelChange)="syncCalendarCommon('eventDate', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm">Orden<input type="number" [(ngModel)]="calendarForm.sortOrder" (ngModelChange)="syncCalendarCommon('sortOrder', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      </div>
+      <label class="block text-sm">Procedimiento relacionado<input [(ngModel)]="calendarForm.relatedProcedure" (ngModelChange)="syncCalendarCommon('relatedProcedure', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Titulo<input [(ngModel)]="calendarForm.title" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Descripcion<textarea [(ngModel)]="calendarForm.description" rows="4" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
+      <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="calendarForm.published" (ngModelChange)="syncCalendarCommon('published', $event)" class="mr-2" /> Publicado</label>
+      <button type="button" (click)="saveCalendar()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">Guardar evento</button>
+    </div>
+  </div>
+
+  <!-- INSTITUTIONAL -->
+  <div *ngIf="!isLoading && activeTab === 'institutional'" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <div class="flex items-center justify-between"><h4 class="font-semibold">Informacion institucional</h4><button type="button" (click)="newInstitutional()" class="text-blue-600 text-sm">Nueva</button></div>
+      <div *ngFor="let item of institutionalEntries" class="border rounded-md p-3 flex items-start justify-between"><div><div class="text-sm font-semibold">{{ item.title }}</div><div class="text-xs text-gray-500">{{ item.sectionCode }} · {{ item.locale }}</div></div><div class="flex gap-3"><button type="button" (click)="editInstitutional(item)" class="text-blue-600 text-sm">Editar</button><button type="button" (click)="deleteInstitutional(item)" class="text-red-600 text-sm">Eliminar</button></div></div>
+    </div>
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <h4 class="font-semibold">{{ selectedInstitutionalEntry ? 'Editar informacion' : 'Nueva informacion' }}</h4>
+      <div class="flex gap-1 border-b mb-3"><button *ngFor="let locale of supportedLocales" type="button" (click)="switchInstitutionalLocale(locale)" class="px-3 py-1 text-sm border-b-2 transition" [class.border-blue-600]="institutionalLocale === locale" [class.text-blue-600]="institutionalLocale === locale" [class.border-transparent]="institutionalLocale !== locale" [class.text-gray-500]="institutionalLocale !== locale">{{ locale }}</button></div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <label class="block text-sm">Codigo seccion<input [(ngModel)]="institutionalForm.sectionCode" (ngModelChange)="syncInstitutionalCommon('sectionCode', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm">Icono<input [(ngModel)]="institutionalForm.icon" (ngModelChange)="syncInstitutionalCommon('icon', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm">Orden<input type="number" [(ngModel)]="institutionalForm.sortOrder" (ngModelChange)="syncInstitutionalCommon('sortOrder', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      </div>
+      <label class="block text-sm">Titulo<input [(ngModel)]="institutionalForm.title" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Contenido<textarea [(ngModel)]="institutionalForm.content" rows="4" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
+      <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="institutionalForm.published" (ngModelChange)="syncInstitutionalCommon('published', $event)" class="mr-2" /> Publicado</label>
+      <button type="button" (click)="saveInstitutional()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">Guardar informacion</button>
+    </div>
+  </div>
+
+  <!-- ORGANISMS -->
+  <div *ngIf="!isLoading && activeTab === 'organisms'" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <div class="flex items-center justify-between"><h4 class="font-semibold">Directorio de organismos</h4><button type="button" (click)="newOrganism()" class="text-blue-600 text-sm">Nuevo</button></div>
+      <div *ngFor="let item of organismEntries" class="border rounded-md p-3 flex items-start justify-between gap-3"><div><div class="text-sm font-semibold">{{ item.name }}</div><div class="text-xs text-gray-500">{{ item.categoryCode }} · {{ item.locale }}</div></div><div class="flex gap-3"><button type="button" (click)="editOrganism(item)" class="text-blue-600 text-sm">Editar</button><button type="button" (click)="deleteOrganism(item)" class="text-red-600 text-sm">Eliminar</button></div></div>
+    </div>
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <h4 class="font-semibold">{{ selectedOrganismEntry ? 'Editar organismo' : 'Nuevo organismo' }}</h4>
+      <div class="flex gap-1 border-b mb-3"><button *ngFor="let locale of supportedLocales" type="button" (click)="switchOrganismLocale(locale)" class="px-3 py-1 text-sm border-b-2 transition" [class.border-blue-600]="organismLocale === locale" [class.text-blue-600]="organismLocale === locale" [class.border-transparent]="organismLocale !== locale" [class.text-gray-500]="organismLocale !== locale">{{ locale }}</button></div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <label class="block text-sm">Categoria<select [(ngModel)]="organismForm.categoryCode" (ngModelChange)="syncOrganismCommon('categoryCode', $event)" class="mt-1 w-full border rounded-md px-3 py-2"><option *ngFor="let cat of organismCategories" [value]="cat.id">{{ cat.categoryName }} ({{ cat.locale }})</option></select></label>
+        <label class="block text-sm">Orden<input type="number" [(ngModel)]="organismForm.sortOrder" (ngModelChange)="syncOrganismCommon('sortOrder', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <label class="block text-sm">Telefono<input [(ngModel)]="organismForm.phone" (ngModelChange)="syncOrganismCommon('phone', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm">Email<input [(ngModel)]="organismForm.email" (ngModelChange)="syncOrganismCommon('email', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      </div>
+      <label class="block text-sm">Direccion<input [(ngModel)]="organismForm.address" (ngModelChange)="syncOrganismCommon('address', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Web<input [(ngModel)]="organismForm.websiteUrl" (ngModelChange)="syncOrganismCommon('websiteUrl', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Nombre<input [(ngModel)]="organismForm.name" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Descripcion<textarea [(ngModel)]="organismForm.description" rows="3" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
+      <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="organismForm.published" (ngModelChange)="syncOrganismCommon('published', $event)" class="mr-2" /> Publicado</label>
+      <button type="button" (click)="saveOrganism()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">Guardar organismo</button>
+    </div>
+  </div>
+
+  <!-- RESOURCES -->
+  <div *ngIf="!isLoading && activeTab === 'resources'" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <div class="flex items-center justify-between"><h4 class="font-semibold">Recursos publicos</h4><button type="button" (click)="newResource()" class="text-blue-600 text-sm">Nuevo</button></div>
+      <div *ngFor="let item of resourceEntries" class="border rounded-md p-3 flex items-start justify-between gap-3"><div><div class="text-sm font-semibold">{{ item.title }}</div><div class="text-xs text-gray-500">{{ item.resourceType }} · {{ item.locale }}</div></div><div class="flex gap-3"><button type="button" (click)="editResource(item)" class="text-blue-600 text-sm">Editar</button><button type="button" (click)="deleteResource(item)" class="text-red-600 text-sm">Eliminar</button></div></div>
+    </div>
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <h4 class="font-semibold">{{ selectedResourceEntry ? 'Editar recurso' : 'Nuevo recurso' }}</h4>
+      <div class="flex gap-1 border-b mb-3"><button *ngFor="let locale of supportedLocales" type="button" (click)="switchResourceLocale(locale)" class="px-3 py-1 text-sm border-b-2 transition" [class.border-blue-600]="resourceLocale === locale" [class.text-blue-600]="resourceLocale === locale" [class.border-transparent]="resourceLocale !== locale" [class.text-gray-500]="resourceLocale !== locale">{{ locale }}</button></div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <label class="block text-sm">Tipo recurso<input [(ngModel)]="resourceForm.resourceType" (ngModelChange)="syncResourceCommon('resourceType', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm">URL externa<input [(ngModel)]="resourceForm.externalUrl" (ngModelChange)="syncResourceCommon('externalUrl', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      </div>
+      <label class="block text-sm">Orden<input type="number" [(ngModel)]="resourceForm.sortOrder" (ngModelChange)="syncResourceCommon('sortOrder', $event)" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Titulo<input [(ngModel)]="resourceForm.title" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+      <label class="block text-sm">Descripcion<textarea [(ngModel)]="resourceForm.description" rows="3" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
+      <label class="block text-sm">Contenido<textarea [(ngModel)]="resourceForm.content" rows="4" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
+      <label class="inline-flex items-center text-sm"><input type="checkbox" [(ngModel)]="resourceForm.published" (ngModelChange)="syncResourceCommon('published', $event)" class="mr-2" /> Publicado</label>
+      <button type="button" (click)="saveResource()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">Guardar recurso</button>
+    </div>
+  </div>
+
+  <!-- THEME -->
   <div *ngIf="!isLoading && activeTab === 'theme'" class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-
-    <!-- LEFT: Theme selector cards -->
     <div class="xl:col-span-1 space-y-4">
       <div class="bg-white rounded-lg shadow p-5">
-        <div class="flex items-center justify-between mb-4">
-          <h4 class="font-semibold text-gray-900">Temas</h4>
-          <button type="button" (click)="createThemeVariant()" class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 rounded-md hover:bg-blue-100">
-            <span>+</span> Nuevo
-          </button>
-        </div>
-
-        <!-- Mode toggle -->
+        <div class="flex items-center justify-between mb-4"><h4 class="font-semibold text-gray-900">Temas</h4><button type="button" (click)="createThemeVariant()" class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 rounded-md hover:bg-blue-100"><span>+</span> Nuevo</button></div>
         <div class="flex gap-1 p-1 bg-gray-100 rounded-lg mb-4">
-          <button type="button" class="flex-1 py-1.5 text-xs font-medium rounded-md transition"
-            [class.bg-white]="themeMode === 'light'" [class.shadow-sm]="themeMode === 'light'"
-            [class.text-gray-900]="themeMode === 'light'"
-            [class.text-gray-500]="themeMode !== 'light'"
-            (click)="setThemeMode('light')">
-            Claro
-          </button>
-          <button type="button" class="flex-1 py-1.5 text-xs font-medium rounded-md transition"
-            [class.bg-gray-800]="themeMode === 'dark'" [class.shadow-sm]="themeMode === 'dark'"
-            [class.text-white]="themeMode === 'dark'"
-            [class.text-gray-500]="themeMode !== 'dark'"
-            (click)="setThemeMode('dark')">
-            Oscuro
-          </button>
+          <button type="button" class="flex-1 py-1.5 text-xs font-medium rounded-md transition" [class.bg-white]="themeMode === 'light'" [class.shadow-sm]="themeMode === 'light'" [class.text-gray-900]="themeMode === 'light'" [class.text-gray-500]="themeMode !== 'light'" (click)="setThemeMode('light')">Claro</button>
+          <button type="button" class="flex-1 py-1.5 text-xs font-medium rounded-md transition" [class.bg-gray-800]="themeMode === 'dark'" [class.shadow-sm]="themeMode === 'dark'" [class.text-white]="themeMode === 'dark'" [class.text-gray-500]="themeMode !== 'dark'" (click)="setThemeMode('dark')">Oscuro</button>
         </div>
-
-        <!-- Theme cards -->
         <div class="space-y-2 max-h-[400px] overflow-y-auto pr-1">
-          <div *ngFor="let theme of themeModeVariantsList"
-            class="group relative border rounded-lg p-3 cursor-pointer transition-all"
-            [class.border-blue-500]="theme.id === currentThemeId"
-            [class.bg-blue-50]="theme.id === currentThemeId"
-            [class.border-gray-200]="theme.id !== currentThemeId"
-            [class.hover:border-gray-300]="theme.id !== currentThemeId"
-            (click)="selectThemeVariant(theme.id)">
-
-            <!-- Active badge -->
-            <div *ngIf="theme.id === activeThemeId" class="absolute -top-1.5 -right-1.5">
-              <span class="inline-flex items-center px-1.5 py-0.5 text-[10px] font-semibold text-green-700 bg-green-100 rounded-full">Activo</span>
-            </div>
-
+          <div *ngFor="let theme of themeModeVariantsList" class="group relative border rounded-lg p-3 cursor-pointer transition-all" [class.border-blue-500]="theme.id === currentThemeId" [class.bg-blue-50]="theme.id === currentThemeId" [class.border-gray-200]="theme.id !== currentThemeId" [class.hover:border-gray-300]="theme.id !== currentThemeId" (click)="selectThemeVariant(theme.id)">
+            <div *ngIf="theme.id === activeThemeId" class="absolute -top-1.5 -right-1.5"><span class="inline-flex items-center px-1.5 py-0.5 text-[10px] font-semibold text-green-700 bg-green-100 rounded-full">Activo</span></div>
             <div class="flex items-center gap-3">
-              <!-- Color swatch -->
-              <div class="flex-shrink-0 w-10 h-10 rounded-lg border border-gray-200 overflow-hidden shadow-sm"
-                [style.background]="getThemeSwatchGradient(theme)">
-              </div>
-              <div class="min-w-0 flex-1">
-                <div class="text-sm font-medium text-gray-900 truncate">{{ theme.name }}</div>
-                <div class="text-xs text-gray-500 truncate">{{ theme.id }}</div>
-              </div>
+              <div class="flex-shrink-0 w-10 h-10 rounded-lg border border-gray-200 overflow-hidden shadow-sm" [style.background]="getThemeSwatchGradient(theme)"></div>
+              <div class="min-w-0 flex-1"><div class="text-sm font-medium text-gray-900 truncate">{{ theme.name }}</div><div class="text-xs text-gray-500 truncate">{{ theme.id }}</div></div>
+              <button type="button" (click)="setActiveTheme(theme.id); $event.stopPropagation()" class="flex-shrink-0 px-2 py-1 text-[10px] font-medium rounded border transition" [class.bg-green-600]="theme.id === activeThemeId" [class.text-white]="theme.id === activeThemeId" [class.border-green-600]="theme.id === activeThemeId" [class.bg-white]="theme.id !== activeThemeId" [class.text-gray-600]="theme.id !== activeThemeId" [class.border-gray-300]="theme.id !== activeThemeId" [class.hover:bg-green-50]="theme.id !== activeThemeId" [class.hover:text-green-700]="theme.id !== activeThemeId" [class.hover:border-green-300]="theme.id !== activeThemeId">{{ theme.id === activeThemeId ? 'Activo' : 'Activar' }}</button>
             </div>
           </div>
         </div>
-
-        <!-- Theme actions -->
         <div class="flex gap-2 mt-4 pt-4 border-t border-gray-100">
           <button type="button" (click)="duplicateCurrentThemeVariant()" class="flex-1 py-1.5 text-xs font-medium text-gray-700 bg-gray-50 rounded-md hover:bg-gray-100 border border-gray-200">Duplicar</button>
           <button type="button" (click)="removeCurrentThemeVariant()" class="flex-1 py-1.5 text-xs font-medium text-red-600 bg-red-50 rounded-md hover:bg-red-100 border border-red-200" [disabled]="themeVariants.length <= 2">Eliminar</button>
         </div>
       </div>
-
-      <!-- Presets -->
       <div class="bg-white rounded-lg shadow p-5">
         <h4 class="font-semibold text-gray-900 mb-3">Plantillas rapidas</h4>
         <div class="space-y-2">
-          <div *ngFor="let preset of themePresets"
-            class="flex items-center gap-3 p-2 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition"
-            (click)="selectedThemePreset = preset.name; applyThemePreset()">
-            <div class="flex-shrink-0 w-8 h-8 rounded-md overflow-hidden"
-              [style.background]="getPresetSwatchGradient(preset)">
-            </div>
+          <div *ngFor="let preset of themePresets" class="flex items-center gap-3 p-2 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition" (click)="selectedThemePreset = preset.name; applyThemePreset()">
+            <div class="flex-shrink-0 w-8 h-8 rounded-md overflow-hidden" [style.background]="getPresetSwatchGradient(preset)"></div>
             <span class="text-sm text-gray-700">{{ preset.name }}</span>
           </div>
         </div>
-        <div class="flex gap-2 mt-3">
-          <button type="button" (click)="applyPresetAsNewTheme()" [disabled]="!selectedThemePreset" class="flex-1 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 rounded-md hover:bg-blue-100 disabled:opacity-40 disabled:cursor-not-allowed">Aplicar como nuevo</button>
-        </div>
+        <div class="flex gap-2 mt-3"><button type="button" (click)="applyPresetAsNewTheme()" [disabled]="!selectedThemePreset" class="flex-1 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 rounded-md hover:bg-blue-100 disabled:opacity-40 disabled:cursor-not-allowed">Aplicar como nuevo</button></div>
       </div>
-
-      <!-- Import/Export -->
       <div class="bg-white rounded-lg shadow p-5">
         <h4 class="font-semibold text-gray-900 mb-3">Importar / Exportar</h4>
         <div class="flex gap-2">
           <button type="button" (click)="exportThemesAsJson()" class="flex-1 py-2 text-xs font-medium text-gray-700 bg-gray-50 rounded-md hover:bg-gray-100 border border-gray-200">Exportar JSON</button>
-          <label class="flex-1 py-2 text-xs font-medium text-gray-700 bg-gray-50 rounded-md hover:bg-gray-100 border border-gray-200 cursor-pointer text-center">
-            Importar JSON
-            <input type="file" accept="application/json" class="hidden" (change)="importThemesFromJson($event)" />
-          </label>
+          <label class="flex-1 py-2 text-xs font-medium text-gray-700 bg-gray-50 rounded-md hover:bg-gray-100 border border-gray-200 cursor-pointer text-center">Importar JSON<input type="file" accept="application/json" class="hidden" (change)="importThemesFromJson($event)" /></label>
         </div>
       </div>
     </div>
-
-    <!-- CENTER + RIGHT: Editor + Preview -->
     <div class="xl:col-span-2 space-y-4">
-
-      <!-- Editor -->
       <div class="bg-white rounded-lg shadow">
         <div class="p-5 border-b border-gray-100">
           <div class="flex items-center justify-between">
-            <div>
-              <h4 class="font-semibold text-gray-900">Editar tema</h4>
-              <p class="text-xs text-gray-500 mt-0.5">{{ currentThemeName }} · {{ themeMode === 'light' ? 'claro' : 'oscuro' }}</p>
-            </div>
+            <div><h4 class="font-semibold text-gray-900">Editar tema</h4><p class="text-xs text-gray-500 mt-0.5">{{ currentThemeName }} · {{ themeMode === 'light' ? 'claro' : 'oscuro' }}</p></div>
             <div class="flex items-center gap-2">
               <button type="button" (click)="resetCurrentThemeToDefaults()" class="px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-50 rounded-md hover:bg-gray-100 border border-gray-200">Restaurar</button>
-              <button type="button" (click)="saveThemePalette()" [disabled]="isSaving" class="px-4 py-1.5 text-xs font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50">
-                {{ isSaving ? 'Guardando...' : 'Guardar tema' }}
-              </button>
+              <button type="button" (click)="saveThemePalette()" [disabled]="isSaving" class="px-4 py-1.5 text-xs font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50">{{ isSaving ? 'Guardando...' : 'Guardar tema' }}</button>
             </div>
           </div>
         </div>
-
         <div class="p-5 space-y-5">
-          <!-- Theme meta -->
           <div class="grid grid-cols-2 gap-3">
-            <label class="block">
-              <span class="text-xs font-medium text-gray-600">ID del tema</span>
-              <input [ngModel]="currentThemeId" (ngModelChange)="updateCurrentThemeMeta('id', $event)" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-            </label>
-            <label class="block">
-              <span class="text-xs font-medium text-gray-600">Nombre</span>
-              <input [ngModel]="currentThemeName" (ngModelChange)="updateCurrentThemeMeta('name', $event)" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-            </label>
+            <label class="block"><span class="text-xs font-medium text-gray-600">ID del tema</span><input [ngModel]="currentThemeId" (ngModelChange)="updateCurrentThemeMeta('id', $event)" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" /></label>
+            <label class="block"><span class="text-xs font-medium text-gray-600">Nombre</span><input [ngModel]="currentThemeName" (ngModelChange)="updateCurrentThemeMeta('name', $event)" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" /></label>
           </div>
-
-          <!-- Color groups -->
           <div class="space-y-4">
-            <!-- Primary colors -->
             <div class="border border-gray-200 rounded-lg overflow-hidden">
-              <button type="button" (click)="toggleSection('primary')" class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 transition">
-                <span class="text-sm font-medium text-gray-700">Colores primarios</span>
-                <span class="text-gray-400 text-sm">{{ sectionsExpanded['primary'] ? '▾' : '' }}</span>
-              </button>
+              <button type="button" (click)="toggleSection('primary')" class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 transition"><span class="text-sm font-medium text-gray-700">Colores primarios</span><span class="text-gray-400 text-sm">{{ sectionsExpanded['primary'] ? '▾' : '' }}</span></button>
               <div *ngIf="sectionsExpanded['primary']" class="p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div *ngFor="let color of themeForm | slice:0:6; let i = index" class="flex items-center gap-2">
-                  <div class="flex-shrink-0 w-8 h-8 rounded-md border border-gray-200 shadow-sm" [style.backgroundColor]="color.value"></div>
-                  <div class="flex-1 min-w-0">
-                    <div class="text-xs text-gray-500 truncate">{{ color.token }}</div>
-                    <input [(ngModel)]="themeForm[i].value" type="color" class="w-full h-7 mt-0.5 rounded cursor-pointer" />
-                  </div>
-                </div>
+                <div *ngFor="let color of themeForm | slice:0:6; let i = index" class="flex items-center gap-2"><div class="flex-shrink-0 w-8 h-8 rounded-md border border-gray-200 shadow-sm" [style.backgroundColor]="color.value"></div><div class="flex-1 min-w-0"><div class="text-xs text-gray-500 truncate">{{ color.token }}</div><input [(ngModel)]="themeForm[i].value" type="color" class="w-full h-7 mt-0.5 rounded cursor-pointer" /></div></div>
               </div>
             </div>
-
-            <!-- Surfaces & text -->
             <div class="border border-gray-200 rounded-lg overflow-hidden">
-              <button type="button" (click)="toggleSection('surface')" class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 transition">
-                <span class="text-sm font-medium text-gray-700">Superficies y texto</span>
-                <span class="text-gray-400 text-sm">{{ sectionsExpanded['surface'] ? '▾' : '▸' }}</span>
-              </button>
+              <button type="button" (click)="toggleSection('surface')" class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 transition"><span class="text-sm font-medium text-gray-700">Superficies y texto</span><span class="text-gray-400 text-sm">{{ sectionsExpanded['surface'] ? '▾' : '▸' }}</span></button>
               <div *ngIf="sectionsExpanded['surface']" class="p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div *ngFor="let color of themeForm | slice:6:10; let i = index" class="flex items-center gap-2">
-                  <div class="flex-shrink-0 w-8 h-8 rounded-md border border-gray-200 shadow-sm" [style.backgroundColor]="color.value"></div>
-                  <div class="flex-1 min-w-0">
-                    <div class="text-xs text-gray-500 truncate">{{ color.token }}</div>
-                    <input [(ngModel)]="themeForm[i + 6].value" type="color" class="w-full h-7 mt-0.5 rounded cursor-pointer" />
-                  </div>
-                </div>
+                <div *ngFor="let color of themeForm | slice:6:10; let i = index" class="flex items-center gap-2"><div class="flex-shrink-0 w-8 h-8 rounded-md border border-gray-200 shadow-sm" [style.backgroundColor]="color.value"></div><div class="flex-1 min-w-0"><div class="text-xs text-gray-500 truncate">{{ color.token }}</div><input [(ngModel)]="themeForm[i + 6].value" type="color" class="w-full h-7 mt-0.5 rounded cursor-pointer" /></div></div>
               </div>
             </div>
-
-            <!-- Hero -->
             <div class="border border-gray-200 rounded-lg overflow-hidden">
-              <button type="button" (click)="toggleSection('hero')" class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 transition">
-                <span class="text-sm font-medium text-gray-700">Hero (cabecera)</span>
-                <span class="text-gray-400 text-sm">{{ sectionsExpanded['hero'] ? '▾' : '' }}</span>
-              </button>
+              <button type="button" (click)="toggleSection('hero')" class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 transition"><span class="text-sm font-medium text-gray-700">Hero (cabecera)</span><span class="text-gray-400 text-sm">{{ sectionsExpanded['hero'] ? '▾' : '' }}</span></button>
               <div *ngIf="sectionsExpanded['hero']" class="p-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div *ngFor="let color of themeForm | slice:10:13; let i = index" class="flex items-center gap-2">
-                  <div class="flex-shrink-0 w-8 h-8 rounded-md border border-gray-200 shadow-sm" [style.backgroundColor]="color.value"></div>
-                  <div class="flex-1 min-w-0">
-                    <div class="text-xs text-gray-500 truncate">{{ color.token }}</div>
-                    <input [(ngModel)]="themeForm[i + 10].value" type="color" class="w-full h-7 mt-0.5 rounded cursor-pointer" />
-                  </div>
-                </div>
+                <div *ngFor="let color of themeForm | slice:10:13; let i = index" class="flex items-center gap-2"><div class="flex-shrink-0 w-8 h-8 rounded-md border border-gray-200 shadow-sm" [style.backgroundColor]="color.value"></div><div class="flex-1 min-w-0"><div class="text-xs text-gray-500 truncate">{{ color.token }}</div><input [(ngModel)]="themeForm[i + 10].value" type="color" class="w-full h-7 mt-0.5 rounded cursor-pointer" /></div></div>
               </div>
             </div>
-
-            <!-- Calendar -->
             <div class="border border-gray-200 rounded-lg overflow-hidden">
-              <button type="button" (click)="toggleSection('calendar')" class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 transition">
-                <span class="text-sm font-medium text-gray-700">Calendario</span>
-                <span class="text-gray-400 text-sm">{{ sectionsExpanded['calendar'] ? '▾' : '▸' }}</span>
-              </button>
+              <button type="button" (click)="toggleSection('calendar')" class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 transition"><span class="text-sm font-medium text-gray-700">Calendario</span><span class="text-gray-400 text-sm">{{ sectionsExpanded['calendar'] ? '▾' : '▸' }}</span></button>
               <div *ngIf="sectionsExpanded['calendar']" class="p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div *ngFor="let color of themeForm | slice:13:15; let i = index" class="flex items-center gap-2">
-                  <div class="flex-shrink-0 w-8 h-8 rounded-md border border-gray-200 shadow-sm" [style.backgroundColor]="color.value"></div>
-                  <div class="flex-1 min-w-0">
-                    <div class="text-xs text-gray-500 truncate">{{ color.token }}</div>
-                    <input [(ngModel)]="themeForm[i + 13].value" type="text" class="w-full h-7 mt-0.5 border border-gray-300 rounded px-2 text-sm font-mono" placeholder="rgba(...)" />
-                  </div>
-                </div>
+                <div *ngFor="let color of themeForm | slice:13:15; let i = index" class="flex items-center gap-2"><div class="flex-shrink-0 w-8 h-8 rounded-md border border-gray-200 shadow-sm" [style.backgroundColor]="color.value"></div><div class="flex-1 min-w-0"><div class="text-xs text-gray-500 truncate">{{ color.token }}</div><input [(ngModel)]="themeForm[i + 13].value" type="text" class="w-full h-7 mt-0.5 border border-gray-300 rounded px-2 text-sm font-mono" placeholder="rgba(...)" /></div></div>
               </div>
             </div>
-
-            <!-- Footer -->
             <div class="border border-gray-200 rounded-lg overflow-hidden">
-              <button type="button" (click)="toggleSection('footer')" class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 transition">
-                <span class="text-sm font-medium text-gray-700">Pie de pagina</span>
-                <span class="text-gray-400 text-sm">{{ sectionsExpanded['footer'] ? '' : '▸' }}</span>
-              </button>
+              <button type="button" (click)="toggleSection('footer')" class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 transition"><span class="text-sm font-medium text-gray-700">Pie de pagina</span><span class="text-gray-400 text-sm">{{ sectionsExpanded['footer'] ? '' : '▸' }}</span></button>
               <div *ngIf="sectionsExpanded['footer']" class="p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div *ngFor="let color of themeForm | slice:15:17; let i = index" class="flex items-center gap-2">
-                  <div class="flex-shrink-0 w-8 h-8 rounded-md border border-gray-200 shadow-sm" [style.backgroundColor]="color.value"></div>
-                  <div class="flex-1 min-w-0">
-                    <div class="text-xs text-gray-500 truncate">{{ color.token }}</div>
-                    <input [(ngModel)]="themeForm[i + 15].value" type="color" class="w-full h-7 mt-0.5 rounded cursor-pointer" />
-                  </div>
-                </div>
+                <div *ngFor="let color of themeForm | slice:15:17; let i = index" class="flex items-center gap-2"><div class="flex-shrink-0 w-8 h-8 rounded-md border border-gray-200 shadow-sm" [style.backgroundColor]="color.value"></div><div class="flex-1 min-w-0"><div class="text-xs text-gray-500 truncate">{{ color.token }}</div><input [(ngModel)]="themeForm[i + 15].value" type="color" class="w-full h-7 mt-0.5 rounded cursor-pointer" /></div></div>
               </div>
             </div>
           </div>
-
-          <!-- Validation error -->
           <p *ngIf="themeValidationError" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-3">{{ themeValidationError }}</p>
         </div>
       </div>
-
-      <!-- Live Preview -->
       <div class="bg-white rounded-lg shadow overflow-hidden">
-        <div class="p-4 border-b border-gray-100 bg-gray-50">
-          <h4 class="text-sm font-semibold text-gray-700">Vista previa en vivo</h4>
-        </div>
+        <div class="p-4 border-b border-gray-100 bg-gray-50"><h4 class="text-sm font-semibold text-gray-700">Vista previa en vivo</h4></div>
         <div class="preview-sede" [ngStyle]="themePreviewStyle">
-          <!-- Preview header -->
-          <div class="preview-sede__header">
-            <div class="preview-sede__header-inner">
-              <div class="preview-sede__logo">Escudo</div>
-              <div class="preview-sede__nav">
-                <span>Inicio</span>
-                <span>Tramites</span>
-                <span>Transparencia</span>
-              </div>
-            </div>
-          </div>
-          <!-- Preview hero -->
-          <div class="preview-sede__hero">
-            <div class="preview-sede__hero-inner">
-              <h2 class="preview-sede__hero-title">Sede Electronica</h2>
-              <p class="preview-sede__hero-subtitle">Accede a todos los tramites y servicios municipales</p>
-              <div class="preview-sede__hero-actions">
-                <button type="button" class="preview-sede__btn-primary">Iniciar tramite</button>
-                <a href="#" class="preview-sede__link" (click)="$event.preventDefault()">Ver transparencia</a>
-              </div>
-            </div>
-          </div>
-          <!-- Preview content -->
+          <div class="preview-sede__header"><div class="preview-sede__header-inner"><div class="preview-sede__logo">Escudo</div><div class="preview-sede__nav"><span>Inicio</span><span>Tramites</span><span>Transparencia</span></div></div></div>
+          <div class="preview-sede__hero"><div class="preview-sede__hero-inner"><h2 class="preview-sede__hero-title">Sede Electronica</h2><p class="preview-sede__hero-subtitle">Accede a todos los tramites y servicios municipales</p><div class="preview-sede__hero-actions"><button type="button" class="preview-sede__btn-primary">Iniciar tramite</button><a href="#" class="preview-sede__link" (click)="$event.preventDefault()">Ver transparencia</a></div></div></div>
           <div class="preview-sede__content">
-            <div class="preview-sede__card">
-              <h3 class="preview-sede__card-title">Tramites destacados</h3>
-              <p class="preview-sede__card-text">Accede rapidamente a los tramites mas solicitados por los ciudadanos.</p>
-              <div class="preview-sede__card-tags">
-                <span class="preview-sede__tag">Empadronamiento</span>
-                <span class="preview-sede__tag">Licencias</span>
-                <span class="preview-sede__tag">Urbanismo</span>
-              </div>
-            </div>
-            <div class="preview-sede__card">
-              <h3 class="preview-sede__card-title">Proximos eventos</h3>
-              <p class="preview-sede__card-text">Consulta el calendario de plazos y eventos municipales.</p>
-              <div class="preview-sede__card-date">
-                <span class="preview-sede__date-badge">15 Jun</span>
-                <span class="preview-sede__date-text">Plazo de solicitud de becas</span>
-              </div>
-            </div>
+            <div class="preview-sede__card"><h3 class="preview-sede__card-title">Tramites destacados</h3><p class="preview-sede__card-text">Accede rapidamente a los tramites mas solicitados por los ciudadanos.</p><div class="preview-sede__card-tags"><span class="preview-sede__tag">Empadronamiento</span><span class="preview-sede__tag">Licencias</span><span class="preview-sede__tag">Urbanismo</span></div></div>
+            <div class="preview-sede__card"><h3 class="preview-sede__card-title">Proximos eventos</h3><p class="preview-sede__card-text">Consulta el calendario de plazos y eventos municipales.</p><div class="preview-sede__card-date"><span class="preview-sede__date-badge">15 Jun</span><span class="preview-sede__date-text">Plazo de solicitud de becas</span></div></div>
           </div>
-          <!-- Preview footer -->
-          <div class="preview-sede__footer">
-            <div class="preview-sede__footer-inner">
-              <span>Ayuntamiento · Todos los derechos reservados</span>
-              <span class="preview-sede__footer-link">Aviso legal</span>
-              <span class="preview-sede__footer-link">Accesibilidad</span>
-            </div>
-          </div>
+          <div class="preview-sede__footer"><div class="preview-sede__footer-inner"><span>Ayuntamiento · Todos los derechos reservados</span><span class="preview-sede__footer-link">Aviso legal</span><span class="preview-sede__footer-link">Accesibilidad</span></div></div>
         </div>
       </div>
-
     </div>
   </div>
 </div>
