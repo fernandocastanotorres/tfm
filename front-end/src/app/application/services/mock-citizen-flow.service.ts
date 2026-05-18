@@ -242,7 +242,9 @@ export class MockCitizenFlowService {
           description: 'El expediente se ha registrado correctamente en la sede electrónica.'
         }
       ],
-      attachments: []
+      attachments: [],
+      procedureTypeId: request.procedureId,
+      formData: request.formData
     };
 
     const stored = this.readCases();

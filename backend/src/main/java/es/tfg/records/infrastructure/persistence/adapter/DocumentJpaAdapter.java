@@ -1,9 +1,12 @@
 package es.tfg.records.infrastructure.persistence.adapter;
 
+import es.tfg.records.application.exception.ResourceNotFoundException;
 import es.tfg.records.domain.model.Document;
 import es.tfg.records.domain.port.DocumentRepository;
+import es.tfg.records.infrastructure.persistence.entity.ProcedureEntity;
 import es.tfg.records.infrastructure.persistence.mapper.DocumentEntityMapper;
 import es.tfg.records.infrastructure.persistence.repository.DocumentJpaRepository;
+import es.tfg.records.infrastructure.persistence.repository.ProcedureJpaRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,9 +20,12 @@ import java.util.UUID;
 public class DocumentJpaAdapter implements DocumentRepository {
 
     private final DocumentJpaRepository jpaRepository;
+    private final ProcedureJpaRepository procedureJpaRepository;
 
-    public DocumentJpaAdapter(DocumentJpaRepository jpaRepository) {
+    public DocumentJpaAdapter(DocumentJpaRepository jpaRepository,
+                              ProcedureJpaRepository procedureJpaRepository) {
         this.jpaRepository = jpaRepository;
+        this.procedureJpaRepository = procedureJpaRepository;
     }
 
     @Override
@@ -35,7 +41,9 @@ public class DocumentJpaAdapter implements DocumentRepository {
 
     @Override
     public Document save(Document document) {
-        var entity = DocumentEntityMapper.toEntity(document);
+        ProcedureEntity procedure = procedureJpaRepository.findById(document.getProcedureId())
+                .orElseThrow(() -> new ResourceNotFoundException("PROC", document.getProcedureId().toString()));
+        var entity = DocumentEntityMapper.toEntity(document, procedure);
         var saved = jpaRepository.save(entity);
         return DocumentEntityMapper.toDomain(saved);
     }

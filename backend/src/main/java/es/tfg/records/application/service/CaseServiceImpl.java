@@ -30,6 +30,8 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.security.MessageDigest;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Implementation of case (expediente) management use cases.
@@ -90,13 +92,17 @@ public class CaseServiceImpl implements CaseService {
                 .toList();
 
         List<CaseTimelineEventDto> timeline = buildTimeline(procedure);
+        Map<String, Object> formData = procedure.getFormData() != null
+                ? deserializeFormData(procedure.getFormData())
+                : null;
 
         return ProcedureMapper.toCaseDetail(
                 procedure,
                 categoryMap.get(procedure.getProcedureTypeId()),
                 "Procedure case detail",
                 timeline,
-                attachments);
+                attachments,
+                formData);
     }
 
     @Override
@@ -276,6 +282,52 @@ public class CaseServiceImpl implements CaseService {
     private String serializeFormData(Map<String, Object> formData) {
         // Simple JSON serialization — in production, use Jackson ObjectMapper
         return formData.toString();
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> deserializeFormData(String raw) {
+        // Inverse of serializeFormData: converts "{key1=value1, key2=value2}" back to a Map
+        Map<String, Object> result = new LinkedHashMap<>();
+        if (raw == null || raw.isBlank()) {
+            return result;
+        }
+
+        // Remove surrounding braces
+        String content = raw.trim();
+        if (content.startsWith("{")) {
+            content = content.substring(1);
+        }
+        if (content.endsWith("}")) {
+            content = content.substring(0, content.length() - 1);
+        }
+
+        // Simple split by ", " — works for flat string values without commas
+        Pattern pattern = Pattern.compile("([^=]+)=([^,]+)(?:,\\s*|$)");
+        Matcher matcher = pattern.matcher(content);
+        while (matcher.find()) {
+            result.put(matcher.group(1).trim(), matcher.group(2).trim());
+        }
+
+        return result;
+    }
+
+    @Override
+    public CaseStatusResponse updateDraft(UUID caseId, UUID ownerId, CreateCaseRequest request) {
+        Procedure procedure = findAndVerifyOwnership(caseId, ownerId);
+
+        if (procedure.getStatus() != CaseStatus.DRAFT) {
+            throw new ConflictException("PROC",
+                    "Can only update a case in DRAFT status. Current: " + procedure.getStatus());
+        }
+
+        if (request.formData() != null && !request.formData().isEmpty()) {
+            procedure.setFormData(serializeFormData(request.formData()));
+        }
+
+        Procedure saved = procedureRepository.save(procedure);
+        eniMetadataService.upsertProcedureMetadata(saved);
+
+        return ProcedureMapper.toCaseStatusResponse(saved, null);
     }
 
     private List<CaseTimelineEventDto> buildTimeline(Procedure procedure) {

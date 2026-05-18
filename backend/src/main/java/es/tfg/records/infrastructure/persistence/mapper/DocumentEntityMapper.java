@@ -3,6 +3,7 @@ package es.tfg.records.infrastructure.persistence.mapper;
 import es.tfg.records.domain.model.Document;
 import es.tfg.records.domain.model.DocumentStatus;
 import es.tfg.records.infrastructure.persistence.entity.DocumentEntity;
+import es.tfg.records.infrastructure.persistence.entity.ProcedureEntity;
 
 import java.util.List;
 
@@ -31,11 +32,11 @@ public final class DocumentEntityMapper {
         return document;
     }
 
-    public static DocumentEntity toEntity(Document domain) {
+    public static DocumentEntity toEntity(Document domain, ProcedureEntity procedure) {
         if (domain == null) return null;
         DocumentEntity entity = new DocumentEntity();
         entity.setId(domain.getId());
-        // Resolver y asignar ProcedureEntity antes de mapear. Revisar diseño al manejar relaciones.
+        entity.setProcedure(procedure);
         entity.setName(domain.getName());
         entity.setMimeType(domain.getMimeType());
         entity.setSize(domain.getSize());

@@ -363,7 +363,10 @@
     "MOCK_TIMELINE_REVIEW_TITLE": "Revisión documental",
     "MOCK_TIMELINE_REVIEW_DESC": "Se validaron los documentos aportados.",
     "MOCK_ATTACHMENT_PLAN": "Plano de obra.pdf",
-    "MOCK_ATTACHMENT_ID": "DNI escaneado.pdf"
+    "MOCK_ATTACHMENT_ID": "DNI escaneado.pdf",
+    "ERROR_LOAD": "No se ha podido cargar el expediente. Inténtalo de nuevo más tarde.",
+    "CONTINUE": "Continuar tramitacion",
+    "ERROR_RESUME": "No se ha podido identificar el procedimiento para continuar la tramitacion."
   },
   "CASE_STATUS": {
     "REVIEW": "En revisión",

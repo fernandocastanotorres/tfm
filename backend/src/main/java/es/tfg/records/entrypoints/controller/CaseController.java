@@ -155,6 +155,28 @@ public class CaseController {
         return ResponseEntity.ok(caseService.submitCase(id, ownerId));
     }
 
+    @PutMapping("/{id}")
+    @Operation(summary = "Update draft case", description = "Update form data of a case in DRAFT status")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Draft updated",
+                    content = @Content(schema = @Schema(implementation = CaseStatusResponse.class))),
+            @ApiResponse(responseCode = "403", description = "Forbidden — case not owned by citizen",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Case not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "409", description = "Case not in DRAFT status",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity<CaseStatusResponse> updateDraft(
+            Authentication authentication,
+            @Parameter(description = "Case UUID", required = true)
+            @PathVariable("id") UUID id,
+            @Valid @RequestBody CreateCaseRequest request) {
+
+        UUID ownerId = extractUserId(authentication);
+        return ResponseEntity.ok(caseService.updateDraft(id, ownerId, request));
+    }
+
     @GetMapping("/{id}/receipt")
     @Operation(summary = "Download case receipt", description = "Download expediente submission receipt as text document")
     public ResponseEntity<Resource> downloadReceipt(

@@ -61,7 +61,9 @@ export class CasesApiService {
         type: attachment.type ?? attachment.mimeType,
         size: attachment.size,
         uploadedAt: attachment.uploadedAt
-      }))
+      })),
+      procedureTypeId: raw.procedureTypeId ?? '',
+      formData: raw.formData ?? null
     };
   }
 
@@ -179,6 +181,20 @@ export class CasesApiService {
       return this.mockCitizenFlowService.submitCase(id);
     }
     return this.http.post<any>(`${this.baseUrl}/${id}/submit`, {}).pipe(
+      map((response) => this.mapStatus(response))
+    );
+  }
+
+  /**
+   * PUT /api/v1/citizen/procedures/{id} — Update a draft case.
+   */
+  updateDraft(id: string, request: CreateCaseRequest): Observable<CaseStatusResponse> {
+    const backendRequest = {
+      procedureId: request.procedureId,
+      formData: request.formData,
+      documentIds: []
+    };
+    return this.http.put<any>(`${this.baseUrl}/${id}`, backendRequest).pipe(
       map((response) => this.mapStatus(response))
     );
   }

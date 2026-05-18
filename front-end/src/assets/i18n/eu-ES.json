@@ -363,7 +363,9 @@
     "MOCK_TIMELINE_REVIEW_TITLE": "Dokumentazioaren berrikusketa",
     "MOCK_TIMELINE_REVIEW_DESC": "Ekarritako dokumentuak balioztatu ziren.",
     "MOCK_ATTACHMENT_PLAN": "Obra plano.pdf",
-    "MOCK_ATTACHMENT_ID": "Eskaneatutako NAN.pdf"
+    "MOCK_ATTACHMENT_ID": "Eskaneatutako NAN.pdf",
+    "ERROR_LOAD": "Ezin izan da espedientea kargatu. Saiatu berriro geroago.",
+    "CONTINUE": "Jarraitu izapidetzea"
   },
   "CASE_STATUS": {
     "REVIEW": "Berrikuspenan",

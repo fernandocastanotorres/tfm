@@ -9,6 +9,7 @@ import es.tfg.records.application.dto.CaseTimelineEventDto;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Manual mapper for Procedure domain model to DTOs.
@@ -34,7 +35,8 @@ public final class ProcedureMapper {
                                           String category,
                                           String description,
                                           List<CaseTimelineEventDto> timeline,
-                                          List<CaseAttachmentDto> attachments) {
+                                          List<CaseAttachmentDto> attachments,
+                                          Map<String, Object> formData) {
         return new CaseDetail(
                 procedure.getId(),
                 procedure.getTitle(),
@@ -44,7 +46,9 @@ public final class ProcedureMapper {
                 procedure.getSubmittedAt(),
                 description,
                 timeline == null ? Collections.emptyList() : timeline,
-                attachments == null ? Collections.emptyList() : attachments
+                attachments == null ? Collections.emptyList() : attachments,
+                procedure.getProcedureTypeId(),
+                formData
         );
     }
 

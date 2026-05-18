@@ -26,6 +26,7 @@ export class CaseWizardComponent implements OnInit {
   isSubmitting = false;
   error: string | null = null;
   createdCaseId: string | null = null;
+  resumingCaseId: string | null = null;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -43,6 +44,8 @@ export class CaseWizardComponent implements OnInit {
       return;
     }
 
+    this.resumingCaseId = this.route.snapshot.queryParamMap.get('caseId');
+
     this.proceduresApiService.getByIdentifier(procedureIdentifier).subscribe({
       next: (data) => {
         this.procedure = data;
@@ -50,13 +53,42 @@ export class CaseWizardComponent implements OnInit {
         this.currentTaskIndex = 0;
         this.currentTask = this.tasks[this.currentTaskIndex] ?? null;
         this.buildForms(this.currentTask);
-        this.isLoading = false;
+
+        if (this.resumingCaseId) {
+          this.loadExistingCaseData();
+        } else {
+          this.isLoading = false;
+        }
       },
       error: () => {
         this.error = 'CASE_WIZARD.ERROR_LOAD_PROCEDURE';
         this.isLoading = false;
       }
     });
+  }
+
+  private loadExistingCaseData(): void {
+    this.casesApiService.getDetail(this.resumingCaseId!).subscribe({
+      next: (caseData) => {
+        if (caseData.formData) {
+          this.populateFormFromData(caseData.formData);
+        }
+        this.isLoading = false;
+      },
+      error: () => {
+        this.resumingCaseId = null;
+        this.isLoading = false;
+      }
+    });
+  }
+
+  private populateFormFromData(formData: Record<string, any>): void {
+    const rawValue = this.wizardForm.getRawValue();
+    for (const key of Object.keys(rawValue)) {
+      if (formData[key] !== undefined) {
+        this.wizardForm.get(key)?.setValue(formData[key]);
+      }
+    }
   }
 
   nextStep(): void {
@@ -192,6 +224,11 @@ export class CaseWizardComponent implements OnInit {
 
     this.isSubmitting = true;
 
+    if (this.resumingCaseId) {
+      this.updateAndSubmit();
+      return;
+    }
+
     const request: CreateCaseRequest = {
       procedureId: this.procedure.id,
       title: this.procedure.name,
@@ -213,6 +250,29 @@ export class CaseWizardComponent implements OnInit {
       error: (err) => {
         this.isSubmitting = false;
         this.error = err?.error?.message ?? 'CASE_WIZARD.ERROR_CREATE';
+      }
+    });
+  }
+
+  private updateAndSubmit(): void {
+    const request: CreateCaseRequest = {
+      procedureId: this.procedure!.id,
+      title: this.procedure!.name,
+      formData: this.wizardForm.getRawValue()
+    };
+
+    this.casesApiService.updateDraft(this.resumingCaseId!, request).subscribe({
+      next: () => {
+        const filesToUpload = Object.values(this.attachments.value).flat();
+        if (filesToUpload.length === 0) {
+          this.submitCreatedCase(this.resumingCaseId!);
+          return;
+        }
+        this.uploadAttachmentsAndSubmit(this.resumingCaseId!, filesToUpload, 0);
+      },
+      error: (err) => {
+        this.isSubmitting = false;
+        this.error = err?.error?.message ?? 'CASE_WIZARD.ERROR_SUBMIT';
       }
     });
   }

@@ -32,6 +32,7 @@
             <p><strong>{{ 'CASE_DETAIL.SUBMITTED' | translate }}:</strong> {{ caseDetail.createdAt | date:'dd/MM/yyyy' }}</p>
           </div>
           <div class="mt-5 flex flex-wrap gap-3">
+            <button class="btn-primary" type="button" *ngIf="caseDetail.status === 'DRAFT'" (click)="continueProcessing()">{{ 'CASE_DETAIL.CONTINUE' | translate }}</button>
             <label class="btn-primary cursor-pointer">
               {{ isUploading ? 'Subiendo...' : ('CASE_DETAIL.ATTACH' | translate) }}
               <input type="file" multiple class="hidden" (change)="onSelectFiles($any($event.target).files)" />

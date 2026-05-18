@@ -363,7 +363,9 @@
     "MOCK_TIMELINE_REVIEW_TITLE": "Revisió documental",
     "MOCK_TIMELINE_REVIEW_DESC": "Es van validar els documents aportats.",
     "MOCK_ATTACHMENT_PLAN": "Plànol d'obra.pdf",
-    "MOCK_ATTACHMENT_ID": "DNI escanejat.pdf"
+    "MOCK_ATTACHMENT_ID": "DNI escanejat.pdf",
+    "ERROR_LOAD": "No s'ha pogut carregar l'expedient. Torna-ho a provar més tard.",
+    "CONTINUE": "Continuar tramitacio"
   },
   "CASE_STATUS": {
     "REVIEW": "En revisió",

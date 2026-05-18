@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -28,5 +29,9 @@ public record CaseDetail(
         @Schema(description = "Chronological timeline of case events")
         List<CaseTimelineEventDto> timeline,
         @Schema(description = "Attached documents")
-        List<CaseAttachmentDto> attachments
+        List<CaseAttachmentDto> attachments,
+        @Schema(description = "Procedure type identifier for resuming wizard")
+        UUID procedureTypeId,
+        @Schema(description = "Stored form data (only populated for DRAFT/AMENDMENT_REQUIRED)")
+        Map<String, Object> formData
 ) {}

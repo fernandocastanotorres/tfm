@@ -33,7 +33,7 @@ export class TaskResolutionComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.caseId = this.route.snapshot.parent?.paramMap.get('id') || '';
+    this.caseId = this.route.snapshot.paramMap.get('id') || '';
     this.taskId = this.route.snapshot.paramMap.get('taskId') || '';
   }
 

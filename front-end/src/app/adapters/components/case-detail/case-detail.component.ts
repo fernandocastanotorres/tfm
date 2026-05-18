@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CasesApiService } from '../../../application/services/cases-api.service';
 import { CaseDetail } from '../../../application/models/case.models';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
@@ -21,6 +21,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
   constructor(
     private readonly casesApiService: CasesApiService,
     private readonly route: ActivatedRoute,
+    private readonly router: Router,
     private readonly confirmDialogService: ConfirmDialogService
   ) {}
 
@@ -170,5 +171,29 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
       default:
         return 'bg-blue-100 text-blue-700';
     }
+  }
+
+  continueProcessing(): void {
+    if (!this.caseDetail) {
+      return;
+    }
+
+    const procedureId = this.caseDetail.procedureTypeId || this.toSlug(this.caseDetail.procedureType);
+    if (!procedureId) {
+      this.error = 'CASE_DETAIL.ERROR_RESUME';
+      return;
+    }
+
+    this.router.navigate(['/sede/expedientes/nuevo', procedureId], {
+      queryParams: { caseId: this.caseDetail.id }
+    });
+  }
+
+  private toSlug(title: string): string {
+    return title.toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
   }
 }

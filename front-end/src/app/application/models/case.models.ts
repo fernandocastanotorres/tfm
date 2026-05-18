@@ -41,6 +41,8 @@ export interface CaseDetail {
   assignedUnit: string;
   timeline: CaseTimelineEvent[];
   attachments: CaseAttachment[];
+  procedureTypeId: string;
+  formData: Record<string, unknown> | null;
 }
 
 export interface CaseStatusResponse {
