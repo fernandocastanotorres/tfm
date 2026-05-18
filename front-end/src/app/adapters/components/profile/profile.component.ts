@@ -7,7 +7,7 @@ import { ConfirmDialogService } from '../../../application/services/confirm-dial
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styleUrls: []
+  styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
   readonly profileForm = this.fb.group({
@@ -19,6 +19,9 @@ export class ProfileComponent implements OnInit {
   });
 
   isEditing = false;
+  isLoading = true;
+  isSaving = false;
+  errorMessage = '';
   lastSavedMessage = '';
 
   constructor(
@@ -33,6 +36,11 @@ export class ProfileComponent implements OnInit {
       next: (profile) => {
         this.profileForm.patchValue(profile);
         this.profileForm.disable();
+        this.isLoading = false;
+      },
+      error: () => {
+        this.errorMessage = 'No se pudieron cargar los datos del perfil.';
+        this.isLoading = false;
       }
     });
   }
@@ -40,6 +48,7 @@ export class ProfileComponent implements OnInit {
   toggleEdit(): void {
     this.isEditing = !this.isEditing;
     this.lastSavedMessage = '';
+    this.errorMessage = '';
     if (this.isEditing) {
       this.profileForm.enable();
     } else {
@@ -62,6 +71,9 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
+    this.isSaving = true;
+    this.errorMessage = '';
+
     const { fullName, phone, nationalId, address } = this.profileForm.getRawValue();
     this.profileService.updateProfile({
       fullName: fullName ?? '',
@@ -73,7 +85,12 @@ export class ProfileComponent implements OnInit {
         this.profileForm.patchValue(profile);
         this.isEditing = false;
         this.profileForm.disable();
+        this.isSaving = false;
         this.lastSavedMessage = this.translate.instant('PROFILE.SAVED');
+      },
+      error: () => {
+        this.isSaving = false;
+        this.errorMessage = 'No se pudieron guardar los cambios del perfil.';
       }
     });
   }

@@ -1,6 +1,7 @@
 package es.tfg.records.application.service;
 
 import es.tfg.records.application.dto.*;
+import org.springframework.core.io.Resource;
 
 import java.util.UUID;
 
@@ -22,4 +23,6 @@ public interface CaseService {
     CaseStatusResponse requestAmendment(UUID caseId, UUID ownerId, CreateCaseRequest request);
 
     CaseStatusResponse updateCaseStatus(UUID caseId, UUID ownerId, String newStatus);
+
+    Resource downloadReceipt(UUID caseId, UUID ownerId);
 }

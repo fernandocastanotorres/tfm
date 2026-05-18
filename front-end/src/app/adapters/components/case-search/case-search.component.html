@@ -1,0 +1,41 @@
+<section class="case-search" aria-labelledby="case-search-title">
+  <div class="case-search__container">
+    <header class="case-search__header">
+      <nav aria-label="Breadcrumb" class="case-search__breadcrumb">
+        <a [routerLink]="['/sede']">{{ 'PUBLIC.NAV_HOME' | translate }}</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">Mis expedientes</span>
+      </nav>
+      <p class="text-sm font-semibold text-brand-600">Mis expedientes</p>
+      <h1 id="case-search-title" class="text-2xl font-semibold text-surface-900">Buscador de expedientes</h1>
+      <p class="text-surface-600">Localiza tus expedientes por numero, titulo, estado o tipo.</p>
+    </header>
+
+    <div class="mt-6" [formGroup]="searchForm">
+      <label class="sr-only" for="case-search-input">Buscar expediente</label>
+      <input id="case-search-input" class="field-input w-full" formControlName="term" placeholder="Buscar por id, titulo o estado" />
+    </div>
+
+    <div *ngIf="isLoading" class="mt-6 card p-6 text-center text-surface-600">Cargando expedientes...</div>
+    <div *ngIf="error && !isLoading" class="mt-6 card p-6 text-center text-red-600">{{ error }}</div>
+
+    <div class="mt-6 space-y-4" *ngIf="!isLoading && !error">
+      <a
+        *ngFor="let item of filteredCases"
+        class="card p-5 block no-underline hover:shadow-xl transition"
+        [routerLink]="['/sede/expedientes', item.id, 'detalle']"
+      >
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-lg font-semibold text-surface-900">{{ item.title }}</h2>
+            <p class="text-surface-600 mt-1">{{ item.id }}</p>
+            <p class="text-surface-600 mt-1">{{ item.procedureType }}</p>
+          </div>
+          <span class="text-xs font-semibold px-3 py-1 rounded-full bg-surface-100 text-surface-600">{{ item.status }}</span>
+        </div>
+      </a>
+
+      <div *ngIf="filteredCases.length === 0" class="card p-6 text-surface-600">No se han encontrado expedientes con ese criterio.</div>
+    </div>
+  </div>
+</section>

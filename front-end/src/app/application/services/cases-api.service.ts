@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, map, switchMap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { MockCitizenFlowService } from './mock-citizen-flow.service';
 import {
@@ -34,17 +34,27 @@ export class CasesApiService {
   }
 
   private mapCaseDetail(raw: any): CaseDetail {
+    const submittedAt = raw.submittedAt ?? raw.createdAt ?? raw.lastUpdated;
+    const fallbackTimeline = submittedAt
+      ? [{
+          id: `${raw.id}-submitted`,
+          title: 'Expediente enviado',
+          date: submittedAt,
+          description: 'La solicitud ha sido registrada y enviada para su tramitacion.'
+        }]
+      : [];
+
     return {
       id: raw.id,
       procedureType: raw.category ?? raw.procedureType ?? 'Procedimiento',
       status: raw.status,
-      createdAt: raw.submittedAt ?? raw.lastUpdated,
-      lastUpdated: raw.lastUpdated ?? raw.submittedAt,
+      createdAt: submittedAt,
+      lastUpdated: raw.lastUpdated ?? submittedAt,
       title: raw.title,
       description: raw.description ?? '',
       currentTask: raw.currentTask ?? '',
       assignedUnit: raw.assignedUnit ?? '',
-      timeline: raw.timeline ?? [],
+      timeline: raw.timeline?.length ? raw.timeline : fallbackTimeline,
       attachments: (raw.attachments ?? []).map((attachment: any) => ({
         id: attachment.id,
         name: attachment.name,
@@ -91,9 +101,45 @@ export class CasesApiService {
     if (environment.useMockCitizenFlow) {
       return this.mockCitizenFlowService.getCaseDetail(id);
     }
-    return this.http.get<any>(`${this.baseUrl}/${id}`).pipe(
-      map((response) => this.mapCaseDetail(response))
+    const params = new HttpParams().set('ts', Date.now());
+    return this.http.get<any>(`${this.baseUrl}/${id}`, { params }).pipe(
+      map((response) => this.mapCaseDetail(response)),
+      switchMap((detail) =>
+        this.listDocuments(id).pipe(
+          map((documents) => ({
+            ...detail,
+            attachments: documents.length > 0 ? documents : detail.attachments
+          }))
+        )
+      )
     );
+  }
+
+  listDocuments(caseId: string): Observable<CaseDetail['attachments']> {
+    const params = new HttpParams().set('ts', Date.now());
+    return this.http.get<any[]>(`${this.baseUrl}/${caseId}/documents`, { params }).pipe(
+      map((docs) => docs.map((doc) => ({
+        id: doc.id,
+        name: doc.name,
+        type: doc.mimeType ?? doc.type ?? 'application/octet-stream',
+        size: doc.size ?? 0,
+        uploadedAt: doc.uploadedAt ?? doc.createdAt ?? new Date().toISOString()
+      })))
+    );
+  }
+
+  uploadDocument(caseId: string, file: File): Observable<void> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<void>(`${this.baseUrl}/${caseId}/documents`, formData);
+  }
+
+  downloadDocument(documentId: string): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/documents/${documentId}/download`, { responseType: 'blob' });
+  }
+
+  downloadReceipt(caseId: string): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/${caseId}/receipt`, { responseType: 'blob' });
   }
 
   /**

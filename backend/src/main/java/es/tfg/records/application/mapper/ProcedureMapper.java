@@ -4,8 +4,11 @@ import es.tfg.records.domain.model.Procedure;
 import es.tfg.records.application.dto.CaseItem;
 import es.tfg.records.application.dto.CaseDetail;
 import es.tfg.records.application.dto.CaseStatusResponse;
+import es.tfg.records.application.dto.CaseAttachmentDto;
+import es.tfg.records.application.dto.CaseTimelineEventDto;
 
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Manual mapper for Procedure domain model to DTOs.
@@ -27,7 +30,11 @@ public final class ProcedureMapper {
         );
     }
 
-    public static CaseDetail toCaseDetail(Procedure procedure, String category, String description) {
+    public static CaseDetail toCaseDetail(Procedure procedure,
+                                          String category,
+                                          String description,
+                                          List<CaseTimelineEventDto> timeline,
+                                          List<CaseAttachmentDto> attachments) {
         return new CaseDetail(
                 procedure.getId(),
                 procedure.getTitle(),
@@ -36,8 +43,8 @@ public final class ProcedureMapper {
                 procedure.getAssignedUnit(),
                 procedure.getSubmittedAt(),
                 description,
-                Collections.emptyList(),
-                Collections.emptyList()
+                timeline == null ? Collections.emptyList() : timeline,
+                attachments == null ? Collections.emptyList() : attachments
         );
     }
 

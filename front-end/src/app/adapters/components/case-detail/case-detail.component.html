@@ -32,9 +32,12 @@
             <p><strong>{{ 'CASE_DETAIL.SUBMITTED' | translate }}:</strong> {{ caseDetail.createdAt | date:'dd/MM/yyyy' }}</p>
           </div>
           <div class="mt-5 flex flex-wrap gap-3">
-            <button class="btn-primary" type="button">{{ 'CASE_DETAIL.ATTACH' | translate }}</button>
-            <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button">{{ 'CASE_DETAIL.DOWNLOAD' | translate }}</button>
-            <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button">{{ 'CASE_DETAIL.REQUEST' | translate }}</button>
+            <label class="btn-primary cursor-pointer">
+              {{ isUploading ? 'Subiendo...' : ('CASE_DETAIL.ATTACH' | translate) }}
+              <input type="file" multiple class="hidden" (change)="onSelectFiles($any($event.target).files)" />
+            </label>
+            <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="downloadReceipt()">{{ 'CASE_DETAIL.DOWNLOAD' | translate }}</button>
+            <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="requestAmendment()">{{ 'CASE_DETAIL.REQUEST' | translate }}</button>
           </div>
         </div>
 
@@ -46,6 +49,7 @@
               <p class="font-semibold">{{ event.title | translate }}</p>
               <p class="text-surface-600">{{ event.description | translate }}</p>
             </li>
+            <li *ngIf="caseDetail.timeline.length === 0" class="text-surface-600">No hay eventos de historial disponibles.</li>
           </ol>
         </div>
       </div>
@@ -58,9 +62,10 @@
               <p class="font-semibold">{{ attachment.name | translate }}</p>
               <p class="text-sm text-surface-500">{{ attachment.type }} · {{ attachment.uploadedAt | date:'dd/MM/yyyy' }}</p>
             </div>
-            <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button">{{ 'CASE_DETAIL.DOWNLOAD' | translate }}</button>
-          </li>
-        </ul>
+             <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="downloadDocument(attachment.id, attachment.name)">{{ 'CASE_DETAIL.DOWNLOAD' | translate }}</button>
+           </li>
+         </ul>
+        <p *ngIf="caseDetail.attachments.length === 0" class="text-sm text-surface-600">No hay documentos adjuntos por el momento.</p>
         <div class="mt-6 rounded-xl bg-surface-100 p-4 text-sm text-surface-600">
           {{ 'CASE_DETAIL.ATTACHMENTS_HINT' | translate }}
         </div>

@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { I18nService, SupportedLocale } from '../../../application/services/i18n.service';
 import { GuidedTourService } from '../../../application/services/guided-tour.service';
+import { AuthService } from '../../../application/services/auth.service';
 import { Observable, Subscription } from 'rxjs';
 
 export interface MenuGroup {
@@ -27,6 +28,9 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
   currentLocale: SupportedLocale = 'es-ES';
   isAuthPage = false;
   isDarkMode = false;
+  isAuthenticated = false;
+  authenticatedUserLabel = '';
+  userMenuOpen = false;
   private localeSub?: Subscription;
   private routeSub?: Subscription;
 
@@ -61,7 +65,8 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
   constructor(
     private readonly i18nService: I18nService,
     private readonly router: Router,
-    private readonly guidedTourService: GuidedTourService
+    private readonly guidedTourService: GuidedTourService,
+    private readonly authService: AuthService
   ) {
     this.currentLocale$ = this.i18nService.getCurrentLocale$();
   }
@@ -78,11 +83,14 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
       this.currentLocale = locale;
     });
     this.initTheme();
+    this.refreshAuthState();
     this.updateRouteState(this.router.url);
     this.routeSub = this.router.events.subscribe(() => {
+      this.refreshAuthState();
       this.updateRouteState(this.router.url);
       this.menuOpen = false;
       this.activeDropdown = null;
+      this.userMenuOpen = false;
     });
   }
 
@@ -108,6 +116,49 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
 
   closeDropdown(): void {
     this.activeDropdown = null;
+  }
+
+  toggleUserMenu(): void {
+    this.userMenuOpen = !this.userMenuOpen;
+  }
+
+  closeUserMenu(): void {
+    this.userMenuOpen = false;
+  }
+
+  onUserMenuFocusOut(event: FocusEvent): void {
+    const relatedTarget = event.relatedTarget as HTMLElement | null;
+    if (!relatedTarget || !relatedTarget.closest('.public-header__user')) {
+      this.closeUserMenu();
+    }
+  }
+
+  onChangePassword(): void {
+    this.closeUserMenu();
+    this.router.navigate(['/sede/recuperacion']);
+  }
+
+  onSearchCases(): void {
+    this.closeUserMenu();
+    this.router.navigate(['/sede/expedientes/buscar']);
+  }
+
+  onMessages(): void {
+    this.closeUserMenu();
+    this.router.navigate(['/sede/mensajes']);
+  }
+
+  onProfile(): void {
+    this.closeUserMenu();
+    this.router.navigate(['/sede/perfil']);
+  }
+
+  onLogout(): void {
+    this.closeUserMenu();
+    this.authService.logout().subscribe(() => {
+      this.refreshAuthState();
+      this.router.navigate(['/sede']);
+    });
   }
 
   closeMobileMenu(): void {
@@ -154,6 +205,12 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
 
   private updateRouteState(url: string): void {
     this.isAuthPage = url.includes('/sede/login') || url.includes('/sede/registro') || url.includes('/sede/recuperacion');
+  }
+
+  private refreshAuthState(): void {
+    this.isAuthenticated = this.authService.isAuthenticated();
+    const label = this.authService.getAuthenticatedUserLabel();
+    this.authenticatedUserLabel = label ?? 'Usuario';
   }
 
   private initTheme(): void {

@@ -1,7 +1,11 @@
+.public-home {
+  background-color: var(--sede-color-bg);
+}
+
 .public-home__hero {
   background:
-    radial-gradient(1200px 280px at 50% -40%, rgba(255, 255, 255, 0.22), transparent 60%),
-    linear-gradient(140deg, var(--sede-color-hero-bg) 0%, color-mix(in srgb, var(--sede-color-hero-bg) 80%, #ffffff) 52%, color-mix(in srgb, var(--sede-color-hero-bg) 90%, #000000) 100%);
+    radial-gradient(1000px 240px at 50% -45%, rgba(255, 255, 255, 0.14), transparent 62%),
+    linear-gradient(145deg, var(--sede-color-hero-bg) 0%, color-mix(in srgb, var(--sede-color-hero-bg) 86%, #ffffff) 48%, color-mix(in srgb, var(--sede-color-hero-bg) 92%, #000000) 100%);
   color: var(--sede-color-hero-text);
   @apply py-16 sm:py-24;
 }
@@ -25,10 +29,11 @@
 
 .public-home__section {
   @apply py-12 sm:py-16;
+  background-color: var(--sede-color-bg);
 }
 
 .public-home__section--alt {
-  @apply bg-surface-50;
+  background-color: color-mix(in srgb, var(--sede-color-bg) 86%, var(--sede-color-surface) 14%);
 }
 
 .public-home__container {
@@ -44,7 +49,9 @@
 }
 
 .public-home__quick-card {
-  @apply p-6 transition hover:-translate-y-1 hover:shadow-xl no-underline text-surface-900 cursor-pointer;
+  @apply p-6 transition hover:-translate-y-1 hover:shadow-xl no-underline cursor-pointer;
+  color: var(--sede-color-text);
+  border: 1px solid var(--sede-color-border);
 }
 
 .public-home__quick-icon {
@@ -56,7 +63,16 @@
 }
 
 .public-home__quick-desc {
-  @apply text-sm text-surface-600;
+  @apply text-sm;
+  color: var(--sede-color-muted);
+}
+
+.public-home__card-title {
+  color: var(--sede-color-text);
+}
+
+.public-home__card-muted {
+  color: var(--sede-color-muted);
 }
 
 .public-home__procedures-grid {
@@ -94,7 +110,21 @@
 }
 
 :host-context(.theme-dark) .public-home__section--alt {
-  background-color: var(--sede-color-bg);
+  background-color: color-mix(in srgb, var(--sede-color-bg) 92%, #000000 8%);
+}
+
+:host-context(.theme-dark) .public-home__hero {
+  background:
+    radial-gradient(900px 220px at 50% -45%, rgba(148, 163, 184, 0.12), transparent 64%),
+    linear-gradient(145deg, color-mix(in srgb, var(--sede-color-hero-bg) 90%, #020617) 0%, color-mix(in srgb, var(--sede-color-hero-bg) 78%, #0b1120) 52%, color-mix(in srgb, var(--sede-color-hero-bg) 92%, #000000) 100%);
+}
+
+:host-context(.theme-dark) .public-home__title {
+  color: color-mix(in srgb, var(--sede-color-hero-text) 96%, #ffffff 4%);
+}
+
+:host-context(.theme-dark) .public-home__subtitle {
+  color: color-mix(in srgb, var(--sede-color-hero-subtitle) 88%, #cbd5e1 12%);
 }
 
 :host-context(.theme-dark) .public-home__section-title,

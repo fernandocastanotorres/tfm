@@ -6,7 +6,7 @@ import { changePage, updatePageSize, getPaginationState, PaginationState } from 
 @Component({
   selector: 'app-messages',
   templateUrl: './messages.component.html',
-  styleUrls: []
+  styleUrls: ['./messages.component.css']
 })
 export class MessagesComponent implements OnInit {
   threads: MessageThread[] = [];

@@ -1,0 +1,15 @@
+.profile__container {
+  @apply max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12;
+}
+
+.profile__header {
+  @apply mb-8;
+}
+
+.profile__breadcrumb {
+  @apply text-sm text-surface-500 mb-4;
+}
+
+.profile__breadcrumb a {
+  @apply text-brand-600 hover:text-brand-700 no-underline;
+}

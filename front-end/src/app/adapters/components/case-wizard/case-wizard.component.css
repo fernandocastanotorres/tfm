@@ -1,0 +1,18 @@
+.wizard-dropzone {
+  border: 2px dashed var(--sede-color-border);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  background-color: color-mix(in srgb, var(--sede-color-surface) 85%, var(--sede-color-bg) 15%);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.wizard-dropzone--active {
+  border-color: var(--sede-color-primary);
+  background-color: color-mix(in srgb, var(--sede-color-primary-50) 70%, var(--sede-color-surface) 30%);
+}
+
+.wizard-dropzone__text {
+  margin: 0;
+  color: var(--sede-color-muted);
+  font-size: 0.9rem;
+}

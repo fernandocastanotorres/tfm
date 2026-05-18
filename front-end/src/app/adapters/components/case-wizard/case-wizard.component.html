@@ -66,12 +66,22 @@
         <section class="card p-6 space-y-4" *ngIf="currentTask.type === 'upload'">
           <h2 class="text-lg font-semibold">{{ currentTask.name | translate }}</h2>
           <p class="text-surface-600">{{ currentTask.description | translate }}</p>
-          <div class="space-y-4" *ngFor="let requirement of currentTask.uploadRequirements">
+          <div class="space-y-4" *ngFor="let requirement of effectiveUploadRequirements">
             <label class="field-label" [attr.for]="requirement.id">{{ requirement.name | translate }}</label>
+            <div
+              class="wizard-dropzone"
+              [class.wizard-dropzone--active]="isDragOver(requirement.id)"
+              (dragover)="onDragOver(requirement.id, $event)"
+              (dragleave)="onDragLeave(requirement.id, $event)"
+              (drop)="onDrop(requirement.id, $event)"
+            >
+              <p class="wizard-dropzone__text">Arrastra y suelta ficheros aqui o selecciona desde tu equipo.</p>
+            </div>
             <input
               [id]="requirement.id"
               type="file"
               class="field-input"
+              multiple
               (change)="onFilesSelected(requirement.id, $any($event.target).files)"
             />
             <ul class="space-y-2" *ngIf="attachments.value[requirement.id]?.length">
@@ -91,8 +101,34 @@
         <section class="card p-6 space-y-4" *ngIf="currentTask.type === 'review'">
           <h2 class="text-lg font-semibold">{{ currentTask.name | translate }}</h2>
           <p class="text-surface-600">{{ currentTask.description | translate }}</p>
-          <div class="rounded-xl bg-surface-100 p-4 text-sm text-surface-600">
-            {{ 'CASE_WIZARD.REVIEW_HINT' | translate }}
+          <div class="rounded-xl bg-surface-100 p-4 text-sm text-surface-600 space-y-5">
+            <p>{{ 'CASE_WIZARD.REVIEW_HINT' | translate }}</p>
+
+            <div>
+              <h3 class="text-sm font-semibold text-surface-900 mb-2">Datos del formulario</h3>
+              <div class="space-y-2" *ngIf="getReviewFormEntries() as entries">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2" *ngFor="let entry of entries">
+                  <span class="font-semibold">{{ entry.label }}</span>
+                  <span>{{ entry.value }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-sm font-semibold text-surface-900 mb-2">Documentacion adjunta</h3>
+              <ng-container *ngIf="getReviewAttachmentGroups() as attachmentGroups">
+                <div *ngIf="attachmentGroups.length === 0">No se han adjuntado documentos.</div>
+                <ul class="space-y-2" *ngIf="attachmentGroups.length > 0">
+                  <li *ngFor="let group of attachmentGroups">
+                    <span class="font-semibold">{{ group.label }}:</span>
+                    <span *ngIf="group.files.length === 0">Sin ficheros</span>
+                    <ul *ngIf="group.files.length > 0" class="inline-block ml-2">
+                      <li *ngFor="let file of group.files">{{ file.name }}</li>
+                    </ul>
+                  </li>
+                </ul>
+              </ng-container>
+            </div>
           </div>
         </section>
       </form>

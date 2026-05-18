@@ -9,6 +9,7 @@ import { ProfileComponent } from './adapters/components/profile/profile.componen
 import { NotificationsComponent } from './adapters/components/notifications/notifications.component';
 import { DocumentsComponent } from './adapters/components/documents/documents.component';
 import { CaseDetailComponent } from './adapters/components/case-detail/case-detail.component';
+import { CaseSearchComponent } from './adapters/components/case-search/case-search.component';
 import { PaymentsComponent } from './adapters/components/payments/payments.component';
 import { AppointmentsComponent } from './adapters/components/appointments/appointments.component';
 import { MessagesComponent } from './adapters/components/messages/messages.component';
@@ -51,6 +52,13 @@ const routes: Routes = [
       { path: 'procedimientos', component: ProceduresComponent, title: 'Procedimientos' },
       { path: 'procedimientos/:procedureId/flujo', component: ProcedureFlowComponent, title: 'Flujo del Procedimiento' },
       { path: 'citas', component: AppointmentsComponent, title: 'Citas' },
+      { path: 'expedientes/nuevo', canActivate: [authGuard], component: CaseWizardComponent, title: 'Nuevo expediente' },
+      { path: 'expedientes/nuevo/:procedureId', canActivate: [authGuard], component: CaseWizardComponent, title: 'Nuevo expediente' },
+      { path: 'expedientes/buscar', canActivate: [authGuard], component: CaseSearchComponent, title: 'Buscar expedientes' },
+      { path: 'expedientes/:id/detalle', canActivate: [authGuard], component: CaseDetailComponent, title: 'Detalle del Expediente' },
+      { path: 'expedientes/detalle', canActivate: [authGuard], component: CaseDetailComponent, title: 'Detalle del Expediente' },
+      { path: 'mensajes', canActivate: [authGuard], component: MessagesComponent, title: 'Mensajeria segura' },
+      { path: 'perfil', canActivate: [authGuard], component: ProfileComponent, title: 'Datos personales' },
       // Auth pages inside public layout so they share header/footer
       { path: 'login', component: LoginComponent, title: 'Iniciar sesion' },
       { path: 'registro', component: RegisterComponent, title: 'Crear cuenta' },
@@ -62,18 +70,18 @@ const routes: Routes = [
   { path: 'login', redirectTo: 'sede/login', pathMatch: 'full' },
   { path: 'registro', redirectTo: 'sede/registro', pathMatch: 'full' },
   { path: 'recuperacion', redirectTo: 'sede/recuperacion', pathMatch: 'full' },
+  { path: 'expedientes/nuevo', redirectTo: 'sede/expedientes/nuevo', pathMatch: 'full' },
+  { path: 'expedientes/nuevo/:procedureId', redirectTo: 'sede/expedientes/nuevo/:procedureId' },
+  { path: 'expedientes/:id/detalle', redirectTo: 'sede/expedientes/:id/detalle' },
+  { path: 'expedientes/detalle', redirectTo: 'sede/expedientes/detalle', pathMatch: 'full' },
+  { path: 'mensajes', redirectTo: 'sede/mensajes', pathMatch: 'full' },
+  { path: 'perfil', redirectTo: 'sede/perfil', pathMatch: 'full' },
   // Authenticated routes
   {
     path: 'dashboard',
     canActivate: [authGuard],
     component: DashboardComponent,
     title: 'Panel principal'
-  },
-  {
-    path: 'perfil',
-    canActivate: [authGuard],
-    component: ProfileComponent,
-    title: 'Mi perfil'
   },
   {
     path: 'notificaciones',
@@ -88,40 +96,10 @@ const routes: Routes = [
     title: 'Documentos'
   },
   {
-    path: 'expedientes/:id/detalle',
-    canActivate: [authGuard],
-    component: CaseDetailComponent,
-    title: 'Detalle del Expediente'
-  },
-  {
-    path: 'expedientes/detalle',
-    canActivate: [authGuard],
-    component: CaseDetailComponent,
-    title: 'Detalle del Expediente'
-  },
-  {
     path: 'pagos',
     canActivate: [authGuard],
     component: PaymentsComponent,
     title: 'Pagos y tasas'
-  },
-  {
-    path: 'mensajes',
-    canActivate: [authGuard],
-    component: MessagesComponent,
-    title: 'Mensajeria segura'
-  },
-  {
-    path: 'expedientes/nuevo',
-    canActivate: [authGuard],
-    component: CaseWizardComponent,
-    title: 'Nuevo expediente'
-  },
-  {
-    path: 'expedientes/nuevo/:procedureId',
-    canActivate: [authGuard],
-    component: CaseWizardComponent,
-    title: 'Nuevo expediente'
   },
   {
     path: '',

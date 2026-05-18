@@ -106,7 +106,7 @@ public class AuthServiceImpl implements AuthService {
         user.setRoles(Set.of("ROLE_CITIZEN"));
         user.setActive(false);
 
-        String otpCode = UUID.randomUUID().toString();
+        String otpCode = generateOtpCode();
         user.setOtpCode(otpCode);
         user.setOtpExpiry(Instant.now().plusSeconds(86400));
         user.setLastVerificationEmailSentAt(Instant.now());
@@ -114,8 +114,12 @@ public class AuthServiceImpl implements AuthService {
         User saved = userRepository.save(user);
 
         String verificationUrl = verificationBaseUrl + "?token=" + otpCode;
-        emailGateway.sendVerificationEmail(request.email(), request.fullName(), verificationUrl);
-        log.info("Verification email generated for {} with expiry {}", request.email(), user.getOtpExpiry());
+        try {
+            emailGateway.sendVerificationEmail(request.email(), request.fullName(), verificationUrl);
+            log.info("Verification email generated for {} with expiry {}", request.email(), user.getOtpExpiry());
+        } catch (Exception ex) {
+            log.error("Registration email dispatch failed for {}: {}", request.email(), ex.getMessage(), ex);
+        }
 
         return UserMapper.toUserProfile(saved);
     }
@@ -200,14 +204,18 @@ public class AuthServiceImpl implements AuthService {
                 return;
             }
 
-            String verificationToken = UUID.randomUUID().toString();
+            String verificationToken = generateOtpCode();
             user.setOtpCode(verificationToken);
             user.setOtpExpiry(now.plusSeconds(86400));
             user.setLastVerificationEmailSentAt(now);
             userRepository.save(user);
 
             String verificationUrl = verificationBaseUrl + "?token=" + verificationToken;
-            emailGateway.sendVerificationEmail(user.getEmail(), user.getDisplayName(), verificationUrl);
+            try {
+                emailGateway.sendVerificationEmail(user.getEmail(), user.getDisplayName(), verificationUrl);
+            } catch (Exception ex) {
+                log.error("Resend verification email failed for {}: {}", user.getEmail(), ex.getMessage(), ex);
+            }
         });
     }
 
@@ -335,4 +343,9 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private record ResetTokenEntry(UUID userId, Instant expiry) {}
+
+    private String generateOtpCode() {
+        int value = new Random().nextInt(1_000_000);
+        return String.format("%06d", value);
+    }
 }

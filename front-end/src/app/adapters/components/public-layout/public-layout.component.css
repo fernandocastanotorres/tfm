@@ -262,6 +262,67 @@
   background-color: var(--sede-color-bg);
 }
 
+.public-header__user {
+  position: relative;
+}
+
+.public-header__user-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 2.5rem;
+  padding: 0 0.85rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--sede-color-border);
+  background-color: var(--sede-color-surface);
+  color: var(--sede-color-text);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  max-width: 14rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.public-header__user-trigger:hover {
+  background-color: var(--sede-color-bg);
+}
+
+.public-header__user-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  min-width: 12rem;
+  padding: 0.35rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--sede-color-border);
+  background-color: var(--sede-color-surface);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
+  z-index: 60;
+}
+
+.public-header__user-menu--open {
+  display: block;
+}
+
+.public-header__user-menu button {
+  width: 100%;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--sede-color-text);
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.public-header__user-menu button:hover {
+  background-color: var(--sede-color-bg);
+}
+
 .public-header__back-link {
   font-size: 0.875rem;
   transition: color 0.15s;

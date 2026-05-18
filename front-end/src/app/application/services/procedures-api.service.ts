@@ -6,7 +6,9 @@ import { MockCitizenFlowService } from './mock-citizen-flow.service';
 import {
   ProcedureItem,
   ProcedureDetail,
-  ProcedureTaskDto
+  ProcedureTaskDto,
+  FormFieldDto,
+  UploadRequirementDto
 } from '../models/procedure.models';
 
 @Injectable({
@@ -29,14 +31,53 @@ export class ProceduresApiService {
   }
 
   private mapTask(raw: any): ProcedureTaskDto {
+    const rawType = typeof raw.type === 'string' ? raw.type.toLowerCase() : '';
+    const formFields = this.mapFormFields(raw.formFields ?? raw.fields);
+    const uploadRequirements = this.mapUploadRequirements(raw.uploadRequirements);
+
     return {
       id: raw.id,
       name: raw.title ?? raw.name,
-      type: raw.type,
+      type: rawType,
       description: raw.description ?? '',
-      formFields: raw.formFields,
-      uploadRequirements: raw.uploadRequirements
+      formFields,
+      uploadRequirements
     };
+  }
+
+  private mapFormFields(rawFields: any[] | undefined): FormFieldDto[] {
+    if (!Array.isArray(rawFields)) {
+      return [];
+    }
+
+    return rawFields.map((field) => {
+      const id = field?.id ?? '';
+      const name = field?.name ?? field?.label ?? field?.title ?? id;
+      const placeholder = field?.placeholder ?? `Introduce ${name}`;
+      return {
+        id,
+        name,
+        type: field?.type ?? 'text',
+        required: Boolean(field?.required),
+        placeholder,
+        options: Array.isArray(field?.options) ? field.options : []
+      };
+    });
+  }
+
+  private mapUploadRequirements(rawRequirements: any[] | undefined): UploadRequirementDto[] {
+    if (!Array.isArray(rawRequirements)) {
+      return [];
+    }
+
+    return rawRequirements.map((requirement) => {
+      const id = requirement?.id ?? '';
+      return {
+        id,
+        name: requirement?.name ?? requirement?.label ?? requirement?.title ?? id,
+        required: Boolean(requirement?.required)
+      };
+    });
   }
 
   private mapProcedure(raw: any): ProcedureItem {

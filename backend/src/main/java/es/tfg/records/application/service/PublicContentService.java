@@ -335,11 +335,28 @@ public class PublicContentService {
                 .filter(t -> Objects.equals(t.id(), activeThemeId) && Objects.equals(t.mode(), "dark"))
                 .findFirst().map(PublicContentDtos.ThemeVariant::colors).orElse(List.of());
 
-        List<PublicContentDtos.ThemeColor> allColors = new java.util.ArrayList<>();
-        allColors.addAll(lightColors);
-        for (PublicContentDtos.ThemeColor dc : darkColors) {
-            allColors.add(new PublicContentDtos.ThemeColor(dc.token() + "-dark", dc.value()));
+        Map<String, String> normalized = new LinkedHashMap<>();
+
+        for (PublicContentDtos.ThemeColor lc : lightColors) {
+            if (lc == null || isBlank(lc.token()) || isBlank(lc.value())) {
+                continue;
+            }
+            String token = lc.token().trim();
+            normalized.putIfAbsent(token, lc.value().trim());
         }
+
+        for (PublicContentDtos.ThemeColor dc : darkColors) {
+            if (dc == null || isBlank(dc.token()) || isBlank(dc.value())) {
+                continue;
+            }
+            String baseToken = dc.token().trim();
+            String darkToken = baseToken.endsWith("-dark") ? baseToken : baseToken + "-dark";
+            normalized.putIfAbsent(darkToken, dc.value().trim());
+        }
+
+        List<PublicContentDtos.ThemeColor> allColors = normalized.entrySet().stream()
+                .map(entry -> new PublicContentDtos.ThemeColor(entry.getKey(), entry.getValue()))
+                .toList();
 
         return new PublicContentDtos.ThemePalette(allColors, catalog.updatedAt());
     }

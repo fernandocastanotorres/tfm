@@ -32,6 +32,6 @@ export class ProceduresComponent implements OnInit {
   }
 
   startProcedure(procedure: ProcedureItem): void {
-    this.router.navigate(['/expedientes/nuevo', procedure.id]);
+    this.router.navigate(['/sede/expedientes/nuevo', procedure.id]);
   }
 }

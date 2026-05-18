@@ -17,6 +17,9 @@ import es.tfg.records.infrastructure.persistence.entity.ProcedureTypeI18nEntity;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTaskEntity;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTypeEntity;
 import es.tfg.records.infrastructure.persistence.entity.UserEntity;
+import es.tfg.records.infrastructure.persistence.entity.CaseTimelineEventEntity;
+import es.tfg.records.infrastructure.persistence.repository.CaseTimelineEventJpaRepository;
+import es.tfg.records.infrastructure.persistence.repository.DocumentJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureTypeI18nJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureTaskJpaRepository;
@@ -50,21 +53,27 @@ public class BackofficeService {
     private final ProcedureTypeJpaRepository procedureTypeRepository;
     private final ProcedureTypeI18nJpaRepository procedureTypeI18nRepository;
     private final ProcedureTaskJpaRepository taskRepository;
+    private final DocumentJpaRepository documentRepository;
+    private final CaseTimelineEventJpaRepository timelineRepository;
     private final UserJpaRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ObjectMapper objectMapper;
 
     public BackofficeService(ProcedureJpaRepository procedureRepository,
                              ProcedureTypeJpaRepository procedureTypeRepository,
-                             ProcedureTypeI18nJpaRepository procedureTypeI18nRepository,
-                             ProcedureTaskJpaRepository taskRepository,
-                             UserJpaRepository userRepository,
-                             PasswordEncoder passwordEncoder,
-                             ObjectMapper objectMapper) {
+                              ProcedureTypeI18nJpaRepository procedureTypeI18nRepository,
+                              ProcedureTaskJpaRepository taskRepository,
+                              DocumentJpaRepository documentRepository,
+                              CaseTimelineEventJpaRepository timelineRepository,
+                              UserJpaRepository userRepository,
+                              PasswordEncoder passwordEncoder,
+                              ObjectMapper objectMapper) {
         this.procedureRepository = procedureRepository;
         this.procedureTypeRepository = procedureTypeRepository;
         this.procedureTypeI18nRepository = procedureTypeI18nRepository;
         this.taskRepository = taskRepository;
+        this.documentRepository = documentRepository;
+        this.timelineRepository = timelineRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.objectMapper = objectMapper;
@@ -90,6 +99,9 @@ public class BackofficeService {
         ProcedureEntity procedure = findProcedure(id);
         ProcedureTypeEntity type = procedureTypeRepository.findById(procedure.getProcedureTypeId()).orElse(null);
         UserEntity citizen = userRepository.findById(procedure.getOwnerId()).orElse(null);
+        List<CaseAttachmentDto> attachments = documentRepository.findByProcedureId(procedure.getId()).stream()
+                .map(doc -> new CaseAttachmentDto(doc.getId(), doc.getName(), doc.getMimeType(), doc.getUploadedAt()))
+                .toList();
         return new BackofficeDtos.AdminCaseDetail(
                 procedure.getId(),
                 typeTitle(type),
@@ -103,8 +115,8 @@ public class BackofficeService {
                 null,
                 citizen == null ? "Ciudadano" : citizen.getEmail(),
                 citizen == null ? "" : citizen.getEmail(),
-                defaultTimeline(procedure),
-                List.<CaseAttachmentDto>of(),
+                caseTimeline(procedure),
+                attachments,
                 parseFormData(procedure.getFormData())
         );
     }
@@ -114,6 +126,7 @@ public class BackofficeService {
         ProcedureEntity procedure = findProcedure(id);
         procedure.setStatus(parseStatus(status));
         ProcedureEntity saved = procedureRepository.save(procedure);
+        addTimelineEvent(saved.getId(), "Cambio de estado", "Backoffice actualizo estado a: " + saved.getStatus().name());
         return new CaseStatusResponse(saved.getId(), saved.getStatus().name(), saved.getUpdatedAt(), currentTask(saved, null));
     }
 
@@ -394,6 +407,23 @@ public class BackofficeService {
         }
         events.add(new CaseTimelineEventDto(UUID.nameUUIDFromBytes((procedure.getId() + "-updated").getBytes()), "Ultima actualizacion", procedure.getUpdatedAt(), "Estado actual: " + procedure.getStatus().name()));
         return events;
+    }
+
+    private List<CaseTimelineEventDto> caseTimeline(ProcedureEntity procedure) {
+        List<CaseTimelineEventDto> persisted = timelineRepository.findByProcedureIdOrderByDateAsc(procedure.getId()).stream()
+                .map(event -> new CaseTimelineEventDto(event.getId(), event.getTitle(), event.getDate(), event.getDescription()))
+                .toList();
+        return persisted.isEmpty() ? defaultTimeline(procedure) : persisted;
+    }
+
+    private void addTimelineEvent(UUID procedureId, String title, String description) {
+        CaseTimelineEventEntity event = new CaseTimelineEventEntity();
+        event.setId(UUID.randomUUID());
+        event.setProcedureId(procedureId);
+        event.setTitle(title);
+        event.setDescription(description);
+        event.setDate(Instant.now());
+        timelineRepository.save(event);
     }
 
     private BackofficeDtos.BackofficeUser toUserDto(UserEntity user) {

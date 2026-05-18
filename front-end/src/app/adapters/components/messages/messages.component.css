@@ -1,0 +1,23 @@
+.messages__container {
+  @apply max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12;
+}
+
+.messages__header {
+  @apply mb-8;
+}
+
+.messages__breadcrumb {
+  @apply text-sm text-surface-500 mb-4;
+}
+
+.messages__breadcrumb a {
+  @apply text-brand-600 hover:text-brand-700 no-underline;
+}
+
+.messages__filters {
+  @apply mt-6 flex flex-wrap gap-3;
+}
+
+.messages__layout {
+  @apply mt-8 grid gap-6 lg:grid-cols-[2fr_1fr];
+}

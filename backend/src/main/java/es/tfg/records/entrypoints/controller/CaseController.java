@@ -10,6 +10,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -150,6 +153,20 @@ public class CaseController {
 
         UUID ownerId = extractUserId(authentication);
         return ResponseEntity.ok(caseService.submitCase(id, ownerId));
+    }
+
+    @GetMapping("/{id}/receipt")
+    @Operation(summary = "Download case receipt", description = "Download expediente submission receipt as text document")
+    public ResponseEntity<Resource> downloadReceipt(
+            Authentication authentication,
+            @PathVariable("id") UUID id) {
+
+        UUID ownerId = extractUserId(authentication);
+        Resource resource = caseService.downloadReceipt(id, ownerId);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"justificante-" + id + ".pdf\"")
+                .body(resource);
     }
 
     private UUID extractUserId(Authentication authentication) {

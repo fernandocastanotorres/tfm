@@ -88,6 +88,23 @@ export class AuthService {
     return localStorage.getItem(this.refreshKey);
   }
 
+  getAuthenticatedUserLabel(): string | null {
+    const token = this.getToken();
+    if (!token) {
+      return null;
+    }
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const email = typeof payload?.email === 'string' ? payload.email : null;
+      const preferred = typeof payload?.preferred_username === 'string' ? payload.preferred_username : null;
+      const raw = preferred ?? email;
+      return raw ? raw.trim() : null;
+    } catch {
+      return null;
+    }
+  }
+
   /**
    * POST /api/v1/auth/refresh — Refresh access token using refresh token.
    */

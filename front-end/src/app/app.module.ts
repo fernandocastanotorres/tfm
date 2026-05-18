@@ -21,6 +21,7 @@ import { ProfileComponent } from './adapters/components/profile/profile.componen
 import { NotificationsComponent } from './adapters/components/notifications/notifications.component';
 import { DocumentsComponent } from './adapters/components/documents/documents.component';
 import { CaseDetailComponent } from './adapters/components/case-detail/case-detail.component';
+import { CaseSearchComponent } from './adapters/components/case-search/case-search.component';
 import { PaymentsComponent } from './adapters/components/payments/payments.component';
 import { AppointmentsComponent } from './adapters/components/appointments/appointments.component';
 import { MessagesComponent } from './adapters/components/messages/messages.component';
@@ -73,6 +74,7 @@ export function HttpLoaderFactory(http: HttpClient): CustomLoader {
     NotificationsComponent,
     DocumentsComponent,
     CaseDetailComponent,
+    CaseSearchComponent,
     PaymentsComponent,
     AppointmentsComponent,
     MessagesComponent,

@@ -62,10 +62,10 @@
         {{ 'PUBLIC_HOME.LOADING' | translate }}
       </div>
       <div class="public-home__procedures-grid" *ngIf="!isLoading">
-        <div class="card p-6" *ngFor="let proc of procedures">
-          <h3 class="text-lg font-semibold text-surface-900">{{ proc.name }}</h3>
-          <p class="text-surface-600 text-sm mt-2">{{ proc.description }}</p>
-          <div class="mt-4 flex items-center gap-4 text-sm text-surface-500">
+        <div class="card p-6 public-home__procedure-card" *ngFor="let proc of procedures">
+          <h3 class="text-lg font-semibold public-home__card-title">{{ proc.name }}</h3>
+          <p class="text-sm mt-2 public-home__card-muted">{{ proc.description }}</p>
+          <div class="mt-4 flex items-center gap-4 text-sm public-home__card-muted">
             <span>{{ 'PROCEDURES.DETAIL_FEE' | translate }}: {{ proc.fee > 0 ? (proc.fee | currency:'EUR') : ('PROCEDURES.FEE_FREE' | translate) }}</span>
             <span>{{ 'PROCEDURES.DETAIL_DEADLINE' | translate }}: {{ proc.deadline }} {{ 'PROCEDURES.DETAIL_DEADLINE_UNIT' | translate }}</span>
           </div>
@@ -93,8 +93,8 @@
             <span class="public-home__event-month">{{ event.date | date:'MMM' }}</span>
           </div>
           <div class="public-home__event-info">
-            <h3 class="text-base font-semibold">{{ event.title }}</h3>
-            <p class="text-sm text-surface-600">{{ event.description }}</p>
+            <h3 class="text-base font-semibold public-home__card-title">{{ event.title }}</h3>
+            <p class="text-sm public-home__card-muted">{{ event.description }}</p>
           </div>
         </li>
       </ul>

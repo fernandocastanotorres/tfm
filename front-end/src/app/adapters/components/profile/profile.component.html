@@ -1,19 +1,27 @@
-<main class="min-h-screen bg-surface-50 px-6 py-10" aria-labelledby="profile-title">
-  <div class="card max-w-3xl mx-auto p-10">
-    <header class="space-y-2">
+<section class="profile" aria-labelledby="profile-title">
+  <div class="profile__container">
+    <header class="profile__header">
+      <nav aria-label="Breadcrumb" class="profile__breadcrumb">
+        <a [routerLink]="['/sede']">{{ 'PUBLIC.NAV_HOME' | translate }}</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{{ 'PROFILE.TITLE' | translate }}</span>
+      </nav>
       <p class="text-sm font-semibold text-brand-600">{{ 'PROFILE.EYEBROW' | translate }}</p>
       <h1 id="profile-title" class="text-2xl font-semibold text-surface-900">{{ 'PROFILE.TITLE' | translate }}</h1>
       <p class="text-surface-600">{{ 'PROFILE.SUBTITLE' | translate }}</p>
     </header>
 
-    <form class="mt-8 grid gap-6 md:grid-cols-2" [formGroup]="profileForm">
+    <div *ngIf="isLoading" class="card p-6 text-surface-600 text-center">Cargando perfil...</div>
+    <div *ngIf="errorMessage && !isLoading" class="card p-6 text-red-600 text-center">{{ errorMessage }}</div>
+
+    <form class="card p-8 grid gap-6 md:grid-cols-2" [formGroup]="profileForm" *ngIf="!isLoading">
       <div class="space-y-2">
         <label class="field-label" for="profile-name">{{ 'PROFILE.FULL_NAME' | translate }}</label>
         <input id="profile-name" class="field-input" type="text" formControlName="fullName" placeholder="Nombre y apellidos" />
       </div>
       <div class="space-y-2">
         <label class="field-label" for="profile-email">{{ 'PROFILE.EMAIL' | translate }}</label>
-        <input id="profile-email" class="field-input" type="email" formControlName="email" placeholder="usuario@dominio.es" />
+        <input id="profile-email" class="field-input" type="email" formControlName="email" placeholder="usuario@dominio.es" readonly />
       </div>
       <div class="space-y-2">
         <label class="field-label" for="profile-phone">{{ 'PROFILE.PHONE' | translate }}</label>
@@ -28,11 +36,11 @@
         <input id="profile-address" class="field-input" type="text" formControlName="address" placeholder="Direccion completa" />
       </div>
       <div class="md:col-span-2 flex flex-col gap-3 md:flex-row">
-        <button class="btn-primary" type="button" (click)="toggleEdit()">
+        <button class="btn-primary" type="button" (click)="toggleEdit()" [disabled]="isSaving">
           {{ isEditing ? ('PROFILE.CANCEL' | translate) : ('PROFILE.EDIT' | translate) }}
         </button>
-        <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="saveProfile()" [disabled]="!isEditing">
-          {{ 'PROFILE.SAVE' | translate }}
+        <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="saveProfile()" [disabled]="!isEditing || isSaving">
+          {{ isSaving ? 'Guardando...' : ('PROFILE.SAVE' | translate) }}
         </button>
       </div>
       <p class="text-success font-semibold md:col-span-2" role="status" *ngIf="lastSavedMessage">
@@ -40,4 +48,4 @@
       </p>
     </form>
   </div>
-</main>
+</section>
