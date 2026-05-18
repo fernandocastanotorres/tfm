@@ -1,7 +1,7 @@
 CREATE TABLE transparency_reports (
     id          UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
     title       VARCHAR(255) NOT NULL,
-    year        INTEGER      NOT NULL CHECK (year >= 2000),
+    "year"      INTEGER      NOT NULL CHECK ("year" >= 2000),
     description TEXT,
     file_path   VARCHAR(500) NOT NULL,
     file_name   VARCHAR(255) NOT NULL,
@@ -14,8 +14,8 @@ CREATE TABLE transparency_reports (
 );
 
 CREATE INDEX idx_transparency_reports_published_sort
-    ON transparency_reports (published, sort_order ASC, year DESC)
+    ON transparency_reports (published, sort_order ASC, "year" DESC)
     WHERE published = true;
 
 CREATE INDEX idx_transparency_reports_year
-    ON transparency_reports (year DESC);
+    ON transparency_reports ("year" DESC);

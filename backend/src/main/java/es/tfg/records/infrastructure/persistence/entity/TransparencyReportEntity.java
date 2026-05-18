@@ -20,7 +20,7 @@ public class TransparencyReportEntity {
     @Column(nullable = false, length = 255)
     private String title;
 
-    @Column(nullable = false)
+    @Column(name = "`year`", nullable = false)
     private Integer year;
 
     @Column(columnDefinition = "TEXT")
