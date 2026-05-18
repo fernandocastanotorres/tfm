@@ -2,44 +2,189 @@
   display: block;
 }
 
-.theme-preview {
+/* Preview sede */
+.preview-sede {
+  font-family: system-ui, -apple-system, sans-serif;
   background: var(--sede-color-bg, #f8fafc);
   color: var(--sede-color-text, #0f172a);
-  border: 1px solid #d1d5db;
-  border-radius: 12px;
-  padding: 16px;
 }
 
-.theme-preview__title {
-  font-weight: 600;
-  margin: 0 0 4px;
+.preview-sede__header {
+  background: var(--sede-color-surface, #ffffff);
+  border-bottom: 1px solid var(--sede-color-border, #e2e8f0);
+  padding: 0.75rem 1.5rem;
 }
 
-.theme-preview__text {
-  margin: 0 0 12px;
-  color: var(--sede-color-muted, #475569);
-  font-size: 14px;
-}
-
-.theme-preview__actions {
+.preview-sede__header-inner {
+  max-width: 800px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
 }
 
-.theme-preview .btn-primary {
+.preview-sede__logo {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--sede-color-primary, #2563eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  color: var(--sede-color-primary-contrast, #ffffff);
+  font-weight: 700;
+}
+
+.preview-sede__nav {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.75rem;
+  color: var(--sede-color-muted, #475569);
+}
+
+.preview-sede__hero {
+  background: var(--sede-color-hero-bg, #0e2a47);
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+}
+
+.preview-sede__hero-inner {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.preview-sede__hero-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--sede-color-hero-text, #f8fafc);
+  margin: 0 0 0.5rem;
+}
+
+.preview-sede__hero-subtitle {
+  font-size: 0.85rem;
+  color: var(--sede-color-hero-subtitle, #d9e2ec);
+  margin: 0 0 1.25rem;
+}
+
+.preview-sede__hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.preview-sede__btn-primary {
   background: var(--sede-color-primary, #2563eb);
   color: var(--sede-color-primary-contrast, #ffffff);
-  border: 0;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 13px;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.375rem;
+  font-size: 0.8rem;
   font-weight: 600;
+  cursor: pointer;
 }
 
-.theme-preview__link {
+.preview-sede__btn-primary:hover {
+  background: var(--sede-color-primary-hover, #1d4ed8);
+}
+
+.preview-sede__link {
   color: var(--sede-color-link, #0ea5e9);
   text-decoration: none;
-  font-size: 13px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.preview-sede__content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .preview-sede__content {
+    grid-template-columns: 1fr;
+  }
+}
+
+.preview-sede__card {
+  background: var(--sede-color-surface, #ffffff);
+  border: 1px solid var(--sede-color-border, #e2e8f0);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.preview-sede__card-title {
+  font-size: 0.85rem;
   font-weight: 600;
+  margin: 0 0 0.375rem;
+  color: var(--sede-color-text, #0f172a);
+}
+
+.preview-sede__card-text {
+  font-size: 0.75rem;
+  color: var(--sede-color-muted, #475569);
+  margin: 0 0 0.75rem;
+  line-height: 1.4;
+}
+
+.preview-sede__card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.preview-sede__tag {
+  font-size: 0.65rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 9999px;
+  background: var(--sede-color-primary-50, #eff6ff);
+  color: var(--sede-color-primary, #2563eb);
+  font-weight: 500;
+}
+
+.preview-sede__card-date {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.preview-sede__date-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  background: var(--sede-color-calendar-date-bg, rgba(14, 116, 144, 0.10));
+  color: var(--sede-color-calendar-date-text, #0ea5e9);
+}
+
+.preview-sede__date-text {
+  font-size: 0.75rem;
+  color: var(--sede-color-text, #0f172a);
+}
+
+.preview-sede__footer {
+  background: var(--sede-color-footer-bg, #0f172a);
+  padding: 0.75rem 1.5rem;
+  margin-top: 1rem;
+}
+
+.preview-sede__footer-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--sede-color-footer-text, #cbd5e1);
+}
+
+.preview-sede__footer-link {
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }

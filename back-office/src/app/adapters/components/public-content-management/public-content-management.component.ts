@@ -64,6 +64,46 @@ export class PublicContentManagementComponent implements OnInit {
   currentThemeId = 'institucional-azul';
   currentThemeName = 'Institucional Azul';
   themeMode: 'light' | 'dark' = 'light';
+  themeModeVariantsList: { id: string; name: string }[] = [];
+  currentThemeColorsList: ThemeColor[] = [];
+  sectionsExpanded: Record<string, boolean> = { primary: true, surface: true, hero: false, calendar: false, footer: false };
+
+  toggleSection(section: string): void {
+    this.sectionsExpanded[section] = !this.sectionsExpanded[section];
+  }
+
+  getThemeSwatchGradient(theme: { id: string; name: string }): string {
+    const full = this.themeVariants.find(t => t.id === theme.id && t.mode === this.themeMode)
+      ?? this.themeVariants.find(t => t.id === theme.id);
+    if (!full) return '#e5e7eb';
+    const primary = full.colors.find(c => c.token === '--sede-color-primary')?.value ?? '#2563eb';
+    const primaryHover = full.colors.find(c => c.token === '--sede-color-primary-hover')?.value ?? '#1d4ed8';
+    return `linear-gradient(135deg, ${primary} 50%, ${primaryHover} 50%)`;
+  }
+
+  getPresetSwatchGradient(preset: { name: string; colors: ThemeColor[]; darkColors: ThemeColor[] }): string {
+    const colors = this.themeMode === 'dark' ? preset.darkColors : preset.colors;
+    const primary = colors.find(c => c.token === '--sede-color-primary')?.value ?? '#2563eb';
+    const primaryHover = colors.find(c => c.token === '--sede-color-primary-hover')?.value ?? '#1d4ed8';
+    return `linear-gradient(135deg, ${primary} 50%, ${primaryHover} 50%)`;
+  }
+
+  private refreshThemeLists(): void {
+    const seen = new Set<string>();
+    this.themeModeVariantsList = this.themeVariants
+      .filter((t) => {
+        if (seen.has(t.id)) return false;
+        seen.add(t.id);
+        return true;
+      })
+      .map((t) => ({ id: t.id, name: t.name }));
+
+    const theme = this.themeVariants.find((item) => item.id === this.currentThemeId && item.mode === this.themeMode)
+      ?? this.themeVariants.find((item) => item.id === this.currentThemeId)
+      ?? this.themeVariants.find((item) => item.mode === this.themeMode)
+      ?? this.themeVariants[0];
+    this.currentThemeColorsList = theme?.colors ?? [];
+  }
 
   selectedLegislation: PublicLegislationEntry | null = null;
   selectedFaqCategory: PublicFaqCategoryEntry | null = null;
@@ -96,7 +136,7 @@ export class PublicContentManagementComponent implements OnInit {
   private institutionalTranslations: Record<string, PublicInstitutionalUpsertRequest> = {};
   private organismTranslations: Record<string, PublicOrganismUpsertRequest> = {};
   private resourceTranslations: Record<string, PublicResourceUpsertRequest> = {};
-  readonly themePresets: { name: string; colors: ThemeColor[] }[] = [
+  readonly themePresets: { name: string; colors: ThemeColor[]; darkColors: ThemeColor[] }[] = [
     {
       name: 'Institucional Azul',
       colors: [
@@ -117,6 +157,25 @@ export class PublicContentManagementComponent implements OnInit {
         { token: '--sede-color-calendar-date-text', value: '#0ea5e9' },
         { token: '--sede-color-footer-bg', value: '#0f172a' },
         { token: '--sede-color-footer-text', value: '#cbd5e1' }
+      ],
+      darkColors: [
+        { token: '--sede-color-primary', value: '#3b82f6' },
+        { token: '--sede-color-primary-hover', value: '#60a5fa' },
+        { token: '--sede-color-primary-50', value: '#1e3a5f' },
+        { token: '--sede-color-primary-contrast', value: '#ffffff' },
+        { token: '--sede-color-link', value: '#38bdf8' },
+        { token: '--sede-color-bg', value: '#0f172a' },
+        { token: '--sede-color-surface', value: '#1e293b' },
+        { token: '--sede-color-text', value: '#f1f5f9' },
+        { token: '--sede-color-muted', value: '#94a3b8' },
+        { token: '--sede-color-border', value: '#334155' },
+        { token: '--sede-color-hero-bg', value: '#0c1929' },
+        { token: '--sede-color-hero-text', value: '#f8fafc' },
+        { token: '--sede-color-hero-subtitle', value: '#94a3b8' },
+        { token: '--sede-color-calendar-date-bg', value: 'rgba(59, 130, 246, 0.20)' },
+        { token: '--sede-color-calendar-date-text', value: '#60a5fa' },
+        { token: '--sede-color-footer-bg', value: '#020617' },
+        { token: '--sede-color-footer-text', value: '#64748b' }
       ]
     },
     {
@@ -139,6 +198,25 @@ export class PublicContentManagementComponent implements OnInit {
         { token: '--sede-color-calendar-date-text', value: '#0d9488' },
         { token: '--sede-color-footer-bg', value: '#064e3b' },
         { token: '--sede-color-footer-text', value: '#a7f3d0' }
+      ],
+      darkColors: [
+        { token: '--sede-color-primary', value: '#14b8a6' },
+        { token: '--sede-color-primary-hover', value: '#2dd4bf' },
+        { token: '--sede-color-primary-50', value: '#134e4a' },
+        { token: '--sede-color-primary-contrast', value: '#ffffff' },
+        { token: '--sede-color-link', value: '#2dd4bf' },
+        { token: '--sede-color-bg', value: '#042f2e' },
+        { token: '--sede-color-surface', value: '#134e4a' },
+        { token: '--sede-color-text', value: '#f0fdfa' },
+        { token: '--sede-color-muted', value: '#5eead4' },
+        { token: '--sede-color-border', value: '#1a5c56' },
+        { token: '--sede-color-hero-bg', value: '#022c22' },
+        { token: '--sede-color-hero-text', value: '#f0fdf4' },
+        { token: '--sede-color-hero-subtitle', value: '#5eead4' },
+        { token: '--sede-color-calendar-date-bg', value: 'rgba(20, 184, 166, 0.20)' },
+        { token: '--sede-color-calendar-date-text', value: '#2dd4bf' },
+        { token: '--sede-color-footer-bg', value: '#022c22' },
+        { token: '--sede-color-footer-text', value: '#5eead4' }
       ]
     },
     {
@@ -161,6 +239,25 @@ export class PublicContentManagementComponent implements OnInit {
         { token: '--sede-color-calendar-date-text', value: '#be123c' },
         { token: '--sede-color-footer-bg', value: '#4c0519' },
         { token: '--sede-color-footer-text', value: '#fda4af' }
+      ],
+      darkColors: [
+        { token: '--sede-color-primary', value: '#e11d48' },
+        { token: '--sede-color-primary-hover', value: '#f43f5e' },
+        { token: '--sede-color-primary-50', value: '#4c1025' },
+        { token: '--sede-color-primary-contrast', value: '#ffffff' },
+        { token: '--sede-color-link', value: '#fb7185' },
+        { token: '--sede-color-bg', value: '#1a0a10' },
+        { token: '--sede-color-surface', value: '#2d1019' },
+        { token: '--sede-color-text', value: '#fff1f2' },
+        { token: '--sede-color-muted', value: '#fda4af' },
+        { token: '--sede-color-border', value: '#4c1525' },
+        { token: '--sede-color-hero-bg', value: '#120508' },
+        { token: '--sede-color-hero-text', value: '#fff1f2' },
+        { token: '--sede-color-hero-subtitle', value: '#fda4af' },
+        { token: '--sede-color-calendar-date-bg', value: 'rgba(225, 29, 72, 0.20)' },
+        { token: '--sede-color-calendar-date-text', value: '#fb7185' },
+        { token: '--sede-color-footer-bg', value: '#0a0305' },
+        { token: '--sede-color-footer-text', value: '#94a3b8' }
       ]
     }
   ];
@@ -201,6 +298,10 @@ export class PublicContentManagementComponent implements OnInit {
       const resources = results[7].status === 'fulfilled' ? (results[7].value as PublicResourceEntry[]) : null;
       const themePalette = results[8].status === 'fulfilled' ? (results[8].value as ThemeCatalog) : null;
 
+      if (results[8].status === 'rejected') {
+        console.error('Theme palette load failed:', (results[8] as PromiseRejectedResult).reason);
+      }
+
       this.legislation = legislation ?? [];
       this.faqCategories = categories ?? [];
       this.faqEntries = faqs ?? [];
@@ -215,9 +316,13 @@ export class PublicContentManagementComponent implements OnInit {
         : this.defaultThemeVariants();
       this.activeThemeId = this.themePalette.activeThemeId || this.themeVariants[0]?.id || 'institucional-azul';
       this.selectThemeVariant(this.activeThemeId);
+      this.refreshThemeLists();
       this.themeValidationError = '';
       this.isLoading = false;
-    }).catch(() => { this.isLoading = false; });
+    }).catch((err) => {
+      console.error('Reload failed:', err);
+      this.isLoading = false;
+    });
   }
 
   editLegislation(item: PublicLegislationEntry): void {
@@ -439,18 +544,15 @@ export class PublicContentManagementComponent implements OnInit {
 
   applyThemePreset(): void {
     const preset = this.themePresets.find((item) => item.name === this.selectedThemePreset);
-    if (!preset) {
-      return;
-    }
-    this.themeForm = preset.colors.map((color) => ({ ...color }));
+    if (!preset) return;
+    const colors = this.themeMode === 'dark' ? preset.darkColors : preset.colors;
+    this.themeForm = colors.map((color) => ({ ...color }));
     this.themeValidationError = '';
   }
 
   applyPresetAsNewTheme(): void {
     const preset = this.themePresets.find((item) => item.name === this.selectedThemePreset);
-    if (!preset) {
-      return;
-    }
+    if (!preset) return;
 
     const suffix = this.themeVariants.length + 1;
     const baseId = this.normalizeThemeId(preset.name, suffix - 1);
@@ -466,12 +568,13 @@ export class PublicContentManagementComponent implements OnInit {
       id: nextId,
       name: `${preset.name} ${suffix}`,
       mode: 'dark',
-      colors: this.createThemeForm(),
+      colors: preset.darkColors.map((color) => ({ ...color })),
       active: false
     };
 
     this.themeVariants = [...this.themeVariants, lightVariant, darkVariant];
     this.selectThemeVariant(lightVariant.id);
+    this.refreshThemeLists();
   }
 
   selectThemeVariant(themeId: string): void {
@@ -485,12 +588,14 @@ export class PublicContentManagementComponent implements OnInit {
       this.currentThemeName = fallback.name;
       this.themeForm = fallback.colors.map((color) => ({ ...color }));
       this.themeValidationError = '';
+      this.refreshThemeLists();
       return;
     }
     this.currentThemeId = theme.id;
     this.currentThemeName = theme.name;
     this.themeForm = theme.colors.map((color) => ({ ...color }));
     this.themeValidationError = '';
+    this.refreshThemeLists();
   }
 
   setThemeMode(mode: 'light' | 'dark'): void {
@@ -522,18 +627,17 @@ export class PublicContentManagementComponent implements OnInit {
       id: nextId,
       name,
       mode: 'dark',
-      colors: this.createThemeForm(),
+      colors: this.createDarkThemeForm(),
       active: false
     };
     this.themeVariants = [...this.themeVariants, variant, darkVariant];
     this.selectThemeVariant(nextId);
+    this.refreshThemeLists();
   }
 
   duplicateCurrentThemeVariant(): void {
     const current = this.themeVariants.find((theme) => theme.id === this.currentThemeId && theme.mode === this.themeMode);
-    if (!current) {
-      return;
-    }
+    if (!current) return;
 
     const suffix = this.themeVariants.length + 1;
     const duplicated: ThemeVariant = {
@@ -545,16 +649,18 @@ export class PublicContentManagementComponent implements OnInit {
     };
 
     const oppositeMode = current.mode === 'light' ? 'dark' : 'light';
-    const duplicatedDark: ThemeVariant = {
+    const oppositeColors = oppositeMode === 'dark' ? this.createDarkThemeForm() : this.createThemeForm();
+    const duplicatedOpposite: ThemeVariant = {
       id: `${current.id}-copy-${suffix}`,
       name: `${current.name} (copia)`,
       mode: oppositeMode,
-      colors: this.createThemeForm(),
+      colors: oppositeColors,
       active: false
     };
 
-    this.themeVariants = [...this.themeVariants, duplicated, duplicatedDark];
+    this.themeVariants = [...this.themeVariants, duplicated, duplicatedOpposite];
     this.selectThemeVariant(duplicated.id);
+    this.refreshThemeLists();
   }
 
   removeCurrentThemeVariant(): void {
@@ -568,6 +674,7 @@ export class PublicContentManagementComponent implements OnInit {
     }
     const remaining = [...new Set(this.themeVariants.map((t) => t.id))];
     this.selectThemeVariant(remaining[0]);
+    this.refreshThemeLists();
   }
 
   resetCurrentThemeToDefaults(): void {
@@ -656,17 +763,6 @@ export class PublicContentManagementComponent implements OnInit {
     });
   }
 
-  getThemeModeVariants(): { id: string; name: string }[] {
-    const seen = new Set<string>();
-    return this.themeVariants
-      .filter((t) => {
-        if (seen.has(t.id)) return false;
-        seen.add(t.id);
-        return true;
-      })
-      .map((t) => ({ id: t.id, name: t.name }));
-  }
-
   async saveThemePalette(): Promise<void> {
     this.saveCurrentModeToVariants();
 
@@ -695,13 +791,6 @@ export class PublicContentManagementComponent implements OnInit {
       }
       return acc;
     }, {});
-  }
-
-  get currentThemeColors(): ThemeColor[] {
-    const theme = this.themeVariants.find((item) => item.id === this.currentThemeId && item.mode === this.themeMode)
-      ?? this.themeVariants.find((item) => item.id === this.currentThemeId)
-      ?? this.themeVariants[0];
-    return theme?.colors ?? [];
   }
 
   private async saveWithConfirm(title: string, message: string, requestFactory: () => any, tab: ContentTab): Promise<void> {
@@ -748,6 +837,28 @@ export class PublicContentManagementComponent implements OnInit {
     ];
   }
 
+  private createDarkThemeForm(): ThemeColor[] {
+    return [
+      { token: '--sede-color-primary', value: '#3b82f6' },
+      { token: '--sede-color-primary-hover', value: '#60a5fa' },
+      { token: '--sede-color-primary-50', value: '#1e3a5f' },
+      { token: '--sede-color-primary-contrast', value: '#ffffff' },
+      { token: '--sede-color-link', value: '#38bdf8' },
+      { token: '--sede-color-bg', value: '#0f172a' },
+      { token: '--sede-color-surface', value: '#1e293b' },
+      { token: '--sede-color-text', value: '#f1f5f9' },
+      { token: '--sede-color-muted', value: '#94a3b8' },
+      { token: '--sede-color-border', value: '#334155' },
+      { token: '--sede-color-hero-bg', value: '#0c1929' },
+      { token: '--sede-color-hero-text', value: '#f8fafc' },
+      { token: '--sede-color-hero-subtitle', value: '#94a3b8' },
+      { token: '--sede-color-calendar-date-bg', value: 'rgba(59, 130, 246, 0.20)' },
+      { token: '--sede-color-calendar-date-text', value: '#60a5fa' },
+      { token: '--sede-color-footer-bg', value: '#020617' },
+      { token: '--sede-color-footer-text', value: '#64748b' }
+    ];
+  }
+
   private defaultThemeVariants(): ThemeVariant[] {
     return this.themePresets.flatMap((preset, index) => {
       const id = this.normalizeThemeId(preset.name, index);
@@ -763,7 +874,7 @@ export class PublicContentManagementComponent implements OnInit {
           id,
           name: preset.name,
           mode: 'dark' as const,
-          colors: [],
+          colors: preset.darkColors.map((color) => ({ ...color })),
           active: false
         }
       ];
