@@ -14,6 +14,7 @@ export class ThemePaletteService {
     return this.http.get<ThemePalette>(this.endpoint, { params }).pipe(
       map((palette) => {
         this.applyPalette(palette);
+        this.syncDarkMode();
         return palette;
       }),
       catchError(() => of(null))
@@ -31,6 +32,15 @@ export class ThemePaletteService {
         return;
       }
       root.style.setProperty(color.token.trim(), color.value.trim());
+    });
+  }
+
+  private syncDarkMode(): void {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.body.classList.toggle('theme-dark', prefersDark);
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      document.body.classList.toggle('theme-dark', e.matches);
     });
   }
 }

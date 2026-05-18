@@ -72,8 +72,22 @@ export class PublicContentManagementComponent implements OnInit {
     this.sectionsExpanded[section] = !this.sectionsExpanded[section];
   }
 
-  setActiveTheme(themeId: string): void {
+  async setActiveTheme(themeId: string): Promise<void> {
+    const theme = this.themeModeVariantsList.find(t => t.id === themeId);
+    const confirmed = await this.confirmDialog.confirm(
+      'Activar tema',
+      `Se aplicara el tema "${theme?.name ?? themeId}" como tema activo de la sede publica.`,
+      'Activar'
+    );
+    if (!confirmed) return;
+
     this.activeThemeId = themeId;
+    this.saveCurrentModeToVariants();
+    this.isSaving = true;
+    this.service.saveThemePalette({ themes: this.themeVariants, activeThemeId: this.activeThemeId }).subscribe({
+      next: () => { this.isSaving = false; this.reload(); },
+      error: () => { this.isSaving = false; }
+    });
   }
 
   getThemeSwatchGradient(theme: { id: string; name: string }): string {
