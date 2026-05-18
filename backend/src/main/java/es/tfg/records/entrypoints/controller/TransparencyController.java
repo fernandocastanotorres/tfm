@@ -30,12 +30,12 @@ public class TransparencyController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Create transparency report with PDF upload")
     public ResponseEntity<TransparencyDtos.TransparencyReportDto> createReport(
-            @RequestPart("file") MultipartFile file,
-            @RequestPart("title") String title,
-            @RequestPart("year") int year,
-            @RequestPart(value = "description", required = false) String description,
-            @RequestPart(value = "sortOrder", required = false) Integer sortOrder,
-            @RequestPart(value = "published", required = false) Boolean published) {
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("title") String title,
+            @RequestParam("year") int year,
+            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "sortOrder", required = false) Integer sortOrder,
+            @RequestParam(value = "published", required = false) Boolean published) {
         return ResponseEntity.status(org.springframework.http.HttpStatus.CREATED)
                 .body(transparencyReportService.createReport(title, year, description, file,
                         sortOrder != null ? sortOrder : 0, published != null && published));
@@ -59,7 +59,7 @@ public class TransparencyController {
     @Operation(summary = "Replace report PDF file")
     public ResponseEntity<TransparencyDtos.TransparencyReportDto> replaceFile(
             @PathVariable UUID id,
-            @RequestPart("file") MultipartFile file) {
+            @RequestParam("file") MultipartFile file) {
         return ResponseEntity.ok(transparencyReportService.replaceFile(id, file));
     }
 
