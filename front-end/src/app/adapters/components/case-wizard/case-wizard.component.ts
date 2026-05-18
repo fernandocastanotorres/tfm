@@ -1,19 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { CasesApiService } from '../../../application/services/cases-api.service';
 import { ProceduresApiService } from '../../../application/services/procedures-api.service';
+import { I18nService } from '../../../application/services/i18n.service';
 import { ProcedureDetail, ProcedureTaskDto, FormFieldDto, UploadRequirementDto } from '../../../application/models/procedure.models';
 import { CreateCaseRequest } from '../../../application/models/case.models';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-case-wizard',
   templateUrl: './case-wizard.component.html',
   styleUrls: ['./case-wizard.component.css']
 })
-export class CaseWizardComponent implements OnInit {
+export class CaseWizardComponent implements OnInit, OnDestroy {
   private static readonly GENERIC_UPLOAD_ID = '__genericUpload__';
+  private localeSubscription: Subscription | null = null;
+  private procedureIdentifier: string | null = null;
   procedure: ProcedureDetail | null = null;
   tasks: ProcedureTaskDto[] = [];
   currentTaskIndex = 0;
@@ -32,21 +36,37 @@ export class CaseWizardComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly casesApiService: CasesApiService,
     private readonly proceduresApiService: ProceduresApiService,
+    private readonly i18nService: I18nService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly confirmDialogService: ConfirmDialogService
   ) {}
 
   ngOnInit(): void {
-    const procedureIdentifier = this.route.snapshot.paramMap.get('procedureId');
-    if (!procedureIdentifier) {
+    this.procedureIdentifier = this.route.snapshot.paramMap.get('procedureId');
+    if (!this.procedureIdentifier) {
       this.router.navigate(['/sede/procedimientos']);
       return;
     }
 
     this.resumingCaseId = this.route.snapshot.queryParamMap.get('caseId');
 
-    this.proceduresApiService.getByIdentifier(procedureIdentifier).subscribe({
+    // Reload procedure data when locale changes
+    this.localeSubscription = this.i18nService.getCurrentLocale$().subscribe(() => {
+      this.loadProcedure();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.localeSubscription?.unsubscribe();
+  }
+
+  private loadProcedure(): void {
+    if (!this.procedureIdentifier) return;
+    this.isLoading = true;
+    this.error = null;
+
+    this.proceduresApiService.getByIdentifier(this.procedureIdentifier).subscribe({
       next: (data) => {
         this.procedure = data;
         this.tasks = data.tasks ?? [];
@@ -294,7 +314,7 @@ export class CaseWizardComponent implements OnInit {
     return [
       {
         id: CaseWizardComponent.GENERIC_UPLOAD_ID,
-        name: 'Documentacion',
+        name: 'CASE_WIZARD.UPLOAD_GENERIC_LABEL',
         required: false
       }
     ];

@@ -25,6 +25,13 @@ Optional package artifact:
 mvn clean package
 ```
 
+Test coverage (JaCoCo):
+
+```bash
+mvn test jacoco:report
+# Report: target/site/jacoco/index.html
+```
+
 ### Frontend Citizen (`front-end/`)
 
 ```bash
@@ -33,12 +40,24 @@ npx tsc --noEmit
 npx ng build --configuration production
 ```
 
+Test coverage:
+
+```bash
+ng test --watch=false --browsers=ChromeHeadless --code-coverage
+```
+
 ### Frontend Backoffice (`back-office/`)
 
 ```bash
 npm install
 npx tsc --noEmit
 npx ng build --configuration production
+```
+
+Test coverage:
+
+```bash
+ng test --watch=false --browsers=ChromeHeadless --code-coverage
 ```
 
 ## Local Development Deployment

@@ -413,7 +413,18 @@
     "UPLOAD_ID": "Documento de identidad",
     "UPLOAD_SUPPORTING": "Documentación adicional",
     "REMOVE_FILE": "Quitar",
-    "REVIEW_HINT": "Revisa la información y los documentos antes de enviar la solicitud."
+    "REVIEW_HINT": "Revisa la información y los documentos antes de enviar la solicitud.",
+    "UPLOAD_DROPZONE_TEXT": "Arrastra y suelta ficheros aqui o selecciona desde tu equipo.",
+    "UPLOAD_GENERIC_LABEL": "Documentacion"
+  },
+  "CASE_SEARCH": {
+    "TITLE": "Buscador de expedientes",
+    "SUBTITLE": "Localiza tus expedientes por numero, titulo, estado o tipo.",
+    "SEARCH_PLACEHOLDER": "Buscar por id, titulo o estado",
+    "LOADING": "Cargando expedientes...",
+    "ERROR": "No se pudieron cargar tus expedientes.",
+    "NO_RESULTS": "No se han encontrado expedientes con ese criterio.",
+    "BREADCRUMB": "Mis expedientes"
   },
   "PUBLIC": {
     "TAGLINE": "Sede Electrónica",

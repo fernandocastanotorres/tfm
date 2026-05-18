@@ -1,5 +1,6 @@
 package es.tfg.records.application.service;
 
+import es.tfg.records.application.dto.FormFieldDto;
 import es.tfg.records.application.dto.ProcedureItem;
 import es.tfg.records.application.dto.ProcedureTaskDto;
 import es.tfg.records.application.exception.ResourceNotFoundException;
@@ -46,7 +47,7 @@ public class ProcedureServiceImpl implements ProcedureService {
 
         return procedureType.getTasks().stream()
                 .filter(task -> task.getType() != null && task.getType().name().equals("FORM"))
-                .map(ProcedureTypeMapper::toProcedureTaskDto)
+                .map(task -> toLocalizedTaskDto(procedureType, task))
                 .toList();
     }
 
@@ -56,7 +57,7 @@ public class ProcedureServiceImpl implements ProcedureService {
 
         return procedureType.getTasks().stream()
                 .filter(task -> task.getId().toString().equals(taskId))
-                .map(ProcedureTypeMapper::toProcedureTaskDto)
+                .map(task -> toLocalizedTaskDto(procedureType, task))
                 .toList();
     }
 
@@ -88,21 +89,30 @@ public class ProcedureServiceImpl implements ProcedureService {
                 .toList();
     }
 
+    private ProcedureTaskDto toLocalizedTaskDto(ProcedureType procedureType, ProcedureTask task) {
+        ProcedureTaskDto base = ProcedureTypeMapper.toProcedureTaskDto(task);
+
+        List<FormFieldDto> localizedFields = base.fields() == null
+                ? List.of()
+                : base.fields().stream()
+                .map(field -> procedureCatalogI18nService.localizeFormField(procedureType, task, field))
+                .toList();
+
+        return new ProcedureTaskDto(
+                base.id(),
+                base.type(),
+                procedureCatalogI18nService.localizeTaskTitle(procedureType, task),
+                procedureCatalogI18nService.localizeTaskDescription(procedureType, task),
+                localizedFields,
+                base.uploadRequirements()
+        );
+    }
+
     private ProcedureItem toLocalizedProcedureItem(ProcedureType procedureType) {
         List<ProcedureTaskDto> localizedTasks = procedureType.getTasks() == null
                 ? List.of()
                 : procedureType.getTasks().stream()
-                .map(task -> {
-                    ProcedureTaskDto base = ProcedureTypeMapper.toProcedureTaskDto(task);
-                    return new ProcedureTaskDto(
-                            base.id(),
-                            base.type(),
-                            procedureCatalogI18nService.localizeTaskTitle(procedureType, task),
-                            procedureCatalogI18nService.localizeTaskDescription(procedureType, task),
-                            base.fields(),
-                            base.uploadRequirements()
-                    );
-                })
+                .map(task -> toLocalizedTaskDto(procedureType, task))
                 .toList();
 
         return new ProcedureItem(

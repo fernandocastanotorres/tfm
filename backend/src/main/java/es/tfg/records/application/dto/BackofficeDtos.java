@@ -198,4 +198,39 @@ public final class BackofficeDtos {
             boolean required,
             List<String> options
     ) {}
+
+    public record FieldI18nEntry(
+            UUID id,
+            UUID procedureTypeId,
+            int taskOrderIndex,
+            String taskTitle,
+            String fieldId,
+            String fieldName,
+            String locale,
+            String name,
+            String placeholder,
+            List<FieldOptionEntry> options,
+            Instant updatedAt
+    ) {}
+
+    public record FieldOptionEntry(
+            String value,
+            String label
+    ) {}
+
+    public record FieldI18nUpsertRequest(
+            int taskOrderIndex,
+            String fieldId,
+            String locale,
+            String name,
+            String placeholder,
+            List<FieldOptionEntry> options
+    ) {}
+
+    public record FieldI18nGroup(
+            int taskOrderIndex,
+            String taskTitle,
+            String taskType,
+            List<FieldI18nEntry> fields
+    ) {}
 }

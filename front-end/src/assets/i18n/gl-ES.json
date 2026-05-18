@@ -124,7 +124,7 @@
     "EMAIL": "Correo electrónico",
     "PHONE": "Teléfono",
     "NATIONAL_ID": "DNI/NIE",
-    "ADDRESS": "Dirección",
+    "ADDRESS": "Enderezo",
     "EDIT": "Editar perfil",
     "CANCEL": "Cancelar",
     "SAVE": "Gardar cambios",
@@ -365,7 +365,8 @@
     "MOCK_ATTACHMENT_PLAN": "Plano de obra.pdf",
     "MOCK_ATTACHMENT_ID": "DNI escaneado.pdf",
     "ERROR_LOAD": "Non se puido cargar o expediente. Téntao de novo máis tarde.",
-    "CONTINUE": "Continuar tramitacion"
+    "CONTINUE": "Continuar tramitación",
+    "ERROR_RESUME": "Non se puido identificar o procedemento para continuar coa tramitación."
   },
   "CASE_STATUS": {
     "REVIEW": "En revisión",
@@ -412,7 +413,18 @@
     "UPLOAD_ID": "Documento de identidade",
     "UPLOAD_SUPPORTING": "Documentación adicional",
     "REMOVE_FILE": "Quitar",
-    "REVIEW_HINT": "Revisa a información e os documentos antes de enviar a solicitude."
+    "REVIEW_HINT": "Revisa a información e os documentos antes de enviar a solicitude.",
+    "UPLOAD_DROPZONE_TEXT": "Arrastra e solta ficheiros aquí ou selecciona desde o teu equipo.",
+    "UPLOAD_GENERIC_LABEL": "Documentación"
+  },
+  "CASE_SEARCH": {
+    "TITLE": "Buscador de expedientes",
+    "SUBTITLE": "Localiza os teus expedientes por número, título, estado ou tipo.",
+    "SEARCH_PLACEHOLDER": "Buscar por id, título ou estado",
+    "LOADING": "Cargando expedientes...",
+    "ERROR": "Non se puideron cargar os teus expedientes.",
+    "NO_RESULTS": "Non se atoparon expedientes con ese criterio.",
+    "BREADCRUMB": "Os meus expedientes"
   },
   "PUBLIC": {
     "TAGLINE": "Sede Electrónica",
@@ -539,7 +551,7 @@
     "Q_REQUIRED_DOCS": "Que documentos necesito para un trámite?",
     "A_REQUIRED_DOCS": "Os documentos requiridos varían segundo o procedemento. En cada procedemento indícase a documentación necesaria. Xeralmente requírese identificación válida e xustificantes específicos.",
     "Q_GET_CERTIFICATE": "Como obteño un certificado dixital?",
-    "A_GET_CERTIFICATE": "Podes ob telo na FNMT (Fábrica Nacional de Moeda e Timbre) solicitándoo online e acreditando a túa identidade nunha oficina de rexistro.",
+    "A_GET_CERTIFICATE": "Podes obtelo na FNMT (Fábrica Nacional de Moeda e Timbre) solicitándoo online e acreditando a túa identidade nunha oficina de rexistro.",
     "Q_CERTIFICATE_TYPES": "Que tipos de certificado dixital existen?",
     "A_CERTIFICATE_TYPES": "Os principais son: certificado de persoa física da FNMT, DNI electrónico, e certificados de representante. Cada un ten usos específicos na administración.",
     "Q_PAYMENT_METHODS": "Que métodos de pago se aceptan?",
@@ -668,6 +680,7 @@
     "METRIC_AVG_DAYS": "Prazo medio de resolución",
     "METRIC_SATISFACTION": "Satisfacción cidadá",
     "METRIC_DIGITAL": "Procedementos dixitais",
+    "METRIC_SLA_COMPLIANCE": "Cumprimento de prazos",
     "TREND_UP": "Tendencia ascendente",
     "TREND_DOWN": "Tendencia descendente",
     "TREND_STABLE": "Tendencia estable",

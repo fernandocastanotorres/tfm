@@ -15,8 +15,10 @@ import es.tfg.records.application.service.EniMetadataService;
 import es.tfg.records.domain.model.CaseStatus;
 import es.tfg.records.domain.model.Procedure;
 import es.tfg.records.domain.model.ProcedureType;
+import es.tfg.records.domain.port.DocumentRepository;
 import es.tfg.records.domain.port.ProcedureRepository;
 import es.tfg.records.domain.port.ProcedureTypeRepository;
+import es.tfg.records.infrastructure.persistence.repository.CaseTimelineEventJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,6 +46,12 @@ class CaseServiceImplTest {
 
     @Mock
     private EniMetadataService eniMetadataService;
+
+    @Mock
+    private DocumentRepository documentRepository;
+
+    @Mock
+    private CaseTimelineEventJpaRepository timelineRepository;
 
     @InjectMocks
     private CaseServiceImpl caseService;

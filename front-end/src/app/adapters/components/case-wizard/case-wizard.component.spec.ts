@@ -24,6 +24,9 @@ describe('CaseWizardComponent', () => {
             snapshot: {
               paramMap: {
                 get: () => 'procedure-license'
+              },
+              queryParamMap: {
+                get: () => null
               }
             }
           }

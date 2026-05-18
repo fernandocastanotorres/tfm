@@ -45,14 +45,29 @@ describe('HttpErrorInterceptor', () => {
 
     httpClient.post('/test', {}).subscribe(
       () => fail('Expected error response'),
-      (error: HttpErrorResponse) => {
-        expect(error.error).toEqual(validationErrors);
+      (error: unknown) => {
+        // Interceptor transforms { field: ['Invalid value'] } -> { field: 'Invalid value' }
+        expect(error).toEqual({ field: 'Invalid value' });
       }
     );
 
     httpMock
       .expectOne('/test')
       .flush(validationErrors, { status: 400, statusText: 'Bad Request' });
+  });
+
+  it('should return global error when 400 body is not an object', () => {
+    httpClient.post('/test', {}).subscribe(
+      () => fail('Expected error response'),
+      (error: unknown) => {
+        // error.message on HttpErrorResponse is the full HTTP message
+        expect((error as any).global).toContain('400');
+      }
+    );
+
+    httpMock
+      .expectOne('/test')
+      .flush('Bad Request', { status: 400, statusText: 'Bad Request' });
   });
 
   // Add tests for 403 and 500 errors with relevant expectations

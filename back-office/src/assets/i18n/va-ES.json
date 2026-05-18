@@ -1,0 +1,107 @@
+{
+  "va-ES": {
+    "backoffice": {
+      "title": "Backoffice",
+      "subtitle": "Gestio d'Expedients Electronics",
+      "login": {
+        "username": "Usuari",
+        "password": "Contrasenya",
+        "submit": "Iniciar sessio",
+        "loading": "Carregant..."
+      },
+      "nav": {
+        "dashboard": "Panell Principal",
+        "cases": "Expedients",
+        "tasks": "Tasques Pendents",
+        "users": "Usuaris",
+        "procedures": "Procediments",
+        "publicContent": "Contingut Public",
+        "transparency": "Transparencia",
+        "statistics": "Estadistiques",
+        "logout": "Tancar sessio"
+      },
+      "dashboard": {
+        "totalCases": "Total Expedients",
+        "pendingCases": "Pendents",
+        "inProgress": "En Tramitacio",
+        "completedToday": "Completats Hui"
+      },
+      "cases": {
+        "title": "Expedients",
+        "filterByStatus": "Estat",
+        "all": "Tots",
+        "viewDetail": "Vore detall",
+        "noCases": "No s'han trobat expedients"
+      },
+      "status": {
+        "DRAFT": "Esborrany",
+        "SUBMITTED": "Presentat",
+        "IN_PROGRESS": "En Tramitacio",
+        "PENDING_AMENDMENT": "Pendent Esmena",
+        "RESOLVED": "Resolt",
+        "REJECTED": "Rebutjat"
+      },
+      "procedures": {
+        "title": "Gestio de Procediments",
+        "subtitle": "Configurar catalog, tasques BPMN i camps de formulari.",
+        "search": "Buscar procediment",
+        "new": "Nou procediment",
+        "edit": "Editar procediment",
+        "activate": "Activar",
+        "deactivate": "Desactivar",
+        "category": "Categoria",
+        "unit": "Unitat",
+        "deadline": "Termini",
+        "fee": "Taxa",
+        "days": "dies",
+        "tasks": "Tasques",
+        "noProcedures": "No hi ha procediments",
+        "loading": "Carregant procediments...",
+        "i18n": {
+          "title": "Internacionalitzacio",
+          "syncNote": "La configuracio regional es-ES se sincronitza amb els camps principals"
+        },
+        "bpmn": {
+          "title": "Tasques BPMN",
+          "addTask": "Afegir tasca",
+          "removeTask": "Eliminar tasca",
+          "taskTitle": "Titol",
+          "taskDescription": "Descripcio"
+        },
+        "form": {
+          "title": "Formulari dynamic",
+          "addField": "Afegir camp",
+          "removeField": "Eliminar camp",
+          "label": "Etiqueta",
+          "required": "Obligatori"
+        },
+        "fieldI18n": {
+          "title": "Traduccio de camps del formulari",
+          "subtitle": "Traduix les etiquetes i placeholders dels camps del formulari dynamic.",
+          "manage": "Gestionar traduccions",
+          "loading": "Carregant camps...",
+          "noFields": "No hi ha camps configurats a les tasques d'este procediment.",
+          "save": "Guardar traduccions",
+          "saving": "Guardant...",
+          "close": "Tancar",
+          "name": "Nom",
+          "placeholder": "Placeholder",
+          "options": "Opcions",
+          "confirmSaveTitle": "Guardar traduccions de camps",
+          "confirmSaveMessage": "S'actualitzaran les traduccions de tots els camps modificats per a la configuracio regional seleccionada."
+        }
+      },
+      "common": {
+        "save": "Guardar",
+        "saving": "Guardant...",
+        "cancel": "Cancel·lar",
+        "close": "Tancar",
+        "delete": "Eliminar",
+        "edit": "Editar",
+        "search": "Buscar",
+        "loading": "Carregant...",
+        "noData": "No hi ha dades disponibles"
+      }
+    }
+  }
+}

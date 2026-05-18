@@ -93,7 +93,10 @@ Recommended next step:
 - ✅ Test strategy by module is documented (`docs/quality/TEST_STRATEGY.md`)
 - ✅ CI quality gate blueprint is documented (`docs/quality/CI_COVERAGE_GATES.md`)
 - ✅ Coverage scope and expectations are documented (`docs/quality/COVERAGE_SCOPE_MAP.md`)
-- 🟡 Security/architecture automated gates can be expanded progressively
+- ✅ Backend domain model at 100% coverage (144 tests total)
+- ✅ Back-office at 88.5% coverage (51 tests)
+- 🟡 Front-end citizen at 42.5% coverage (58 tests) — below 80% target
+- 🟡 Backend non-domain at 45% overall — below 80% target for controllers/services
 
 ---
 

@@ -280,12 +280,38 @@ http://localhost:8080/api/v1/api-docs
 
 ### Test Coverage
 
+Generate JaCoCo coverage report:
+
+```bash
+./mvnw test jacoco:report
+```
+
+Report available at `target/site/jacoco/index.html`.
+
+**Current Coverage (2026-05-18):**
+
+| Scope | Instructions | Branches |
+|-------|-------------|----------|
+| **Domain Model** | **100%** | n/a |
+| Application Exception | 92% | n/a |
+| Infrastructure Config | 96% | 77% |
+| Application Mapper | 76% | 71% |
+| Persistence Adapter | 64% | n/a |
+| Persistence Mapper | 60% | 26% |
+| Persistence Entity | 55% | 0% |
+| Application DTO | 34% | n/a |
+| Controller Layer | 31% | 14% |
+| Application Service | 24% | 13% |
+| **Total (all code)** | **45%** | **22%** |
+
 Tests cover:
+- **Domain model** — 100% coverage (CaseAttachment, CaseTimelineEvent, Document, ProcedureTask, ProcedureType)
 - **Service layer** — Business logic, ownership checks, state transitions
 - **Controller layer** — Request/response contracts, validation, error handling
 - **Repository layer** — JPA queries with H2 in-memory database
 - **Security** — JWT filter, token validation, role-based access
 - **Integration** — Full auth flow (register → verify → login → protected endpoint → refresh)
+- **Mapper layer** — Domain ↔ DTO transformation with timeline/attachments/formData
 
 ## Key Design Decisions
 

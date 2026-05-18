@@ -16,12 +16,14 @@ import es.tfg.records.infrastructure.persistence.entity.ProcedureEntity;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTypeI18nEntity;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTaskEntity;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTypeEntity;
+import es.tfg.records.infrastructure.persistence.entity.ProcedureTaskFieldI18nEntity;
 import es.tfg.records.infrastructure.persistence.entity.UserEntity;
 import es.tfg.records.infrastructure.persistence.entity.CaseTimelineEventEntity;
 import es.tfg.records.infrastructure.persistence.repository.CaseTimelineEventJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.DocumentJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureTypeI18nJpaRepository;
+import es.tfg.records.infrastructure.persistence.repository.ProcedureTaskFieldI18nJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureTaskJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureTypeJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.UserJpaRepository;
@@ -52,6 +54,7 @@ public class BackofficeService {
     private final ProcedureJpaRepository procedureRepository;
     private final ProcedureTypeJpaRepository procedureTypeRepository;
     private final ProcedureTypeI18nJpaRepository procedureTypeI18nRepository;
+    private final ProcedureTaskFieldI18nJpaRepository fieldI18nRepository;
     private final ProcedureTaskJpaRepository taskRepository;
     private final DocumentJpaRepository documentRepository;
     private final CaseTimelineEventJpaRepository timelineRepository;
@@ -62,6 +65,7 @@ public class BackofficeService {
     public BackofficeService(ProcedureJpaRepository procedureRepository,
                              ProcedureTypeJpaRepository procedureTypeRepository,
                               ProcedureTypeI18nJpaRepository procedureTypeI18nRepository,
+                              ProcedureTaskFieldI18nJpaRepository fieldI18nRepository,
                               ProcedureTaskJpaRepository taskRepository,
                               DocumentJpaRepository documentRepository,
                               CaseTimelineEventJpaRepository timelineRepository,
@@ -71,6 +75,7 @@ public class BackofficeService {
         this.procedureRepository = procedureRepository;
         this.procedureTypeRepository = procedureTypeRepository;
         this.procedureTypeI18nRepository = procedureTypeI18nRepository;
+        this.fieldI18nRepository = fieldI18nRepository;
         this.taskRepository = taskRepository;
         this.documentRepository = documentRepository;
         this.timelineRepository = timelineRepository;
@@ -783,5 +788,149 @@ public class BackofficeService {
         return sorted.size() % 2 == 0
                 ? (sorted.get(mid - 1) + sorted.get(mid)) / 2.0
                 : sorted.get(mid);
+    }
+
+    // ===== Field i18n Management =====
+
+    @Transactional(readOnly = true)
+    public List<BackofficeDtos.FieldI18nGroup> listFieldTranslations(UUID procedureTypeId) {
+        ProcedureTypeEntity procedureType = procedureTypeRepository.findById(procedureTypeId)
+                .orElseThrow(() -> new ResourceNotFoundException("PROCEDURE_TYPE", procedureTypeId.toString()));
+
+        List<ProcedureTaskEntity> tasks = taskRepository.findByProcedureTypeIdOrderByOrderIndexAsc(procedureTypeId);
+
+        List<BackofficeDtos.FieldI18nGroup> groups = new ArrayList<>();
+
+        for (ProcedureTaskEntity task : tasks) {
+            if (task.getFormSchema() == null || task.getFormSchema().isBlank()) {
+                continue;
+            }
+
+            List<BackofficeDtos.FormSchemaField> fields = parseFormSchema(task.getFormSchema());
+            List<ProcedureTaskFieldI18nEntity> allTranslations = fieldI18nRepository
+                    .findByProcedureTypeId(procedureTypeId);
+
+            List<BackofficeDtos.FieldI18nEntry> fieldEntries = new ArrayList<>();
+
+            for (BackofficeDtos.FormSchemaField field : fields) {
+                for (String locale : List.of("es-ES", "ca-ES", "eu-ES", "gl-ES", "va-ES")) {
+                    ProcedureTaskFieldI18nEntity translation = allTranslations.stream()
+                            .filter(t -> t.getTaskOrderIndex() == task.getOrderIndex()
+                                    && t.getFieldId().equals(field.id())
+                                    && t.getLocale().equals(locale))
+                            .findFirst()
+                            .orElse(null);
+
+                    List<BackofficeDtos.FieldOptionEntry> options = new ArrayList<>();
+                    if (translation != null && translation.getOptionsJson() != null) {
+                        try {
+                            options = objectMapper.readValue(translation.getOptionsJson(),
+                                    new TypeReference<List<BackofficeDtos.FieldOptionEntry>>() {});
+                        } catch (Exception e) {
+                            // ignore
+                        }
+                    }
+
+                    fieldEntries.add(new BackofficeDtos.FieldI18nEntry(
+                            translation != null ? translation.getId() : null,
+                            procedureTypeId,
+                            task.getOrderIndex(),
+                            task.getTitle(),
+                            field.id(),
+                            field.label(),
+                            locale,
+                            translation != null ? translation.getName() : field.label(),
+                            translation != null ? translation.getPlaceholder() : "",
+                            options,
+                            translation != null ? translation.getUpdatedAt() : null
+                    ));
+                }
+            }
+
+            groups.add(new BackofficeDtos.FieldI18nGroup(
+                    task.getOrderIndex(),
+                    task.getTitle(),
+                    task.getType() != null ? task.getType().name() : "UNKNOWN",
+                    fieldEntries
+            ));
+        }
+
+        return groups;
+    }
+
+    @Transactional
+    public BackofficeDtos.FieldI18nEntry upsertFieldTranslation(UUID procedureTypeId,
+                                                                 BackofficeDtos.FieldI18nUpsertRequest request) {
+        if (request.locale() == null || request.name() == null || request.fieldId() == null) {
+            throw new es.tfg.records.application.exception.ValidationException(
+                    List.of(new es.tfg.records.application.exception.ValidationException.ValidationError(
+                            "request", "locale, name, and fieldId are required")));
+        }
+
+        List<ProcedureTaskEntity> tasks = taskRepository.findByProcedureTypeIdOrderByOrderIndexAsc(procedureTypeId);
+
+        ProcedureTaskFieldI18nEntity entity = fieldI18nRepository
+                .findByProcedureTypeIdAndTaskOrderIndexAndFieldIdAndLocale(
+                        procedureTypeId, request.taskOrderIndex(), request.fieldId(), request.locale())
+                .orElseGet(() -> {
+                    ProcedureTaskFieldI18nEntity created = new ProcedureTaskFieldI18nEntity();
+                    created.setId(UUID.randomUUID());
+                    created.setProcedureTypeId(procedureTypeId);
+                    created.setTaskOrderIndex(request.taskOrderIndex());
+                    created.setFieldId(request.fieldId());
+                    created.setLocale(request.locale());
+                    return created;
+                });
+
+        entity.setName(request.name());
+        entity.setPlaceholder(request.placeholder() != null ? request.placeholder() : "");
+        if (request.options() != null) {
+            try {
+                entity.setOptionsJson(objectMapper.writeValueAsString(request.options()));
+            } catch (Exception e) {
+                throw new IllegalStateException("Failed to serialize options", e);
+            }
+        }
+
+        ProcedureTaskFieldI18nEntity saved = fieldI18nRepository.save(entity);
+
+        ProcedureTaskEntity task = tasks.stream()
+                .filter(t -> t.getOrderIndex() == saved.getTaskOrderIndex())
+                .findFirst()
+                .orElse(null);
+
+        String taskTitle = task != null ? task.getTitle() : "";
+
+        List<BackofficeDtos.FieldOptionEntry> options = new ArrayList<>();
+        if (saved.getOptionsJson() != null) {
+            try {
+                options = objectMapper.readValue(saved.getOptionsJson(),
+                        new TypeReference<List<BackofficeDtos.FieldOptionEntry>>() {});
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+
+        return new BackofficeDtos.FieldI18nEntry(
+                saved.getId(),
+                procedureTypeId,
+                saved.getTaskOrderIndex(),
+                taskTitle,
+                saved.getFieldId(),
+                saved.getName(),
+                saved.getLocale(),
+                saved.getName(),
+                saved.getPlaceholder(),
+                options,
+                saved.getUpdatedAt()
+        );
+    }
+
+    @Transactional
+    public void deleteFieldTranslation(UUID procedureTypeId, String fieldId, String locale) {
+        fieldI18nRepository.findByProcedureTypeId(procedureTypeId).stream()
+                .filter(t -> t.getFieldId().equals(fieldId) && t.getLocale().equals(locale))
+                .findFirst()
+                .ifPresent(fieldI18nRepository::delete);
     }
 }

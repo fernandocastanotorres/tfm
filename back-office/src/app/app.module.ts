@@ -23,6 +23,7 @@ import { ProcedureManagementComponent } from './adapters/components/procedure-ma
 import { PublicContentManagementComponent } from './adapters/components/public-content-management/public-content-management.component';
 import { TransparencyManagementComponent } from './adapters/components/transparency-management/transparency-management.component';
 import { StatisticsDashboardComponent } from './adapters/components/statistics-dashboard/statistics-dashboard.component';
+import { FieldI18nManagementComponent } from './adapters/components/field-i18n-management/field-i18n-management.component';
 
 import { AuthService } from './application/services/auth.service';
 import { MockAuthService } from './application/services/mock-auth.service';
@@ -56,7 +57,8 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     ProcedureManagementComponent,
     PublicContentManagementComponent,
     TransparencyManagementComponent,
-    StatisticsDashboardComponent
+    StatisticsDashboardComponent,
+    FieldI18nManagementComponent
   ],
   imports: [
     BrowserModule,

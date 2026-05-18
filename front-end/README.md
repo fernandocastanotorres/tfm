@@ -53,6 +53,27 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
+### Test Coverage
+
+```bash
+ng test --watch=false --browsers=ChromeHeadless --code-coverage
+```
+
+**Current Coverage (2026-05-18):**
+
+| Metric | Coverage | Tests |
+|--------|----------|-------|
+| Statements | 42.58% (534/1254) | 58 passing |
+| Branches | 20.79% (120/577) | |
+| Functions | 37.40% (144/385) | |
+| Lines | 42.42% (510/1202) | |
+
+**Tested areas:**
+- Pagination utility functions (`pagination.ts`) — 14 tests
+- Auth service (login, logout, token management, JWT parsing) — 16 tests
+- HTTP error interceptor — 3 tests
+- All component specs (dashboard, login, register, profile, procedures, messages, notifications, appointments, payments, case-wizard, case-detail, documents, password-recovery)
+
 ## Running end-to-end tests
 
 Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.

@@ -13,6 +13,7 @@
 | [ADR-0009](./0009-stable-procedure-id-and-db-backed-catalog-i18n.md) | Stable Procedure Identifier and DB-Backed Catalog i18n | Accepted | 2026-05-17 |
 | [ADR-0010](./0010-async-verification-email-with-rabbitmq-and-db-throttle.md) | Async Verification Email Delivery with RabbitMQ and DB-Backed Resend Throttle | Accepted | 2026-05-17 |
 | [ADR-0011](./0011-self-contained-eni-metadata-store-with-postgresql.md) | Self-Contained ENI Metadata Store with PostgreSQL (Alfresco Optional) | Accepted | 2026-05-17 |
+| [ADR-0012](./0012-db-persisted-form-field-i18n.md) | DB-Persisted Form Field i18n for Dynamic Procedure Forms | Proposed | 2026-05-18 |
 
 ## Supporting Files
 - [ADR Guidelines](./README.md)

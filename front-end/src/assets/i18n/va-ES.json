@@ -125,7 +125,7 @@
     "PHONE": "Telèfon",
     "NATIONAL_ID": "DNI/NIE",
     "ADDRESS": "Adreça",
-    "EDIT": "Editar perfil",
+    "EDIT": "Edita el perfil",
     "CANCEL": "Cancel·lar",
     "SAVE": "Guardar canvis",
     "SAVED": "Canvis guardats (mock)."
@@ -365,7 +365,8 @@
     "MOCK_ATTACHMENT_PLAN": "Plànol d'obra.pdf",
     "MOCK_ATTACHMENT_ID": "DNI escanejat.pdf",
     "ERROR_LOAD": "No s'ha pogut carregar l'expedient. Torna-ho a provar més tard.",
-    "CONTINUE": "Continuar tramitacio"
+    "CONTINUE": "Continuar tramitació",
+    "ERROR_RESUME": "No s'ha pogut identificar el procediment per a continuar la tramitació."
   },
   "CASE_STATUS": {
     "REVIEW": "En revisió",
@@ -412,7 +413,18 @@
     "UPLOAD_ID": "Document d'identitat",
     "UPLOAD_SUPPORTING": "Documentació addicional",
     "REMOVE_FILE": "Eliminar",
-    "REVIEW_HINT": "Revisa la informació i els documents abans d'enviar la sol·licitud."
+    "REVIEW_HINT": "Revisa la informació i els documents abans d'enviar la sol·licitud.",
+    "UPLOAD_DROPZONE_TEXT": "Arrossega i deixa anar fitxers aquí o selecciona des del teu equip.",
+    "UPLOAD_GENERIC_LABEL": "Documentació"
+  },
+  "CASE_SEARCH": {
+    "TITLE": "Cercador d'expedients",
+    "SUBTITLE": "Localitza els teus expedients per número, títol, estat o tipus.",
+    "SEARCH_PLACEHOLDER": "Cercar per id, títol o estat",
+    "LOADING": "Carregant expedients...",
+    "ERROR": "No s'han pogut carregar els teus expedients.",
+    "NO_RESULTS": "No s'han trobat expedients amb este criteri.",
+    "BREADCRUMB": "Els meus expedients"
   },
   "PUBLIC": {
     "TAGLINE": "Seu Electrònica",
@@ -532,7 +544,7 @@
     "A_HOW_TO_ACCESS": "Pots accedir mitjançant certificat digital, sistema Cl@ve, DNI electrònic o amb el teu usuari i contrasenya registrats a la plataforma.",
     "Q_DATA_PROTECTION": "Com es protegixen les meues dades personals?",
     "A_DATA_PROTECTION": "Totes les dades es tracten conforme al RGPD i la LOPDGDD. La seu electrònica complix amb l'Esquema Nacional de Seguretat per a garantir la confidencialitat i integritat de la informació.",
-    "Q_HOW_TO_START": "Com inicic un procediment?",
+    "Q_HOW_TO_START": "Com inic un procediment?",
     "A_HOW_TO_START": "Accedix al catàleg de procediments, selecciona el que necessites i seguix els passos de l'assistent. Podràs completar formularis i adjuntar documentació.",
     "Q_TRACK_PROCEDURE": "Com puc seguir l'estat del meu expedient?",
     "A_TRACK_PROCEDURE": "Una vegada iniciada sessió, accedix al teu panel ciutadà on podràs vore tots els teus expedients amb el seu estat actual i historial d'actuacions.",
@@ -632,11 +644,11 @@
     "CAT_SOCIAL": "Servicis Socials",
     "CAT_ENVIRONMENT": "Medi Ambient",
     "PHONE": "Telèfon",
-    "EMAIL": "Email",
+    "EMAIL": "Correu electrònic",
     "ADDRESS_CENTRAL": "Carrer Principal 1, 28001",
     "ADDRESS_NORTH": "Av. del Nord 15, 28002",
     "ADDRESS_SOUTH": "Plaça del Sud 3, 28003",
-    "VIEW_WEBSITE": "Visitar web",
+    "VIEW_WEBSITE": "Visita el lloc web",
     "EMPTY": "No s'han trobat organismes per a esta busca.",
     "URBANISM": "Àrea d'Urbanisme",
     "URBANISM_DESC": "Gestió de llicències d'obra, planejament urbanístic i disciplina urbanística.",
@@ -668,6 +680,8 @@
     "METRIC_AVG_DAYS": "Termini mitjà de resolució",
     "METRIC_SATISFACTION": "Satisfacció ciutadana",
     "METRIC_DIGITAL": "Procediments digitals",
+    "METRIC_SLA_COMPLIANCE": "Compliment de terminis",
+    "NO_REPORTS": "No hi ha informes públics disponibles.",
     "TREND_UP": "Tendència ascendent",
     "TREND_DOWN": "Tendència descendent",
     "TREND_STABLE": "Tendència estable",

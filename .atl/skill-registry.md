@@ -177,21 +177,25 @@ Pre-digested rules per skill. Delegators copy matching blocks into sub-agent pro
 |------|------|-------|
 | AGENTS.md | AGENTS.md | Index — defines agent roles, skills matrix, collaboration protocol, mandatory English frontend standard |
 | REQUIREMENTS.md | REQUIREMENTS.md | Referenced by AGENTS.md — project requirements, compliance framework, tech stack, functional requirements |
+| specs.md | specs.md | SDD high-level index — current baseline, active decisions, test coverage status |
 | docs/README.md | docs/README.md | Referenced by AGENTS.md — documentation index with links to all doc sections |
-| docs/adr/INDEX.md | docs/adr/INDEX.md | Referenced by docs/README.md — ADR index with 7 accepted decisions |
+| docs/adr/INDEX.md | docs/adr/INDEX.md | Referenced by docs/README.md — ADR index with 12 decisions (11 accepted, 1 proposed) |
 | docs/adr/README.md | docs/adr/README.md | Referenced by docs/README.md — ADR guidelines and lifecycle |
 | docs/adr/_template.md | docs/adr/_template.md | Referenced by docs/README.md — ADR template |
 | docs/architecture/INDEX.md | docs/architecture/INDEX.md | Referenced by docs/README.md — architecture index |
 | docs/architecture/BOUNDARY_RULES.md | docs/architecture/BOUNDARY_RULES.md | Referenced by docs/README.md — hexagonal boundary enforcement |
+| docs/architecture/SYSTEM_DESIGN.md | docs/architecture/SYSTEM_DESIGN.md | Referenced by docs/README.md — current runtime architecture and test coverage |
 | docs/security/AUTHORIZATION_MATRIX.md | docs/security/AUTHORIZATION_MATRIX.md | Referenced by docs/README.md — RBAC authorization policy |
 | docs/security/AUTHORIZATION_TEST_CASES.md | docs/security/AUTHORIZATION_TEST_CASES.md | Referenced by docs/README.md — authorization test catalog |
 | docs/security/AUDIT_EVENT_CATALOG.md | docs/security/AUDIT_EVENT_CATALOG.md | Referenced by docs/README.md — audit event definitions |
 | docs/api/API_CONTRACT.md | docs/api/API_CONTRACT.md | Referenced by docs/README.md — API baseline contract |
 | docs/api/ERROR_MODEL.md | docs/api/ERROR_MODEL.md | Referenced by docs/README.md — API error model |
-| docs/bpm/BPMN_CONVENTIONS.md | docs/bpm/BPMN_CONVENTIONS.md | Referenced by docs/README.md — Camunda 7 process conventions |
+| docs/bpm/BPMN_CONVENTIONS.md | docs/bpm/BPMN_CONVENTIONS.md | Referenced by docs/README.md — Flowable process conventions |
 | docs/interoperability/ENIDOC_SPEC.md | docs/interoperability/ENIDOC_SPEC.md | Referenced by docs/README.md — ENIDOC package specification |
-| docs/quality/TEST_STRATEGY.md | docs/quality/TEST_STRATEGY.md | Referenced by docs/README.md — test strategy and CI gates |
+| docs/quality/TEST_STRATEGY.md | docs/quality/TEST_STRATEGY.md | Referenced by docs/README.md — test strategy, CI gates, current coverage status |
 | docs/quality/COVERAGE_SCOPE_MAP.md | docs/quality/COVERAGE_SCOPE_MAP.md | Referenced by docs/README.md — coverage scope definitions |
 | docs/quality/CI_COVERAGE_GATES.md | docs/quality/CI_COVERAGE_GATES.md | Referenced by docs/README.md — CI coverage enforcement |
+| docs/IMPLEMENTATION_READY_CHECKLIST.md | docs/IMPLEMENTATION_READY_CHECKLIST.md | AI delivery readiness checklist with current test status |
+| docs/DEPLOYMENT_AND_BUILD.md | docs/DEPLOYMENT_AND_BUILD.md | Build commands, local dev, Docker Compose, test coverage commands |
 
 Read the convention files listed above for project-specific patterns and rules. All referenced paths have been extracted — no need to read index files to discover more.

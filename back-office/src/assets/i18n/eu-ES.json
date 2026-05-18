@@ -1,0 +1,107 @@
+{
+  "eu-ES": {
+    "backoffice": {
+      "title": "Backoffice",
+      "subtitle": "Espediente Elektronikoen Kudeaketa",
+      "login": {
+        "username": "Erabiltzailea",
+        "password": "Pasahitza",
+        "submit": "Saioa hasi",
+        "loading": "Kargatzen..."
+      },
+      "nav": {
+        "dashboard": "Panel Nagusia",
+        "cases": "Espedienteak",
+        "tasks": "Zain Dauden Zereginak",
+        "users": "Erabiltzaileak",
+        "procedures": "Prozedurak",
+        "publicContent": "Eduki Publikoa",
+        "transparency": "Gardentasuna",
+        "statistics": "Estatistikak",
+        "logout": "Saioa itxi"
+      },
+      "dashboard": {
+        "totalCases": "Espediente Guztira",
+        "pendingCases": "Zain",
+        "inProgress": "Tramitazioan",
+        "completedToday": "Gaur Amaituak"
+      },
+      "cases": {
+        "title": "Espedienteak",
+        "filterByStatus": "Egoera",
+        "all": "Denak",
+        "viewDetail": "Xehetasunak ikusi",
+        "noCases": "Ez da espedienterik aurkitu"
+      },
+      "status": {
+        "DRAFT": "Zirriborroa",
+        "SUBMITTED": "Aurkeztua",
+        "IN_PROGRESS": "Tramitazioan",
+        "PENDING_AMENDMENT": "Zuzenketa Zain",
+        "RESOLVED": "Ebatzia",
+        "REJECTED": "Baztertua"
+      },
+      "procedures": {
+        "title": "Prozeduren Kudeaketa",
+        "subtitle": "Katalogoa, BPMN zereginak eta formularioaren eremuak konfiguratu.",
+        "search": "Prozedura bilatu",
+        "new": "Prozedura berria",
+        "edit": "Prozedura editatu",
+        "activate": "Aktibatu",
+        "deactivate": "Desaktibatu",
+        "category": "Kategoria",
+        "unit": "Unitatea",
+        "deadline": "Epea",
+        "fee": "Tasa",
+        "days": "egun",
+        "tasks": "Zereginak",
+        "noProcedures": "Ez dago prozedurarik",
+        "loading": "Prozedurak kargatzen...",
+        "i18n": {
+          "title": "Internazionalizazioa",
+          "syncNote": "es-ES hizkuntza eremu nagusiekin sinkronizatzen da"
+        },
+        "bpmn": {
+          "title": "BPMN Zereginak",
+          "addTask": "Zeregina gehitu",
+          "removeTask": "Zeregina ezabatu",
+          "taskTitle": "Izenburua",
+          "taskDescription": "Deskribapena"
+        },
+        "form": {
+          "title": "Formulario dinamikoa",
+          "addField": "Eremua gehitu",
+          "removeField": "Eremua ezabatu",
+          "label": "Etiketa",
+          "required": "Beharrezkoa"
+        },
+        "fieldI18n": {
+          "title": "Formularioaren eremuen itzulpena",
+          "subtitle": "Formulario dinamikoaren eremuen etiketak eta leku-markak itzultzen ditu.",
+          "manage": "Itzulpenak kudeatu",
+          "loading": "Eremuak kargatzen...",
+          "noFields": "Ez dago eremurik konfiguratu prozedura honen zereginetan.",
+          "save": "Itzulpenak gorde",
+          "saving": "Gordetzen...",
+          "close": "Itxi",
+          "name": "Izena",
+          "placeholder": "Leku-marka",
+          "options": "Aukerak",
+          "confirmSaveTitle": "Eremuen itzulpenak gorde",
+          "confirmSaveMessage": "Aldatutako eremu guztien itzulpenak eguneratuko dira hautatutako hizkuntzarako."
+        }
+      },
+      "common": {
+        "save": "Gorde",
+        "saving": "Gordetzen...",
+        "cancel": "Utzi",
+        "close": "Itxi",
+        "delete": "Ezabatu",
+        "edit": "Editatu",
+        "search": "Bilatu",
+        "loading": "Kargatzen...",
+        "noData": "Ez dago daturik erabilgarri"
+      }
+    }
+  }
+}

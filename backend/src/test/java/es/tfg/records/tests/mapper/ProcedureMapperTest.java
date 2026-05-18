@@ -79,7 +79,7 @@ class ProcedureMapperTest {
         procedure.setUpdatedAt(now);
 
         // When
-        CaseDetail result = ProcedureMapper.toCaseDetail(procedure, "Transportation", "License renewal for drivers");
+        CaseDetail result = ProcedureMapper.toCaseDetail(procedure, "Transportation", "License renewal for drivers", null, null, null);
 
         // Then
         assertThat(result.id()).isEqualTo(procedureId);
@@ -108,7 +108,7 @@ class ProcedureMapperTest {
             procedure.setUpdatedAt(now);
 
             // When
-            CaseDetail result = ProcedureMapper.toCaseDetail(procedure, "Test", "Test description");
+            CaseDetail result = ProcedureMapper.toCaseDetail(procedure, "Test", "Test description", null, null, null);
 
             // Then
             assertThat(result.status()).isEqualTo(status.name());

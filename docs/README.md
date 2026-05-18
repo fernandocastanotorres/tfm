@@ -36,6 +36,14 @@ This folder contains project-level technical documentation.
 - Coverage scope definitions: [Coverage Scope Map](./quality/COVERAGE_SCOPE_MAP.md)
 - CI enforcement blueprint: [CI Coverage Gates](./quality/CI_COVERAGE_GATES.md)
 
+## Test Coverage Summary (2026-05-18)
+
+| Module | Tests | Coverage | Status |
+|--------|-------|----------|--------|
+| Backend domain | 144 | 100% domain | ✅ |
+| Back-office | 51 | 88.5% statements | ✅ |
+| Front-end citizen | 58 | 42.5% statements | ⚠️ |
+
 ## Dev Startup (System Online)
 
 Use three terminals so backend, sede, and backoffice run at the same time.

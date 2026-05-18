@@ -427,3 +427,38 @@ export interface ThemePaletteUpsertRequest {
   themes: ThemeVariant[];
   activeThemeId: string;
 }
+
+export interface FieldOptionEntry {
+  value: string;
+  label: string;
+}
+
+export interface FieldI18nEntry {
+  id: string;
+  procedureTypeId: string;
+  taskOrderIndex: number;
+  taskTitle: string;
+  fieldId: string;
+  fieldName: string;
+  locale: string;
+  name: string;
+  placeholder: string;
+  options: FieldOptionEntry[];
+  updatedAt: string;
+}
+
+export interface FieldI18nUpsertRequest {
+  taskOrderIndex: number;
+  fieldId: string;
+  locale: string;
+  name: string;
+  placeholder: string;
+  options: FieldOptionEntry[];
+}
+
+export interface FieldI18nGroup {
+  taskOrderIndex: number;
+  taskTitle: string;
+  taskType: string;
+  fields: FieldI18nEntry[];
+}

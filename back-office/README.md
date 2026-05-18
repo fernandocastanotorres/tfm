@@ -45,6 +45,33 @@ npx ng serve --configuration development --port 4300
 - TypeScript app: `npx tsc --noEmit`
 - TypeScript specs: `npx tsc --noEmit -p tsconfig.spec.json`
 
+## Running unit tests
+
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+
+### Test Coverage
+
+```bash
+ng test --watch=false --browsers=ChromeHeadless --code-coverage
+```
+
+**Current Coverage (2026-05-18):**
+
+| Metric | Coverage | Tests |
+|--------|----------|-------|
+| Statements | 88.52% (108/122) | 51 passing |
+| Branches | 94.44% (17/18) | |
+| Functions | 78.04% (32/41) | |
+| Lines | 89.28% (100/112) | |
+
+**Tested areas:**
+- Mock data pagination and filtering (`mock-data.ts`) — 16 tests
+- Auth service (JWT parsing, role checks, token refresh) — 18 tests
+- JWT auth interceptor (401 retry flow) — 1 test
+- Accept-language interceptor — 3 tests
+- Correlation-id interceptor — 4 tests
+- HTTP error interceptor — 7 tests
+
 ## Interactive Tour
 
 - Backoffice header includes a `Guia` button.

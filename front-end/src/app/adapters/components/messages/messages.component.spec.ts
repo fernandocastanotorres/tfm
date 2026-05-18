@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { MessagesComponent } from './messages.component';
 import { MessagesService } from '../../../application/services/messages.service';
 import { TranslateModule } from '@ngx-translate/core';
@@ -11,7 +13,7 @@ describe('MessagesComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [MessagesComponent],
-      imports: [TranslateModule.forRoot(), FormsModule, ReactiveFormsModule],
+      imports: [HttpClientTestingModule, RouterTestingModule, TranslateModule.forRoot(), FormsModule, ReactiveFormsModule],
       providers: [MessagesService]
     }).compileComponents();
 

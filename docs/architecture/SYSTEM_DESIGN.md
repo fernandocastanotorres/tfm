@@ -11,9 +11,9 @@ This document describes the implemented technical design as of 2026-05.
 ## Context
 
 The platform provides electronic records processing with three modules:
-- Citizen frontend (`front-end`)
-- Backoffice frontend (`back-office`)
-- Core backend (`backend`)
+- Citizen frontend (`front-end`) — Angular 16
+- Backoffice frontend (`back-office`) — Angular 16
+- Core backend (`backend`) — Spring Boot 3.x
 
 The system is developed with H2 in dev/test and prepared for PostgreSQL in production.
 
@@ -91,3 +91,13 @@ Implementation touchpoints:
 - `backend/src/main/java/es/tfg/records/infrastructure/config/SecurityConfig.java`
 - `front-end/src/app/application/guards/auth.guard.ts`
 - `back-office/src/app/application/interceptors/jwt-auth.interceptor.ts`
+
+## Test Coverage
+
+| Module | Tests | Domain Coverage | Overall |
+|--------|-------|----------------|---------|
+| Backend | 144 | 100% | 45% |
+| Back-office | 51 | n/a | 88.5% |
+| Front-end citizen | 58 | n/a | 42.5% |
+
+See `docs/quality/TEST_STRATEGY.md` for detailed breakdown and gap analysis.

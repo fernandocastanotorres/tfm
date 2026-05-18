@@ -395,4 +395,28 @@ public class BackofficeController {
             @RequestBody BackofficeDtos.ProcedureTranslationRequest request) {
         return ResponseEntity.ok(backofficeService.upsertProcedureTranslation(id, request));
     }
+
+    @GetMapping("/procedure-types/{id}/field-i18n")
+    @Operation(summary = "List all form field translations for a procedure type, grouped by task")
+    public ResponseEntity<List<BackofficeDtos.FieldI18nGroup>> listFieldTranslations(@PathVariable UUID id) {
+        return ResponseEntity.ok(backofficeService.listFieldTranslations(id));
+    }
+
+    @PutMapping("/procedure-types/{id}/field-i18n")
+    @Operation(summary = "Create or update a form field translation")
+    public ResponseEntity<BackofficeDtos.FieldI18nEntry> upsertFieldTranslation(
+            @PathVariable UUID id,
+            @RequestBody BackofficeDtos.FieldI18nUpsertRequest request) {
+        return ResponseEntity.ok(backofficeService.upsertFieldTranslation(id, request));
+    }
+
+    @DeleteMapping("/procedure-types/{id}/field-i18n/{fieldId}/{locale}")
+    @Operation(summary = "Delete a form field translation")
+    public ResponseEntity<Void> deleteFieldTranslation(
+            @PathVariable UUID id,
+            @PathVariable String fieldId,
+            @PathVariable String locale) {
+        backofficeService.deleteFieldTranslation(id, fieldId, locale);
+        return ResponseEntity.noContent().build();
+    }
 }

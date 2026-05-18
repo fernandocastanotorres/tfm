@@ -1,0 +1,107 @@
+{
+  "gl-ES": {
+    "backoffice": {
+      "title": "Backoffice",
+      "subtitle": "Xestion de Expedientes Electronicos",
+      "login": {
+        "username": "Usuario",
+        "password": "Contrasinal",
+        "submit": "Iniciar sesion",
+        "loading": "Cargando..."
+      },
+      "nav": {
+        "dashboard": "Panel Principal",
+        "cases": "Expedientes",
+        "tasks": "Tarefas Pendentes",
+        "users": "Usuarios",
+        "procedures": "Procedementos",
+        "publicContent": "Contido Publico",
+        "transparency": "Transparencia",
+        "statistics": "Estatisticas",
+        "logout": "Cerrar sesion"
+      },
+      "dashboard": {
+        "totalCases": "Total Expedientes",
+        "pendingCases": "Pendentes",
+        "inProgress": "En Tramitacion",
+        "completedToday": "Completados Hoxe"
+      },
+      "cases": {
+        "title": "Expedientes",
+        "filterByStatus": "Estado",
+        "all": "Todos",
+        "viewDetail": "Ver detalle",
+        "noCases": "Non se atoparon expedientes"
+      },
+      "status": {
+        "DRAFT": "Borrador",
+        "SUBMITTED": "Presentado",
+        "IN_PROGRESS": "En Tramitacion",
+        "PENDING_AMENDMENT": "Pendente Subsanacion",
+        "RESOLVED": "Resolto",
+        "REJECTED": "Rexeitado"
+      },
+      "procedures": {
+        "title": "Xestion de Procedementos",
+        "subtitle": "Configurar catalogo, tarefas BPMN e campos de formulario.",
+        "search": "Buscar procedemento",
+        "new": "Novo procedemento",
+        "edit": "Editar procedemento",
+        "activate": "Activar",
+        "deactivate": "Desactivar",
+        "category": "Categoria",
+        "unit": "Unidade",
+        "deadline": "Prazo",
+        "fee": "Taxa",
+        "days": "dias",
+        "tasks": "Tarefas",
+        "noProcedures": "Non hai procedementos",
+        "loading": "Cargando procedementos...",
+        "i18n": {
+          "title": "Internacionalizacion",
+          "syncNote": "A configuracion rexional es-ES sincronizase cos campos principais"
+        },
+        "bpmn": {
+          "title": "Tarefas BPMN",
+          "addTask": "Engadir tarefa",
+          "removeTask": "Eliminar tarefa",
+          "taskTitle": "Titulo",
+          "taskDescription": "Descricion"
+        },
+        "form": {
+          "title": "Formulario dinamico",
+          "addField": "Engadir campo",
+          "removeField": "Eliminar campo",
+          "label": "Etiqueta",
+          "required": "Obrigatorio"
+        },
+        "fieldI18n": {
+          "title": "Traducion de campos do formulario",
+          "subtitle": "Traduce as etiquetas e placeholders dos campos do formulario dinamico.",
+          "manage": "Xestionar traducion",
+          "loading": "Cargando campos...",
+          "noFields": "Non hai campos configurados nas tarefas deste procedemento.",
+          "save": "Gardar traducion",
+          "saving": "Gardando...",
+          "close": "Cerrar",
+          "name": "Nome",
+          "placeholder": "Placeholder",
+          "options": "Opcions",
+          "confirmSaveTitle": "Gardar traducion de campos",
+          "confirmSaveMessage": "Actualizaranse as traducion de todos os campos modificados para a configuracion rexional seleccionada."
+        }
+      },
+      "common": {
+        "save": "Gardar",
+        "saving": "Gardando...",
+        "cancel": "Cancelar",
+        "close": "Cerrar",
+        "delete": "Eliminar",
+        "edit": "Editar",
+        "search": "Buscar",
+        "loading": "Cargando...",
+        "noData": "Non hai datos dispoñibles"
+      }
+    }
+  }
+}

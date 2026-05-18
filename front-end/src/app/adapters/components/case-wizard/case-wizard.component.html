@@ -75,7 +75,7 @@
               (dragleave)="onDragLeave(requirement.id, $event)"
               (drop)="onDrop(requirement.id, $event)"
             >
-              <p class="wizard-dropzone__text">Arrastra y suelta ficheros aqui o selecciona desde tu equipo.</p>
+              <p class="wizard-dropzone__text">{{ 'CASE_WIZARD.UPLOAD_DROPZONE_TEXT' | translate }}</p>
             </div>
             <input
               [id]="requirement.id"

@@ -15,6 +15,9 @@
         "tasks": "Tareas Pendientes",
         "users": "Usuarios",
         "procedures": "Procedimientos",
+        "publicContent": "Contenido Publico",
+        "transparency": "Transparencia",
+        "statistics": "Estadisticas",
         "logout": "Cerrar sesion"
       },
       "dashboard": {
@@ -37,6 +40,67 @@
         "PENDING_AMENDMENT": "Pendiente Subsanacion",
         "RESOLVED": "Resuelto",
         "REJECTED": "Rechazado"
+      },
+      "procedures": {
+        "title": "Gestion de Procedimientos",
+        "subtitle": "Configurar catalogo, tareas BPMN y campos de formulario.",
+        "search": "Buscar procedimiento",
+        "new": "Nuevo procedimiento",
+        "edit": "Editar procedimiento",
+        "activate": "Activar",
+        "deactivate": "Desactivar",
+        "category": "Categoria",
+        "unit": "Unidad",
+        "deadline": "Plazo",
+        "fee": "Tasa",
+        "days": "dias",
+        "tasks": "Tareas",
+        "noProcedures": "No hay procedimientos",
+        "loading": "Cargando procedimientos...",
+        "i18n": {
+          "title": "Internacionalizacion",
+          "syncNote": "El locale es-ES se sincroniza con los campos principales"
+        },
+        "bpmn": {
+          "title": "Tareas BPMN",
+          "addTask": "Anadir tarea",
+          "removeTask": "Eliminar tarea",
+          "taskTitle": "Titulo",
+          "taskDescription": "Descripcion"
+        },
+        "form": {
+          "title": "Formulario dinamico",
+          "addField": "Anadir campo",
+          "removeField": "Eliminar campo",
+          "label": "Etiqueta",
+          "required": "Obligatorio"
+        },
+        "fieldI18n": {
+          "title": "Traduccion de campos del formulario",
+          "subtitle": "Traduce las etiquetas y placeholders de los campos del formulario dinamico.",
+          "manage": "Gestionar traducciones",
+          "loading": "Cargando campos...",
+          "noFields": "No hay campos configurados en las tareas de este procedimiento.",
+          "save": "Guardar traducciones",
+          "saving": "Guardando...",
+          "close": "Cerrar",
+          "name": "Nombre",
+          "placeholder": "Placeholder",
+          "options": "Opciones",
+          "confirmSaveTitle": "Guardar traducciones de campos",
+          "confirmSaveMessage": "Se actualizaran las traducciones de todos los campos modificados para el locale seleccionado."
+        }
+      },
+      "common": {
+        "save": "Guardar",
+        "saving": "Guardando...",
+        "cancel": "Cancelar",
+        "close": "Cerrar",
+        "delete": "Eliminar",
+        "edit": "Editar",
+        "search": "Buscar",
+        "loading": "Cargando...",
+        "noData": "No hay datos disponibles"
       }
     }
   }

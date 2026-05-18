@@ -13,8 +13,8 @@
 
 ## 2. Module Architecture
 The system is divided into three decoupled core modules:
-1.  **Public Frontend (Citizen):** Angular 17+ app with Tailwind CSS for procedure submission and status tracking.
-2.  **Private Backoffice (Processor):** Angular 17+ app with Tailwind CSS for case management, workflow tasks, and BPMN configuration.
+1.  **Public Frontend (Citizen):** Angular 16 app with Tailwind CSS for procedure submission and status tracking.
+2.  **Private Backoffice (Processor):** Angular 16 app with Tailwind CSS for case management, workflow tasks, and BPMN configuration.
 3.  **Core Backend:** Spring Boot 3.x API handling business logic, BPMN orchestration, and integrations.
 
 ## 3. Technology Stack & Tooling

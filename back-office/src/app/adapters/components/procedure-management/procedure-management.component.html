@@ -37,6 +37,7 @@
         <button type="button" (click)="toggleStatus(procedure)" class="text-gray-600 hover:text-gray-900 text-sm font-medium">{{ procedure.status === 'ACTIVE' ? 'Desactivar' : 'Activar' }}</button>
         <button type="button" (click)="openEdit(procedure)" class="text-blue-600 hover:text-blue-800 text-sm font-medium">Editar</button>
       </div>
+      <bo-field-i18n-management [procedure]="procedure"></bo-field-i18n-management>
     </div>
   </div>
 
