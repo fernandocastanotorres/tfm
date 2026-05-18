@@ -141,9 +141,9 @@
             <div class="border border-gray-200 rounded-lg overflow-hidden">
               <button type="button" (click)="toggleSection('primary')" class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 transition">
                 <span class="text-sm font-medium text-gray-700">Colores primarios</span>
-                <span class="text-gray-400 text-sm">{{ sectionsExpanded.primary ? '▾' : '' }}</span>
+                <span class="text-gray-400 text-sm">{{ sectionsExpanded['primary'] ? '▾' : '' }}</span>
               </button>
-              <div *ngIf="sectionsExpanded.primary" class="p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div *ngIf="sectionsExpanded['primary']" class="p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div *ngFor="let color of themeForm | slice:0:6; let i = index" class="flex items-center gap-2">
                   <div class="flex-shrink-0 w-8 h-8 rounded-md border border-gray-200 shadow-sm" [style.backgroundColor]="color.value"></div>
                   <div class="flex-1 min-w-0">
@@ -158,9 +158,9 @@
             <div class="border border-gray-200 rounded-lg overflow-hidden">
               <button type="button" (click)="toggleSection('surface')" class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 transition">
                 <span class="text-sm font-medium text-gray-700">Superficies y texto</span>
-                <span class="text-gray-400 text-sm">{{ sectionsExpanded.surface ? '▾' : '▸' }}</span>
+                <span class="text-gray-400 text-sm">{{ sectionsExpanded['surface'] ? '▾' : '▸' }}</span>
               </button>
-              <div *ngIf="sectionsExpanded.surface" class="p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div *ngIf="sectionsExpanded['surface']" class="p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div *ngFor="let color of themeForm | slice:6:10; let i = index" class="flex items-center gap-2">
                   <div class="flex-shrink-0 w-8 h-8 rounded-md border border-gray-200 shadow-sm" [style.backgroundColor]="color.value"></div>
                   <div class="flex-1 min-w-0">
@@ -175,9 +175,9 @@
             <div class="border border-gray-200 rounded-lg overflow-hidden">
               <button type="button" (click)="toggleSection('hero')" class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 transition">
                 <span class="text-sm font-medium text-gray-700">Hero (cabecera)</span>
-                <span class="text-gray-400 text-sm">{{ sectionsExpanded.hero ? '▾' : '' }}</span>
+                <span class="text-gray-400 text-sm">{{ sectionsExpanded['hero'] ? '▾' : '' }}</span>
               </button>
-              <div *ngIf="sectionsExpanded.hero" class="p-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div *ngIf="sectionsExpanded['hero']" class="p-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div *ngFor="let color of themeForm | slice:10:13; let i = index" class="flex items-center gap-2">
                   <div class="flex-shrink-0 w-8 h-8 rounded-md border border-gray-200 shadow-sm" [style.backgroundColor]="color.value"></div>
                   <div class="flex-1 min-w-0">
@@ -192,9 +192,9 @@
             <div class="border border-gray-200 rounded-lg overflow-hidden">
               <button type="button" (click)="toggleSection('calendar')" class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 transition">
                 <span class="text-sm font-medium text-gray-700">Calendario</span>
-                <span class="text-gray-400 text-sm">{{ sectionsExpanded.calendar ? '▾' : '▸' }}</span>
+                <span class="text-gray-400 text-sm">{{ sectionsExpanded['calendar'] ? '▾' : '▸' }}</span>
               </button>
-              <div *ngIf="sectionsExpanded.calendar" class="p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div *ngIf="sectionsExpanded['calendar']" class="p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div *ngFor="let color of themeForm | slice:13:15; let i = index" class="flex items-center gap-2">
                   <div class="flex-shrink-0 w-8 h-8 rounded-md border border-gray-200 shadow-sm" [style.backgroundColor]="color.value"></div>
                   <div class="flex-1 min-w-0">
@@ -209,9 +209,9 @@
             <div class="border border-gray-200 rounded-lg overflow-hidden">
               <button type="button" (click)="toggleSection('footer')" class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 transition">
                 <span class="text-sm font-medium text-gray-700">Pie de pagina</span>
-                <span class="text-gray-400 text-sm">{{ sectionsExpanded.footer ? '▾' : '▸' }}</span>
+                <span class="text-gray-400 text-sm">{{ sectionsExpanded['footer'] ? '' : '▸' }}</span>
               </button>
-              <div *ngIf="sectionsExpanded.footer" class="p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div *ngIf="sectionsExpanded['footer']" class="p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div *ngFor="let color of themeForm | slice:15:17; let i = index" class="flex items-center gap-2">
                   <div class="flex-shrink-0 w-8 h-8 rounded-md border border-gray-200 shadow-sm" [style.backgroundColor]="color.value"></div>
                   <div class="flex-1 min-w-0">
