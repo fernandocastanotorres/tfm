@@ -9,6 +9,7 @@ import es.tfg.records.application.service.EniMetadataService;
 import es.tfg.records.application.service.PublicContentService;
 import es.tfg.records.entrypoints.advice.GlobalExceptionHandler;
 import es.tfg.records.entrypoints.controller.BackofficeController;
+import es.tfg.records.application.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -26,6 +27,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -328,5 +330,237 @@ class BackofficeControllerTest {
 
         mockMvc.perform(get("/admin/public-content/theme"))
                 .andExpect(status().isOk());
+    }
+
+    // ===== Legislation CRUD =====
+
+    @Test
+    void createLegislation_shouldReturnCreated() throws Exception {
+        UUID groupId = UUID.randomUUID();
+        PublicContentDtos.LegislationUpsertRequest request = new PublicContentDtos.LegislationUpsertRequest(
+                "es-ES", groupId, "law", "New Law", "Description", LocalDate.of(2026, 1, 1),
+                "https://example.com", null, 1, true);
+        when(publicContentService.createLegislation(any())).thenReturn(
+                new PublicContentDtos.LegislationEntry(groupId, "es-ES", "law", "New Law", "Description",
+                        LocalDate.of(2026, 1, 1), "https://example.com", null, 1, true, null, null));
+
+        mockMvc.perform(post("/admin/public-content/legislation")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.title").value("New Law"))
+                .andExpect(jsonPath("$.type").value("law"));
+    }
+
+    @Test
+    void updateLegislation_shouldReturnUpdated() throws Exception {
+        UUID id = UUID.randomUUID();
+        PublicContentDtos.LegislationUpsertRequest request = new PublicContentDtos.LegislationUpsertRequest(
+                "es-ES", id, "decree", "Updated Law", "New Desc", LocalDate.of(2026, 2, 1),
+                null, null, 2, false);
+        when(publicContentService.updateLegislation(eq(id), any())).thenReturn(
+                new PublicContentDtos.LegislationEntry(id, "es-ES", "decree", "Updated Law", "New Desc",
+                        LocalDate.of(2026, 2, 1), null, null, 2, false, null, null));
+
+        mockMvc.perform(put("/admin/public-content/legislation/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Updated Law"));
+    }
+
+    @Test
+    void updateLegislation_shouldReturnNotFound() throws Exception {
+        UUID id = UUID.randomUUID();
+        PublicContentDtos.LegislationUpsertRequest request = new PublicContentDtos.LegislationUpsertRequest(
+                "es-ES", null, "law", "Title", "Desc", null, null, null, 0, true);
+        when(publicContentService.updateLegislation(eq(id), any()))
+                .thenThrow(new ResourceNotFoundException("PUBLIC_CONTENT", id.toString()));
+
+        mockMvc.perform(put("/admin/public-content/legislation/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value("PUBLIC_CONTENT-404-NOT_FOUND"));
+    }
+
+    @Test
+    void deleteLegislation_shouldReturnNoContent() throws Exception {
+        UUID id = UUID.randomUUID();
+
+        mockMvc.perform(delete("/admin/public-content/legislation/{id}", id))
+                .andExpect(status().isNoContent());
+    }
+
+    // ===== FAQ Category CRUD =====
+
+    @Test
+    void createFaqCategory_shouldReturnCreated() throws Exception {
+        UUID groupId = UUID.randomUUID();
+        PublicContentDtos.FaqCategoryUpsertRequest request = new PublicContentDtos.FaqCategoryUpsertRequest(
+                "es-ES", groupId, "general", "General Questions", 1, true);
+        when(publicContentService.createFaqCategory(any())).thenReturn(
+                new PublicContentDtos.FaqCategoryEntry(groupId, "es-ES", "general", "General Questions", 1, true, null, null));
+
+        mockMvc.perform(post("/admin/public-content/faq/categories")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.categoryName").value("General Questions"));
+    }
+
+    @Test
+    void updateFaqCategory_shouldReturnUpdated() throws Exception {
+        UUID id = UUID.randomUUID();
+        PublicContentDtos.FaqCategoryUpsertRequest request = new PublicContentDtos.FaqCategoryUpsertRequest(
+                "ca-ES", id, "tech", "Technical Questions", 2, true);
+        when(publicContentService.updateFaqCategory(eq(id), any())).thenReturn(
+                new PublicContentDtos.FaqCategoryEntry(id, "ca-ES", "tech", "Technical Questions", 2, true, null, null));
+
+        mockMvc.perform(put("/admin/public-content/faq/categories/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.categoryName").value("Technical Questions"));
+    }
+
+    @Test
+    void deleteFaqCategory_shouldReturnNoContent() throws Exception {
+        UUID id = UUID.randomUUID();
+
+        mockMvc.perform(delete("/admin/public-content/faq/categories/{id}", id))
+                .andExpect(status().isNoContent());
+    }
+
+    // ===== FAQ CRUD =====
+
+    @Test
+    void createFaq_shouldReturnCreated() throws Exception {
+        UUID groupId = UUID.randomUUID();
+        PublicContentDtos.FaqUpsertRequest request = new PublicContentDtos.FaqUpsertRequest(
+                "es-ES", groupId, "general", "What is this?", "It is a thing", 1, true);
+        when(publicContentService.createFaq(any())).thenReturn(
+                new PublicContentDtos.FaqEntry(groupId, "es-ES", "general", "What is this?", "It is a thing", 1, true, null, null));
+
+        mockMvc.perform(post("/admin/public-content/faq")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.question").value("What is this?"))
+                .andExpect(jsonPath("$.answer").value("It is a thing"));
+    }
+
+    @Test
+    void updateFaq_shouldReturnUpdated() throws Exception {
+        UUID id = UUID.randomUUID();
+        PublicContentDtos.FaqUpsertRequest request = new PublicContentDtos.FaqUpsertRequest(
+                "es-ES", id, "general", "Updated question?", "Updated answer", 2, false);
+        when(publicContentService.updateFaq(eq(id), any())).thenReturn(
+                new PublicContentDtos.FaqEntry(id, "es-ES", "general", "Updated question?", "Updated answer", 2, false, null, null));
+
+        mockMvc.perform(put("/admin/public-content/faq/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.question").value("Updated question?"));
+    }
+
+    @Test
+    void deleteFaq_shouldReturnNoContent() throws Exception {
+        UUID id = UUID.randomUUID();
+
+        mockMvc.perform(delete("/admin/public-content/faq/{id}", id))
+                .andExpect(status().isNoContent());
+    }
+
+    // ===== Theme CRUD =====
+
+    @Test
+    void updateTheme_shouldReturnUpdatedTheme() throws Exception {
+        List<PublicContentDtos.ThemeVariant> themes = List.of(
+                new PublicContentDtos.ThemeVariant("theme-1", "Default", "light",
+                        List.of(new PublicContentDtos.ThemeColor("--primary", "#0066cc")), true));
+        PublicContentDtos.ThemePaletteUpsertRequest request = new PublicContentDtos.ThemePaletteUpsertRequest(themes, "theme-1");
+        when(publicContentService.saveThemePalette(any())).thenReturn(
+                new PublicContentDtos.ThemeCatalog(themes, "theme-1", null));
+
+        mockMvc.perform(put("/admin/public-content/theme")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.activeThemeId").value("theme-1"));
+    }
+
+    // ===== Field i18n CRUD =====
+
+    @Test
+    void listFieldTranslations_shouldReturnGroupedTranslations() throws Exception {
+        UUID procId = UUID.randomUUID();
+        BackofficeDtos.FieldI18nEntry fieldEntry = new BackofficeDtos.FieldI18nEntry(
+                UUID.randomUUID(), procId, 1, "Personal Data", "fullName", "fullName",
+                "es-ES", "Nombre completo", "Introduzca su nombre", List.of(), null);
+        when(backofficeService.listFieldTranslations(procId)).thenReturn(List.of(
+                new BackofficeDtos.FieldI18nGroup(1, "Personal Data", "FORM", List.of(fieldEntry))));
+
+        mockMvc.perform(get("/admin/procedure-types/{id}/field-i18n", procId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].taskTitle").value("Personal Data"))
+                .andExpect(jsonPath("$[0].fields[0].name").value("Nombre completo"));
+    }
+
+    @Test
+    void listFieldTranslations_shouldReturnNotFound() throws Exception {
+        UUID procId = UUID.randomUUID();
+        when(backofficeService.listFieldTranslations(procId))
+                .thenThrow(new ResourceNotFoundException("PROCEDURE_TYPE", procId.toString()));
+
+        mockMvc.perform(get("/admin/procedure-types/{id}/field-i18n", procId))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value("PROCEDURE_TYPE-404-NOT_FOUND"));
+    }
+
+    @Test
+    void upsertFieldTranslation_shouldReturnEntry() throws Exception {
+        UUID procId = UUID.randomUUID();
+        BackofficeDtos.FieldI18nUpsertRequest request = new BackofficeDtos.FieldI18nUpsertRequest(
+                1, "fullName", "ca-ES", "Nom complet", "Introduïu el nom", null);
+        when(backofficeService.upsertFieldTranslation(eq(procId), any())).thenReturn(
+                new BackofficeDtos.FieldI18nEntry(
+                        UUID.randomUUID(), procId, 1, "Personal Data", "fullName", "fullName",
+                        "ca-ES", "Nom complet", "Introduïu el nom", List.of(), null));
+
+        mockMvc.perform(put("/admin/procedure-types/{id}/field-i18n", procId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Nom complet"))
+                .andExpect(jsonPath("$.locale").value("ca-ES"));
+    }
+
+    @Test
+    void upsertFieldTranslation_shouldReturnBadRequestOnMissingFields() throws Exception {
+        UUID procId = UUID.randomUUID();
+        // Missing fieldId and locale — triggers ValidationException in service
+        BackofficeDtos.FieldI18nUpsertRequest request = new BackofficeDtos.FieldI18nUpsertRequest(
+                1, null, null, "Some name", null, null);
+        when(backofficeService.upsertFieldTranslation(eq(procId), any()))
+                .thenThrow(new es.tfg.records.application.exception.ValidationException(
+                        List.of(new es.tfg.records.application.exception.ValidationException.ValidationError(
+                                "request", "locale, name, and fieldId are required"))));
+
+        mockMvc.perform(put("/admin/procedure-types/{id}/field-i18n", procId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("SYS-400-VALIDATION_ERROR"));
+    }
+
+    @Test
+    void deleteFieldTranslation_shouldReturnNoContent() throws Exception {
+        UUID procId = UUID.randomUUID();
+
+        mockMvc.perform(delete("/admin/procedure-types/{id}/field-i18n/{fieldId}/{locale}",
+                        procId, "fullName", "ca-ES"))
+                .andExpect(status().isNoContent());
     }
 }
