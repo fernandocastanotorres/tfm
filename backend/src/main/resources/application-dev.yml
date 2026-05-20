@@ -19,9 +19,21 @@ spring:
 jwt:
   secret: ZGV2LXNlY3JldC1rZXktZm9yLXRlc3RpbmctcHVycG9zZXMtb25seS1kb25vdC11c2UtaW4tcHJvZHVjdGlvbg==
 
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
 mailing:
+  enabled: true
   queue:
     enabled: false
+  from:
+    email: no-reply@records.local
+    name: Records
+  brevo:
+    api-key: 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
 
 logging:
   level:

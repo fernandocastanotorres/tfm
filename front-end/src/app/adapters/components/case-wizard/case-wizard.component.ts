@@ -7,12 +7,14 @@ import { I18nService } from '../../../application/services/i18n.service';
 import { ProcedureDetail, ProcedureTaskDto, FormFieldDto, UploadRequirementDto } from '../../../application/models/procedure.models';
 import { CreateCaseRequest } from '../../../application/models/case.models';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
+import { ToastService } from '../../../application/services/toast.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-case-wizard',
-  templateUrl: './case-wizard.component.html',
-  styleUrls: ['./case-wizard.component.css']
+    selector: 'app-case-wizard',
+    templateUrl: './case-wizard.component.html',
+    styleUrls: ['./case-wizard.component.css'],
+    standalone: false
 })
 export class CaseWizardComponent implements OnInit, OnDestroy {
   private static readonly GENERIC_UPLOAD_ID = '__genericUpload__';
@@ -28,7 +30,6 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
   readonly dragOverState = this.fb.nonNullable.control<Record<string, boolean>>({});
   isLoading = true;
   isSubmitting = false;
-  error: string | null = null;
   createdCaseId: string | null = null;
   resumingCaseId: string | null = null;
 
@@ -39,7 +40,8 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
     private readonly i18nService: I18nService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly confirmDialogService: ConfirmDialogService
+    private readonly confirmDialogService: ConfirmDialogService,
+    private readonly toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -64,7 +66,6 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
   private loadProcedure(): void {
     if (!this.procedureIdentifier) return;
     this.isLoading = true;
-    this.error = null;
 
     this.proceduresApiService.getByIdentifier(this.procedureIdentifier).subscribe({
       next: (data) => {
@@ -81,7 +82,7 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
         }
       },
       error: () => {
-        this.error = 'CASE_WIZARD.ERROR_LOAD_PROCEDURE';
+        this.toast.error('Error', 'No se ha podido cargar el procedimiento.');
         this.isLoading = false;
       }
     });
@@ -269,7 +270,7 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.isSubmitting = false;
-        this.error = err?.error?.message ?? 'CASE_WIZARD.ERROR_CREATE';
+        this.toast.error('Error', err?.error?.message ?? 'No se ha podido crear el expediente.');
       }
     });
   }
@@ -292,7 +293,7 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.isSubmitting = false;
-        this.error = err?.error?.message ?? 'CASE_WIZARD.ERROR_SUBMIT';
+        this.toast.error('Error', err?.error?.message ?? 'No se ha podido enviar el expediente.');
       }
     });
   }
@@ -409,7 +410,7 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.isSubmitting = false;
-        this.error = 'CASE_WIZARD.ERROR_SUBMIT';
+        this.toast.error('Error', 'No se ha podido subir el documento adjunto.');
       }
     });
   }
@@ -422,7 +423,7 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.isSubmitting = false;
-        this.error = 'CASE_WIZARD.ERROR_SUBMIT';
+        this.toast.error('Error', 'No se ha podido enviar el expediente.');
       }
     });
   }

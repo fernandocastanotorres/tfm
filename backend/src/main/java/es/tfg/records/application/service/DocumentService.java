@@ -22,9 +22,14 @@ public interface DocumentService {
     void deleteDocument(UUID documentId, UUID ownerId);
 
     /**
-     * Returns a streaming Resource for downloading a document file.
+     * Returns a streaming Resource for downloading a document.
      * The Resource is backed by an InputStream that reads the file in chunks,
      * avoiding loading the entire file into memory.
      */
     Resource downloadDocument(UUID documentId, UUID ownerId);
+
+    /**
+     * Returns a streaming Resource for downloading a document (admin access, no ownership check).
+     */
+    Resource downloadDocumentForAdmin(UUID documentId);
 }

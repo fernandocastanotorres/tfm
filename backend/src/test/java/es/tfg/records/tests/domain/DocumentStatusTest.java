@@ -9,36 +9,34 @@ class DocumentStatusTest {
 
     @Test
     void documentStatus_shouldHaveAllExpectedValues() {
-        // Then
-        assertThat(DocumentStatus.values()).hasSize(3);
+        assertThat(DocumentStatus.values()).hasSize(4);
     }
 
     @Test
     void documentStatus_shouldContainAllStatuses() {
-        // Then
         assertThat(DocumentStatus.values())
                 .extracting(DocumentStatus::name)
-                .containsExactly("PENDING", "VALIDATED", "REJECTED");
+                .containsExactly("PENDING", "SIGNED", "VALIDATED", "REJECTED");
     }
 
     @Test
     void documentStatus_shouldMapFromString() {
-        // When
         DocumentStatus pending = DocumentStatus.valueOf("PENDING");
+        DocumentStatus signed = DocumentStatus.valueOf("SIGNED");
         DocumentStatus validated = DocumentStatus.valueOf("VALIDATED");
         DocumentStatus rejected = DocumentStatus.valueOf("REJECTED");
 
-        // Then
         assertThat(pending).isEqualTo(DocumentStatus.PENDING);
+        assertThat(signed).isEqualTo(DocumentStatus.SIGNED);
         assertThat(validated).isEqualTo(DocumentStatus.VALIDATED);
         assertThat(rejected).isEqualTo(DocumentStatus.REJECTED);
     }
 
     @Test
     void documentStatus_shouldHaveCorrectOrdinalOrder() {
-        // Then
         assertThat(DocumentStatus.PENDING.ordinal()).isEqualTo(0);
-        assertThat(DocumentStatus.VALIDATED.ordinal()).isEqualTo(1);
-        assertThat(DocumentStatus.REJECTED.ordinal()).isEqualTo(2);
+        assertThat(DocumentStatus.SIGNED.ordinal()).isEqualTo(1);
+        assertThat(DocumentStatus.VALIDATED.ordinal()).isEqualTo(2);
+        assertThat(DocumentStatus.REJECTED.ordinal()).isEqualTo(3);
     }
 }

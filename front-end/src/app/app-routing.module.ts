@@ -29,6 +29,7 @@ import { CalendarComponent } from './adapters/components/calendar/calendar.compo
 import { GlossaryComponent } from './adapters/components/glossary/glossary.component';
 import { AccessibilityStatementComponent } from './adapters/components/accessibility-statement/accessibility-statement.component';
 import { SitemapComponent } from './adapters/components/sitemap/sitemap.component';
+import { ContactInboxComponent } from './adapters/components/contact-inbox/contact-inbox.component';
 import { authGuard } from './application/guards/auth.guard';
 
 const routes: Routes = [

@@ -1,0 +1,83 @@
+<!-- Loading state -->
+<div *ngIf="isLoading" class="card p-6 text-center text-surface-600">
+  Cargando mensajes...
+</div>
+
+<!-- Message detail view -->
+<div *ngIf="!isLoading && selectedMessage" class="card p-6">
+  <button type="button" class="text-sm text-brand-600 hover:underline mb-4" (click)="backToList()">
+    ← Volver a la lista
+  </button>
+  <div class="space-y-4">
+    <div>
+      <h2 class="text-xl font-semibold text-surface-900">{{ selectedMessage.subject }}</h2>
+      <p class="text-sm text-surface-500 mt-1">
+        {{ selectedMessage.fullName }} &lt;{{ selectedMessage.email }}&gt;
+        <span *ngIf="selectedMessage.category"> · {{ selectedMessage.category }}</span>
+      </p>
+      <p class="text-xs text-surface-400 mt-1">{{ formatDate(selectedMessage.createdAt) }}</p>
+    </div>
+    <div class="border-t border-surface-200 pt-4">
+      <p class="text-surface-700 whitespace-pre-wrap">{{ selectedMessage.message }}</p>
+    </div>
+    <div class="flex gap-3 pt-2">
+      <a [href]="'mailto:' + selectedMessage.email" class="btn-primary">
+        Responder por email
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Message list view -->
+<div *ngIf="!isLoading && !selectedMessage">
+  <!-- Filters -->
+  <div class="flex items-center gap-3 mb-6">
+    <button type="button" class="btn-primary" [ngClass]="filterStatus === 'all' ? '' : 'bg-surface-200 text-surface-700 hover:bg-surface-300'" (click)="setFilter('all')">
+      Todos
+    </button>
+    <button type="button" class="btn-primary relative" [ngClass]="filterStatus === 'unread' ? '' : 'bg-surface-200 text-surface-700 hover:bg-surface-300'" (click)="setFilter('unread')">
+      No leidos
+      <span *ngIf="unreadCount > 0" class="ml-1 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 font-semibold">
+        {{ unreadCount }}
+      </span>
+    </button>
+    <button type="button" class="btn-primary" [ngClass]="filterStatus === 'read' ? '' : 'bg-surface-200 text-surface-700 hover:bg-surface-300'" (click)="setFilter('read')">
+      Leidos
+    </button>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="filteredMessages.length === 0" class="card p-6 text-center text-surface-600">
+    <p *ngIf="filterStatus === 'all'">No hay mensajes en el buzon de contacto.</p>
+    <p *ngIf="filterStatus === 'unread'">No hay mensajes sin leer.</p>
+    <p *ngIf="filterStatus === 'read'">No hay mensajes leidos.</p>
+  </div>
+
+  <!-- Message list -->
+  <div class="space-y-3" *ngIf="filteredMessages.length > 0">
+    <button
+      type="button"
+      class="card p-5 w-full text-left border border-transparent hover:border-brand-200 focus-visible:outline-brand-300 transition-colors"
+      *ngFor="let msg of filteredMessages"
+      (click)="selectMessage(msg)"
+      [class.bg-blue-50]="!msg.read"
+    >
+      <div class="flex items-start justify-between gap-4">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <h3 class="font-semibold text-surface-900 truncate">{{ msg.subject }}</h3>
+            <span *ngIf="!msg.read" class="inline-block w-2 h-2 rounded-full bg-blue-500 flex-shrink-0"></span>
+          </div>
+          <p class="text-sm text-surface-500 mt-1">{{ msg.fullName }} &lt;{{ msg.email }}&gt;</p>
+          <p class="text-sm text-surface-600 mt-1 line-clamp-1">{{ msg.message }}</p>
+        </div>
+        <div class="text-right flex-shrink-0">
+          <p class="text-xs text-surface-400">{{ formatDate(msg.createdAt) }}</p>
+          <span *ngIf="msg.category" class="inline-block mt-1 px-2 py-0.5 rounded-full text-xs bg-surface-100 text-surface-600">
+            {{ msg.category }}
+          </span>
+        </div>
+      </div>
+    </button>
+  </div>
+</div>

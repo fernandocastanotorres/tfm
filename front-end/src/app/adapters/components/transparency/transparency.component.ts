@@ -3,9 +3,10 @@ import { TransparencyService } from '../../../application/services/transparency.
 import { TransparencyMetric, TransparencyReport } from '../../../application/models/sede.models';
 
 @Component({
-  selector: 'app-transparency',
-  templateUrl: './transparency.component.html',
-  styleUrls: ['./transparency.component.css']
+    selector: 'app-transparency',
+    templateUrl: './transparency.component.html',
+    styleUrls: ['./transparency.component.css'],
+    standalone: false
 })
 export class TransparencyComponent implements OnInit {
   metrics: TransparencyMetric[] = [];

@@ -4,9 +4,10 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../application/services/auth.service';
 
 @Component({
-  selector: 'bo-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+    selector: 'bo-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.css'],
+    standalone: false
 })
 export class LoginComponent {
   private readonly fb = inject(FormBuilder);

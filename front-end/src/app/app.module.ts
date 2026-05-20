@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { TranslateModule, TranslateLoader, TranslationObject } from '@ngx-translate/core';
@@ -43,12 +43,14 @@ import { CalendarComponent } from './adapters/components/calendar/calendar.compo
 import { GlossaryComponent } from './adapters/components/glossary/glossary.component';
 import { AccessibilityStatementComponent } from './adapters/components/accessibility-statement/accessibility-statement.component';
 import { SitemapComponent } from './adapters/components/sitemap/sitemap.component';
+import { ContactInboxComponent } from './adapters/components/contact-inbox/contact-inbox.component';
 
 // Interceptors
 import { HttpErrorInterceptor } from './application/interceptors/http-error.interceptor';
 import { JwtAuthInterceptor } from './application/interceptors/jwt-auth.interceptor';
 import { CorrelationIdInterceptor } from './application/interceptors/correlation-id.interceptor';
 import { AcceptLanguageInterceptor } from './application/interceptors/accept-language.interceptor';
+import { SecurityInterceptor } from './application/interceptors/security.interceptor';
 
 export class CustomLoader implements TranslateLoader {
   constructor(private http: HttpClient) {}
@@ -62,60 +64,56 @@ export function HttpLoaderFactory(http: HttpClient): CustomLoader {
   return new CustomLoader(http);
 }
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    RegisterComponent,
-    EmailVerificationComponent,
-    PasswordRecoveryComponent,
-    DashboardComponent,
-    ProfileComponent,
-    NotificationsComponent,
-    DocumentsComponent,
-    CaseDetailComponent,
-    CaseSearchComponent,
-    PaymentsComponent,
-    AppointmentsComponent,
-    MessagesComponent,
-    ProceduresComponent,
-    CaseWizardComponent,
-    ProcedureFlowComponent,
-    PublicLayoutComponent,
-    PublicHomeComponent,
-    InstitutionalInfoComponent,
-    LegislationComponent,
-    FaqComponent,
-    ContactComponent,
-    ServiceStatusComponent,
-    OrganismsDirectoryComponent,
-    TransparencyComponent,
-    CalendarComponent,
-    GlossaryComponent,
-    AccessibilityStatementComponent,
-    SitemapComponent
-  ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule,
-    AppRoutingModule,
-    RouterModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
-    })
-  ],
-  providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: AcceptLanguageInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: JwtAuthInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: CorrelationIdInterceptor, multi: true }
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        LoginComponent,
+        RegisterComponent,
+        EmailVerificationComponent,
+        PasswordRecoveryComponent,
+        DashboardComponent,
+        ProfileComponent,
+        NotificationsComponent,
+        DocumentsComponent,
+        CaseDetailComponent,
+        CaseSearchComponent,
+        PaymentsComponent,
+        AppointmentsComponent,
+        MessagesComponent,
+        ProceduresComponent,
+        CaseWizardComponent,
+        ProcedureFlowComponent,
+        PublicLayoutComponent,
+        PublicHomeComponent,
+        InstitutionalInfoComponent,
+        LegislationComponent,
+        FaqComponent,
+        ContactComponent,
+        ServiceStatusComponent,
+        OrganismsDirectoryComponent,
+        TransparencyComponent,
+        CalendarComponent,
+        GlossaryComponent,
+        AccessibilityStatementComponent,
+        SitemapComponent,
+        ContactInboxComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        FormsModule,
+        ReactiveFormsModule,
+        AppRoutingModule,
+        RouterModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient]
+            }
+        })], providers: [
+        { provide: HTTP_INTERCEPTORS, useClass: SecurityInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: AcceptLanguageInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: JwtAuthInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: CorrelationIdInterceptor, multi: true },
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule { }

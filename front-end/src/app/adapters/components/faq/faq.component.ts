@@ -5,9 +5,10 @@ import { I18nService } from '../../../application/services/i18n.service';
 import { FaqCategory, FaqItem } from '../../../application/models/sede.models';
 
 @Component({
-  selector: 'app-faq',
-  templateUrl: './faq.component.html',
-  styleUrls: ['./faq.component.css']
+    selector: 'app-faq',
+    templateUrl: './faq.component.html',
+    styleUrls: ['./faq.component.css'],
+    standalone: false
 })
 export class FaqComponent implements OnInit, OnDestroy {
   categories: FaqCategory[] = [];

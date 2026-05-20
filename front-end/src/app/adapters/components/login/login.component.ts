@@ -4,9 +4,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../application/services/auth.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: []
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: [],
+    standalone: false
 })
 export class LoginComponent {
   loginForm: FormGroup;

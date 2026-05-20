@@ -1,19 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { of, throwError, Subject } from 'rxjs';
 import { CaseSearchComponent } from './case-search.component';
 import { CasesApiService } from '../../../application/services/cases-api.service';
 import { I18nService, SupportedLocale } from '../../../application/services/i18n.service';
+import { ToastService } from '../../../application/services/toast.service';
 import { PagedResponse } from '../../../application/models/case.models';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('CaseSearchComponent', () => {
   let component: CaseSearchComponent;
   let fixture: ComponentFixture<CaseSearchComponent>;
   let casesSpy: jasmine.SpyObj<CasesApiService>;
   let i18nSpy: jasmine.SpyObj<I18nService>;
+  let toastSpy: jasmine.SpyObj<ToastService>;
   let localeSubject: Subject<SupportedLocale>;
 
   const mockCases = [
@@ -34,17 +37,21 @@ describe('CaseSearchComponent', () => {
     localeSubject = new Subject<SupportedLocale>();
     casesSpy = jasmine.createSpyObj('CasesApiService', ['list']);
     i18nSpy = jasmine.createSpyObj('I18nService', ['getCurrentLocale$']);
+    toastSpy = jasmine.createSpyObj('ToastService', ['error', 'success', 'warning']);
     i18nSpy.getCurrentLocale$.and.returnValue(localeSubject.asObservable());
 
     TestBed.configureTestingModule({
-      declarations: [CaseSearchComponent],
-      imports: [HttpClientTestingModule, ReactiveFormsModule, TranslateModule.forRoot()],
-      providers: [
+    declarations: [CaseSearchComponent],
+    schemas: [NO_ERRORS_SCHEMA],
+    imports: [ReactiveFormsModule, TranslateModule.forRoot()],
+    providers: [
         { provide: CasesApiService, useValue: casesSpy },
-        { provide: I18nService, useValue: i18nSpy }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    });
+        { provide: I18nService, useValue: i18nSpy },
+        { provide: ToastService, useValue: toastSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
 
     fixture = TestBed.createComponent(CaseSearchComponent);
     component = fixture.componentInstance;
@@ -80,15 +87,14 @@ describe('CaseSearchComponent', () => {
 
       expect(component.cases).toEqual(mockCases);
       expect(component.isLoading).toBeFalse();
-      expect(component.error).toBeNull();
     });
 
-    it('should set error when loading fails', () => {
+    it('should show toast error when loading fails', () => {
       casesSpy.list.and.returnValue(throwError(() => new Error('Network error')));
 
       component.ngOnInit();
 
-      expect(component.error).toBe('CASE_SEARCH.ERROR');
+      expect(toastSpy.error).toHaveBeenCalled();
       expect(component.isLoading).toBeFalse();
       expect(component.cases).toEqual([]);
     });

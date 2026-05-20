@@ -9,6 +9,7 @@ This API provides the backend services for managing electronic citizen records (
 - **Authentication** — JWT-based auth with registration, OTP verification, password reset, and token rotation
 - **Case Management** — Full CRUD for citizen cases (expedientes) with ownership enforcement, status transitions, and timeline tracking
 - **Document Management** — Upload, download, listing, and deletion of documents associated with cases
+- **Electronic Signature** — PAdES-like CMS/PKCS#7 signing using Bouncy Castle with self-signed service certificate
 - **Procedure Catalog** — Browse available procedure types with dynamic form/task schemas for UI rendering
 - **Catalog i18n** — Locale-aware catalog with DB-backed translations and bundle fallback
 
@@ -16,16 +17,21 @@ This API provides the backend services for managing electronic citizen records (
 
 | Component | Technology |
 |-----------|------------|
-| Framework | Spring Boot 3.2.5 |
+| Framework | Spring Boot 3.4.5 |
 | Language | Java 17 |
 | Build Tool | Maven |
-| Database | PostgreSQL 15+ (production), H2 (development) |
+| Database | PostgreSQL 16 (production), H2 (development) |
 | ORM | Spring Data JPA + Hibernate |
 | Security | Spring Security + JWT (jjwt 0.12.5) |
 | BPM Engine | Flowable (embedded) |
 | Validation | Jakarta Bean Validation |
-| API Docs | SpringDoc OpenAPI 2.5.0 (Swagger UI) |
+| API Docs | SpringDoc OpenAPI 2.8.8 (Swagger UI) |
 | Testing | JUnit 5, Mockito, Testcontainers |
+| Crypto | Bouncy Castle 1.78.1 (CMS/PKCS#7) |
+| PDF | OpenPDF 1.3.39 |
+| Conversion | JODConverter 4.4.8 (LibreOffice) |
+| Migration | Flyway (baseline v3) |
+| Email | Brevo API |
 
 ## Architecture
 
@@ -67,7 +73,7 @@ The project follows **Hexagonal Architecture** (Ports & Adapters) with four logi
   └──────────────┬──────────────────────────┘
                  │
                  ▼
-          PostgreSQL 15+
+           PostgreSQL 16
 ```
 
 ### Package Structure
@@ -138,7 +144,7 @@ Dev users seeded by profile `dev`:
 
 - Java 17 JDK
 - Maven 3.9+
-- PostgreSQL 15+ (or use H2 for development)
+- PostgreSQL 16 (or use H2 for development)
 
 ### Development Mode (H2 in-memory)
 
@@ -228,6 +234,10 @@ http://localhost:8080/api/v1/api-docs
 | GET | `/citizen/procedures/documents/{id}` | Get document metadata | Required |
 | GET | `/citizen/procedures/documents/{id}/download` | Download document | Required |
 | DELETE | `/citizen/procedures/documents/{id}` | Delete document | Required |
+| POST | `/citizen/signatures/sign` | Sign document (PAdES CMS) | Required |
+| POST | `/citizen/signatures/verify` | Verify document signature | Required |
+| POST | `/citizen/signatures/digest` | Compute SHA-256 digest | Required |
+| GET | `/citizen/signatures/certificate-info` | Get signing certificate info | Required |
 | GET | `/citizen/procedures/catalog` | List procedure types | Required |
 | GET | `/citizen/procedures/catalog/{procedureId}` | Get procedure detail | Public |
 | GET | `/citizen/procedures/catalog/{procedureId}/form-schema` | Get form schema | Public |
@@ -240,6 +250,16 @@ http://localhost:8080/api/v1/api-docs
 | GET | `/admin/dashboard/report` | Dashboard distributions, SLA and trend report | Required |
 | GET | `/admin/eni/metadata/procedures/{id}` | ENI metadata snapshot for a procedure | Required |
 | GET | `/admin/eni/metadata/documents/{id}` | ENI metadata snapshot for a document | Required |
+| POST | `/citizen/procedures/{id}/messages` | Send message from citizen | Required |
+| GET | `/citizen/procedures/{id}/messages` | Get citizen thread messages (paginated) | Required |
+| GET | `/citizen/procedures/{id}/messages/attachments/{aid}/download` | Download message attachment (citizen) | Required |
+| GET | `/citizen/messages/unread-count` | Get citizen unread thread count | Required |
+| GET | `/citizen/messages/threads` | Get citizen thread summaries | Required |
+| POST | `/admin/procedures/{id}/messages` | Send message from admin | Required |
+| GET | `/admin/procedures/{id}/messages` | Get admin thread messages (paginated) | Required |
+| GET | `/admin/procedures/{id}/messages/attachments/{aid}/download` | Download message attachment (admin) | Required |
+| GET | `/admin/messages/unread-count` | Get unread counts (citizen + admin) | Required |
+| GET | `/admin/messages/unread-threads` | Get admin unread thread summaries | Required |
 | GET | `/health/live` | Liveness probe | Public |
 | GET | `/health/ready` | Readiness probe | Required |
 
@@ -322,4 +342,43 @@ Tests cover:
 | Entity IDs | `java.util.UUID` | Native JPA support, type-safe |
 | DTO mapping | Manual mappers | Fewer dependencies, clear transformation logic |
 | Validation | Jakarta Bean Validation | Declarative, standard, integrates with Spring MVC |
+| Electronic signature | Bouncy Castle CMS/PKCS#7 | SD-DSS unavailable on Maven Central; BC provides equivalent PAdES-BES functionality |
+
+## Electronic Signature
+
+The platform supports PAdES-like electronic document signing using Bouncy Castle cryptographic library.
+
+### Architecture
+
+- **SignatureService**: Core service for CMS/PKCS#7 detached signature generation
+- **Self-signed certificate**: RSA 2048-bit, SHA256withRSA, generated at runtime (demo/TFG)
+- **PDF embedding**: Manual trailer modification with `/Sig` dictionary for demo purposes
+- **Verification**: CMS signature extraction and validation
+
+### Signature Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `POST /api/v1/citizen/signatures/sign` | Upload PDF, return signed PDF with embedded CMS signature |
+| `POST /api/v1/citizen/signatures/verify` | Verify CMS signature in a signed PDF |
+| `POST /api/v1/citizen/signatures/digest` | Compute SHA-256 hash for external signing workflows |
+| `GET /api/v1/citizen/signatures/certificate-info` | Get service signing certificate details |
+
+### Certificate Details
+
+- **Algorithm**: RSA 2048-bit
+- **Hash**: SHA-256
+- **Subject**: `CN=TFG Service Signing, O=TFG Records, C=ES`
+- **Validity**: 1 year from service startup
+- **Type**: PAdES-BES (Basic Electronic Signature)
+
+### PDF/A Conversion
+
+Documents can be converted to PDF/A format using LibreOffice via JODConverter before signing. Configure in `application.yml`:
+
+```yaml
+jodconverter:
+  office-home: /usr/lib/libreoffice  # Optional, auto-detected if not set
+  port-numbers: 2002
+```
 | Pagination | Spring Data Pageable | Built-in, custom response wrapper for API contract |

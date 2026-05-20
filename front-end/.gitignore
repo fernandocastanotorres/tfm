@@ -62,6 +62,12 @@ testem.log
 *.swp
 *.swo
 
+# Playwright E2E
+e2e/test-results/
+playwright-report/
+playwright/.cache/
+blob-report/
+
 # System files
 .DS_Store
 Thumbs.db

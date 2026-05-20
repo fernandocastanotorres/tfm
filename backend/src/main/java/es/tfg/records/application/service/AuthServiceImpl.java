@@ -7,6 +7,10 @@ import es.tfg.records.application.exception.ValidationException;
 import es.tfg.records.application.mapper.UserMapper;
 import es.tfg.records.domain.model.User;
 import es.tfg.records.domain.port.UserRepository;
+import es.tfg.records.infrastructure.audit.AuditService;
+import es.tfg.records.infrastructure.persistence.entity.AuditLogEntity.AuditAction;
+import es.tfg.records.infrastructure.persistence.entity.AuditLogEntity.AuditResult;
+import es.tfg.records.infrastructure.security.AccountLockoutManager;
 import es.tfg.records.infrastructure.security.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,58 +31,94 @@ public class AuthServiceImpl implements AuthService {
 
     private static final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
 
-    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[A-Z])(?=.*\\d).{8,}$");
+    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,}$");
 
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final EmailGateway emailGateway;
+    private final AccountLockoutManager lockoutManager;
+    private final AuditService auditService;
     private final String verificationBaseUrl;
 
-    // In-memory password reset token store for development
     private final Map<String, ResetTokenEntry> resetTokenStore = new HashMap<>();
 
-    // In-memory refresh token store for rotation
     private final Set<String> activeRefreshTokens = new HashSet<>();
 
     public AuthServiceImpl(UserRepository userRepository,
                            JwtTokenProvider jwtTokenProvider,
                            PasswordEncoder passwordEncoder,
                            EmailGateway emailGateway,
+                           AccountLockoutManager lockoutManager,
+                           AuditService auditService,
                            @Value("${mailing.verification-base-url:http://localhost:4200/sede/verificar-email}") String verificationBaseUrl) {
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.passwordEncoder = passwordEncoder;
         this.emailGateway = emailGateway;
+        this.lockoutManager = lockoutManager;
+        this.auditService = auditService;
         this.verificationBaseUrl = verificationBaseUrl;
     }
 
     @Override
     public LoginResponse login(LoginRequest request) {
-        User user = userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new AuthenticationException(
-                        "AUTH-401-INVALID_CREDENTIALS",
-                        "Invalid email or password"));
+        String email = request.email();
+
+        if (lockoutManager.isLocked(email)) {
+            auditService.record(AuditAction.LOGIN, "USER", AuditResult.FAILURE,
+                    "Account locked due to too many failed attempts");
+            throw new AuthenticationException(
+                    "AUTH-401-ACCOUNT_LOCKED",
+                    "Account is temporarily locked. Please try again later.");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    lockoutManager.recordFailedAttempt(email);
+                    auditService.record(AuditAction.LOGIN, "USER", AuditResult.FAILURE,
+                            "User not found: " + email);
+                    return new AuthenticationException(
+                            "AUTH-401-INVALID_CREDENTIALS",
+                            "Invalid email or password");
+                });
 
         if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
+            boolean isLocked = lockoutManager.recordFailedAttempt(email);
+            int remaining = 5 - lockoutManager.getFailedAttempts(email);
+            auditService.record(AuditAction.LOGIN, "USER", AuditResult.FAILURE,
+                    "Invalid password for " + email);
+
+            if (isLocked) {
+                throw new AuthenticationException(
+                        "AUTH-401-ACCOUNT_LOCKED",
+                        "Account is temporarily locked due to too many failed attempts. Please try again in 15 minutes.");
+            }
+
             throw new AuthenticationException(
                     "AUTH-401-INVALID_CREDENTIALS",
-                    "Invalid email or password");
+                    "Invalid email or password. " + remaining + " attempts remaining.");
         }
 
         if (!user.isActive()) {
+            auditService.record(AuditAction.LOGIN, "USER", AuditResult.FAILURE,
+                    "Inactive account: " + email);
             throw new AuthenticationException(
                     "AUTH-401-ACCOUNT_NOT_ACTIVE",
                     "Account is not verified. Please verify your OTP first.");
         }
+
+        lockoutManager.resetFailedAttempts(email);
 
         String accessToken = jwtTokenProvider.generateAccessToken(
                 user.getId(), user.getEmail(), user.getRoles());
         String refreshToken = jwtTokenProvider.generateRefreshToken(
                 user.getId(), user.getEmail());
 
-        // Track refresh token for rotation
         activeRefreshTokens.add(refreshToken);
+
+        auditService.record(AuditAction.LOGIN, "USER", AuditResult.SUCCESS,
+                "Login successful for " + email);
 
         return new LoginResponse(
                 accessToken,
@@ -92,6 +132,8 @@ public class AuthServiceImpl implements AuthService {
         validatePassword(request.password());
 
         if (userRepository.existsByEmail(request.email())) {
+            auditService.record(AuditAction.CREATE, "USER", AuditResult.FAILURE,
+                    "Registration failed - email exists: " + request.email());
             throw new ConflictException("AUTH", "EMAIL_EXISTS");
         }
 
@@ -121,6 +163,9 @@ public class AuthServiceImpl implements AuthService {
             log.error("Registration email dispatch failed for {}: {}", request.email(), ex.getMessage(), ex);
         }
 
+        auditService.record(AuditAction.CREATE, "USER", AuditResult.SUCCESS,
+                "New user registered: " + request.email());
+
         return UserMapper.toUserProfile(saved);
     }
 
@@ -129,19 +174,21 @@ public class AuthServiceImpl implements AuthService {
         String token = request.refreshToken();
 
         if (!jwtTokenProvider.validateToken(token)) {
+            auditService.record(AuditAction.LOGIN, "USER", AuditResult.FAILURE,
+                    "Token refresh failed - invalid token");
             throw new AuthenticationException(
                     "AUTH-401-TOKEN_EXPIRED",
                     "Refresh token is expired or invalid");
         }
 
-        // Check if token is in active set (not already rotated)
         if (!activeRefreshTokens.contains(token)) {
+            auditService.record(AuditAction.LOGIN, "USER", AuditResult.FAILURE,
+                    "Token refresh failed - token already rotated");
             throw new AuthenticationException(
                     "AUTH-401-TOKEN_EXPIRED",
                     "Refresh token has been rotated");
         }
 
-        // Validate it's a refresh token
         var claims = jwtTokenProvider.getClaims(token);
         String type = claims.get("type", String.class);
         if (!"refresh".equals(type)) {
@@ -150,7 +197,6 @@ public class AuthServiceImpl implements AuthService {
                     "Invalid token type");
         }
 
-        // Rotation: invalidate old token
         activeRefreshTokens.remove(token);
 
         UUID userId = jwtTokenProvider.getUserId(token);
@@ -161,13 +207,15 @@ public class AuthServiceImpl implements AuthService {
                         "AUTH-401-USER_NOT_FOUND",
                         "User not found"));
 
-        // Generate new tokens
         String newAccessToken = jwtTokenProvider.generateAccessToken(
                 userId, email, user.getRoles());
         String newRefreshToken = jwtTokenProvider.generateRefreshToken(
                 userId, email);
 
         activeRefreshTokens.add(newRefreshToken);
+
+        auditService.record(AuditAction.LOGIN, "USER", AuditResult.SUCCESS,
+                "Token refreshed for " + email);
 
         return new LoginResponse(
                 newAccessToken,
@@ -178,14 +226,12 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void forgotPassword(PasswordResetRequest request) {
-        // Always return 200 regardless of email existence (security best practice)
         userRepository.findByEmail(request.email()).ifPresent(user -> {
             String resetToken = UUID.randomUUID().toString();
-            Instant expiry = Instant.now().plusSeconds(3600); // 1 hour
+            Instant expiry = Instant.now().plusSeconds(3600);
 
             resetTokenStore.put(resetToken, new ResetTokenEntry(user.getId(), expiry));
 
-            // Dev mode: log the reset token
             log.info("=== PASSWORD RESET TOKEN FOR {} === Token: {} (expires at {}) ===",
                     request.email(), resetToken, expiry);
         });
@@ -244,12 +290,14 @@ public class AuthServiceImpl implements AuthService {
                     "OTP code has expired");
         }
 
-        // Activate account
         user.setActive(true);
         user.setOtpCode(null);
         user.setOtpExpiry(null);
         userRepository.save(user);
         log.info("Account verified for: {}", request.email());
+
+        auditService.record(AuditAction.CREATE, "USER", AuditResult.SUCCESS,
+                "Account verified: " + request.email());
     }
 
     @Override
@@ -269,6 +317,9 @@ public class AuthServiceImpl implements AuthService {
         user.setOtpCode(null);
         user.setOtpExpiry(null);
         userRepository.save(user);
+
+        auditService.record(AuditAction.CREATE, "USER", AuditResult.SUCCESS,
+                "Email verified via token for: " + user.getEmail());
     }
 
     @Override
@@ -286,6 +337,10 @@ public class AuthServiceImpl implements AuthService {
         user.setPhone(request.phone());
         user.setNationalId(request.nationalId());
         user.setAddress(request.address());
+
+        auditService.record(AuditAction.UPDATE, "USER", AuditResult.SUCCESS,
+                "Profile updated for user: " + user.getEmail());
+
         return UserMapper.toUserProfile(userRepository.save(user));
     }
 
@@ -293,6 +348,8 @@ public class AuthServiceImpl implements AuthService {
     public void resetPassword(PasswordResetConfirmRequest request) {
         ResetTokenEntry entry = resetTokenStore.get(request.token());
         if (entry == null) {
+            auditService.record(AuditAction.UPDATE, "USER", AuditResult.FAILURE,
+                    "Password reset failed - invalid token");
             throw new AuthenticationException(
                     "AUTH-400-INVALID_TOKEN",
                     "Invalid or expired reset token");
@@ -317,12 +374,48 @@ public class AuthServiceImpl implements AuthService {
 
         resetTokenStore.remove(request.token());
         log.info("Password reset for user: {}", user.getEmail());
+
+        auditService.record(AuditAction.UPDATE, "USER", AuditResult.SUCCESS,
+                "Password reset for: " + user.getEmail());
+    }
+
+    @Override
+    public void changePassword(UUID userId, ChangePasswordRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AuthenticationException(
+                        "AUTH-401-USER_NOT_FOUND",
+                        "User not found"));
+
+        if (!passwordEncoder.matches(request.currentPassword(), user.getPasswordHash())) {
+            auditService.record(AuditAction.UPDATE, "USER", AuditResult.FAILURE,
+                    "Password change failed - invalid current password for " + user.getEmail());
+            throw new AuthenticationException(
+                    "AUTH-401-INVALID_CREDENTIALS",
+                    "Current password is incorrect");
+        }
+
+        validatePassword(request.newPassword());
+
+        if (passwordEncoder.matches(request.newPassword(), user.getPasswordHash())) {
+            throw new ValidationException(List.of(
+                    new ValidationException.ValidationError("newPassword",
+                            "New password must be different from current password")));
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(request.newPassword()));
+        userRepository.save(user);
+
+        log.info("Password changed for user: {}", user.getEmail());
+
+        auditService.record(AuditAction.UPDATE, "USER", AuditResult.SUCCESS,
+                "Password changed for: " + user.getEmail());
     }
 
     @Override
     public void logout(String refreshToken) {
-        // Invalidate the refresh token by removing it from the active set
         activeRefreshTokens.remove(refreshToken);
+        auditService.record(AuditAction.LOGOUT, "USER", AuditResult.SUCCESS,
+                "User logout");
         log.info("Logout: refresh token invalidated");
     }
 
@@ -337,6 +430,9 @@ public class AuthServiceImpl implements AuthService {
             }
             if (password != null && !password.matches(".*\\d.*")) {
                 errors.add(new ValidationException.ValidationError("password", "Must contain at least one number"));
+            }
+            if (password != null && !password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*")) {
+                errors.add(new ValidationException.ValidationError("password", "Must contain at least one special character"));
             }
             throw new ValidationException(errors);
         }

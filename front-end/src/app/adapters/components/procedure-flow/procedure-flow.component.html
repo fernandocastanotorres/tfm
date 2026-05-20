@@ -5,11 +5,6 @@
       {{ 'PROCEDURE_FLOW.LOADING' | translate }}
     </div>
 
-    <!-- Error state -->
-    <div *ngIf="error && !isLoading" class="card p-6 text-center text-red-600">
-      {{ error | translate }}
-    </div>
-
     <!-- Flow content -->
     <ng-container *ngIf="procedure && !isLoading">
       <header class="space-y-2">

@@ -2,11 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProceduresApiService } from '../../../application/services/procedures-api.service';
 import { ProcedureDetail, ProcedureTaskDto } from '../../../application/models/procedure.models';
+import { ToastService } from '../../../application/services/toast.service';
 
 @Component({
-  selector: 'app-procedure-flow',
-  templateUrl: './procedure-flow.component.html',
-  styleUrls: []
+    selector: 'app-procedure-flow',
+    templateUrl: './procedure-flow.component.html',
+    styleUrls: [],
+    standalone: false
 })
 export class ProcedureFlowComponent implements OnInit {
   procedure: ProcedureDetail | null = null;
@@ -14,12 +16,12 @@ export class ProcedureFlowComponent implements OnInit {
   currentTaskIndex = 0;
   currentTask: ProcedureTaskDto | null = null;
   isLoading = true;
-  error: string | null = null;
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly proceduresApiService: ProceduresApiService
+    private readonly proceduresApiService: ProceduresApiService,
+    private readonly toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -38,7 +40,7 @@ export class ProcedureFlowComponent implements OnInit {
         this.isLoading = false;
       },
       error: () => {
-        this.error = 'PROCEDURE_FLOW.ERROR_LOAD';
+        this.toast.error('Error', 'No se ha podido cargar el procedimiento.');
         this.isLoading = false;
       }
     });

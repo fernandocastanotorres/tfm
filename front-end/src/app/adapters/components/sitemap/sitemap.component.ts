@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import { SitemapSection, SitemapLink } from '../../../application/models/sede.models';
 
 @Component({
-  selector: 'app-sitemap',
-  templateUrl: './sitemap.component.html',
-  styleUrls: ['./sitemap.component.css']
+    selector: 'app-sitemap',
+    templateUrl: './sitemap.component.html',
+    styleUrls: ['./sitemap.component.css'],
+    standalone: false
 })
 export class SitemapComponent {
   readonly sections: SitemapSection[] = [

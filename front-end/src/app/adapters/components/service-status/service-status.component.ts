@@ -3,9 +3,10 @@ import { ServiceStatusService } from '../../../application/services/service-stat
 import { ServiceStatusItem } from '../../../application/models/sede.models';
 
 @Component({
-  selector: 'app-service-status',
-  templateUrl: './service-status.component.html',
-  styleUrls: ['./service-status.component.css']
+    selector: 'app-service-status',
+    templateUrl: './service-status.component.html',
+    styleUrls: ['./service-status.component.css'],
+    standalone: false
 })
 export class ServiceStatusComponent implements OnInit {
   services: ServiceStatusItem[] = [];

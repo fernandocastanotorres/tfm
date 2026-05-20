@@ -47,7 +47,8 @@ export class AdminCasesService {
           type: attachment.type,
           size: attachment.size ?? 0,
           uploadedAt: attachment.uploadedAt,
-          uploadedBy: attachment.uploadedBy ?? 'Sistema'
+          uploadedBy: attachment.uploadedBy ?? 'Sistema',
+          signed: attachment.signed ?? false
         }))
       }))
     );
@@ -79,6 +80,12 @@ export class AdminCasesService {
     return this.http.get<PendingTask[]>(`${this.baseUrl}/tasks/pending`);
   }
 
+  getPendingTasksByCase(caseId: string): Observable<PendingTask[]> {
+    return this.http.get<PendingTask[]>(`${this.baseUrl}/tasks/pending`).pipe(
+      map((tasks) => tasks.filter((t) => t.caseId === caseId))
+    );
+  }
+
   resolveTask(caseId: string, taskId: string, request: TaskResolutionRequest): Observable<CaseStatusResponse> {
     return this.http.post<any>(`${this.baseUrl}/procedures/${caseId}/tasks/${taskId}/resolve`, request).pipe(
       map((response: any) => ({
@@ -99,5 +106,11 @@ export class AdminCasesService {
     if (from) params['from'] = from;
     if (to) params['to'] = to;
     return this.http.get<DashboardReport>(`${this.baseUrl}/dashboard/report`, { params });
+  }
+
+  downloadDocument(documentId: string): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/procedures/documents/${documentId}/download`, {
+      responseType: 'blob'
+    });
   }
 }

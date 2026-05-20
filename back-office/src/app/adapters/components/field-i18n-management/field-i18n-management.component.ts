@@ -12,9 +12,10 @@ import { ProcedureManagementService } from '../../../application/services/proced
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
 
 @Component({
-  selector: 'bo-field-i18n-management',
-  templateUrl: './field-i18n-management.component.html',
-  styleUrls: ['./field-i18n-management.component.css']
+    selector: 'bo-field-i18n-management',
+    templateUrl: './field-i18n-management.component.html',
+    styleUrls: ['./field-i18n-management.component.css'],
+    standalone: false
 })
 export class FieldI18nManagementComponent implements OnInit {
   private readonly procedureService = inject(ProcedureManagementService);

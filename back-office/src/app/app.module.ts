@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
@@ -23,6 +23,7 @@ import { ProcedureManagementComponent } from './adapters/components/procedure-ma
 import { PublicContentManagementComponent } from './adapters/components/public-content-management/public-content-management.component';
 import { TransparencyManagementComponent } from './adapters/components/transparency-management/transparency-management.component';
 import { StatisticsDashboardComponent } from './adapters/components/statistics-dashboard/statistics-dashboard.component';
+import { ContactInboxComponent } from './adapters/components/contact-inbox/contact-inbox.component';
 import { FieldI18nManagementComponent } from './adapters/components/field-i18n-management/field-i18n-management.component';
 
 import { AuthService } from './application/services/auth.service';
@@ -43,50 +44,45 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http);
 }
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    BackofficeLayoutComponent,
-    DashboardComponent,
-    CaseListComponent,
-    CaseDetailComponent,
-    TasksComponent,
-    TaskResolutionComponent,
-    UserManagementComponent,
-    ProcedureManagementComponent,
-    PublicContentManagementComponent,
-    TransparencyManagementComponent,
-    StatisticsDashboardComponent,
-    FieldI18nManagementComponent
-  ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule,
-    AppRoutingModule,
-    RouterModule,
-    NgChartsModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      },
-      defaultLanguage: 'es-ES'
-    })
-  ],
-  providers: [
-    { provide: AuthService, useClass: environment.useMocks ? MockAuthService : AuthService },
-    { provide: AdminCasesService, useClass: environment.useMocks ? MockAdminCasesService : AdminCasesService },
-    { provide: UserManagementService, useClass: environment.useMocks ? MockUserManagementService : UserManagementService },
-    { provide: ProcedureManagementService, useClass: environment.useMocks ? MockProcedureManagementService : ProcedureManagementService },
-    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: AcceptLanguageInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: JwtAuthInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: CorrelationIdInterceptor, multi: true }
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        LoginComponent,
+        BackofficeLayoutComponent,
+        DashboardComponent,
+        CaseListComponent,
+        CaseDetailComponent,
+        TasksComponent,
+        TaskResolutionComponent,
+        UserManagementComponent,
+        ProcedureManagementComponent,
+        PublicContentManagementComponent,
+        TransparencyManagementComponent,
+        StatisticsDashboardComponent,
+        ContactInboxComponent,
+        FieldI18nManagementComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        FormsModule,
+        ReactiveFormsModule,
+        AppRoutingModule,
+        RouterModule,
+        NgChartsModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient]
+            },
+            defaultLanguage: 'es-ES'
+        })], providers: [
+        { provide: AuthService, useClass: environment.useMocks ? MockAuthService : AuthService },
+        { provide: AdminCasesService, useClass: environment.useMocks ? MockAdminCasesService : AdminCasesService },
+        { provide: UserManagementService, useClass: environment.useMocks ? MockUserManagementService : UserManagementService },
+        { provide: ProcedureManagementService, useClass: environment.useMocks ? MockProcedureManagementService : ProcedureManagementService },
+        { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: AcceptLanguageInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: JwtAuthInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: CorrelationIdInterceptor, multi: true },
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule { }

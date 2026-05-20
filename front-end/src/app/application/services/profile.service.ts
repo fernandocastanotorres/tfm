@@ -26,4 +26,11 @@ export class ProfileService {
   updateProfile(profile: Omit<ProfileData, 'email'>): Observable<ProfileData> {
     return this.http.put<ProfileData>(`${this.authBaseUrl}/me`, profile);
   }
+
+  changePassword(currentPassword: string, newPassword: string): Observable<void> {
+    return this.http.post<void>(`${this.authBaseUrl}/change-password`, {
+      currentPassword,
+      newPassword
+    });
+  }
 }

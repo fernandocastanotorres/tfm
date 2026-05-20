@@ -56,10 +56,10 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "back-office:build:production"
+              "buildTarget": "back-office:build:production"
             },
             "development": {
-              "browserTarget": "back-office:build:development"
+              "buildTarget": "back-office:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -67,7 +67,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "back-office:build"
+            "buildTarget": "back-office:build"
           }
         },
         "test": {

@@ -5,9 +5,10 @@ import { I18nService } from '../../../application/services/i18n.service';
 import { LegislationItem } from '../../../application/models/sede.models';
 
 @Component({
-  selector: 'app-legislation',
-  templateUrl: './legislation.component.html',
-  styleUrls: ['./legislation.component.css']
+    selector: 'app-legislation',
+    templateUrl: './legislation.component.html',
+    styleUrls: ['./legislation.component.css'],
+    standalone: false
 })
 export class LegislationComponent implements OnInit, OnDestroy {
   legislation: LegislationItem[] = [];

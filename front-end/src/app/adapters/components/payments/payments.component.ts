@@ -4,9 +4,10 @@ import { PaymentsService, PaymentItem } from '../../../application/services/paym
 import { changePage, updatePageSize, getPaginationState, PaginationState } from '../../../application/utils/pagination';
 
 @Component({
-  selector: 'app-payments',
-  templateUrl: './payments.component.html',
-  styleUrls: []
+    selector: 'app-payments',
+    templateUrl: './payments.component.html',
+    styleUrls: [],
+    standalone: false
 })
 export class PaymentsComponent implements OnInit {
   payments: PaymentItem[] = [];

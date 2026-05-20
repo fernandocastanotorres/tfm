@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, fakeAsync, tick, flush } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -10,6 +10,8 @@ import { CasesApiService } from '../../../application/services/cases-api.service
 import { ProceduresApiService } from '../../../application/services/procedures-api.service';
 import { I18nService, SupportedLocale } from '../../../application/services/i18n.service';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
+import { ToastService } from '../../../application/services/toast.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('CaseWizardComponent', () => {
   let component: CaseWizardComponent;
@@ -18,6 +20,7 @@ describe('CaseWizardComponent', () => {
   let casesSpy: jasmine.SpyObj<CasesApiService>;
   let i18nSpy: jasmine.SpyObj<I18nService>;
   let confirmSpy: jasmine.SpyObj<ConfirmDialogService>;
+  let toastSpy: jasmine.SpyObj<ToastService>;
   let routerSpy: jasmine.SpyObj<Router>;
   let localeSubject: Subject<SupportedLocale>;
 
@@ -30,6 +33,7 @@ describe('CaseWizardComponent', () => {
     casesSpy = jasmine.createSpyObj('CasesApiService', ['getDetail', 'create', 'updateDraft', 'uploadDocument', 'submit']);
     i18nSpy = jasmine.createSpyObj('I18nService', ['getCurrentLocale$']);
     confirmSpy = jasmine.createSpyObj('ConfirmDialogService', ['confirm']);
+    toastSpy = jasmine.createSpyObj('ToastService', ['error', 'success', 'warning']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     i18nSpy.getCurrentLocale$.and.returnValue(localeSubject.asObservable());
     routeProcedureId = 'test-procedure';
@@ -42,18 +46,21 @@ describe('CaseWizardComponent', () => {
 
   function configureAndCreate(): void {
     TestBed.configureTestingModule({
-      declarations: [CaseWizardComponent],
-      imports: [HttpClientTestingModule, ReactiveFormsModule, TranslateModule.forRoot()],
-      providers: [
+    declarations: [CaseWizardComponent],
+    schemas: [NO_ERRORS_SCHEMA],
+    imports: [ReactiveFormsModule, TranslateModule.forRoot()],
+    providers: [
         { provide: ProceduresApiService, useValue: proceduresSpy },
         { provide: CasesApiService, useValue: casesSpy },
         { provide: I18nService, useValue: i18nSpy },
         { provide: ConfirmDialogService, useValue: confirmSpy },
+        { provide: ToastService, useValue: toastSpy },
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => routeProcedureId }, queryParamMap: { get: () => routeCaseId } } } },
-        { provide: Router, useValue: routerSpy }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    });
+        { provide: Router, useValue: routerSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     fixture = TestBed.createComponent(CaseWizardComponent);
     component = fixture.componentInstance;
     component.ngOnInit();
@@ -113,12 +120,12 @@ describe('CaseWizardComponent', () => {
 
   // ===== PROCEDURE LOADING =====
 
-  it('should set error when procedure loading fails', () => {
+  it('should show toast error when procedure loading fails', () => {
     proceduresSpy.getByIdentifier.and.returnValue(throwError(() => new Error('fail')));
     configureAndCreate();
     // Trigger loadProcedure directly to test error handling
     (component as any).loadProcedure();
-    expect(component.error).toBe('CASE_WIZARD.ERROR_LOAD_PROCEDURE');
+    expect(toastSpy.error).toHaveBeenCalled();
     expect(component.isLoading).toBeFalse();
   });
 
@@ -580,7 +587,7 @@ describe('CaseWizardComponent', () => {
     confirmSpy.confirm.and.resolveTo(true);
     casesSpy.create.and.returnValue(throwError(() => ({ error: { message: 'Server error' } })));
     await component.submit();
-    expect(component.error).toBe('Server error');
+    expect(toastSpy.error).toHaveBeenCalled();
     expect(component.isSubmitting).toBeFalse();
   });
 

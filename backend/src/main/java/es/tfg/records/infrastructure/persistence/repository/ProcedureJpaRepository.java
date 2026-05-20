@@ -15,6 +15,8 @@ public interface ProcedureJpaRepository extends JpaRepository<ProcedureEntity, U
 
     Page<ProcedureEntity> findByOwnerId(UUID ownerId, Pageable pageable);
 
+    java.util.List<ProcedureEntity> findAllByOwnerId(UUID ownerId);
+
     long countByOwnerId(UUID ownerId);
 
     boolean existsByOwnerIdAndStatus(UUID ownerId, CaseStatus status);

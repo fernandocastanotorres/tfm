@@ -10,9 +10,10 @@ import {
 } from '../../../application/models/backoffice.models';
 
 @Component({
-  selector: 'bo-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+    selector: 'bo-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrls: ['./dashboard.component.css'],
+    standalone: false
 })
 export class DashboardComponent implements OnInit {
   private readonly adminCasesService = inject(AdminCasesService);

@@ -3,9 +3,10 @@ import { TransparencyManagementService, TransparencyReport, CreateReportRequest 
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
 
 @Component({
-  selector: 'bo-transparency-management',
-  templateUrl: './transparency-management.component.html',
-  styleUrls: ['./transparency-management.component.css']
+    selector: 'bo-transparency-management',
+    templateUrl: './transparency-management.component.html',
+    styleUrls: ['./transparency-management.component.css'],
+    standalone: false
 })
 export class TransparencyManagementComponent implements OnInit {
   private readonly service = inject(TransparencyManagementService);

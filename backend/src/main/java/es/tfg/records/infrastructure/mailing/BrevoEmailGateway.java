@@ -71,4 +71,47 @@ public class BrevoEmailGateway {
                 .retrieve()
                 .toBodilessEntity();
     }
+
+    public void sendNewMessageNotification(String recipientEmail, String senderName, String messagePreview, String caseId) {
+        if (!enabled || apiKey.isBlank()) {
+            log.info("Mail disabled. New message notification for {}: case {}", recipientEmail, caseId);
+            return;
+        }
+
+        String preview = messagePreview != null && messagePreview.length() > 200
+                ? messagePreview.substring(0, 200) + "..."
+                : messagePreview;
+
+        String html = """
+                <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:24px;background:#f8fafc;color:#0f172a">
+                  <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:24px">
+                    <h1 style="margin:0 0 12px;font-size:22px">Nuevo mensaje en tu expediente</h1>
+                    <p style="margin:0 0 10px">Hola,</p>
+                    <p style="margin:0 0 18px"><strong>%s</strong> te ha enviado un mensaje sobre tu expediente:</p>
+                    <div style="background:#f1f5f9;border-radius:8px;padding:16px;margin:0 0 20px">
+                      <p style="margin:0;color:#334155">%s</p>
+                    </div>
+                    <p style="margin:0 0 20px">
+                      <a href="http://localhost:4200/sede/expedientes/%s/detalle" style="display:inline-block;background:#0f766e;color:#ffffff;text-decoration:none;padding:12px 18px;border-radius:8px;font-weight:700">Ver expediente</a>
+                    </p>
+                    <p style="margin:0;color:#475569">Este es un mensaje automatico de la Sede Electronica.</p>
+                  </div>
+                </div>
+                """.formatted(senderName, preview != null ? preview : "(sin contenido)", caseId);
+
+        Map<String, Object> body = Map.of(
+                "sender", Map.of("email", fromEmail, "name", fromName),
+                "to", new Object[]{Map.of("email", recipientEmail)},
+                "subject", "Nuevo mensaje en tu expediente - Sede Electronica",
+                "htmlContent", html
+        );
+
+        restClient.post()
+                .uri("/smtp/email")
+                .header("api-key", apiKey)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .retrieve()
+                .toBodilessEntity();
+    }
 }

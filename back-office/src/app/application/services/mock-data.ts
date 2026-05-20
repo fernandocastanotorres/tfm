@@ -160,9 +160,9 @@ export const mockCaseDetails: Record<string, CaseDetail> = {
       { id: 't3', title: 'Expediente presentado', date: yesterday.toISOString(), description: 'El expediente ha sido presentado formalmente', actor: 'Juan Garcia Lopez' }
     ],
     attachments: [
-      { id: 'd1', name: 'plano_local.pdf', type: 'application/pdf', size: 245000, uploadedAt: twoDaysAgo.toISOString(), uploadedBy: 'Juan Garcia Lopez' },
-      { id: 'd2', name: 'contrato_alquiler.pdf', type: 'application/pdf', size: 180000, uploadedAt: twoDaysAgo.toISOString(), uploadedBy: 'Juan Garcia Lopez' },
-      { id: 'd3', name: 'licencia_actividad_anterior.pdf', type: 'application/pdf', size: 95000, uploadedAt: twoDaysAgo.toISOString(), uploadedBy: 'Juan Garcia Lopez' }
+      { id: 'd1', name: 'plano_local.pdf', type: 'application/pdf', size: 245000, uploadedAt: twoDaysAgo.toISOString(), uploadedBy: 'Juan Garcia Lopez', signed: true },
+      { id: 'd2', name: 'contrato_alquiler.pdf', type: 'application/pdf', size: 180000, uploadedAt: twoDaysAgo.toISOString(), uploadedBy: 'Juan Garcia Lopez', signed: true },
+      { id: 'd3', name: 'licencia_actividad_anterior.pdf', type: 'application/pdf', size: 95000, uploadedAt: twoDaysAgo.toISOString(), uploadedBy: 'Juan Garcia Lopez', signed: true }
     ],
     formData: {
       nombreEstablecimiento: 'Bar Central',
@@ -190,7 +190,7 @@ export const mockCaseDetails: Record<string, CaseDetail> = {
       { id: 't2', title: 'En tramitacion', date: yesterday.toISOString(), description: 'Asignado a Maria Fernandez', actor: 'Sistema' }
     ],
     attachments: [
-      { id: 'd1', name: 'dni_escaneado.pdf', type: 'application/pdf', size: 320000, uploadedAt: twoDaysAgo.toISOString(), uploadedBy: 'Maria Fernandez Ruiz' }
+      { id: 'd1', name: 'dni_escaneado.pdf', type: 'application/pdf', size: 320000, uploadedAt: twoDaysAgo.toISOString(), uploadedBy: 'Maria Fernandez Ruiz', signed: true }
     ],
     formData: {
       tipoCertificado: 'Empadronamiento colectivo',

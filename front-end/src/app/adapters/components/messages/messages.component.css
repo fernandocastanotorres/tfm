@@ -1,13 +1,13 @@
 .messages__container {
-  @apply max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12;
+  @apply max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
 }
 
 .messages__header {
-  @apply mb-8;
+  @apply mb-6;
 }
 
 .messages__breadcrumb {
-  @apply text-sm text-surface-500 mb-4;
+  @apply text-sm text-surface-500 mb-3;
 }
 
 .messages__breadcrumb a {
@@ -15,9 +15,189 @@
 }
 
 .messages__filters {
-  @apply mt-6 flex flex-wrap gap-3;
+  @apply flex flex-wrap gap-3 mb-6;
 }
 
 .messages__layout {
-  @apply mt-8 grid gap-6 lg:grid-cols-[2fr_1fr];
+  @apply space-y-3;
+}
+
+.messages__empty {
+  @apply flex flex-col items-center justify-center py-16 text-center;
+}
+
+.messages__empty-icon {
+  @apply text-surface-300 mb-4;
+}
+
+.messages__empty-text {
+  @apply text-surface-500 text-lg;
+}
+
+.messages__empty-title {
+  @apply text-lg font-medium text-surface-700 mb-1;
+}
+
+.messages__empty-desc {
+  @apply text-surface-400 text-sm;
+}
+
+.message-thread {
+  @apply bg-white rounded-xl border border-surface-200 overflow-hidden transition-all duration-200;
+}
+
+.message-thread:hover {
+  @apply border-surface-300 shadow-sm;
+}
+
+.message-thread--unread {
+  @apply border-brand-200 bg-brand-50/30;
+}
+
+.message-thread--unread:hover {
+  @apply border-brand-300 bg-brand-50/50;
+}
+
+.message-thread__header {
+  @apply w-full flex items-center gap-4 p-4 cursor-pointer text-left transition-colors;
+}
+
+.message-thread__header:hover {
+  @apply bg-surface-50;
+}
+
+.message-thread__avatar {
+  @apply flex-shrink-0 w-10 h-10 rounded-full bg-surface-100 flex items-center justify-center text-surface-400;
+}
+
+.message-thread__avatar--unread {
+  @apply bg-brand-100 text-brand-500;
+}
+
+.message-thread__info {
+  @apply flex-1 min-w-0;
+}
+
+.message-thread__top {
+  @apply flex items-center justify-between gap-3;
+}
+
+.message-thread__title {
+  @apply text-sm font-semibold text-surface-900 truncate;
+}
+
+.message-thread__time {
+  @apply text-xs text-surface-400 flex-shrink-0;
+}
+
+.message-thread__preview {
+  @apply text-sm text-surface-500 truncate mt-0.5;
+}
+
+.message-thread__case-id {
+  @apply text-xs text-surface-400 mt-0.5 font-mono;
+}
+
+.message-thread__meta {
+  @apply flex items-center gap-2 flex-shrink-0;
+}
+
+.message-thread__badge {
+  @apply inline-flex items-center justify-center w-6 h-6 rounded-full bg-brand-500 text-white text-xs font-bold;
+}
+
+.message-thread__chevron {
+  @apply w-5 h-5 text-surface-400 transition-transform duration-200;
+}
+
+.message-thread__chevron--open {
+  @apply rotate-180;
+}
+
+.message-thread__body {
+  @apply border-t border-surface-200;
+}
+
+.message-thread__messages {
+  @apply p-4 space-y-3 max-h-[500px] overflow-y-auto bg-surface-50/50;
+}
+
+.message-thread__loading {
+  @apply flex flex-col items-center justify-center py-8 text-surface-400;
+}
+
+.message-thread__spinner {
+  @apply w-8 h-8 border-2 border-surface-200 border-t-brand-500 rounded-full animate-spin mb-2;
+}
+
+.message-thread__no-messages {
+  @apply flex flex-col items-center justify-center py-8 text-surface-400;
+}
+
+.message-thread__pagination {
+  @apply flex items-center justify-between px-4 py-2 text-sm border-t border-surface-100 bg-white;
+}
+
+.message-thread__page-btn {
+  @apply px-3 py-1 border border-surface-200 rounded text-sm text-surface-600 hover:bg-surface-50 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.message-thread__reply {
+  @apply p-4 bg-white border-t border-surface-100;
+}
+
+.message-thread__reply-label {
+  @apply block text-sm font-medium text-surface-700 mb-2;
+}
+
+.message-thread__reply-input {
+  @apply w-full border border-surface-200 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent;
+}
+
+.message-thread__reply-actions {
+  @apply mt-3 flex justify-end;
+}
+
+.message-bubble {
+  @apply max-w-[85%] rounded-xl p-3;
+}
+
+.message-bubble--admin {
+  @apply bg-blue-50 border border-blue-100 ml-auto;
+}
+
+.message-bubble--citizen {
+  @apply bg-green-50 border border-green-100;
+}
+
+.message-bubble__header {
+  @apply flex items-center justify-between mb-1.5;
+}
+
+.message-bubble__sender {
+  @apply flex items-center gap-1.5 text-xs font-medium text-surface-600;
+}
+
+.message-bubble__time {
+  @apply text-xs text-surface-400;
+}
+
+.message-bubble__content {
+  @apply text-sm text-surface-700 whitespace-pre-wrap;
+}
+
+.message-bubble__attachments {
+  @apply mt-2 flex flex-wrap gap-2;
+}
+
+.message-bubble__attachment {
+  @apply inline-flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-800 hover:underline bg-white rounded-lg px-2 py-1 border border-blue-100 transition-colors;
+}
+
+.message-bubble__attachment-size {
+  @apply text-surface-400;
+}
+
+.messages__pagination {
+  @apply flex items-center justify-between py-4;
 }

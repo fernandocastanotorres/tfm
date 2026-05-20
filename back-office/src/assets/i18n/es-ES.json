@@ -101,6 +101,34 @@
         "search": "Buscar",
         "loading": "Cargando...",
         "noData": "No hay datos disponibles"
+      },
+      "caseDetail": {
+        "messages": {
+          "tabLabel": "Mensajes",
+          "replyTitle": "Responder al ciudadano",
+          "templateLabel": "Plantilla (opcional)",
+          "attachLabel": "Adjuntar archivos",
+          "notifyByEmail": "Notificar por email",
+          "sendButton": "Enviar mensaje",
+          "sendingButton": "Enviando...",
+          "emptyState": "No hay mensajes en este expediente.",
+          "noMessages": "Sin mensajes",
+          "pagination": "Pagina {{page}} de {{total}}",
+          "previous": "Anterior",
+          "next": "Siguiente",
+          "pageSize": "{{size}} por pagina",
+          "senderCitizen": "Ciudadano",
+          "senderAdmin": "Administracion",
+          "senderSystem": "Sistema",
+          "templates": {
+            "freeText": "Texto libre",
+            "requestInfo": "Solicitud de informacion adicional",
+            "documentIncomplete": "Documentacion incompleta",
+            "approved": "Expediente aprobado",
+            "rejected": "Expediente rechazado",
+            "amendmentRequired": "Subsanacion requerida"
+          }
+        }
       }
     }
   }

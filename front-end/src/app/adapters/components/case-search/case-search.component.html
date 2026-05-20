@@ -16,9 +16,8 @@
     </div>
 
     <div *ngIf="isLoading" class="mt-6 card p-6 text-center text-surface-600">{{ 'CASE_SEARCH.LOADING' | translate }}</div>
-    <div *ngIf="error && !isLoading" class="mt-6 card p-6 text-center text-red-600">{{ error | translate }}</div>
 
-    <div class="mt-6 space-y-4" *ngIf="!isLoading && !error">
+    <div class="mt-6 space-y-4" *ngIf="!isLoading">
       <a
         *ngFor="let item of filteredCases"
         class="card p-5 block no-underline hover:shadow-xl transition"
@@ -35,28 +34,6 @@
       </a>
 
       <div *ngIf="filteredCases.length === 0" class="card p-6 text-surface-600">{{ 'CASE_SEARCH.NO_RESULTS' | translate }}</div>
-    </div>
-
-    <div *ngIf="isLoading" class="mt-6 card p-6 text-center text-surface-600">Cargando expedientes...</div>
-    <div *ngIf="error && !isLoading" class="mt-6 card p-6 text-center text-red-600">{{ error }}</div>
-
-    <div class="mt-6 space-y-4" *ngIf="!isLoading && !error">
-      <a
-        *ngFor="let item of filteredCases"
-        class="card p-5 block no-underline hover:shadow-xl transition"
-        [routerLink]="['/sede/expedientes', item.id, 'detalle']"
-      >
-        <div class="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h2 class="text-lg font-semibold text-surface-900">{{ item.title }}</h2>
-            <p class="text-surface-600 mt-1">{{ item.id }}</p>
-            <p class="text-surface-600 mt-1">{{ item.procedureType }}</p>
-          </div>
-          <span class="text-xs font-semibold px-3 py-1 rounded-full bg-surface-100 text-surface-600">{{ item.status }}</span>
-        </div>
-      </a>
-
-      <div *ngIf="filteredCases.length === 0" class="card p-6 text-surface-600">No se han encontrado expedientes con ese criterio.</div>
     </div>
   </div>
 </section>

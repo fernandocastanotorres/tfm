@@ -1,34 +1,47 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CasesApiService } from '../../../application/services/cases-api.service';
+import { MessagesService } from '../../../application/services/messages.service';
 import { CaseDetail } from '../../../application/models/case.models';
+import { MessageDto } from '../../../application/models/message.models';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
+import { ToastService } from '../../../application/services/toast.service';
 import { Subscription, interval } from 'rxjs';
 
 @Component({
-  selector: 'app-case-detail',
-  templateUrl: './case-detail.component.html',
-  styleUrls: []
+    selector: 'app-case-detail',
+    templateUrl: './case-detail.component.html',
+    styleUrls: ['./case-detail.component.css'],
+    standalone: false
 })
 export class CaseDetailComponent implements OnInit, OnDestroy {
   caseDetail: CaseDetail | null = null;
   isLoading = true;
   isUploading = false;
-  error: string | null = null;
   private caseId: string | null = null;
   private readonly subscriptions = new Subscription();
 
+  messages: MessageDto[] = [];
+  reply = '';
+  isSending = false;
+  isLoadingMessages = false;
+  messagePage = 0;
+  messagePageSize = 20;
+  messageTotalPages = 1;
+
   constructor(
     private readonly casesApiService: CasesApiService,
+    private readonly messagesService: MessagesService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly confirmDialogService: ConfirmDialogService
+    private readonly confirmDialogService: ConfirmDialogService,
+    private readonly toast: ToastService
   ) {}
 
   ngOnInit(): void {
     this.caseId = this.route.snapshot.paramMap.get('id');
     if (!this.caseId) {
-      this.error = 'CASE_DETAIL.ERROR_NO_ID';
+      this.toast.error('Error', 'No se ha podido identificar el expediente.');
       this.isLoading = false;
       return;
     }
@@ -77,7 +90,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
         },
         error: () => {
           pending -= 1;
-          this.error = 'CASE_DETAIL.ERROR_LOAD';
+          this.toast.error('Error', 'No se ha podido subir el documento.');
           if (pending === 0) {
             this.isUploading = false;
             this.loadCaseDetail();
@@ -96,6 +109,9 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
         link.download = filename || 'documento';
         link.click();
         URL.revokeObjectURL(objectUrl);
+      },
+      error: () => {
+        this.toast.error('Error', 'No se ha podido descargar el documento.');
       }
     });
   }
@@ -113,6 +129,9 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
         link.download = `justificante-${this.caseDetail!.id}.pdf`;
         link.click();
         URL.revokeObjectURL(objectUrl);
+      },
+      error: () => {
+        this.toast.error('Error', 'No se ha podido descargar el justificante.');
       }
     });
   }
@@ -135,7 +154,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
     this.casesApiService.amend(this.caseDetail.id, { reason: 'Solicitud de aclaracion desde sede' }).subscribe({
       next: () => this.loadCaseDetail(),
       error: () => {
-        this.error = 'CASE_DETAIL.ERROR_LOAD';
+        this.toast.error('Error', 'No se ha podido solicitar la aclaracion.');
       }
     });
   }
@@ -152,12 +171,81 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
       next: (data) => {
         this.caseDetail = data;
         this.isLoading = false;
+        this.loadMessages();
       },
       error: (err) => {
-        this.error = err?.error?.message ?? 'CASE_DETAIL.ERROR_LOAD';
+        this.toast.error('Error al cargar', err?.error?.message ?? 'No se ha podido cargar el expediente.');
         this.isLoading = false;
       }
     });
+  }
+
+  loadMessages(): void {
+    if (!this.caseId) {
+      return;
+    }
+    this.isLoadingMessages = true;
+    this.messagesService.getThreadMessages(this.caseId, this.messagePage, this.messagePageSize).subscribe({
+      next: (response) => {
+        this.messages = response.messages;
+        this.messageTotalPages = response.totalPages;
+        this.isLoadingMessages = false;
+      },
+      error: () => {
+        this.messages = [];
+        this.isLoadingMessages = false;
+      }
+    });
+  }
+
+  sendReply(): void {
+    if (!this.caseId || !this.reply.trim()) {
+      return;
+    }
+    this.isSending = true;
+    this.messagesService.sendMessage(this.caseId, this.reply.trim()).subscribe({
+      next: () => {
+        this.reply = '';
+        this.messagePage = 0;
+        this.loadMessages();
+        this.isSending = false;
+        this.toast.success('Mensaje enviado correctamente');
+      },
+      error: () => {
+        this.isSending = false;
+        this.toast.error('Error al enviar el mensaje');
+      }
+    });
+  }
+
+  downloadMessageAttachment(attachmentId: string, filename: string): void {
+    this.messagesService.downloadAttachment(attachmentId).subscribe({
+      next: (blob) => {
+        const objectUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = objectUrl;
+        link.download = filename || 'adjunto';
+        link.click();
+        URL.revokeObjectURL(objectUrl);
+      },
+      error: () => {
+        this.toast.error('Error al descargar el adjunto');
+      }
+    });
+  }
+
+  formatMessageDate(dateStr: string): string {
+    return new Date(dateStr).toLocaleString('es-ES', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  changeMessagePage(page: number): void {
+    if (page >= 0 && page < this.messageTotalPages) {
+      this.messagePage = page;
+      this.loadMessages();
+    }
   }
 
   statusClass(status: string): string {
@@ -173,6 +261,12 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
     }
   }
 
+  formatFileSize(bytes: number): string {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / 1048576).toFixed(1) + ' MB';
+  }
+
   continueProcessing(): void {
     if (!this.caseDetail) {
       return;
@@ -180,7 +274,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
 
     const procedureId = this.caseDetail.procedureTypeId || this.toSlug(this.caseDetail.procedureType);
     if (!procedureId) {
-      this.error = 'CASE_DETAIL.ERROR_RESUME';
+      this.toast.error('Error', 'No se ha podido continuar con el tramite.');
       return;
     }
 

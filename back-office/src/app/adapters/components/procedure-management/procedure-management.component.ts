@@ -11,9 +11,10 @@ import { ProcedureManagementService } from '../../../application/services/proced
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
 
 @Component({
-  selector: 'bo-procedure-management',
-  templateUrl: './procedure-management.component.html',
-  styleUrls: ['./procedure-management.component.css']
+    selector: 'bo-procedure-management',
+    templateUrl: './procedure-management.component.html',
+    styleUrls: ['./procedure-management.component.css'],
+    standalone: false
 })
 export class ProcedureManagementComponent implements OnInit {
   private readonly procedureManagementService = inject(ProcedureManagementService);

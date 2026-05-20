@@ -15,7 +15,8 @@
     "EMAIL_ERROR": "Introduce un correo válido.",
     "PASSWORD_HELP": "Mínimo 8 caracteres.",
     "PASSWORD_ERROR": "O contrasinal debe ter polo menos 8 caracteres.",
-    "ERROR_INVALID": "Credenciais non válidas. Revisa os datos e téntao de novo."
+    "ERROR_INVALID": "Credenciais non válidas. Revisa os datos e téntao de novo.",
+    "ERROR_GENERIC": "Produciuse un erro inesperado. Téntao de novo máis tarde."
   },
   "REGISTER": {
     "EYEBROW": "Alta cidadá",
@@ -176,7 +177,23 @@
     "FILTER_VALIDATED": "Validados",
     "UPLOAD": "Subir nova versión",
     "DOWNLOAD": "Descargar",
+    "SIGN": "Asinar",
+    "VERIFY": "Verificar sinatura",
+    "SIGNED": "Asinado",
+    "SIGNING": "Asinando...",
+    "VERIFYING": "Verificando...",
+    "DELETE": "Eliminar",
     "EMPTY": "Non hai documentos para este filtro."
+  },
+  "DOCUMENT_STATUS": {
+    "PENDING": "Pendente",
+    "SIGNED": "Asinado",
+    "VALIDATED": "Validado",
+    "REJECTED": "Rexeitado"
+  },
+  "PROCEDURE_STATUS": {
+    "ACTIVE": "Activo",
+    "INACTIVE": "Inactivo"
   },
   "PAYMENTS": {
     "EYEBROW": "Pagos e taxas",
@@ -369,9 +386,17 @@
     "ERROR_RESUME": "Non se puido identificar o procedemento para continuar coa tramitación."
   },
   "CASE_STATUS": {
-    "REVIEW": "En revisión",
+    "DRAFT": "Borrador",
+    "SUBMITTED": "Presentado",
+    "IN_REVIEW": "En revisión",
+    "AMENDMENT_REQUIRED": "Subsanación requirida",
+    "RESUBMITTED": "Reenviado",
+    "APPROVED": "Aprobado",
+    "REJECTED": "Rexeitado",
+    "COMPLETED": "Completado",
     "PENDING": "Pendente",
-    "APPROVED": "Aprobado"
+    "WAITING": "En espera",
+    "REVIEW": "En revisión"
   },
   "CASE_WIZARD": {
     "EYEBROW": "Novo expediente",

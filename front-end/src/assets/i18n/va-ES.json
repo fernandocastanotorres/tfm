@@ -15,7 +15,8 @@
     "EMAIL_ERROR": "Introduïx un correu vàlid.",
     "PASSWORD_HELP": "Mínim 8 caràcters.",
     "PASSWORD_ERROR": "La contrasenya ha de tindre almenys 8 caràcters.",
-    "ERROR_INVALID": "Credencials invàlides. Revisa les dades i torna-ho a intentar."
+    "ERROR_INVALID": "Credencials invàlides. Revisa les dades i torna-ho a intentar.",
+    "ERROR_GENERIC": "S'ha produït un error inesperat. Torna-ho a intentar més tard."
   },
   "REGISTER": {
     "EYEBROW": "Alta ciutadana",
@@ -176,7 +177,23 @@
     "FILTER_VALIDATED": "Validats",
     "UPLOAD": "Pujar nova versió",
     "DOWNLOAD": "Descarregar",
+    "SIGN": "Signar",
+    "VERIFY": "Verificar signatura",
+    "SIGNED": "Signat",
+    "SIGNING": "Signant...",
+    "VERIFYING": "Verificant...",
+    "DELETE": "Eliminar",
     "EMPTY": "No hi ha documents per a este filtre."
+  },
+  "DOCUMENT_STATUS": {
+    "PENDING": "Pendent",
+    "SIGNED": "Signat",
+    "VALIDATED": "Validat",
+    "REJECTED": "Rebutjat"
+  },
+  "PROCEDURE_STATUS": {
+    "ACTIVE": "Actiu",
+    "INACTIVE": "Inactiu"
   },
   "PAYMENTS": {
     "EYEBROW": "Pagaments i taxes",
@@ -369,9 +386,17 @@
     "ERROR_RESUME": "No s'ha pogut identificar el procediment per a continuar la tramitació."
   },
   "CASE_STATUS": {
-    "REVIEW": "En revisió",
+    "DRAFT": "Esborrany",
+    "SUBMITTED": "Presentat",
+    "IN_REVIEW": "En revisió",
+    "AMENDMENT_REQUIRED": "Subsanació requerida",
+    "RESUBMITTED": "Reenviat",
+    "APPROVED": "Aprovat",
+    "REJECTED": "Rebutjat",
+    "COMPLETED": "Completat",
     "PENDING": "Pendent",
-    "APPROVED": "Aprovat"
+    "WAITING": "En espera",
+    "REVIEW": "En revisió"
   },
   "CASE_WIZARD": {
     "EYEBROW": "Nou expedient",

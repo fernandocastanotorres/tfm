@@ -7,18 +7,22 @@ import es.tfg.records.application.exception.ConflictException;
 import es.tfg.records.application.exception.ResourceNotFoundException;
 import es.tfg.records.application.exception.ValidationException;
 import es.tfg.records.application.mapper.DocumentMapper;
+import es.tfg.records.application.service.SignatureService;
 import es.tfg.records.domain.model.CaseStatus;
-import es.tfg.records.domain.model.Document;
 import es.tfg.records.domain.model.DocumentStatus;
 import es.tfg.records.domain.model.Procedure;
+import es.tfg.records.domain.model.Document;
 import es.tfg.records.domain.port.DocumentRepository;
 import es.tfg.records.domain.port.ProcedureRepository;
 import es.tfg.records.infrastructure.storage.FileStorageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.time.Instant;
 import java.util.List;
@@ -31,6 +35,8 @@ import java.util.UUID;
  */
 @Service
 public class DocumentServiceImpl implements DocumentService {
+
+    private static final Logger log = LoggerFactory.getLogger(DocumentServiceImpl.class);
 
     // Allowed MIME types for document uploads
     private static final Set<String> ALLOWED_MIME_TYPES = Set.of(
@@ -48,22 +54,28 @@ public class DocumentServiceImpl implements DocumentService {
     // States that accept document uploads
     private static final Set<CaseStatus> UPLOAD_ACCEPTING_STATES = Set.of(
             CaseStatus.DRAFT,
-            CaseStatus.AMENDMENT_REQUIRED
+            CaseStatus.SUBMITTED,
+            CaseStatus.IN_REVIEW,
+            CaseStatus.AMENDMENT_REQUIRED,
+            CaseStatus.RESUBMITTED
     );
 
     private final DocumentRepository documentRepository;
     private final ProcedureRepository procedureRepository;
     private final FileStorageService fileStorageService;
     private final EniMetadataService eniMetadataService;
+    private final SignatureService signatureService;
 
     public DocumentServiceImpl(DocumentRepository documentRepository,
                                ProcedureRepository procedureRepository,
                                FileStorageService fileStorageService,
-                               EniMetadataService eniMetadataService) {
+                               EniMetadataService eniMetadataService,
+                               SignatureService signatureService) {
         this.documentRepository = documentRepository;
         this.procedureRepository = procedureRepository;
         this.fileStorageService = fileStorageService;
         this.eniMetadataService = eniMetadataService;
+        this.signatureService = signatureService;
     }
 
     @Override
@@ -91,6 +103,10 @@ public class DocumentServiceImpl implements DocumentService {
 
         Document saved = documentRepository.save(document);
         eniMetadataService.upsertDocumentMetadata(saved);
+
+        if (procedure.getStatus() != CaseStatus.DRAFT && procedure.getStatus() != CaseStatus.AMENDMENT_REQUIRED) {
+            signDocumentImmediately(caseId, saved);
+        }
 
         return DocumentMapper.toDocumentItem(saved);
     }
@@ -168,6 +184,31 @@ public class DocumentServiceImpl implements DocumentService {
         };
     }
 
+    @Override
+    public Resource downloadDocumentForAdmin(UUID documentId) {
+        Document document = documentRepository.findById(documentId)
+                .orElseThrow(() -> new ResourceNotFoundException("DOC", documentId.toString()));
+
+        if (document.getStoragePath() == null) {
+            throw new ResourceNotFoundException("DOC", "Document has no associated file");
+        }
+
+        InputStream inputStream = fileStorageService.openStream(
+                document.getProcedureId(), document.getStoragePath());
+
+        return new InputStreamResource(inputStream) {
+            @Override
+            public String getFilename() {
+                return document.getName();
+            }
+
+            @Override
+            public long contentLength() {
+                return document.getSize();
+            }
+        };
+    }
+
     private void validateFile(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new ValidationException(List.of(
@@ -204,6 +245,33 @@ public class DocumentServiceImpl implements DocumentService {
             throw new ConflictException("DOC",
                     "Case is not accepting document uploads. Current status: " + procedure.getStatus(),
                     "CASE_NOT_ACCEPTING");
+        }
+    }
+
+    private void signDocumentImmediately(UUID caseId, Document document) {
+        try {
+            byte[] originalContent;
+            try (InputStream is = fileStorageService.openStream(caseId, document.getStoragePath())) {
+                originalContent = is.readAllBytes();
+            }
+
+            byte[] signedContent = signatureService.signDocument(originalContent, document.getMimeType());
+
+            String newName = document.getName().endsWith(".pdf") ? document.getName() : document.getName() + ".pdf";
+            if (!newName.equals(document.getName())) {
+                document.setName(newName);
+                document.setMimeType("application/pdf");
+            }
+
+            fileStorageService.writeBytes(caseId, document.getStoragePath(), signedContent);
+
+            document.setStatus(DocumentStatus.SIGNED);
+            document.setSize((long) signedContent.length);
+            documentRepository.save(document);
+
+            log.info("Document {} signed immediately on upload for case: {}", document.getId(), caseId);
+        } catch (Exception e) {
+            log.error("Failed to sign document {} on upload for case {}: {}", document.getId(), caseId, e.getMessage());
         }
     }
 }

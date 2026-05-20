@@ -1,12 +1,36 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { ContactOffice, ContactChannel } from '../models/sede.models';
+import { environment } from '../../../environments/environment';
+
+export interface ContactMessagePayload {
+  fullName: string;
+  email: string;
+  subject: string;
+  message: string;
+  category?: string;
+}
+
+export interface ContactMessageDto {
+  id: string;
+  fullName: string;
+  email: string;
+  subject: string;
+  message: string;
+  category: string | null;
+  read: boolean;
+  createdAt: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContactService {
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = `${environment.apiBaseUrl}/citizen`;
+
   private readonly offices: ContactOffice[] = [
     {
       id: 'central',
@@ -70,5 +94,9 @@ export class ContactService {
 
   getChannels(): Observable<ContactChannel[]> {
     return of(this.channels).pipe(delay(300));
+  }
+
+  sendMessage(payload: ContactMessagePayload): Observable<ContactMessageDto> {
+    return this.http.post<ContactMessageDto>(`${this.baseUrl}/contact`, payload);
   }
 }

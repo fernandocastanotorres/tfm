@@ -1,6 +1,6 @@
-# FrontEnd
+# Citizen Portal (Sede Electronica)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.4.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 19.
 
 ## Development server
 
@@ -59,14 +59,14 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 ng test --watch=false --browsers=ChromeHeadless --code-coverage
 ```
 
-**Current Coverage (2026-05-18):**
+**Current Coverage (2026-05-20):**
 
 | Metric | Coverage | Tests |
 |--------|----------|-------|
-| Statements | 42.58% (534/1254) | 58 passing |
-| Branches | 20.79% (120/577) | |
-| Functions | 37.40% (144/385) | |
-| Lines | 42.42% (510/1202) | |
+| Statements | 83.71% | 672 passing |
+| Branches | 77.6% | |
+| Functions | 76.01% | |
+| Lines | 85.23% | |
 
 **Tested areas:**
 - Pagination utility functions (`pagination.ts`) — 14 tests

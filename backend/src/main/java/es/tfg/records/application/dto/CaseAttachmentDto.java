@@ -16,6 +16,12 @@ public record CaseAttachmentDto(
         String name,
         @Schema(description = "Attachment type", example = "SUPPORTING_DOCUMENT")
         String type,
+        @Schema(description = "File size in bytes", example = "2048576")
+        long size,
+        @Schema(description = "Who uploaded this attachment", example = "Citizen")
+        String uploadedBy,
         @Schema(description = "Upload timestamp")
-        Instant uploadedAt
+        Instant uploadedAt,
+        @Schema(description = "Whether this document has been electronically signed", example = "true")
+        boolean signed
 ) {}

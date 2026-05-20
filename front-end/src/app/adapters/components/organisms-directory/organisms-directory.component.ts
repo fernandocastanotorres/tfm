@@ -5,9 +5,10 @@ import { I18nService } from '../../../application/services/i18n.service';
 import { OrganismItem } from '../../../application/models/sede.models';
 
 @Component({
-  selector: 'app-organisms-directory',
-  templateUrl: './organisms-directory.component.html',
-  styleUrls: ['./organisms-directory.component.css']
+    selector: 'app-organisms-directory',
+    templateUrl: './organisms-directory.component.html',
+    styleUrls: ['./organisms-directory.component.css'],
+    standalone: false
 })
 export class OrganismsDirectoryComponent implements OnInit, OnDestroy {
   organisms: OrganismItem[] = [];

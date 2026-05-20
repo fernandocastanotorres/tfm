@@ -13,6 +13,7 @@ import { ProcedureManagementComponent } from './adapters/components/procedure-ma
 import { PublicContentManagementComponent } from './adapters/components/public-content-management/public-content-management.component';
 import { TransparencyManagementComponent } from './adapters/components/transparency-management/transparency-management.component';
 import { StatisticsDashboardComponent } from './adapters/components/statistics-dashboard/statistics-dashboard.component';
+import { ContactInboxComponent } from './adapters/components/contact-inbox/contact-inbox.component';
 
 import { authGuard, tramitadorGuard, adminGuard } from './application/guards/auth.guard';
 
@@ -28,6 +29,7 @@ const routes: Routes = [
       { path: 'statistics', component: StatisticsDashboardComponent, title: 'Estadisticas' },
       { path: 'cases', component: CaseListComponent, title: 'Expedientes' },
       { path: 'tasks', component: TasksComponent, title: 'Tareas Pendientes' },
+      { path: 'contact-inbox', component: ContactInboxComponent, title: 'Buzon de Contacto' },
       { path: 'cases/:id', component: CaseDetailComponent, title: 'Detalle del Expediente' },
       { path: 'cases/:id/task/:taskId', component: TaskResolutionComponent, title: 'Resolver Tarea' },
       {

@@ -61,6 +61,7 @@ export interface CaseAttachment {
   size: number;
   uploadedAt: string;
   uploadedBy: string;
+  signed: boolean;
 }
 
 export interface CaseStatusResponse {

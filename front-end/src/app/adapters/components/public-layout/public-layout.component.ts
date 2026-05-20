@@ -3,7 +3,9 @@ import { Router } from '@angular/router';
 import { I18nService, SupportedLocale } from '../../../application/services/i18n.service';
 import { GuidedTourService } from '../../../application/services/guided-tour.service';
 import { AuthService } from '../../../application/services/auth.service';
-import { Observable, Subscription } from 'rxjs';
+import { MessagesService } from '../../../application/services/messages.service';
+import { Observable, Subscription, interval } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 export interface MenuGroup {
   labelKey: string;
@@ -16,9 +18,10 @@ export interface MenuItem {
 }
 
 @Component({
-  selector: 'app-public-layout',
-  templateUrl: './public-layout.component.html',
-  styleUrls: ['./public-layout.component.css']
+    selector: 'app-public-layout',
+    templateUrl: './public-layout.component.html',
+    styleUrls: ['./public-layout.component.css'],
+    standalone: false
 })
 export class PublicLayoutComponent implements OnInit, OnDestroy {
   menuOpen = false;
@@ -31,8 +34,10 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
   isAuthenticated = false;
   authenticatedUserLabel = '';
   userMenuOpen = false;
+  unreadMessageCount = 0;
   private localeSub?: Subscription;
   private routeSub?: Subscription;
+  private unreadPollSub?: Subscription;
 
   readonly menuGroups: MenuGroup[] = [
     {
@@ -66,7 +71,8 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
     private readonly i18nService: I18nService,
     private readonly router: Router,
     private readonly guidedTourService: GuidedTourService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly messagesService: MessagesService
   ) {
     this.currentLocale$ = this.i18nService.getCurrentLocale$();
   }
@@ -92,12 +98,20 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
       this.activeDropdown = null;
       this.userMenuOpen = false;
     });
+    this.loadUnreadMessageCount();
+    this.unreadPollSub = interval(30000)
+      .pipe(switchMap(() => this.messagesService.getUnreadCount()))
+      .subscribe({
+        next: (count) => { this.unreadMessageCount = count; },
+        error: () => {}
+      });
   }
 
   ngOnDestroy(): void {
     this.unlockBodyScroll();
     this.localeSub?.unsubscribe();
     this.routeSub?.unsubscribe();
+    this.unreadPollSub?.unsubscribe();
   }
 
   switchLocale(locale: SupportedLocale): void {
@@ -135,7 +149,7 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
 
   onChangePassword(): void {
     this.closeUserMenu();
-    this.router.navigate(['/sede/recuperacion']);
+    this.router.navigate(['/sede/perfil']);
   }
 
   onSearchCases(): void {
@@ -145,7 +159,17 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
 
   onMessages(): void {
     this.closeUserMenu();
+    this.unreadMessageCount = 0;
     this.router.navigate(['/sede/mensajes']);
+  }
+
+  loadUnreadMessageCount(): void {
+    if (this.isAuthenticated) {
+      this.messagesService.getUnreadCount().subscribe({
+        next: (count) => { this.unreadMessageCount = count; },
+        error: () => {}
+      });
+    }
   }
 
   onProfile(): void {

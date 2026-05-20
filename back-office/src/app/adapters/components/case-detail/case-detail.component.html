@@ -90,6 +90,8 @@
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tamano</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Subido por</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
@@ -99,9 +101,25 @@
             <td class="px-4 py-3 text-sm text-gray-500">{{ formatFileSize(doc.size) }}</td>
             <td class="px-4 py-3 text-sm text-gray-500">{{ doc.uploadedBy }}</td>
             <td class="px-4 py-3 text-sm text-gray-500">{{ doc.uploadedAt | date: 'dd/MM/yyyy' }}</td>
+            <td class="px-4 py-3 text-sm">
+              <span *ngIf="doc.signed" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+                Firmado
+              </span>
+              <span *ngIf="!doc.signed" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">
+                Pendiente
+              </span>
+            </td>
+            <td class="px-4 py-3 text-sm">
+              <button
+                (click)="downloadDocument(doc.id, doc.name)"
+                class="px-3 py-1 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 transition-colors"
+              >
+                Descargar
+              </button>
+            </td>
           </tr>
           <tr *ngIf="caseDetail!.attachments.length === 0">
-            <td colspan="5" class="px-4 py-6 text-center text-gray-500 text-sm">
+            <td colspan="7" class="px-4 py-6 text-center text-gray-500 text-sm">
               No hay documentos adjuntos
             </td>
           </tr>
@@ -112,6 +130,110 @@
     <!-- Data tab -->
     <div *ngIf="activeTab === 'data'" class="p-6">
       <pre class="bg-gray-50 p-4 rounded text-sm overflow-auto max-h-96">{{ caseDetail!.formData | json }}</pre>
+    </div>
+
+    <!-- Tasks tab -->
+    <div *ngIf="activeTab === 'tasks'" class="p-6">
+      <h3 class="text-lg font-medium text-gray-900 mb-4">Tareas del Expediente</h3>
+      <div *ngIf="pendingTasks.length === 0" class="text-gray-500 text-sm">
+        No hay tareas pendientes para este expediente.
+      </div>
+      <div class="space-y-3">
+        <div *ngFor="let task of pendingTasks" class="border border-gray-200 rounded-lg p-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h4 class="font-medium text-gray-900">{{ task.name }}</h4>
+              <p class="text-sm text-gray-500">{{ task.description }}</p>
+              <p class="text-xs text-gray-400 mt-1">Tipo: {{ task.type }} · Asignado a: {{ task.assignedRole || 'Sin asignar' }}</p>
+            </div>
+            <button
+              [routerLink]="['/cases', caseDetail!.id, 'task', task.id]"
+              class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
+            >
+              Resolver
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Messages tab -->
+    <div *ngIf="activeTab === 'messages'" class="p-6">
+      <!-- Message thread -->
+      <div class="space-y-3 mb-6 max-h-[500px] overflow-y-auto rounded-xl bg-gray-50 p-4">
+        <div *ngFor="let msg of messages" class="message-bubble" [class.message-bubble--admin]="msg.senderRole === 'ADMIN'" [class.message-bubble--citizen]="msg.senderRole === 'CITIZEN'">
+          <div class="message-bubble__header">
+            <span class="message-bubble__sender">
+              <svg *ngIf="msg.senderRole === 'ADMIN'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+              </svg>
+              <svg *ngIf="msg.senderRole === 'CITIZEN'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+              </svg>
+              {{ msg.senderRole === 'CITIZEN' ? 'Ciudadano' : 'Administracion' }} ({{ msg.senderName }})
+            </span>
+            <span class="message-bubble__time">{{ formatMessageDate(msg.createdAt) }}</span>
+          </div>
+          <span *ngIf="msg.templateKey" class="message-bubble__template">{{ msg.templateKey }}</span>
+          <p class="message-bubble__content">{{ msg.content }}</p>
+          <div *ngIf="msg.attachments.length > 0" class="message-bubble__attachments">
+            <button *ngFor="let att of msg.attachments" (click)="downloadAttachment(att.id, att.name)" class="message-bubble__attachment">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+              </svg>
+              <span>{{ att.name }}</span>
+              <span class="message-bubble__attachment-size">({{ (att.size / 1024).toFixed(1) }} KB)</span>
+            </button>
+          </div>
+        </div>
+        <div *ngIf="messages.length === 0" class="text-center text-gray-400 py-8">
+          <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+          </svg>
+          <p>No hay mensajes en este expediente.</p>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div *ngIf="messageTotalPages > 1" class="flex items-center justify-between mb-4 text-sm">
+        <div class="flex items-center gap-2">
+          <button (click)="changeMessagePage(messagePage - 1)" [disabled]="messagePage === 0" class="px-3 py-1 border rounded disabled:opacity-50">Anterior</button>
+          <span>Pagina {{ messagePage + 1 }} de {{ messageTotalPages }}</span>
+          <button (click)="changeMessagePage(messagePage + 1)" [disabled]="messagePage >= messageTotalPages - 1" class="px-3 py-1 border rounded disabled:opacity-50">Siguiente</button>
+        </div>
+        <select (change)="changeMessagePageSize($any($event.target).value)" class="border rounded px-2 py-1">
+          <option *ngFor="let size of PAGE_SIZE_OPTIONS" [value]="size" [selected]="size === messagePageSize">{{ size }} por pagina</option>
+        </select>
+      </div>
+
+      <!-- Reply form -->
+      <div class="border-t border-gray-200 pt-4">
+        <h4 class="font-medium text-gray-900 mb-3">Responder al ciudadano</h4>
+        <div class="mb-3">
+          <label class="text-sm text-gray-600 mb-1 block">Plantilla (opcional)</label>
+          <select [(ngModel)]="replyTemplateKey" (change)="selectTemplate(replyTemplateKey)" class="border rounded px-3 py-2 text-sm w-64">
+            <option *ngFor="let tpl of MESSAGE_TEMPLATES" [value]="tpl.key">{{ tpl.label }}</option>
+          </select>
+        </div>
+        <textarea [(ngModel)]="replyContent" rows="4" class="w-full border rounded px-3 py-2 text-sm" placeholder="Escribe tu mensaje..."></textarea>
+        <div class="mt-3">
+          <label class="text-sm text-gray-600 mb-1 block">Adjuntar archivos</label>
+          <input type="file" multiple (change)="onFilesSelected($event)" class="text-sm" />
+          <div *ngIf="replyFiles.length > 0" class="mt-1 text-xs text-gray-500">
+            {{ replyFiles.length }} archivo(s) seleccionado(s):
+            <span *ngFor="let f of replyFiles; let last = last">{{ f.name }}<span *ngIf="!last">, </span></span>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 mt-3">
+          <label class="flex items-center gap-2 text-sm">
+            <input type="checkbox" [(ngModel)]="replyNotifyByEmail" />
+            Notificar por email
+          </label>
+          <button (click)="sendMessage()" [disabled]="!replyContent.trim() || isSendingMessage" class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 disabled:opacity-50">
+            {{ isSendingMessage ? 'Enviando...' : 'Enviar mensaje' }}
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Actions tab -->

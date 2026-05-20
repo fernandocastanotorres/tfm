@@ -1,5 +1,5 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -7,8 +7,8 @@ import { Observable, of, throwError } from 'rxjs';
 import { ProfileComponent } from './profile.component';
 import { ProfileService } from '../../../application/services/profile.service';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
+import { ToastService } from '../../../application/services/toast.service';
 
-// Fake loader that returns the key as the translation
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(lang: string): Observable<Record<string, string>> {
     return of({});
@@ -20,6 +20,7 @@ describe('ProfileComponent', () => {
   let fixture: ComponentFixture<ProfileComponent>;
   let profileSpy: jasmine.SpyObj<ProfileService>;
   let confirmSpy: jasmine.SpyObj<ConfirmDialogService>;
+  let toastSpy: jasmine.SpyObj<ToastService>;
   let translateService: TranslateService;
 
   const mockProfile = {
@@ -31,8 +32,9 @@ describe('ProfileComponent', () => {
   };
 
   beforeEach(() => {
-    profileSpy = jasmine.createSpyObj('ProfileService', ['getProfile', 'updateProfile']);
+    profileSpy = jasmine.createSpyObj('ProfileService', ['getProfile', 'updateProfile', 'changePassword']);
     confirmSpy = jasmine.createSpyObj('ConfirmDialogService', ['confirm']);
+    toastSpy = jasmine.createSpyObj('ToastService', ['success', 'error', 'warning']);
 
     TestBed.configureTestingModule({
       declarations: [ProfileComponent],
@@ -45,7 +47,8 @@ describe('ProfileComponent', () => {
       ],
       providers: [
         { provide: ProfileService, useValue: profileSpy },
-        { provide: ConfirmDialogService, useValue: confirmSpy }
+        { provide: ConfirmDialogService, useValue: confirmSpy },
+        { provide: ToastService, useValue: toastSpy }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     });
@@ -72,7 +75,6 @@ describe('ProfileComponent', () => {
       expect(profileSpy.getProfile).toHaveBeenCalled();
       expect(component.profileForm.getRawValue()).toEqual(mockProfile);
       expect(component.isLoading).toBeFalse();
-      expect(component.errorMessage).toBe('');
     });
 
     it('should disable form after loading profile', () => {
@@ -83,13 +85,13 @@ describe('ProfileComponent', () => {
       expect(component.profileForm.disabled).toBeTrue();
     });
 
-    it('should show error when profile loading fails', () => {
+    it('should show toast error when profile loading fails', () => {
       profileSpy.getProfile.and.returnValue(throwError(() => new Error('Network error')));
 
       fixture.detectChanges();
 
       expect(component.isLoading).toBeFalse();
-      expect(component.errorMessage).toBe('No se pudieron cargar los datos del perfil.');
+      expect(toastSpy.error).toHaveBeenCalled();
     });
   });
 
@@ -120,14 +122,6 @@ describe('ProfileComponent', () => {
       component.toggleEdit();
 
       expect(component.lastSavedMessage).toBe('');
-    });
-
-    it('should clear errorMessage', () => {
-      component.errorMessage = 'Some error';
-
-      component.toggleEdit();
-
-      expect(component.errorMessage).toBe('');
     });
   });
 
@@ -171,7 +165,6 @@ describe('ProfileComponent', () => {
       expect(component.profileForm.disabled).toBeTrue();
       expect(component.isSaving).toBeFalse();
       expect(component.lastSavedMessage).toBe('PROFILE.SAVED');
-      expect(component.errorMessage).toBe('');
     });
   });
 
@@ -209,14 +202,144 @@ describe('ProfileComponent', () => {
       component.toggleEdit();
     });
 
-    it('should show error when save fails', async () => {
+    it('should show toast error when save fails', async () => {
       confirmSpy.confirm.and.resolveTo(true);
       profileSpy.updateProfile.and.returnValue(throwError(() => new Error('Server error')));
 
       await component.saveProfile();
 
       expect(component.isSaving).toBeFalse();
-      expect(component.errorMessage).toBe('No se pudieron guardar los cambios del perfil.');
+      expect(toastSpy.error).toHaveBeenCalled();
+    });
+  });
+
+  describe('password modal', () => {
+    it('should open password modal', () => {
+      component.openPasswordModal();
+
+      expect(component.showPasswordModal).toBeTrue();
+      expect(component.showCurrentPassword).toBeFalse();
+    });
+
+    it('should close password modal', () => {
+      component.showPasswordModal = true;
+      component.closePasswordModal();
+
+      expect(component.showPasswordModal).toBeFalse();
+    });
+
+    it('should reset password form on open', () => {
+      component.passwordForm.patchValue({ currentPassword: 'old', newPassword: 'new', confirmPassword: 'new' });
+      component.openPasswordModal();
+
+      expect(component.passwordForm.get('currentPassword')?.value).toBeNull();
+    });
+  });
+
+  describe('password strength', () => {
+    it('should return 0 for empty password', () => {
+      component.passwordForm.patchValue({ newPassword: '' });
+      expect(component.passwordStrength).toBe(0);
+    });
+
+    it('should return 2 for password with length and lowercase only', () => {
+      component.passwordForm.patchValue({ newPassword: 'abcdefgh' });
+      expect(component.passwordStrength).toBe(2);
+    });
+
+    it('should return 5 for strong password', () => {
+      component.passwordForm.patchValue({ newPassword: 'Abc123!@#' });
+      expect(component.passwordStrength).toBe(5);
+    });
+  });
+
+  describe('password requirements', () => {
+    it('should return all unmet for empty password', () => {
+      component.passwordForm.patchValue({ newPassword: '' });
+      const reqs = component.passwordRequirements;
+      expect(reqs.every(r => !r.met)).toBeTrue();
+    });
+
+    it('should return all met for strong password', () => {
+      component.passwordForm.patchValue({ newPassword: 'Abc123!@#' });
+      const reqs = component.passwordRequirements;
+      expect(reqs.every(r => r.met)).toBeTrue();
+    });
+  });
+
+  describe('passwords match', () => {
+    it('should return true when passwords match', () => {
+      component.passwordForm.patchValue({ newPassword: 'Test123!', confirmPassword: 'Test123!' });
+      expect(component.passwordsMatch()).toBeTrue();
+    });
+
+    it('should return false when passwords do not match', () => {
+      component.passwordForm.patchValue({ newPassword: 'Test123!', confirmPassword: 'Different!' });
+      expect(component.passwordsMismatch()).toBeTrue();
+    });
+  });
+
+  describe('changePassword', () => {
+    beforeEach(() => {
+      component.openPasswordModal();
+    });
+
+    it('should not change password when form is invalid', () => {
+      component.changePassword();
+
+      expect(profileSpy.changePassword).not.toHaveBeenCalled();
+    });
+
+    it('should show warning when password strength is low', () => {
+      component.passwordForm.patchValue({
+        currentPassword: 'Old123!',
+        newPassword: 'abcdefgh',
+        confirmPassword: 'abcdefgh'
+      });
+
+      component.changePassword();
+
+      expect(toastSpy.warning).toHaveBeenCalled();
+    });
+
+    it('should show warning when passwords do not match', () => {
+      component.passwordForm.patchValue({
+        currentPassword: 'Old123!',
+        newPassword: 'Strong1!@#',
+        confirmPassword: 'Different1!@#'
+      });
+
+      component.changePassword();
+
+      expect(toastSpy.warning).toHaveBeenCalled();
+    });
+
+    it('should call changePassword service when valid', fakeAsync(() => {
+      profileSpy.changePassword.and.returnValue(of(undefined));
+      component.passwordForm.patchValue({
+        currentPassword: 'Old123!',
+        newPassword: 'Strong1!@#',
+        confirmPassword: 'Strong1!@#'
+      });
+
+      component.changePassword();
+      tick(2000);
+
+      expect(profileSpy.changePassword).toHaveBeenCalledWith('Old123!', 'Strong1!@#');
+      expect(toastSpy.success).toHaveBeenCalled();
+    }));
+
+    it('should show error when current password is wrong (401)', () => {
+      profileSpy.changePassword.and.returnValue(throwError(() => ({ status: 401 })));
+      component.passwordForm.patchValue({
+        currentPassword: 'Wrong1!@#',
+        newPassword: 'Strong1!@#',
+        confirmPassword: 'Strong1!@#'
+      });
+
+      component.changePassword();
+
+      expect(toastSpy.error).toHaveBeenCalled();
     });
   });
 });

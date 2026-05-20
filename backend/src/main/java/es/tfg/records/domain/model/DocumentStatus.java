@@ -5,6 +5,7 @@ package es.tfg.records.domain.model;
  */
 public enum DocumentStatus {
     PENDING,
+    SIGNED,
     VALIDATED,
     REJECTED
 }

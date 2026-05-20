@@ -5,6 +5,7 @@ import es.tfg.records.application.dto.BackofficeDtos;
 import es.tfg.records.application.dto.PublicContentDtos;
 import es.tfg.records.application.dto.TransparencyDtos;
 import es.tfg.records.application.service.BackofficeService;
+import es.tfg.records.application.service.DocumentService;
 import es.tfg.records.application.service.EniMetadataService;
 import es.tfg.records.application.service.PublicContentService;
 import es.tfg.records.entrypoints.advice.GlobalExceptionHandler;
@@ -51,6 +52,9 @@ class BackofficeControllerTest {
 
     @MockBean
     private PublicContentService publicContentService;
+
+    @MockBean
+    private DocumentService documentService;
 
     @Test
     void dashboardStats_shouldReturnStats() throws Exception {

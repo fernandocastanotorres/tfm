@@ -72,4 +72,50 @@ describe('LoginComponent', () => {
     component.onSubmit();
     expect(component.errorMessageKey).toBe('LOGIN.ERROR_INVALID');
   });
+
+  it('should show custom error message when login fails with error.message', () => {
+    authService.login.and.returnValue(throwError(() => ({ error: { message: 'Account locked' } })));
+    component.loginForm.setValue({ email: 'user@example.com', password: 'password123' });
+    component.onSubmit();
+    expect(component.errorMessageKey).toBe('Account locked');
+  });
+
+  it('should show generic error when login fails without specific error', () => {
+    authService.login.and.returnValue(throwError(() => new Error('Network error')));
+    component.loginForm.setValue({ email: 'user@example.com', password: 'password123' });
+    component.onSubmit();
+    expect(component.errorMessageKey).toBe('LOGIN.ERROR_GENERIC');
+  });
+
+  it('should return returnUrl when queryParamMap has valid path', () => {
+    (component as any).route.snapshot.queryParamMap.get = () => '/dashboard';
+    expect(component.returnUrl).toBe('/dashboard');
+  });
+
+  it('should return "/" when returnUrl does not start with /', () => {
+    (component as any).route.snapshot.queryParamMap.get = () => 'http://evil.com';
+    expect(component.returnUrl).toBe('/');
+  });
+
+  it('resendVerificationEmail should not call service when email is invalid', () => {
+    component.loginForm.get('email')?.setValue('invalid-email');
+    component.resendVerificationEmail();
+    expect(authService.resendVerificationEmail).not.toHaveBeenCalled();
+  });
+
+  it('resendVerificationEmail should show info message on success', () => {
+    authService.resendVerificationEmail.and.returnValue(of(undefined));
+    component.loginForm.get('email')?.setValue('user@example.com');
+    component.resendVerificationEmail();
+    expect(component.infoMessage).toContain('reenviado el enlace');
+    expect(component.isResending).toBeFalse();
+  });
+
+  it('resendVerificationEmail should show error message on failure', () => {
+    authService.resendVerificationEmail.and.returnValue(throwError(() => new Error('Failed')));
+    component.loginForm.get('email')?.setValue('user@example.com');
+    component.resendVerificationEmail();
+    expect(component.infoMessage).toContain('No se pudo procesar');
+    expect(component.isResending).toBeFalse();
+  });
 });

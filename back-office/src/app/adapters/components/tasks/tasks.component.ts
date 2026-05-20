@@ -4,9 +4,10 @@ import { AdminCasesService } from '../../../application/services/admin-cases.ser
 import { PendingTask } from '../../../application/models/backoffice.models';
 
 @Component({
-  selector: 'bo-tasks',
-  templateUrl: './tasks.component.html',
-  styleUrls: ['./tasks.component.css']
+    selector: 'bo-tasks',
+    templateUrl: './tasks.component.html',
+    styleUrls: ['./tasks.component.css'],
+    standalone: false
 })
 export class TasksComponent implements OnInit {
   private readonly adminCasesService = inject(AdminCasesService);

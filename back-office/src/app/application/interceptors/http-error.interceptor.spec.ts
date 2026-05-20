@@ -1,6 +1,6 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { HttpErrorInterceptor } from './http-error.interceptor';
 import { AuthService } from '../services/auth.service';
@@ -15,17 +15,19 @@ describe('HttpErrorInterceptor', () => {
     const authSpy = jasmine.createSpyObj('AuthService', ['logout']);
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
+    imports: [],
+    providers: [
         {
-          provide: HTTP_INTERCEPTORS,
-          useClass: HttpErrorInterceptor,
-          multi: true
+            provide: HTTP_INTERCEPTORS,
+            useClass: HttpErrorInterceptor,
+            multi: true
         },
         { provide: AuthService, useValue: authSpy },
-        { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } }
-      ]
-    });
+        { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     httpMock = TestBed.inject(HttpTestingController);
     http = TestBed.inject(HttpClient);
     router = TestBed.inject(Router);

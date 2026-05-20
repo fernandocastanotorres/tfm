@@ -3,27 +3,32 @@ import { Subscription } from 'rxjs';
 import { ProceduresApiService } from '../../../application/services/procedures-api.service';
 import { CalendarService } from '../../../application/services/calendar.service';
 import { I18nService } from '../../../application/services/i18n.service';
+import { AuthService } from '../../../application/services/auth.service';
 import { ProcedureItem } from '../../../application/models/procedure.models';
 import { CalendarEvent } from '../../../application/models/sede.models';
 
 @Component({
-  selector: 'app-public-home',
-  templateUrl: './public-home.component.html',
-  styleUrls: ['./public-home.component.css']
+    selector: 'app-public-home',
+    templateUrl: './public-home.component.html',
+    styleUrls: ['./public-home.component.css'],
+    standalone: false
 })
 export class PublicHomeComponent implements OnInit, OnDestroy {
   procedures: ProcedureItem[] = [];
   upcomingEvents: CalendarEvent[] = [];
   isLoading = true;
+  isAuthenticated = false;
   private localeSub?: Subscription;
 
   constructor(
     private readonly proceduresApi: ProceduresApiService,
     private readonly calendarService: CalendarService,
-    private readonly i18nService: I18nService
+    private readonly i18nService: I18nService,
+    private readonly authService: AuthService
   ) {}
 
   ngOnInit(): void {
+    this.isAuthenticated = this.authService.isAuthenticated();
     this.loadData();
     this.localeSub = this.i18nService.getCurrentLocale$().subscribe(() => {
       this.loadData();

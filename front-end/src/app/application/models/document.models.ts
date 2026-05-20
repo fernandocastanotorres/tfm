@@ -11,6 +11,7 @@ export interface DocumentItem {
   size: number;
   status: string;
   uploadedAt: string;
+  isSigned?: boolean;
 }
 
 export interface DocumentDetail {

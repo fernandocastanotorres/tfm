@@ -60,7 +60,8 @@ export class CasesApiService {
         name: attachment.name,
         type: attachment.type ?? attachment.mimeType,
         size: attachment.size,
-        uploadedAt: attachment.uploadedAt
+        uploadedAt: attachment.uploadedAt,
+        signed: attachment.signed ?? false
       })),
       procedureTypeId: raw.procedureTypeId ?? '',
       formData: raw.formData ?? null
@@ -125,7 +126,8 @@ export class CasesApiService {
         name: doc.name,
         type: doc.mimeType ?? doc.type ?? 'application/octet-stream',
         size: doc.size ?? 0,
-        uploadedAt: doc.uploadedAt ?? doc.createdAt ?? new Date().toISOString()
+        uploadedAt: doc.uploadedAt ?? doc.createdAt ?? new Date().toISOString(),
+        signed: doc.signed ?? false
       })))
     );
   }

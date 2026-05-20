@@ -1,0 +1,39 @@
+.message-bubble {
+  @apply max-w-[85%] rounded-xl p-3;
+}
+
+.message-bubble--admin {
+  @apply bg-blue-50 border border-blue-100 ml-auto;
+}
+
+.message-bubble--citizen {
+  @apply bg-green-50 border border-green-100;
+}
+
+.message-bubble__header {
+  @apply flex items-center justify-between mb-1.5;
+}
+
+.message-bubble__sender {
+  @apply flex items-center gap-1.5 text-xs font-medium text-surface-600;
+}
+
+.message-bubble__time {
+  @apply text-xs text-surface-400;
+}
+
+.message-bubble__content {
+  @apply text-sm text-surface-700 whitespace-pre-wrap;
+}
+
+.message-bubble__attachments {
+  @apply mt-2 flex flex-wrap gap-2;
+}
+
+.message-bubble__attachment {
+  @apply inline-flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-800 hover:underline bg-white rounded-lg px-2 py-1 border border-blue-100 transition-colors;
+}
+
+.message-bubble__attachment-size {
+  @apply text-surface-400;
+}

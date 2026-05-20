@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -122,6 +123,21 @@ public class FileStorageService {
                 .resolve(storedFilename)
                 .normalize();
         return Files.exists(filePath);
+    }
+
+    /**
+     * Writes raw bytes to a stored file, overwriting existing content.
+     * Used for replacing documents with signed versions.
+     */
+    public void writeBytes(UUID caseId, String storedFilename, byte[] content) {
+        Path filePath = resolveFilePath(caseId, storedFilename);
+
+        try (OutputStream outputStream = Files.newOutputStream(filePath)) {
+            outputStream.write(content);
+            log.debug("Overwrote file: {} in case: {} ({} bytes)", storedFilename, caseId, content.length);
+        } catch (IOException e) {
+            throw new ConflictException("STORAGE", "Could not write file: " + storedFilename);
+        }
     }
 
     /**

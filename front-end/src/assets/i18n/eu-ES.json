@@ -15,7 +15,8 @@
     "EMAIL_ERROR": "Sartu baliozko helbide elektronikoa.",
     "PASSWORD_HELP": "Gutxienez 8 karaktere.",
     "PASSWORD_ERROR": "Pasahitzak gutxienez 8 karaktere izan behar ditu.",
-    "ERROR_INVALID": "Kredentzialak baliogabeak. Berrikusi datuak eta saiatu berriro."
+    "ERROR_INVALID": "Kredentzialak baliogabeak. Berrikusi datuak eta saiatu berriro.",
+    "ERROR_GENERIC": "Ustekabeko errorea gertatu da. Saiatu berriro geroago."
   },
   "REGISTER": {
     "EYEBROW": "Herritarren alta",
@@ -176,7 +177,23 @@
     "FILTER_VALIDATED": "Balioztatuta",
     "UPLOAD": "Bertsio berria igo",
     "DOWNLOAD": "Deskargatu",
+    "SIGN": "Sinatu",
+    "VERIFY": "Sinadura egiaztatu",
+    "SIGNED": "Sinatuta",
+    "SIGNING": "Sinatzen...",
+    "VERIFYING": "Egiaztatzen...",
+    "DELETE": "Ezabatu",
     "EMPTY": "Ez dago dokumenturik iragazki honetarako."
+  },
+  "DOCUMENT_STATUS": {
+    "PENDING": "Zain",
+    "SIGNED": "Sinatuta",
+    "VALIDATED": "Balioztatuta",
+    "REJECTED": "Ezeztatua"
+  },
+  "PROCEDURE_STATUS": {
+    "ACTIVE": "Aktibo",
+    "INACTIVE": "Inaktibo"
   },
   "PAYMENTS": {
     "EYEBROW": "Ordainketak eta tasak",
@@ -369,9 +386,17 @@
     "ERROR_RESUME": "Ezin izan da prozedura identifikatu izapidetzearekin jarraitzeko."
   },
   "CASE_STATUS": {
-    "REVIEW": "Berrikuspenan",
+    "DRAFT": "Zirriborroa",
+    "SUBMITTED": "Aurkeztua",
+    "IN_REVIEW": "Berrikuspenan",
+    "AMENDMENT_REQUIRED": "Zuzenketa beharrezkoa",
+    "RESUBMITTED": "Berraurkeztua",
+    "APPROVED": "Onartuta",
+    "REJECTED": "Ezeztatua",
+    "COMPLETED": "Osatuta",
     "PENDING": "Zain",
-    "APPROVED": "Onartuta"
+    "WAITING": "Itxaroten",
+    "REVIEW": "Berrikuspenan"
   },
   "CASE_WIZARD": {
     "EYEBROW": "Espediente berria",

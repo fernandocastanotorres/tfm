@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpClient, HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { AcceptLanguageInterceptor } from './accept-language.interceptor';
 
 describe('AcceptLanguageInterceptor', () => {
@@ -11,11 +11,13 @@ describe('AcceptLanguageInterceptor', () => {
     localStorage.clear();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
-        { provide: HTTP_INTERCEPTORS, useClass: AcceptLanguageInterceptor, multi: true }
-      ]
-    });
+    imports: [],
+    providers: [
+        { provide: HTTP_INTERCEPTORS, useClass: AcceptLanguageInterceptor, multi: true },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
 
     httpMock = TestBed.inject(HttpTestingController);
     httpClient = TestBed.inject(HttpClient);

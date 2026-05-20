@@ -37,4 +37,17 @@ public class VerificationEmailConsumer {
             throw ex;
         }
     }
+
+    @RabbitListener(queues = MailQueueConfig.MAIL_QUEUE)
+    public void handleNewMessage(NewMessageNotificationMessage message) {
+        try {
+            brevoEmailGateway.sendNewMessageNotification(message.recipientEmail(), message.senderName(), message.messagePreview(), message.caseId());
+            deliveredCounter.increment();
+            log.info("New message notification delivered to {}", message.recipientEmail());
+        } catch (Exception ex) {
+            failedCounter.increment();
+            log.error("New message notification delivery failed for {}", message.recipientEmail(), ex);
+            throw ex;
+        }
+    }
 }

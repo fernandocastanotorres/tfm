@@ -24,9 +24,10 @@ import { ConfirmDialogService } from '../../../application/services/confirm-dial
 type ContentTab = 'legislation' | 'faq' | 'calendar' | 'institutional' | 'organisms' | 'resources' | 'theme';
 
 @Component({
-  selector: 'bo-public-content-management',
-  templateUrl: './public-content-management.component.html',
-  styleUrls: ['./public-content-management.component.css']
+    selector: 'bo-public-content-management',
+    templateUrl: './public-content-management.component.html',
+    styleUrls: ['./public-content-management.component.css'],
+    standalone: false
 })
 export class PublicContentManagementComponent implements OnInit {
   private readonly service = inject(PublicContentManagementService);

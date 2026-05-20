@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { HttpClient, HTTP_INTERCEPTORS, HttpErrorResponse } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpClient, HTTP_INTERCEPTORS, HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { JwtAuthInterceptor } from './jwt-auth.interceptor';
 import { AuthService } from '../services/auth.service';
 import { of, throwError } from 'rxjs';
@@ -21,12 +21,14 @@ describe('JwtAuthInterceptor', () => {
     localStorage.clear();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
+    imports: [],
+    providers: [
         { provide: AuthService, useValue: authServiceSpy },
-        { provide: HTTP_INTERCEPTORS, useClass: JwtAuthInterceptor, multi: true }
-      ]
-    });
+        { provide: HTTP_INTERCEPTORS, useClass: JwtAuthInterceptor, multi: true },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
 
     httpMock = TestBed.inject(HttpTestingController);
     httpClient = TestBed.inject(HttpClient);

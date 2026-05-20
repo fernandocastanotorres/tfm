@@ -105,7 +105,14 @@ public class BackofficeService {
         ProcedureTypeEntity type = procedureTypeRepository.findById(procedure.getProcedureTypeId()).orElse(null);
         UserEntity citizen = userRepository.findById(procedure.getOwnerId()).orElse(null);
         List<CaseAttachmentDto> attachments = documentRepository.findByProcedureId(procedure.getId()).stream()
-                .map(doc -> new CaseAttachmentDto(doc.getId(), doc.getName(), doc.getMimeType(), doc.getUploadedAt()))
+                .map(doc -> new CaseAttachmentDto(
+                        doc.getId(),
+                        doc.getName(),
+                        doc.getMimeType(),
+                        doc.getSize(),
+                        "Sistema",
+                        doc.getUploadedAt(),
+                        "SIGNED".equals(doc.getStatus())))
                 .toList();
         return new BackofficeDtos.AdminCaseDetail(
                 procedure.getId(),

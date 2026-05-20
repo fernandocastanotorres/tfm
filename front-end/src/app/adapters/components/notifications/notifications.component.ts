@@ -4,9 +4,10 @@ import { NotificationsService, NotificationInboxItem } from '../../../applicatio
 import { changePage, updatePageSize, getPaginationState, PaginationState } from '../../../application/utils/pagination';
 
 @Component({
-  selector: 'app-notifications',
-  templateUrl: './notifications.component.html',
-  styleUrls: []
+    selector: 'app-notifications',
+    templateUrl: './notifications.component.html',
+    styleUrls: [],
+    standalone: false
 })
 export class NotificationsComponent implements OnInit {
   inbox: NotificationInboxItem[] = [];

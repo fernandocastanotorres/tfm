@@ -23,4 +23,10 @@ public class QueuedEmailGateway implements EmailGateway {
         EmailVerificationMessage message = new EmailVerificationMessage(recipientEmail, recipientName, verificationUrl);
         rabbitTemplate.convertAndSend(MailQueueConfig.MAIL_EXCHANGE, MailQueueConfig.MAIL_ROUTING_KEY, message);
     }
+
+    @Override
+    public void sendNewMessageNotification(String recipientEmail, String senderName, String messagePreview, String caseId) {
+        NewMessageNotificationMessage message = new NewMessageNotificationMessage(recipientEmail, senderName, messagePreview, caseId);
+        rabbitTemplate.convertAndSend(MailQueueConfig.MAIL_EXCHANGE, MailQueueConfig.MAIL_ROUTING_KEY, message);
+    }
 }

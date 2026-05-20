@@ -5,6 +5,7 @@ import es.tfg.records.infrastructure.security.JwtTokenProvider;
 import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.env.MockEnvironment;
 
 import java.util.List;
 import java.util.Set;
@@ -20,11 +21,12 @@ class JwtTokenProviderTest {
 
     @BeforeEach
     void setUp() {
-        jwtConfig = new JwtConfig();
+        MockEnvironment env = new MockEnvironment();
+        jwtConfig = new JwtConfig(env);
         jwtConfig.setSecret("dGVzdC1zZWNyZXQta2V5LXRoYXQtaXMtYXQtbGVhc3QtMzItY2hhcnMtbG9uZyE=");
         jwtConfig.setIssuer("records-api");
-        jwtConfig.setAccessTokenExpiration(3600000L); // 1 hour
-        jwtConfig.setRefreshTokenExpiration(86400000L); // 24 hours
+        jwtConfig.setAccessTokenExpiration(3600000L);
+        jwtConfig.setRefreshTokenExpiration(86400000L);
         tokenProvider = new JwtTokenProvider(jwtConfig);
     }
 

@@ -27,6 +27,7 @@ export interface CaseAttachment {
   type: string;
   size: number;
   uploadedAt: string;
+  signed: boolean;
 }
 
 export interface CaseDetail {

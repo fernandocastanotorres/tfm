@@ -3,9 +3,10 @@ import { StatisticsService, AnalyticsReport, MonthlyTrendPoint, ProcedureTypeMet
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 
 @Component({
-  selector: 'bo-statistics-dashboard',
-  templateUrl: './statistics-dashboard.component.html',
-  styleUrls: ['./statistics-dashboard.component.css']
+    selector: 'bo-statistics-dashboard',
+    templateUrl: './statistics-dashboard.component.html',
+    styleUrls: ['./statistics-dashboard.component.css'],
+    standalone: false
 })
 export class StatisticsDashboardComponent implements OnInit {
   private readonly service = inject(StatisticsService);

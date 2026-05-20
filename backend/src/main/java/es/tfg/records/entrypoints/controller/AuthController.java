@@ -143,6 +143,23 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/change-password")
+    @Operation(summary = "Change password", description = "Change password for authenticated user. Requires current password verification.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Password changed successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request or weak password",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Current password is incorrect",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity<Void> changePassword(
+            Authentication authentication,
+            @Valid @RequestBody ChangePasswordRequest request) {
+        UUID userId = UUID.fromString(authentication.getName());
+        authService.changePassword(userId, request);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/logout")
     @Operation(summary = "Logout user", description = "Invalidate the current refresh token to prevent further token refreshes.")
     @ApiResponses({

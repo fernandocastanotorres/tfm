@@ -74,8 +74,8 @@
             {{ 'CONTACT.FORM_MESSAGE_ERROR' | translate }}
           </div>
         </div>
-        <button type="submit" class="btn-primary" [disabled]="contactForm.invalid">
-          {{ 'CONTACT.FORM_SUBMIT' | translate }}
+        <button type="submit" class="btn-primary" [disabled]="contactForm.invalid || isSubmitting">
+          {{ isSubmitting ? ('CONTACT.FORM_SUBMITTING' | translate) : ('CONTACT.FORM_SUBMIT' | translate) }}
         </button>
       </form>
     </div>

@@ -5,9 +5,10 @@ import { AuthService } from '../../../application/services/auth.service';
 import { RegisterRequest } from '../../../application/models/auth.models';
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+    selector: 'app-register',
+    templateUrl: './register.component.html',
+    styleUrls: ['./register.component.css'],
+    standalone: false
 })
 export class RegisterComponent {
   readonly registerForm = this.fb.group({

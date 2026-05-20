@@ -101,6 +101,34 @@
         "search": "Buscar",
         "loading": "Carregant...",
         "noData": "No hi ha dades disponibles"
+      },
+      "caseDetail": {
+        "messages": {
+          "tabLabel": "Missatges",
+          "replyTitle": "Respondre al ciutada",
+          "templateLabel": "Plantilla (opcional)",
+          "attachLabel": "Adjuntar arxius",
+          "notifyByEmail": "Notificar per email",
+          "sendButton": "Enviar missatge",
+          "sendingButton": "Enviant...",
+          "emptyState": "No hi ha missatges en aquest expedient.",
+          "noMessages": "Sense missatges",
+          "pagination": "Pagina {{page}} de {{total}}",
+          "previous": "Anterior",
+          "next": "Seguent",
+          "pageSize": "{{size}} per pagina",
+          "senderCitizen": "Ciutada",
+          "senderAdmin": "Administracio",
+          "senderSystem": "Sistema",
+          "templates": {
+            "freeText": "Text lliure",
+            "requestInfo": "Sol·licitud d'informacio addicional",
+            "documentIncomplete": "Documentacio incompleta",
+            "approved": "Expedient aprovat",
+            "rejected": "Expedient rebutjat",
+            "amendmentRequired": "Esmena requerida"
+          }
+        }
       }
     }
   }

@@ -3,114 +3,413 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
-  COVERAGE_ENFORCEMENT_MODE: report # switch to "enforce" after first sprint
+  COVERAGE_ENFORCEMENT_MODE: enforce
+  NODE_VERSION: '20'
+  JAVA_VERSION: '17'
 
 jobs:
+  # ──────────────────────────────────────────────
+  # Backend Tests
+  # ──────────────────────────────────────────────
   backend-tests:
     name: Backend Tests (Maven)
     runs-on: ubuntu-latest
-    if: ${{ hashFiles('backend/**/pom.xml') != '' }}
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup JDK 21
+      - name: Setup JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: ${{ env.JAVA_VERSION }}
           cache: maven
 
-      - name: Run backend tests + JaCoCo
-        run: mvn -q -f backend/pom.xml test jacoco:report
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('backend/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
 
-      - name: Upload backend coverage artifacts
+      - name: Run backend tests + JaCoCo
+        working-directory: backend
+        run: mvn -B verify jacoco:report -DskipITs
+
+      - name: Upload backend coverage
         uses: actions/upload-artifact@v4
         with:
           name: backend-coverage
           path: |
-            backend/**/target/site/jacoco/jacoco.xml
-            backend/**/target/site/jacoco/index.html
+            backend/target/site/jacoco/jacoco.xml
+            backend/target/site/jacoco/index.html
           if-no-files-found: warn
+          retention-days: 5
 
-  frontend-citizen-tests:
-    name: Frontend Citizen Tests
+  # ──────────────────────────────────────────────
+  # Frontend Citizen Tests
+  # ──────────────────────────────────────────────
+  frontend-tests:
+    name: Frontend Tests (Citizen)
     runs-on: ubuntu-latest
-    if: ${{ hashFiles('frontend-citizen/package.json') != '' }}
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: npm
-          cache-dependency-path: frontend-citizen/package-lock.json
+          cache-dependency-path: front-end/package-lock.json
+
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-front-end-${{ hashFiles('front-end/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-front-end-
 
       - name: Install dependencies
+        working-directory: front-end
         run: npm ci
-        working-directory: frontend-citizen
 
       - name: Run tests with coverage
-        run: npm run test -- --watch=false --code-coverage
-        working-directory: frontend-citizen
+        working-directory: front-end
+        run: npm test -- --no-watch --browsers=ChromeHeadlessNoSandbox --code-coverage
 
-      - name: Upload citizen coverage artifacts
+      - name: Upload frontend coverage
         uses: actions/upload-artifact@v4
         with:
-          name: citizen-coverage
+          name: frontend-coverage
           path: |
-            frontend-citizen/coverage/**/lcov.info
-            frontend-citizen/coverage/**/index.html
+            front-end/coverage/**/lcov.info
+            front-end/coverage/**/coverage-final.json
           if-no-files-found: warn
+          retention-days: 5
 
-  frontend-backoffice-tests:
-    name: Frontend Backoffice Tests
+  # ──────────────────────────────────────────────
+  # Backoffice Tests
+  # ──────────────────────────────────────────────
+  backoffice-tests:
+    name: Frontend Tests (Backoffice)
     runs-on: ubuntu-latest
-    if: ${{ hashFiles('backoffice-admin/package.json') != '' }}
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: npm
-          cache-dependency-path: backoffice-admin/package-lock.json
+          cache-dependency-path: back-office/package-lock.json
+
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-back-office-${{ hashFiles('back-office/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-back-office-
 
       - name: Install dependencies
+        working-directory: back-office
         run: npm ci
-        working-directory: backoffice-admin
 
       - name: Run tests with coverage
-        run: npm run test -- --watch=false --code-coverage
-        working-directory: backoffice-admin
+        working-directory: back-office
+        run: npm test -- --no-watch --browsers=ChromeHeadless --code-coverage
 
-      - name: Upload backoffice coverage artifacts
+      - name: Upload backoffice coverage
         uses: actions/upload-artifact@v4
         with:
           name: backoffice-coverage
           path: |
-            backoffice-admin/coverage/**/lcov.info
-            backoffice-admin/coverage/**/index.html
+            coverage/back-office/**/lcov.info
+            coverage/back-office/**/coverage-final.json
           if-no-files-found: warn
+          retention-days: 5
 
-  coverage-gates:
-    name: Coverage Gates (Report Mode / Enforce Mode)
+  # ──────────────────────────────────────────────
+  # Backend Lint
+  # ──────────────────────────────────────────────
+  backend-lint:
+    name: Backend Lint (Maven Enforcer)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+
+      - name: Run Maven Enforcer
+        working-directory: backend
+        run: mvn -B enforcer:enforce -Drules=requireJavaVersion,requireMavenVersion,bannedDependencies
+
+      - name: Compile to verify no warnings
+        working-directory: backend
+        run: mvn -B compile -Dmaven.compiler.showWarnings=true -Dmaven.compiler.showDeprecation=true
+
+  # ──────────────────────────────────────────────
+  # Frontend Lint & Build
+  # ──────────────────────────────────────────────
+  frontend-lint:
+    name: Frontend Lint (Citizen)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: front-end/package-lock.json
+
+      - name: Install dependencies
+        working-directory: front-end
+        run: npm ci
+
+      - name: Verify TypeScript compilation
+        working-directory: front-end
+        run: npx tsc --noEmit --project tsconfig.json
+
+      - name: Verify production build
+        working-directory: front-end
+        run: npm run build -- --configuration production
+
+  # ──────────────────────────────────────────────
+  # Backoffice Lint & Build
+  # ──────────────────────────────────────────────
+  backoffice-lint:
+    name: Frontend Lint (Backoffice)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: back-office/package-lock.json
+
+      - name: Install dependencies
+        working-directory: back-office
+        run: npm ci
+
+      - name: Verify TypeScript compilation
+        working-directory: back-office
+        run: npx tsc --noEmit --project tsconfig.json
+
+      - name: Verify production build
+        working-directory: back-office
+        run: npm run build -- --configuration production
+
+  # ──────────────────────────────────────────────
+  # E2E Tests
+  # ──────────────────────────────────────────────
+  e2e-tests:
+    name: E2E Tests (Playwright)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: front-end/package-lock.json
+
+      - name: Install dependencies
+        working-directory: front-end
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('front-end/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers
+        working-directory: front-end
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        working-directory: front-end
+        run: npx playwright test --reporter=html,list
+        continue-on-error: true
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: front-end/playwright-report/
+          if-no-files-found: ignore
+          retention-days: 5
+
+  # ──────────────────────────────────────────────
+  # Security Scan
+  # ──────────────────────────────────────────────
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+
+      - name: Setup Node ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: OWASP Dependency Check (Backend)
+        working-directory: backend
+        run: |
+          mvn -B org.owasp:dependency-check-maven:check \
+            -DfailBuildOnCVSS=7 \
+            -Dformat=HTML \
+            -DnvdApiKey=${{ secrets.NVD_API_KEY || '' }}
+        continue-on-error: true
+
+      - name: Upload OWASP report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: owasp-report
+          path: backend/target/dependency-check-report.html
+          if-no-files-found: ignore
+          retention-days: 5
+
+      - name: Audit front-end dependencies
+        working-directory: front-end
+        run: |
+          npm audit --audit-level=critical || true
+          npm audit --audit-level=critical --json > ../audit-frontend.json 2>/dev/null || true
+
+      - name: Audit back-office dependencies
+        working-directory: back-office
+        run: |
+          npm audit --audit-level=critical || true
+          npm audit --audit-level=critical --json > ../audit-backoffice.json 2>/dev/null || true
+
+      - name: Check for critical vulnerabilities
+        run: |
+          FRONTEND_CRITICAL=$(cat audit-frontend.json 2>/dev/null | jq '.metadata.vulnerabilities.critical // 0')
+          BACKOFFICE_CRITICAL=$(cat audit-backoffice.json 2>/dev/null | jq '.metadata.vulnerabilities.critical // 0')
+          echo "Frontend critical: $FRONTEND_CRITICAL"
+          echo "Backoffice critical: $BACKOFFICE_CRITICAL"
+          if [ "$FRONTEND_CRITICAL" -gt 0 ] || [ "$BACKOFFICE_CRITICAL" -gt 0 ]; then
+            echo "::error::Critical vulnerabilities found in frontend dependencies"
+            exit 1
+          fi
+          echo "No critical vulnerabilities found"
+
+  # ──────────────────────────────────────────────
+  # Docker Build
+  # ──────────────────────────────────────────────
+  docker-build:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: ${{ hashFiles('backend/Dockerfile') != '' || hashFiles('front-end/Dockerfile') != '' || hashFiles('back-office/Dockerfile') != '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build backend image
+        if: ${{ hashFiles('backend/Dockerfile') != '' }}
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: false
+          load: true
+          tags: tfg-backend:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build front-end image
+        if: ${{ hashFiles('front-end/Dockerfile') != '' }}
+        uses: docker/build-push-action@v6
+        with:
+          context: ./front-end
+          push: false
+          load: true
+          tags: tfg-frontend:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build back-office image
+        if: ${{ hashFiles('back-office/Dockerfile') != '' }}
+        uses: docker/build-push-action@v6
+        with:
+          context: ./back-office
+          push: false
+          load: true
+          tags: tfg-backoffice:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ──────────────────────────────────────────────
+  # Coverage Gates
+  # ──────────────────────────────────────────────
+  coverage-gates:
+    name: Coverage Gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs:
       - backend-tests
-      - frontend-citizen-tests
-      - frontend-backoffice-tests
+      - frontend-tests
+      - backoffice-tests
     if: always()
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup Node ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Download backend coverage
         uses: actions/download-artifact@v4
@@ -119,11 +418,11 @@ jobs:
           path: .artifacts/backend
         continue-on-error: true
 
-      - name: Download citizen coverage
+      - name: Download frontend coverage
         uses: actions/download-artifact@v4
         with:
-          name: citizen-coverage
-          path: .artifacts/citizen
+          name: frontend-coverage
+          path: .artifacts/frontend
         continue-on-error: true
 
       - name: Download backoffice coverage
@@ -133,10 +432,7 @@ jobs:
           path: .artifacts/backoffice
         continue-on-error: true
 
-      - name: Coverage summary placeholder
-        run: |
-          node scripts/coverage/check-coverage-gates.mjs
-
-      - name: Enforcement mode note
-        if: env.COVERAGE_ENFORCEMENT_MODE != 'enforce'
-        run: echo "Report mode active. Switch COVERAGE_ENFORCEMENT_MODE to 'enforce' to fail on threshold violations."
+      - name: Run coverage gate checks
+        run: bash scripts/check-coverage.sh
+        env:
+          COVERAGE_ENFORCEMENT_MODE: ${{ env.COVERAGE_ENFORCEMENT_MODE }}

@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProfileService } from '../../../application/services/profile.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
+import { ToastService } from '../../../application/services/toast.service';
 
 @Component({
-  selector: 'app-profile',
-  templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+    selector: 'app-profile',
+    templateUrl: './profile.component.html',
+    styleUrls: ['./profile.component.css'],
+    standalone: false
 })
 export class ProfileComponent implements OnInit {
   readonly profileForm = this.fb.group({
@@ -18,18 +20,31 @@ export class ProfileComponent implements OnInit {
     address: ['']
   });
 
+  passwordForm: FormGroup;
   isEditing = false;
   isLoading = true;
   isSaving = false;
-  errorMessage = '';
   lastSavedMessage = '';
+
+  showPasswordModal = false;
+  showCurrentPassword = false;
+  showNewPassword = false;
+  showConfirmPassword = false;
+  isChangingPassword = false;
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly profileService: ProfileService,
     private readonly translate: TranslateService,
-    private readonly confirmDialogService: ConfirmDialogService
-  ) {}
+    private readonly confirmDialogService: ConfirmDialogService,
+    private readonly toast: ToastService
+  ) {
+    this.passwordForm = this.fb.group({
+      currentPassword: ['', Validators.required],
+      newPassword: ['', [Validators.required, Validators.minLength(8)]],
+      confirmPassword: ['', Validators.required]
+    });
+  }
 
   ngOnInit(): void {
     this.profileService.getProfile().subscribe({
@@ -39,7 +54,7 @@ export class ProfileComponent implements OnInit {
         this.isLoading = false;
       },
       error: () => {
-        this.errorMessage = 'No se pudieron cargar los datos del perfil.';
+        this.toast.error('Error', 'No se pudieron cargar los datos del perfil.');
         this.isLoading = false;
       }
     });
@@ -48,7 +63,6 @@ export class ProfileComponent implements OnInit {
   toggleEdit(): void {
     this.isEditing = !this.isEditing;
     this.lastSavedMessage = '';
-    this.errorMessage = '';
     if (this.isEditing) {
       this.profileForm.enable();
     } else {
@@ -72,7 +86,6 @@ export class ProfileComponent implements OnInit {
     }
 
     this.isSaving = true;
-    this.errorMessage = '';
 
     const { fullName, phone, nationalId, address } = this.profileForm.getRawValue();
     this.profileService.updateProfile({
@@ -90,7 +103,110 @@ export class ProfileComponent implements OnInit {
       },
       error: () => {
         this.isSaving = false;
-        this.errorMessage = 'No se pudieron guardar los cambios del perfil.';
+        this.toast.error('Error', 'No se pudieron guardar los cambios del perfil.');
+      }
+    });
+  }
+
+  openPasswordModal(): void {
+    this.showPasswordModal = true;
+    this.passwordForm.reset();
+    this.showCurrentPassword = false;
+    this.showNewPassword = false;
+    this.showConfirmPassword = false;
+  }
+
+  closePasswordModal(): void {
+    this.showPasswordModal = false;
+  }
+
+  get passwordStrength(): number {
+    const pwd = this.passwordForm.get('newPassword')?.value || '';
+    let score = 0;
+    if (pwd.length >= 8) score++;
+    if (/[a-z]/.test(pwd)) score++;
+    if (/[A-Z]/.test(pwd)) score++;
+    if (/\d/.test(pwd)) score++;
+    if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]/.test(pwd)) score++;
+    return score;
+  }
+
+  get passwordStrengthLabel(): string {
+    const s = this.passwordStrength;
+    if (s === 0) return '';
+    if (s <= 2) return 'Debil';
+    if (s <= 3) return 'Media';
+    if (s <= 4) return 'Fuerte';
+    return 'Muy fuerte';
+  }
+
+  get passwordStrengthColor(): string {
+    const s = this.passwordStrength;
+    if (s <= 2) return 'bg-red-500';
+    if (s <= 3) return 'bg-amber-500';
+    if (s <= 4) return 'bg-green-500';
+    return 'bg-emerald-600';
+  }
+
+  get passwordRequirements(): { label: string; met: boolean }[] {
+    const pwd = this.passwordForm.get('newPassword')?.value || '';
+    return [
+      { label: 'Al menos 8 caracteres', met: pwd.length >= 8 },
+      { label: 'Una minuscula', met: /[a-z]/.test(pwd) },
+      { label: 'Una mayuscula', met: /[A-Z]/.test(pwd) },
+      { label: 'Un numero', met: /\d/.test(pwd) },
+      { label: 'Un caracter especial (!@#$%^&*)', met: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]/.test(pwd) }
+    ];
+  }
+
+  passwordsMatch(): boolean {
+    const newPwd = this.passwordForm.get('newPassword')?.value || '';
+    const confirmPwd = this.passwordForm.get('confirmPassword')?.value || '';
+    return confirmPwd.length > 0 && newPwd === confirmPwd;
+  }
+
+  passwordsMismatch(): boolean {
+    const newPwd = this.passwordForm.get('newPassword')?.value || '';
+    const confirmPwd = this.passwordForm.get('confirmPassword')?.value || '';
+    return confirmPwd.length > 0 && newPwd !== confirmPwd;
+  }
+
+  changePassword(): void {
+    if (this.passwordForm.invalid) {
+      this.passwordForm.markAllAsTouched();
+      return;
+    }
+
+    if (this.passwordStrength < 5) {
+      this.toast.warning('Contraseña debil', 'La nueva contraseña no cumple todos los requisitos.');
+      return;
+    }
+
+    if (!this.passwordsMatch()) {
+      this.toast.warning('Contraseñas no coinciden', 'Las contraseñas no coinciden.');
+      return;
+    }
+
+    this.isChangingPassword = true;
+
+    const { currentPassword, newPassword } = this.passwordForm.getRawValue();
+    this.profileService.changePassword(currentPassword!, newPassword!).subscribe({
+      next: () => {
+        this.isChangingPassword = false;
+        this.toast.success('Contraseña actualizada', 'Tu contraseña se ha cambiado correctamente.');
+        setTimeout(() => {
+          this.closePasswordModal();
+        }, 1500);
+      },
+      error: (err) => {
+        this.isChangingPassword = false;
+        if (err.status === 401) {
+          this.toast.error('Error', 'La contraseña actual es incorrecta.');
+        } else if (err.error?.errors) {
+          this.toast.error('Error', err.error.errors.map((e: any) => e.message).join(', '));
+        } else {
+          this.toast.error('Error', 'No se pudo cambiar la contraseña. Intentalo de nuevo.');
+        }
       }
     });
   }

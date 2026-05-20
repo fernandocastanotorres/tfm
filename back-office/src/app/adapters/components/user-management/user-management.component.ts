@@ -4,9 +4,10 @@ import { UserManagementService } from '../../../application/services/user-manage
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
 
 @Component({
-  selector: 'bo-user-management',
-  templateUrl: './user-management.component.html',
-  styleUrls: ['./user-management.component.css']
+    selector: 'bo-user-management',
+    templateUrl: './user-management.component.html',
+    styleUrls: ['./user-management.component.css'],
+    standalone: false
 })
 export class UserManagementComponent implements OnInit {
   private readonly userManagementService = inject(UserManagementService);

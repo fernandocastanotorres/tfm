@@ -4,14 +4,17 @@ import es.tfg.records.application.dto.BackofficeDtos;
 import es.tfg.records.application.dto.PublicContentDtos;
 import es.tfg.records.application.dto.TransparencyDtos;
 import es.tfg.records.application.service.BackofficeService;
+import es.tfg.records.application.service.DocumentService;
 import es.tfg.records.application.service.EniMetadataService;
 import es.tfg.records.application.service.PublicContentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -28,13 +31,16 @@ public class BackofficeController {
     private final BackofficeService backofficeService;
     private final EniMetadataService eniMetadataService;
     private final PublicContentService publicContentService;
+    private final DocumentService documentService;
 
     public BackofficeController(BackofficeService backofficeService,
                                 EniMetadataService eniMetadataService,
-                                PublicContentService publicContentService) {
+                                PublicContentService publicContentService,
+                                DocumentService documentService) {
         this.backofficeService = backofficeService;
         this.eniMetadataService = eniMetadataService;
         this.publicContentService = publicContentService;
+        this.documentService = documentService;
     }
 
     @GetMapping("/public-content/legislation")
@@ -418,5 +424,15 @@ public class BackofficeController {
             @PathVariable String locale) {
         backofficeService.deleteFieldTranslation(id, fieldId, locale);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/procedures/documents/{id}/download")
+    @Operation(summary = "Download case document (admin)", description = "Download a document attached to any case, accessible by backoffice users")
+    public ResponseEntity<Resource> downloadDocument(@PathVariable UUID id) {
+        Resource resource = documentService.downloadDocumentForAdmin(id);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .header(HttpHeaders.CONTENT_TYPE, "application/octet-stream")
+                .body(resource);
     }
 }

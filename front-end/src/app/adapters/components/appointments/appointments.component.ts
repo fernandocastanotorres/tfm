@@ -4,9 +4,10 @@ import { AppointmentsService, AppointmentItem } from '../../../application/servi
 import { changePage, updatePageSize, getPaginationState, PaginationState } from '../../../application/utils/pagination';
 
 @Component({
-  selector: 'app-appointments',
-  templateUrl: './appointments.component.html',
-  styleUrls: []
+    selector: 'app-appointments',
+    templateUrl: './appointments.component.html',
+    styleUrls: [],
+    standalone: false
 })
 export class AppointmentsComponent implements OnInit {
   appointments: AppointmentItem[] = [];

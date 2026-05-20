@@ -4,9 +4,10 @@ import { AdminCasesService } from '../../../application/services/admin-cases.ser
 import { CaseItem, PagedResponse } from '../../../application/models/backoffice.models';
 
 @Component({
-  selector: 'bo-case-list',
-  templateUrl: './case-list.component.html',
-  styleUrls: ['./case-list.component.css']
+    selector: 'bo-case-list',
+    templateUrl: './case-list.component.html',
+    styleUrls: ['./case-list.component.css'],
+    standalone: false
 })
 export class CaseListComponent implements OnInit {
   private readonly adminCasesService = inject(AdminCasesService);

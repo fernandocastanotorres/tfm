@@ -15,7 +15,8 @@
     "EMAIL_ERROR": "Introduce un correo válido.",
     "PASSWORD_HELP": "Mínimo 8 caracteres.",
     "PASSWORD_ERROR": "La contraseña debe tener al menos 8 caracteres.",
-    "ERROR_INVALID": "Credenciales inválidas. Revisa los datos e inténtalo de nuevo."
+    "ERROR_INVALID": "Credenciales inválidas. Revisa los datos e inténtalo de nuevo.",
+    "ERROR_GENERIC": "Ha ocurrido un error inesperado. Inténtalo de nuevo más tarde."
   },
   "REGISTER": {
     "EYEBROW": "Alta ciudadana",
@@ -176,7 +177,23 @@
     "FILTER_VALIDATED": "Validados",
     "UPLOAD": "Subir nueva versión",
     "DOWNLOAD": "Descargar",
+    "SIGN": "Firmar",
+    "VERIFY": "Verificar firma",
+    "SIGNED": "Firmado",
+    "SIGNING": "Firmando...",
+    "VERIFYING": "Verificando...",
+    "DELETE": "Eliminar",
     "EMPTY": "No hay documentos para este filtro."
+  },
+  "DOCUMENT_STATUS": {
+    "PENDING": "Pendiente",
+    "SIGNED": "Firmado",
+    "VALIDATED": "Validado",
+    "REJECTED": "Rechazado"
+  },
+  "PROCEDURE_STATUS": {
+    "ACTIVE": "Activo",
+    "INACTIVE": "Inactivo"
   },
   "PAYMENTS": {
     "EYEBROW": "Pagos y tasas",
@@ -289,6 +306,7 @@
     "NO_MESSAGES": "Sin mensajes",
     "SENDER_OFFICE": "Administración",
     "SENDER_CITIZEN": "Ciudadanía",
+    "REPLY_PLACEHOLDER": "Escribe tu mensaje aqui...",
     "MOCK_SUBJECT_LICENSE": "Consulta sobre licencia",
     "MOCK_SUBJECT_DOCUMENTS": "Documentación pendiente",
     "MOCK_MESSAGE_RECEIVED": "Hemos recibido tu consulta y la estamos revisando.",
@@ -366,12 +384,22 @@
     "MOCK_ATTACHMENT_ID": "DNI escaneado.pdf",
     "ERROR_LOAD": "No se ha podido cargar el expediente. Inténtalo de nuevo más tarde.",
     "CONTINUE": "Continuar tramitacion",
-    "ERROR_RESUME": "No se ha podido identificar el procedimiento para continuar la tramitacion."
+    "ERROR_RESUME": "No se ha podido identificar el procedimiento para continuar la tramitacion.",
+    "MESSAGES": "Mensajes",
+    "LOADING_MESSAGES": "Cargando mensajes..."
   },
   "CASE_STATUS": {
-    "REVIEW": "En revisión",
+    "DRAFT": "Borrador",
+    "SUBMITTED": "Presentado",
+    "IN_REVIEW": "En revision",
+    "AMENDMENT_REQUIRED": "Subsanacion requerida",
+    "RESUBMITTED": "Reenviado",
+    "APPROVED": "Aprobado",
+    "REJECTED": "Rechazado",
+    "COMPLETED": "Completado",
     "PENDING": "Pendiente",
-    "APPROVED": "Aprobado"
+    "WAITING": "En espera",
+    "REVIEW": "En revision"
   },
   "CASE_WIZARD": {
     "EYEBROW": "Nuevo expediente",
@@ -600,7 +628,33 @@
     "FORM_MESSAGE": "Mensaje",
     "FORM_MESSAGE_ERROR": "El mensaje debe tener al menos 20 caracteres.",
     "FORM_SUBMIT": "Enviar mensaje",
+    "FORM_SUBMITTING": "Enviando...",
     "FORM_SUCCESS": "Mensaje enviado correctamente. Te responderemos lo antes posible."
+  },
+  "BACKOFFICE": {
+    "TITLE": "Panel de administracion",
+    "BACK_TO_SEDE": "← Volver a la sede",
+    "NAV_DASHBOARD": "Panel de control",
+    "NAV_CASES": "Expedientes",
+    "NAV_MESSAGES": "Mensajeria",
+    "NAV_CONTACT_INBOX": "Buzon de contacto",
+    "NAV_DOCUMENTS": "Documentos",
+    "NAV_USERS": "Usuarios",
+    "NAV_PROCEDURES": "Procedimientos",
+    "NAV_TRANSPARENCY": "Transparencia",
+    "NAV_SETTINGS": "Configuracion",
+    "LOGOUT": "Cerrar sesion",
+    "CONTACT_INBOX_TITLE": "Buzon de contacto",
+    "CONTACT_INBOX_SUBTITLE": "Gestiona los mensajes recibidos desde el formulario de contacto.",
+    "CONTACT_INBOX_LOADING": "Cargando mensajes...",
+    "CONTACT_INBOX_EMPTY": "No hay mensajes en el buzon de contacto.",
+    "CONTACT_INBOX_EMPTY_UNREAD": "No hay mensajes sin leer.",
+    "CONTACT_INBOX_EMPTY_READ": "No hay mensajes leidos.",
+    "CONTACT_INBOX_FILTER_ALL": "Todos",
+    "CONTACT_INBOX_FILTER_UNREAD": "No leidos",
+    "CONTACT_INBOX_FILTER_READ": "Leidos",
+    "CONTACT_INBOX_BACK": "← Volver a la lista",
+    "CONTACT_INBOX_REPLY_EMAIL": "Responder por email"
   },
   "SERVICE_STATUS": {
     "EYEBROW": "Estado del servicio",

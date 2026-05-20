@@ -3,9 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../application/services/auth.service';
 
 @Component({
-  selector: 'app-email-verification',
-  templateUrl: './email-verification.component.html',
-  styleUrls: []
+    selector: 'app-email-verification',
+    templateUrl: './email-verification.component.html',
+    styleUrls: [],
+    standalone: false
 })
 export class EmailVerificationComponent implements OnInit {
   isLoading = true;

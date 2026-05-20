@@ -4,16 +4,19 @@ import { FormBuilder } from '@angular/forms';
 import { HttpEventType } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { DocumentsApiService, UploadMetadata } from '../../../application/services/documents-api.service';
+import { SignatureApiService } from '../../../application/services/signature-api.service';
 import { CasesApiService } from '../../../application/services/cases-api.service';
+import { ToastService } from '../../../application/services/toast.service';
 import { DocumentItem } from '../../../application/models/document.models';
 import { CaseItem } from '../../../application/models/case.models';
 import { changePage, updatePageSize, getPaginationState, PaginationState } from '../../../application/utils/pagination';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
 
 @Component({
-  selector: 'app-documents',
-  templateUrl: './documents.component.html',
-  styleUrls: []
+    selector: 'app-documents',
+    templateUrl: './documents.component.html',
+    styleUrls: [],
+    standalone: false
 })
 export class DocumentsComponent implements OnInit, OnDestroy {
   documents: DocumentItem[] = [];
@@ -31,7 +34,22 @@ export class DocumentsComponent implements OnInit, OnDestroy {
 
   // Loading state
   isLoading = true;
-  error: string | null = null;
+
+  // Signing state
+  isSigning = false;
+  isVerifying = false;
+
+  // Allowed document types for upload
+  readonly ALLOWED_MIME_TYPES = [
+    { mime: 'application/pdf', label: 'PDF', ext: '.pdf' },
+    { mime: 'image/jpeg', label: 'JPEG', ext: '.jpg, .jpeg' },
+    { mime: 'image/png', label: 'PNG', ext: '.png' },
+    { mime: 'image/gif', label: 'GIF', ext: '.gif' },
+    { mime: 'application/msword', label: 'Word', ext: '.doc' },
+    { mime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', label: 'Word (DOCX)', ext: '.docx' }
+  ];
+  readonly ALLOWED_EXTENSIONS = '.pdf,.jpg,.jpeg,.png,.gif,.doc,.docx';
+  readonly MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
   private subscriptions = new Subscription();
 
@@ -45,10 +63,12 @@ export class DocumentsComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly documentsApiService: DocumentsApiService,
+    private readonly signatureApiService: SignatureApiService,
     private readonly casesApiService: CasesApiService,
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
-    private readonly confirmDialogService: ConfirmDialogService
+    private readonly confirmDialogService: ConfirmDialogService,
+    private readonly toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -71,7 +91,7 @@ export class DocumentsComponent implements OnInit, OnDestroy {
           }
         },
         error: () => {
-          this.error = 'Failed to load cases';
+          this.toastService.error('Error', 'No se han podido cargar los expedientes.');
           this.isLoading = false;
         }
       })
@@ -93,7 +113,7 @@ export class DocumentsComponent implements OnInit, OnDestroy {
           this.updatePaginationState();
         },
         error: () => {
-          this.error = 'Failed to load documents';
+          this.toastService.error('Error', 'No se han podido cargar los documentos.');
           this.documents = [];
           this.isLoading = false;
         }
@@ -178,6 +198,22 @@ export class DocumentsComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Validate file type
+    const isAllowedType = this.ALLOWED_MIME_TYPES.some(t => t.mime === file.type);
+    if (!isAllowedType) {
+      const allowedLabels = this.ALLOWED_MIME_TYPES.map(t => t.label).join(', ');
+      this.toastService.warning('Tipo de archivo no valido', `Tipos aceptados: ${allowedLabels}. Tamano maximo: 10 MB`);
+      input.value = '';
+      return;
+    }
+
+    // Validate file size
+    if (file.size > this.MAX_FILE_SIZE) {
+      this.toastService.warning('Archivo demasiado grande', `Tamano: ${this.formatFileSize(file.size)}. Maximo: ${this.formatFileSize(this.MAX_FILE_SIZE)}`);
+      input.value = '';
+      return;
+    }
+
     this.isUploading = true;
     this.uploadProgress = 0;
     this.uploadError = null;
@@ -196,19 +232,19 @@ export class DocumentsComponent implements OnInit, OnDestroy {
         complete: () => {
           this.isUploading = false;
           this.uploadProgress = 0;
-          // Reload documents to show the new one
           if (this.selectedCaseId) {
             this.loadDocuments(this.selectedCaseId);
           }
-          // Reset file input
           if (input) {
             input.value = '';
           }
+          this.toastService.success('Documento subido', `${file.name} se ha adjuntado correctamente.`);
         },
         error: (err) => {
           this.isUploading = false;
           this.uploadProgress = 0;
-          this.uploadError = err?.error?.message ?? 'Upload failed';
+          const msg = err?.error?.message ?? 'Error al subir el documento';
+          this.toastService.error('Error al subir', msg);
         }
       })
     );
@@ -240,7 +276,7 @@ export class DocumentsComponent implements OnInit, OnDestroy {
           this.updatePaginationState();
         },
         error: () => {
-          this.error = 'Failed to delete document';
+          this.toastService.error('Error', 'No se ha podido eliminar el documento.');
         }
       })
     );
@@ -261,7 +297,85 @@ export class DocumentsComponent implements OnInit, OnDestroy {
           window.URL.revokeObjectURL(url);
         },
         error: () => {
-          this.error = 'Failed to download document';
+          this.toastService.error('Error', 'No se ha podido descargar el documento.');
+        }
+      })
+    );
+  }
+
+  // Sign handling
+  signDocument(docId: string, fileName: string): void {
+    this.isSigning = true;
+
+    this.subscriptions.add(
+      this.documentsApiService.download(docId).subscribe({
+        next: (blob) => {
+          const file = new File([blob], fileName, { type: blob.type });
+          this.subscriptions.add(
+            this.signatureApiService.signDocument(file).subscribe({
+              next: (signedBlob) => {
+                this.isSigning = false;
+                const doc = this.documents.find((d) => d.id === docId);
+                if (doc) {
+                  doc.isSigned = true;
+                }
+                this.toastService.success('Documento firmado', 'La firma electronica se ha aplicado correctamente.');
+                const url = window.URL.createObjectURL(signedBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'signed-' + fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+              },
+              error: () => {
+                this.isSigning = false;
+                this.toastService.error('Error al firmar', 'No se ha podido firmar el documento. Intentalo de nuevo.');
+              }
+            })
+          );
+        },
+        error: () => {
+          this.isSigning = false;
+          this.toastService.error('Error al firmar', 'No se ha podido descargar el documento para la firma.');
+        }
+      })
+    );
+  }
+
+  // Verify handling
+  verifyDocument(docId: string, fileName: string): void {
+    this.isVerifying = true;
+
+    this.subscriptions.add(
+      this.documentsApiService.download(docId).subscribe({
+        next: (blob) => {
+          const file = new File([blob], fileName, { type: blob.type });
+          this.subscriptions.add(
+            this.signatureApiService.verifySignature(file).subscribe({
+              next: (result) => {
+                this.isVerifying = false;
+                const doc = this.documents.find((d) => d.id === docId);
+                if (doc) {
+                  doc.isSigned = result.valid;
+                }
+                if (result.valid) {
+                  this.toastService.success('Firma valida', result.message);
+                } else {
+                  this.toastService.warning('Firma no valida', result.message);
+                }
+              },
+              error: () => {
+                this.isVerifying = false;
+                this.toastService.error('Error al verificar', 'No se ha podido verificar la firma del documento.');
+              }
+            })
+          );
+        },
+        error: () => {
+          this.isVerifying = false;
+          this.toastService.error('Error al verificar', 'No se ha podido descargar el documento para la verificacion.');
         }
       })
     );

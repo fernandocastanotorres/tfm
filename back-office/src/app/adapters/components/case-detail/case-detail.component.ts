@@ -1,24 +1,52 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminCasesService } from '../../../application/services/admin-cases.service';
+import { MessagingAdminService, MessageDto, PagedMessages } from '../../../application/services/messaging-admin.service';
 import { CaseDetail } from '../../../application/models/backoffice.models';
 
 @Component({
-  selector: 'bo-case-detail',
-  templateUrl: './case-detail.component.html',
-  styleUrls: ['./case-detail.component.css']
+    selector: 'bo-case-detail',
+    templateUrl: './case-detail.component.html',
+    styleUrls: ['./case-detail.component.css'],
+    standalone: false
 })
 export class CaseDetailComponent implements OnInit {
   private readonly adminCasesService = inject(AdminCasesService);
+  private readonly messagingService = inject(MessagingAdminService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
   caseDetail: CaseDetail | null = null;
   isLoading = true;
-  activeTab: 'timeline' | 'documents' | 'data' | 'actions' = 'timeline';
+  activeTab: 'timeline' | 'documents' | 'data' | 'tasks' | 'messages' | 'actions' = 'timeline';
   showStatusModal = false;
   newStatus = '';
-  tabs: ('timeline' | 'documents' | 'data' | 'actions')[] = ['timeline', 'documents', 'data', 'actions'];
+  tabs: ('timeline' | 'documents' | 'data' | 'tasks' | 'messages' | 'actions')[] = ['timeline', 'documents', 'tasks', 'messages', 'data', 'actions'];
+
+  pendingTasks: { id: string; name: string; description: string; type: string; assignedRole: string }[] = [];
+
+  // Messaging state
+  messages: MessageDto[] = [];
+  messagePage = 0;
+  messagePageSize = 20;
+  messageTotalPages = 1;
+  messageTotalItems = 0;
+  replyContent = '';
+  replyTemplateKey = '';
+  replyNotifyByEmail = true;
+  isSendingMessage = false;
+  replyFiles: File[] = [];
+
+  readonly MESSAGE_TEMPLATES = [
+    { key: '', label: 'Texto libre' },
+    { key: 'REQUEST_INFO', label: 'Solicitud de informacion adicional' },
+    { key: 'DOCUMENT_INCOMPLETE', label: 'Documentacion incompleta' },
+    { key: 'APPROVED', label: 'Expediente aprobado' },
+    { key: 'REJECTED', label: 'Expediente rechazado' },
+    { key: 'AMENDMENT_REQUIRED', label: 'Subsanacion requerida' }
+  ];
+
+  readonly PAGE_SIZE_OPTIONS = [10, 20, 50];
 
   statusOptions = [
     { value: 'IN_PROGRESS', label: 'En Tramitacion' },
@@ -29,6 +57,10 @@ export class CaseDetailComponent implements OnInit {
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
+    const tab = this.route.snapshot.queryParamMap.get('tab');
+    if (tab && ['timeline', 'documents', 'data', 'tasks', 'messages', 'actions'].includes(tab)) {
+      this.activeTab = tab as typeof this.activeTab;
+    }
     if (id) {
       this.loadCase(id);
     }
@@ -39,10 +71,117 @@ export class CaseDetailComponent implements OnInit {
     this.adminCasesService.getDetail(id).subscribe({
       next: (detail) => {
         this.caseDetail = detail;
+        this.loadPendingTasks(id);
+        this.loadMessages(id);
         this.isLoading = false;
       },
       error: () => {
         this.isLoading = false;
+      }
+    });
+  }
+
+  loadMessages(caseId: string): void {
+    this.messagingService.getThreadMessages(caseId, this.messagePage, this.messagePageSize).subscribe({
+      next: (response) => {
+        this.messages = response.messages;
+        this.messageTotalPages = response.totalPages;
+        this.messageTotalItems = response.totalItems;
+      },
+      error: () => {
+        this.messages = [];
+      }
+    });
+  }
+
+  changeMessagePage(page: number): void {
+    if (this.caseDetail) {
+      this.messagePage = page;
+      this.loadMessages(this.caseDetail.id);
+    }
+  }
+
+  changeMessagePageSize(size: number): void {
+    this.messagePageSize = size;
+    this.messagePage = 0;
+    if (this.caseDetail) {
+      this.loadMessages(this.caseDetail.id);
+    }
+  }
+
+  selectTemplate(templateKey: string): void {
+    this.replyTemplateKey = templateKey;
+    const templateTexts: Record<string, string> = {
+      'REQUEST_INFO': 'Estimado/a ciudadano/a,\n\nLe solicitamos que nos facilite la siguiente informacion adicional sobre su expediente:\n\n',
+      'DOCUMENT_INCOMPLETE': 'Estimado/a ciudadano/a,\n\nLa documentacion presentada para su expediente es incompleta. Por favor, adjunte los siguientes documentos:\n\n',
+      'APPROVED': 'Estimado/a ciudadano/a,\n\nLe informamos de que su expediente ha sido aprobado.\n\n',
+      'REJECTED': 'Estimado/a ciudadano/a,\n\nLamentamos informarle de que su expediente ha sido rechazado por los siguientes motivos:\n\n',
+      'AMENDMENT_REQUIRED': 'Estimado/a ciudadano/a,\n\nEs necesario que subsane los siguientes aspectos de su expediente:\n\n'
+    };
+    if (templateKey && templateTexts[templateKey]) {
+      this.replyContent = templateTexts[templateKey];
+    }
+  }
+
+  sendMessage(): void {
+    if (!this.caseDetail || !this.replyContent.trim()) return;
+
+    this.isSendingMessage = true;
+    this.messagingService.sendMessage(
+      this.caseDetail.id,
+      this.replyContent.trim(),
+      this.replyTemplateKey || undefined,
+      this.replyNotifyByEmail,
+      this.replyFiles.length > 0 ? this.replyFiles : undefined
+    ).subscribe({
+      next: () => {
+        this.replyContent = '';
+        this.replyTemplateKey = '';
+        this.replyFiles = [];
+        this.messagePage = 0;
+        this.loadMessages(this.caseDetail!.id);
+        this.isSendingMessage = false;
+      },
+      error: () => {
+        this.isSendingMessage = false;
+      }
+    });
+  }
+
+  onFilesSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.replyFiles = input.files ? Array.from(input.files) : [];
+  }
+
+  formatMessageDate(dateStr: string): string {
+    return new Date(dateStr).toLocaleString('es-ES', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  getSenderLabel(role: string, name: string): string {
+    const labels: Record<string, string> = {
+      'CITIZEN': 'Ciudadano',
+      'ADMIN': 'Administracion',
+      'SYSTEM': 'Sistema'
+    };
+    return `${labels[role] || role} (${name})`;
+  }
+
+  loadPendingTasks(caseId: string): void {
+    this.adminCasesService.getPendingTasksByCase(caseId).subscribe({
+      next: (tasks) => {
+        this.pendingTasks = tasks.map((t) => ({
+          id: t.id,
+          name: t.taskName,
+          description: `Tipo: ${t.taskType} · Prioridad: ${t.priority}`,
+          type: t.taskType,
+          assignedRole: t.assignedTo || 'Sin asignar'
+        }));
+      },
+      error: () => {
+        this.pendingTasks = [];
       }
     });
   }
@@ -93,10 +232,44 @@ export class CaseDetailComponent implements OnInit {
     return (bytes / 1048576).toFixed(1) + ' MB';
   }
 
+  downloadDocument(documentId: string, filename: string): void {
+    this.adminCasesService.downloadDocument(documentId).subscribe({
+      next: (blob) => {
+        const objectUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = objectUrl;
+        link.download = filename || 'documento';
+        link.click();
+        URL.revokeObjectURL(objectUrl);
+      },
+      error: () => {
+        alert('Error al descargar el documento');
+      }
+    });
+  }
+
+  downloadAttachment(attachmentId: string, filename: string): void {
+    this.messagingService.downloadAttachment(attachmentId).subscribe({
+      next: (blob) => {
+        const objectUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = objectUrl;
+        link.download = filename || 'adjunto';
+        link.click();
+        URL.revokeObjectURL(objectUrl);
+      },
+      error: () => {
+        alert('Error al descargar el adjunto');
+      }
+    });
+  }
+
   getTabLabel(tab: string): string {
     const labels: Record<string, string> = {
       timeline: 'Historial',
       documents: 'Documentos',
+      tasks: 'Tareas',
+      messages: 'Mensajes',
       data: 'Datos',
       actions: 'Acciones'
     };

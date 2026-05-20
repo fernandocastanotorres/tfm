@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, fakeAsync, tick, flush, discardPeriodicTasks } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,12 +7,15 @@ import { of, throwError, Subject } from 'rxjs';
 import { CaseDetailComponent } from './case-detail.component';
 import { CasesApiService } from '../../../application/services/cases-api.service';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
+import { ToastService } from '../../../application/services/toast.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('CaseDetailComponent', () => {
   let component: CaseDetailComponent;
   let fixture: ComponentFixture<CaseDetailComponent>;
   let casesApiService: jasmine.SpyObj<CasesApiService>;
   let confirmDialogService: jasmine.SpyObj<ConfirmDialogService>;
+  let toastSpy: jasmine.SpyObj<ToastService>;
   let router: Router;
 
   const mockCaseDetail = {
@@ -29,7 +32,7 @@ describe('CaseDetailComponent', () => {
     assignedUnit: 'Unit A',
     timeline: [],
     attachments: [
-      { id: 'doc-1', name: 'document.pdf', type: 'application/pdf', size: 1024, uploadedAt: '2024-01-10' }
+      { id: 'doc-1', name: 'document.pdf', type: 'application/pdf', size: 1024, uploadedAt: '2024-01-10', signed: false }
     ]
   };
 
@@ -42,25 +45,29 @@ describe('CaseDetailComponent', () => {
       'amend'
     ]);
     confirmDialogService = jasmine.createSpyObj('ConfirmDialogService', ['confirm']);
+    toastSpy = jasmine.createSpyObj('ToastService', ['error', 'success', 'warning']);
 
     TestBed.configureTestingModule({
-      declarations: [CaseDetailComponent],
-      imports: [HttpClientTestingModule, TranslateModule.forRoot(), RouterTestingModule],
-      providers: [
+    declarations: [CaseDetailComponent],
+    imports: [TranslateModule.forRoot(), RouterTestingModule],
+    providers: [
         { provide: CasesApiService, useValue: casesApiService },
         { provide: ConfirmDialogService, useValue: confirmDialogService },
+        { provide: ToastService, useValue: toastSpy },
         {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              paramMap: {
-                get: () => id
-              }
+            provide: ActivatedRoute,
+            useValue: {
+                snapshot: {
+                    paramMap: {
+                        get: () => id
+                    }
+                }
             }
-          }
-        }
-      ]
-    });
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
 
     fixture = TestBed.createComponent(CaseDetailComponent);
     component = fixture.componentInstance;
@@ -90,7 +97,7 @@ describe('CaseDetailComponent', () => {
       setupComponent(null);
       fixture.detectChanges();
 
-      expect(component.error).toBe('CASE_DETAIL.ERROR_NO_ID');
+      expect(toastSpy.error).toHaveBeenCalled();
       expect(component.isLoading).toBeFalse();
     });
 
@@ -118,7 +125,7 @@ describe('CaseDetailComponent', () => {
       fixture.detectChanges();
       discardPeriodicTasks();
 
-      expect(component.error).toBe('Not found');
+      expect(toastSpy.error).toHaveBeenCalled();
     }));
 
     it('should set error to default message when error response has no message', fakeAsync(() => {
@@ -127,7 +134,7 @@ describe('CaseDetailComponent', () => {
       fixture.detectChanges();
       discardPeriodicTasks();
 
-      expect(component.error).toBe('CASE_DETAIL.ERROR_LOAD');
+      expect(toastSpy.error).toHaveBeenCalled();
     }));
 
     it('should set isLoading to false after successful load', fakeAsync(() => {
@@ -317,7 +324,7 @@ describe('CaseDetailComponent', () => {
       component.onSelectFiles(fileList);
       tick();
 
-      expect(component.error).toBe('CASE_DETAIL.ERROR_LOAD');
+      expect(toastSpy.error).toHaveBeenCalled();
       expect(component.isUploading).toBeFalse();
       expect(casesApiService.getDetail).toHaveBeenCalled();
       discardPeriodicTasks();
@@ -466,7 +473,7 @@ describe('CaseDetailComponent', () => {
       component.requestAmendment();
       tick();
 
-      expect(component.error).toBe('CASE_DETAIL.ERROR_LOAD');
+      expect(toastSpy.error).toHaveBeenCalled();
       discardPeriodicTasks();
     }));
 
@@ -538,7 +545,7 @@ describe('CaseDetailComponent', () => {
       component.continueProcessing();
       discardPeriodicTasks();
 
-      expect(component.error).toBe('CASE_DETAIL.ERROR_RESUME');
+      expect(toastSpy.error).toHaveBeenCalled();
       expect(router.navigate).not.toHaveBeenCalled();
     }));
 
@@ -606,7 +613,7 @@ describe('CaseDetailComponent', () => {
       fixture.detectChanges();
 
       // The component should have set error and not called API
-      expect(component.error).toBe('CASE_DETAIL.ERROR_NO_ID');
+      expect(toastSpy.error).toHaveBeenCalled();
       expect(casesApiService.getDetail).not.toHaveBeenCalled();
     });
   });

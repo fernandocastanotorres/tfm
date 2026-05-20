@@ -5,9 +5,10 @@ import { I18nService } from '../../../application/services/i18n.service';
 import { GlossaryTerm } from '../../../application/models/sede.models';
 
 @Component({
-  selector: 'app-glossary',
-  templateUrl: './glossary.component.html',
-  styleUrls: ['./glossary.component.css']
+    selector: 'app-glossary',
+    templateUrl: './glossary.component.html',
+    styleUrls: ['./glossary.component.css'],
+    standalone: false
 })
 export class GlossaryComponent implements OnInit, OnDestroy {
   terms: GlossaryTerm[] = [];

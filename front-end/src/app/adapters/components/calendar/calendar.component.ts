@@ -5,9 +5,10 @@ import { I18nService } from '../../../application/services/i18n.service';
 import { CalendarEvent } from '../../../application/models/sede.models';
 
 @Component({
-  selector: 'app-calendar',
-  templateUrl: './calendar.component.html',
-  styleUrls: ['./calendar.component.css']
+    selector: 'app-calendar',
+    templateUrl: './calendar.component.html',
+    styleUrls: ['./calendar.component.css'],
+    standalone: false
 })
 export class CalendarComponent implements OnInit, OnDestroy {
   events: CalendarEvent[] = [];

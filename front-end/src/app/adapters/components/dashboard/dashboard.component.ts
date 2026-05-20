@@ -4,12 +4,14 @@ import { DashboardService, NotificationItem, QuickAccessItem } from '../../../ap
 import { CasesApiService } from '../../../application/services/cases-api.service';
 import { CaseItem } from '../../../application/models/case.models';
 import { TranslateService } from '@ngx-translate/core';
+import { ToastService } from '../../../application/services/toast.service';
 import { changePage, updatePageSize, getPaginationState, PaginationState } from '../../../application/utils/pagination';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: []
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrls: [],
+    standalone: false
 })
 export class DashboardComponent implements OnInit {
   cases: CaseItem[] = [];
@@ -19,7 +21,6 @@ export class DashboardComponent implements OnInit {
   readonly paginationOptions = [10, 20, 50];
   paginationState: PaginationState = { currentPage: 1, totalPages: 1, pageSize: 10 };
   isLoading = true;
-  error: string | null = null;
 
   readonly filterForm = this.fb.group({
     search: [''],
@@ -31,7 +32,8 @@ export class DashboardComponent implements OnInit {
     private readonly dashboardService: DashboardService,
     private readonly casesApiService: CasesApiService,
     private readonly fb: FormBuilder,
-    private readonly translate: TranslateService
+    private readonly translate: TranslateService,
+    private readonly toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -45,7 +47,6 @@ export class DashboardComponent implements OnInit {
 
   private loadCases(): void {
     this.isLoading = true;
-    this.error = null;
 
     const page = this.paginationState.currentPage - 1; // API is 0-indexed
     const size = this.paginationState.pageSize;
@@ -61,7 +62,7 @@ export class DashboardComponent implements OnInit {
         }
       },
       error: (err) => {
-        this.error = err?.error?.message ?? 'DASHBOARD.ERROR_LOAD';
+        this.toast.error('Error al cargar', err?.error?.message ?? 'No se han podido cargar los expedientes.');
         this.isLoading = false;
       }
     });

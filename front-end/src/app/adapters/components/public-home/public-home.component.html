@@ -8,7 +8,7 @@
         <a [routerLink]="['/sede/procedimientos']" class="btn-primary">
           {{ 'PUBLIC_HOME.CTA_PROCEDURES' | translate }}
         </a>
-        <a [routerLink]="['/sede/login']" class="btn-primary btn-primary--outline">
+        <a *ngIf="!isAuthenticated" [routerLink]="['/sede/login']" class="btn-primary btn-primary--outline">
           {{ 'PUBLIC_HOME.CTA_LOGIN' | translate }}
         </a>
       </div>

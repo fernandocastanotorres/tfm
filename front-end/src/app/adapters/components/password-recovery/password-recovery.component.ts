@@ -5,9 +5,10 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-password-recovery',
-  templateUrl: './password-recovery.component.html',
-  styleUrls: []
+    selector: 'app-password-recovery',
+    templateUrl: './password-recovery.component.html',
+    styleUrls: [],
+    standalone: false
 })
 export class PasswordRecoveryComponent {
   readonly requestForm = this.fb.group({

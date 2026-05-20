@@ -101,6 +101,34 @@
         "search": "Bilatu",
         "loading": "Kargatzen...",
         "noData": "Ez dago daturik erabilgarri"
+      },
+      "caseDetail": {
+        "messages": {
+          "tabLabel": "Mezuak",
+          "replyTitle": "Hiritarrari erantzun",
+          "templateLabel": "Txantiloia (aukerakoa)",
+          "attachLabel": "Fitxategiak erantsi",
+          "notifyByEmail": "Email bidez jakinarazi",
+          "sendButton": "Mezua bidali",
+          "sendingButton": "Bidaltzen...",
+          "emptyState": "Ez dago mezurik espediente honetan.",
+          "noMessages": "Mezurik gabe",
+          "pagination": "{{page}}. orrialdea {{total}}-tik",
+          "previous": "Aurrekoa",
+          "next": "Hurrengoa",
+          "pageSize": "{{size} orrialdeko",
+          "senderCitizen": "Hiritarra",
+          "senderAdmin": "Administrazioa",
+          "senderSystem": "Sistema",
+          "templates": {
+            "freeText": "Testu librea",
+            "requestInfo": "Informazio gehigarriaren eskaera",
+            "documentIncomplete": "Dokumentazioa osatugabe",
+            "approved": "Espediente onartua",
+            "rejected": "Espediente baztertua",
+            "amendmentRequired": "Zuzenketa beharrezkoa"
+          }
+        }
       }
     }
   }

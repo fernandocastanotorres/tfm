@@ -5,9 +5,10 @@ import { I18nService } from '../../../application/services/i18n.service';
 import { InstitutionalSection } from '../../../application/models/sede.models';
 
 @Component({
-  selector: 'app-institutional-info',
-  templateUrl: './institutional-info.component.html',
-  styleUrls: ['./institutional-info.component.css']
+    selector: 'app-institutional-info',
+    templateUrl: './institutional-info.component.html',
+    styleUrls: ['./institutional-info.component.css'],
+    standalone: false
 })
 export class InstitutionalInfoComponent implements OnInit, OnDestroy {
   sections: InstitutionalSection[] = [];

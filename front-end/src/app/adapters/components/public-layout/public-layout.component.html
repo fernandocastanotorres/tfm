@@ -97,8 +97,12 @@
         <div id="public-user-menu" class="public-header__user-menu" [class.public-header__user-menu--open]="userMenuOpen" role="menu">
           <button type="button" role="menuitem" (click)="onProfile()">Datos personales</button>
           <button type="button" role="menuitem" (click)="onSearchCases()">Buscar expedientes</button>
-          <button type="button" role="menuitem" (click)="onMessages()">Mensajeria</button>
-          <button type="button" role="menuitem" (click)="onChangePassword()">Cambiar contrasena</button>
+          <button type="button" role="menuitem" (click)="onMessages()">
+            Mensajeria
+            <span *ngIf="unreadMessageCount > 0" class="ml-1 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 font-semibold">
+              {{ unreadMessageCount > 9 ? '9+' : unreadMessageCount }}
+            </span>
+          </button>
           <button type="button" role="menuitem" (click)="onLogout()">Cerrar sesion</button>
         </div>
       </div>

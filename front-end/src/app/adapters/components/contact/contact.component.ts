@@ -1,18 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { ContactService } from '../../../application/services/contact.service';
+import { ContactService, ContactMessagePayload } from '../../../application/services/contact.service';
 import { ContactOffice, ContactChannel } from '../../../application/models/sede.models';
+import { ToastService } from '../../../application/services/toast.service';
 
 @Component({
-  selector: 'app-contact',
-  templateUrl: './contact.component.html',
-  styleUrls: ['./contact.component.css']
+    selector: 'app-contact',
+    templateUrl: './contact.component.html',
+    styleUrls: ['./contact.component.css'],
+    standalone: false
 })
 export class ContactComponent implements OnInit {
   offices: ContactOffice[] = [];
   channels: ContactChannel[] = [];
   isLoading = true;
   formSubmitted = false;
+  isSubmitting = false;
 
   readonly contactForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
@@ -23,7 +26,8 @@ export class ContactComponent implements OnInit {
 
   constructor(
     private readonly contactService: ContactService,
-    private readonly fb: FormBuilder
+    private readonly fb: FormBuilder,
+    private readonly toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -37,9 +41,30 @@ export class ContactComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.contactForm.valid) {
-      this.formSubmitted = true;
-      this.contactForm.reset();
+    if (this.contactForm.invalid) {
+      this.contactForm.markAllAsTouched();
+      return;
     }
+
+    this.isSubmitting = true;
+    const payload: ContactMessagePayload = {
+      fullName: this.contactForm.value.name!,
+      email: this.contactForm.value.email!,
+      subject: this.contactForm.value.subject!,
+      message: this.contactForm.value.message!
+    };
+
+    this.contactService.sendMessage(payload).subscribe({
+      next: () => {
+        this.formSubmitted = true;
+        this.contactForm.reset();
+        this.isSubmitting = false;
+        this.toast.success('Mensaje enviado correctamente. Te responderemos lo antes posible.');
+      },
+      error: () => {
+        this.isSubmitting = false;
+        this.toast.error('Error al enviar el mensaje. Intentalo de nuevo mas tarde.');
+      }
+    });
   }
 }

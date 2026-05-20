@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
@@ -37,15 +36,14 @@ import java.util.UUID;
 
 /**
  * Data initializer for development seeding.
- * Only active in the 'dev' profile.
  *
  * Seeds:
- * - Test users: citizen (dev@tfg.es) and admin (admin@tfg.es)
+ * - Test users: citizen (citizen@tfg.es / Citizen1) and admin (admin@tfg.es / Admin1234)
  * - Procedure types with form schemas and tasks
  * - Sample cases for the citizen user
+ * - Public content (FAQ, calendar, organisms, legislation)
  */
 @Configuration
-@Profile("dev")
 public class DataInitializer {
 
     private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);
@@ -243,9 +241,15 @@ public class DataInitializer {
                                   ProcedureTaskFieldI18nJpaRepository fieldI18nJpaRepository,
                                   ProcedureTaskJpaRepository taskJpaRepository,
                                   PublicContentEntryJpaRepository publicContentEntryJpaRepository,
-                                  ProcedureRepository procedureRepository) {
+                                  ProcedureRepository procedureRepository,
+                                  es.tfg.records.infrastructure.persistence.repository.UserJpaRepository userJpaRepo) {
         return args -> {
-            log.info("=== DEV DATA INITIALIZER ===");
+            if (userJpaRepo.count() > 0) {
+                log.info("Database already has users, skipping data initialization.");
+                return;
+            }
+
+            log.info("=== DATA INITIALIZER ===");
 
             // --- Seed test users ---
             UUID citizenId = UUID.randomUUID();

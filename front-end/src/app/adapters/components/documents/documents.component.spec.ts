@@ -1,15 +1,17 @@
 import { ComponentFixture, TestBed, fakeAsync, tick, flush } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { HttpEventType } from '@angular/common/http';
+import { HttpEventType, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { DocumentsComponent } from './documents.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { of, throwError, Subject } from 'rxjs';
 import { DocumentsApiService, UploadMetadata } from '../../../application/services/documents-api.service';
+import { SignatureApiService } from '../../../application/services/signature-api.service';
 import { CasesApiService } from '../../../application/services/cases-api.service';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
+import { ToastService } from '../../../application/services/toast.service';
 import { DocumentItem } from '../../../application/models/document.models';
 import { CaseItem, PagedResponse } from '../../../application/models/case.models';
 
@@ -17,8 +19,10 @@ describe('DocumentsComponent', () => {
   let component: DocumentsComponent;
   let fixture: ComponentFixture<DocumentsComponent>;
   let documentsSpy: jasmine.SpyObj<DocumentsApiService>;
+  let signatureSpy: jasmine.SpyObj<SignatureApiService>;
   let casesSpy: jasmine.SpyObj<CasesApiService>;
   let confirmSpy: jasmine.SpyObj<ConfirmDialogService>;
+  let toastSpy: jasmine.SpyObj<ToastService>;
 
   const mockCases: CaseItem[] = [
     { id: 'case-1', title: 'Test Case', status: 'PENDING', procedureType: 'License', createdAt: '2024-01-01', lastUpdated: '2024-01-01', description: '', assignedUnit: '' },
@@ -33,8 +37,10 @@ describe('DocumentsComponent', () => {
 
   function setupComponent(routeCaseId: string | null = null): void {
     documentsSpy = jasmine.createSpyObj('DocumentsApiService', ['listByCase', 'upload', 'download', 'delete']);
+    signatureSpy = jasmine.createSpyObj('SignatureApiService', ['signDocument', 'verifySignature']);
     casesSpy = jasmine.createSpyObj('CasesApiService', ['list']);
     confirmSpy = jasmine.createSpyObj('ConfirmDialogService', ['confirm']);
+    toastSpy = jasmine.createSpyObj('ToastService', ['error', 'success', 'warning']);
 
     const mockCasesResponse: PagedResponse<CaseItem> = {
       items: mockCases,
@@ -48,16 +54,20 @@ describe('DocumentsComponent', () => {
     documentsSpy.listByCase.and.returnValue(of(mockDocs));
 
     TestBed.configureTestingModule({
-      declarations: [DocumentsComponent],
-      imports: [HttpClientTestingModule, TranslateModule.forRoot(), ReactiveFormsModule],
-      providers: [
+    declarations: [DocumentsComponent],
+    schemas: [NO_ERRORS_SCHEMA],
+    imports: [TranslateModule.forRoot(), ReactiveFormsModule],
+    providers: [
         { provide: DocumentsApiService, useValue: documentsSpy },
+        { provide: SignatureApiService, useValue: signatureSpy },
         { provide: CasesApiService, useValue: casesSpy },
         { provide: ConfirmDialogService, useValue: confirmSpy },
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => routeCaseId } } } }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    });
+        { provide: ToastService, useValue: toastSpy },
+        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => routeCaseId } } } },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
 
     fixture = TestBed.createComponent(DocumentsComponent);
     component = fixture.componentInstance;
@@ -98,27 +108,31 @@ describe('DocumentsComponent', () => {
       documentsSpy = jasmine.createSpyObj('DocumentsApiService', ['listByCase', 'upload', 'download', 'delete']);
       casesSpy = jasmine.createSpyObj('CasesApiService', ['list']);
       confirmSpy = jasmine.createSpyObj('ConfirmDialogService', ['confirm']);
+      toastSpy = jasmine.createSpyObj('ToastService', ['error', 'success', 'warning']);
 
       // Set error BEFORE component initializes
       casesSpy.list.and.returnValue(throwError(() => new Error('Network error')));
 
       TestBed.configureTestingModule({
-        declarations: [DocumentsComponent],
-        imports: [HttpClientTestingModule, TranslateModule.forRoot(), ReactiveFormsModule],
-        providers: [
-          { provide: DocumentsApiService, useValue: documentsSpy },
-          { provide: CasesApiService, useValue: casesSpy },
-          { provide: ConfirmDialogService, useValue: confirmSpy },
-          { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => null } } } }
-        ],
-        schemas: [NO_ERRORS_SCHEMA]
-      });
+    declarations: [DocumentsComponent],
+    schemas: [NO_ERRORS_SCHEMA],
+    imports: [TranslateModule.forRoot(), ReactiveFormsModule],
+    providers: [
+        { provide: DocumentsApiService, useValue: documentsSpy },
+        { provide: CasesApiService, useValue: casesSpy },
+        { provide: ConfirmDialogService, useValue: confirmSpy },
+        { provide: ToastService, useValue: toastSpy },
+        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => null } } } },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
 
       fixture = TestBed.createComponent(DocumentsComponent);
       component = fixture.componentInstance;
       fixture.detectChanges();
 
-      expect(component.error).toBe('Failed to load cases');
+      expect(toastSpy.error).toHaveBeenCalled();
       expect(component.isLoading).toBeFalse();
       expect(component.selectedCaseId).toBeNull();
     });
@@ -329,7 +343,7 @@ describe('DocumentsComponent', () => {
 
       expect(component.isUploading).toBeFalse();
       expect(component.uploadProgress).toBe(0);
-      expect(component.uploadError).toBe('File too large');
+      expect(toastSpy.error).toHaveBeenCalled();
       flush();
     }));
   });
@@ -415,7 +429,7 @@ describe('DocumentsComponent', () => {
 
       component.downloadDocument('doc-1', 'test.pdf');
 
-      expect(component.error).toBe('Failed to download document');
+      expect(toastSpy.error).toHaveBeenCalled();
     });
   });
 
@@ -445,8 +459,164 @@ describe('DocumentsComponent', () => {
     it('formatDate should format date string to locale string', () => {
       setupComponent();
       const result = component.formatDate('2024-01-15T10:00:00Z');
-      // es-ES locale with day:2-digit, month:2-digit, year:numeric
       expect(result).toMatch(/\d{2}\/\d{2}\/\d{4}/);
     });
+  });
+
+  // ==================== UPLOAD VALIDATION ====================
+
+  describe('Upload Validation', () => {
+    it('onFileSelected should return early when no file', () => {
+      setupComponent();
+      const input = { files: null, value: '' } as unknown as HTMLInputElement;
+      const event = { target: input } as unknown as Event;
+
+      component.onFileSelected(event);
+
+      expect(component.isUploading).toBeFalse();
+    });
+
+    it('onFileSelected should return early when no selectedCaseId', () => {
+      setupComponent();
+      component.selectedCaseId = null;
+      const file = new File(['content'], 'test.pdf', { type: 'application/pdf' });
+      const input = { files: [file], value: '' } as unknown as HTMLInputElement;
+      const event = { target: input } as unknown as Event;
+
+      component.onFileSelected(event);
+
+      expect(component.isUploading).toBeFalse();
+    });
+
+    it('onFileSelected should show warning for invalid file type', () => {
+      setupComponent();
+      const file = new File(['content'], 'test.exe', { type: 'application/x-executable' });
+      const input = { files: [file], value: '' } as unknown as HTMLInputElement;
+      const event = { target: input } as unknown as Event;
+
+      component.onFileSelected(event);
+
+      expect(toastSpy.warning).toHaveBeenCalled();
+      expect(component.isUploading).toBeFalse();
+    });
+
+    it('onFileSelected should show warning for file too large', () => {
+      setupComponent();
+      const largeContent = new ArrayBuffer(11 * 1024 * 1024);
+      const file = new File([largeContent], 'large.pdf', { type: 'application/pdf' });
+      const input = { files: [file], value: '' } as unknown as HTMLInputElement;
+      const event = { target: input } as unknown as Event;
+
+      component.onFileSelected(event);
+
+      expect(toastSpy.warning).toHaveBeenCalled();
+      expect(component.isUploading).toBeFalse();
+    });
+  });
+
+  // ==================== DELETE ====================
+
+  describe('Delete Edge Cases', () => {
+    it('deleteDocument should return early when no docId', async () => {
+      setupComponent();
+
+      await component.deleteDocument('');
+
+      expect(confirmSpy.confirm).not.toHaveBeenCalled();
+    });
+
+    it('deleteDocument should not delete when user cancels', async () => {
+      setupComponent();
+      confirmSpy.confirm.and.resolveTo(false);
+
+      await component.deleteDocument('doc-1');
+
+      expect(documentsSpy.delete).not.toHaveBeenCalled();
+    });
+
+    it('deleteDocument should select first remaining doc when deleted doc was selected', fakeAsync(() => {
+      setupComponent();
+      confirmSpy.confirm.and.resolveTo(true);
+      documentsSpy.delete.and.returnValue(of(undefined));
+
+      component.selectedDocument = component.documents[0];
+      component.deleteDocument('doc-1');
+      tick();
+
+      expect(component.selectedDocument).toBeTruthy();
+      expect(component.selectedDocument!.id).not.toBe('doc-1');
+    }));
+  });
+
+  // ==================== SIGN ====================
+
+  describe('Sign Document', () => {
+    it('signDocument should show success toast when signing succeeds', fakeAsync(() => {
+      setupComponent();
+      const blob = new Blob(['content'], { type: 'application/pdf' });
+      documentsSpy.download.and.returnValue(of(blob));
+      documentsSpy['signatureApiService'] = jasmine.createSpyObj('SignatureApiService', ['signDocument']);
+      documentsSpy['signatureApiService'].signDocument.and.returnValue(of(blob));
+
+      component.signDocument('doc-1', 'test.pdf');
+      tick();
+
+      expect(toastSpy.success).toHaveBeenCalled();
+      expect(component.isSigning).toBeFalse();
+    }));
+
+    it('signDocument should show error toast when download fails', fakeAsync(() => {
+      setupComponent();
+      documentsSpy.download.and.returnValue(throwError(() => new Error('Download failed')));
+
+      component.signDocument('doc-1', 'test.pdf');
+      tick();
+
+      expect(toastSpy.error).toHaveBeenCalled();
+      expect(component.isSigning).toBeFalse();
+    }));
+  });
+
+  // ==================== VERIFY ====================
+
+  describe('Verify Document', () => {
+    it('verifyDocument should show success toast when signature is valid', fakeAsync(() => {
+      setupComponent();
+      const blob = new Blob(['content'], { type: 'application/pdf' });
+      documentsSpy.download.and.returnValue(of(blob));
+      documentsSpy['signatureApiService'] = jasmine.createSpyObj('SignatureApiService', ['verifySignature']);
+      documentsSpy['signatureApiService'].verifySignature.and.returnValue(of({ valid: true, message: 'Valid signature' }));
+
+      component.verifyDocument('doc-1', 'test.pdf');
+      tick();
+
+      expect(toastSpy.success).toHaveBeenCalled();
+      expect(component.isVerifying).toBeFalse();
+    }));
+
+    it('verifyDocument should show warning toast when signature is invalid', fakeAsync(() => {
+      setupComponent();
+      const blob = new Blob(['content'], { type: 'application/pdf' });
+      documentsSpy.download.and.returnValue(of(blob));
+      documentsSpy['signatureApiService'] = jasmine.createSpyObj('SignatureApiService', ['verifySignature']);
+      documentsSpy['signatureApiService'].verifySignature.and.returnValue(of({ valid: false, message: 'Invalid signature' }));
+
+      component.verifyDocument('doc-1', 'test.pdf');
+      tick();
+
+      expect(toastSpy.warning).toHaveBeenCalled();
+      expect(component.isVerifying).toBeFalse();
+    }));
+
+    it('verifyDocument should show error toast when download fails', fakeAsync(() => {
+      setupComponent();
+      documentsSpy.download.and.returnValue(throwError(() => new Error('Download failed')));
+
+      component.verifyDocument('doc-1', 'test.pdf');
+      tick();
+
+      expect(toastSpy.error).toHaveBeenCalled();
+      expect(component.isVerifying).toBeFalse();
+    }));
   });
 });

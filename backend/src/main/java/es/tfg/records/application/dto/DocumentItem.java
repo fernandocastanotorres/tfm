@@ -22,7 +22,7 @@ public record DocumentItem(
         int version,
         @Schema(description = "Upload timestamp")
         Instant uploadedAt,
-        @Schema(description = "Document status", example = "PENDING", allowableValues = {"PENDING", "VALIDATED", "REJECTED"})
+        @Schema(description = "Document status", example = "PENDING", allowableValues = {"PENDING", "SIGNED", "VALIDATED", "REJECTED"})
         String status,
         @Schema(description = "Associated case ID")
         UUID caseId

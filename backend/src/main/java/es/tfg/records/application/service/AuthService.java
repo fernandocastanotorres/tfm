@@ -23,6 +23,8 @@ public interface AuthService {
 
     void resetPassword(PasswordResetConfirmRequest request);
 
+    void changePassword(UUID userId, ChangePasswordRequest request);
+
     void logout(String refreshToken);
 
     void verifyEmailToken(String token);

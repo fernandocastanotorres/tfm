@@ -1,52 +1,54 @@
 import { Injectable } from '@angular/core';
-import {
-  HttpEvent,
-  HttpHandler,
-  HttpInterceptor,
-  HttpRequest,
-  HttpErrorResponse
-} from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { ValidationErrors } from '@angular/forms';
+import { ToastService } from '../services/toast.service';
 
 /**
  * Centralized HTTP error handling.
  * - 401 (after refresh fail): redirect to /login
  * - 400: return ValidationErrors for form display
  * - 403: show toast notification and rethrow
+ * - 409: show toast notification and rethrow
  * - 500: show toast notification and rethrow
  */
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private toastService: ToastService
+  ) {}
 
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
         switch (error.status) {
           case 401:
-            // Token refresh already failed in JwtAuthInterceptor; redirect to login
             this.router.navigate(['/sede/login']);
             break;
 
           case 400:
-            // Return validation errors so components can display them on forms
             return throwError(() => this.extractValidationErrors(error));
-            break;
 
           case 403:
-            this.showToast('error', 'Access denied', 'You do not have permission to perform this action.');
+            this.toastService.error('Acceso denegado', 'No tienes permisos para realizar esta accion.');
+            break;
+
+          case 409:
+            this.toastService.warning('Conflicto', error.error?.message ?? 'Operacion no permitida en este momento.');
             break;
 
           case 500:
-            this.showToast('error', 'Server error', 'An unexpected error occurred. Please try again later.');
+            this.toastService.error('Error del servidor', 'Ha ocurrido un error inesperado. Intentalo de nuevo mas tarde.');
             break;
 
           default:
-            // For other errors, just rethrow
+            if (error.status >= 400) {
+              this.toastService.error('Error', error.error?.message ?? 'Ha ocurrido un error inesperado.');
+            }
             break;
         }
 
@@ -57,7 +59,6 @@ export class HttpErrorInterceptor implements HttpInterceptor {
 
   private extractValidationErrors(error: HttpErrorResponse): ValidationErrors {
     if (error.error && typeof error.error === 'object') {
-      // Support both single-field and multi-field error structures
       const errors: ValidationErrors = {};
       for (const [key, value] of Object.entries(error.error)) {
         errors[key] = Array.isArray(value) ? value.join(', ') : String(value);
@@ -65,11 +66,5 @@ export class HttpErrorInterceptor implements HttpInterceptor {
       return errors;
     }
     return { global: error.message || 'Bad request' };
-  }
-
-  private showToast(type: 'error' | 'warning' | 'info', title: string, message: string): void {
-    // Placeholder: replace with actual toast service when available
-    // e.g., this.toastService.show({ type, title, message });
-    console.warn(`[${type.toUpperCase()}] ${title}: ${message}`);
   }
 }

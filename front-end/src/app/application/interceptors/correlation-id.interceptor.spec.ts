@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpClient, HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { CorrelationIdInterceptor } from './correlation-id.interceptor';
 
 describe('CorrelationIdInterceptor', () => {
@@ -9,11 +9,13 @@ describe('CorrelationIdInterceptor', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
-        { provide: HTTP_INTERCEPTORS, useClass: CorrelationIdInterceptor, multi: true }
-      ]
-    });
+    imports: [],
+    providers: [
+        { provide: HTTP_INTERCEPTORS, useClass: CorrelationIdInterceptor, multi: true },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
 
     httpMock = TestBed.inject(HttpTestingController);
     httpClient = TestBed.inject(HttpClient);

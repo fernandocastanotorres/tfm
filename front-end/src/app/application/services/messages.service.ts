@@ -1,65 +1,52 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { MessageThreadSummary, MessageAttachmentDto, MessageDto, PagedMessages } from '../models/message.models';
 
-export interface MessageThread {
-  id: string;
-  subjectKey: string;
-  lastMessageKey?: string;
-  lastMessageText?: string;
-  updatedAt: string;
-  unread: boolean;
-  caseId: string;
-  caseTitleKey: string;
-  messages: MessageItem[];
-}
-
-export interface MessageItem {
-  id: string;
-  senderKey: string;
-  bodyKey?: string;
-  bodyText?: string;
-  sentAt: string;
-}
+export { MessageThreadSummary, MessageAttachmentDto, MessageDto, PagedMessages };
 
 @Injectable({
   providedIn: 'root'
 })
 export class MessagesService {
-  getThreads(): MessageThread[] {
-    return [
-      {
-        id: 'MSG-1',
-        subjectKey: 'MESSAGES.MOCK_SUBJECT_LICENSE',
-        lastMessageKey: 'MESSAGES.MOCK_MESSAGE_RECEIVED',
-        updatedAt: '14/05/2026',
-        unread: true,
-        caseId: 'EXP-2026-001',
-        caseTitleKey: 'CASE_DETAIL.MOCK_LICENSE_TITLE',
-        messages: [
-          {
-            id: 'MSG-1-1',
-            senderKey: 'MESSAGES.SENDER_OFFICE',
-            bodyKey: 'MESSAGES.MOCK_MESSAGE_RECEIVED',
-            sentAt: '14/05/2026'
-          }
-        ]
-      },
-      {
-        id: 'MSG-2',
-        subjectKey: 'MESSAGES.MOCK_SUBJECT_DOCUMENTS',
-        lastMessageKey: 'MESSAGES.MOCK_MESSAGE_PENDING',
-        updatedAt: '12/05/2026',
-        unread: false,
-        caseId: 'EXP-2026-002',
-        caseTitleKey: 'DASHBOARD.CASES_TITLE',
-        messages: [
-          {
-            id: 'MSG-2-1',
-            senderKey: 'MESSAGES.SENDER_OFFICE',
-            bodyKey: 'MESSAGES.MOCK_MESSAGE_PENDING',
-            sentAt: '12/05/2026'
-          }
-        ]
-      }
-    ];
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = `${environment.apiBaseUrl}/citizen`;
+
+  getThreads(): Observable<MessageThreadSummary[]> {
+    return this.http.get<MessageThreadSummary[]>(`${this.baseUrl}/messages/threads`);
+  }
+
+  getThreadMessages(procedureId: string, page: number, size: number): Observable<PagedMessages> {
+    return this.http.get<PagedMessages>(`${this.baseUrl}/procedures/${procedureId}/messages`, {
+      params: { page: page.toString(), size: size.toString() }
+    });
+  }
+
+  sendMessage(
+    procedureId: string,
+    content: string,
+    templateKey?: string,
+    notifyByEmail: boolean = true,
+    files?: File[]
+  ): Observable<MessageDto> {
+    const formData = new FormData();
+    formData.append('content', content);
+    if (templateKey) formData.append('templateKey', templateKey);
+    formData.append('notifyByEmail', notifyByEmail.toString());
+    if (files) {
+      files.forEach((file) => formData.append('files', file));
+    }
+    return this.http.post<MessageDto>(`${this.baseUrl}/procedures/${procedureId}/messages`, formData);
+  }
+
+  downloadAttachment(attachmentId: string): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/procedures/messages/attachments/${attachmentId}/download`, {
+      responseType: 'blob'
+    });
+  }
+
+  getUnreadCount(): Observable<number> {
+    return this.http.get<number>(`${this.baseUrl}/messages/unread-count`);
   }
 }

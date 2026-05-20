@@ -7,23 +7,28 @@ import es.tfg.records.application.exception.InvalidProcedureException;
 import es.tfg.records.application.exception.ResourceNotFoundException;
 import es.tfg.records.application.mapper.ProcedureMapper;
 import es.tfg.records.domain.model.CaseStatus;
+import es.tfg.records.domain.model.DocumentStatus;
 import es.tfg.records.domain.model.Procedure;
 import es.tfg.records.domain.model.ProcedureType;
+import es.tfg.records.domain.model.Document;
 import es.tfg.records.domain.port.ProcedureRepository;
 import es.tfg.records.domain.port.ProcedureTypeRepository;
 import es.tfg.records.domain.port.DocumentRepository;
 import es.tfg.records.infrastructure.persistence.entity.CaseTimelineEventEntity;
 import es.tfg.records.infrastructure.persistence.repository.CaseTimelineEventJpaRepository;
-import com.lowagie.text.Document;
+import es.tfg.records.infrastructure.storage.FileStorageService;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -40,22 +45,30 @@ import java.util.regex.Pattern;
 @Service
 public class CaseServiceImpl implements CaseService {
 
+    private static final Logger log = LoggerFactory.getLogger(CaseServiceImpl.class);
+
     private final ProcedureRepository procedureRepository;
     private final ProcedureTypeRepository procedureTypeRepository;
     private final DocumentRepository documentRepository;
     private final CaseTimelineEventJpaRepository timelineRepository;
     private final EniMetadataService eniMetadataService;
+    private final SignatureService signatureService;
+    private final FileStorageService fileStorageService;
 
     public CaseServiceImpl(ProcedureRepository procedureRepository,
                            ProcedureTypeRepository procedureTypeRepository,
                            DocumentRepository documentRepository,
                            CaseTimelineEventJpaRepository timelineRepository,
-                           EniMetadataService eniMetadataService) {
+                           EniMetadataService eniMetadataService,
+                           SignatureService signatureService,
+                           FileStorageService fileStorageService) {
         this.procedureRepository = procedureRepository;
         this.procedureTypeRepository = procedureTypeRepository;
         this.documentRepository = documentRepository;
         this.timelineRepository = timelineRepository;
         this.eniMetadataService = eniMetadataService;
+        this.signatureService = signatureService;
+        this.fileStorageService = fileStorageService;
     }
 
     @Override
@@ -88,7 +101,10 @@ public class CaseServiceImpl implements CaseService {
                         document.getId(),
                         document.getName(),
                         document.getMimeType(),
-                        document.getUploadedAt()))
+                        document.getSize(),
+                        "Ciudadano",
+                        document.getUploadedAt(),
+                        document.getStatus() == DocumentStatus.SIGNED))
                 .toList();
 
         List<CaseTimelineEventDto> timeline = buildTimeline(procedure);
@@ -145,6 +161,8 @@ public class CaseServiceImpl implements CaseService {
             throw new ConflictException("PROC", "Cannot submit a case that is not in DRAFT status. Current: " + procedure.getStatus());
         }
 
+        signPendingDocuments(caseId);
+
         procedure.setStatus(CaseStatus.SUBMITTED);
         procedure.setSubmittedAt(Instant.now());
         Procedure saved = procedureRepository.save(procedure);
@@ -154,6 +172,46 @@ public class CaseServiceImpl implements CaseService {
         return ProcedureMapper.toCaseStatusResponse(saved, null);
     }
 
+    private void signPendingDocuments(UUID caseId) {
+        List<Document> pendingDocs = documentRepository.findByProcedureId(caseId).stream()
+                .filter(doc -> doc.getStatus() == DocumentStatus.PENDING)
+                .toList();
+
+        if (pendingDocs.isEmpty()) {
+            log.info("No pending documents to sign for case: {}", caseId);
+            return;
+        }
+
+        log.info("Signing {} pending document(s) for case: {}", pendingDocs.size(), caseId);
+
+        for (Document doc : pendingDocs) {
+            try {
+                byte[] originalContent;
+                try (InputStream is = fileStorageService.openStream(caseId, doc.getStoragePath())) {
+                    originalContent = is.readAllBytes();
+                }
+
+                byte[] signedContent = signatureService.signDocument(originalContent, doc.getMimeType());
+
+                String newName = doc.getName().endsWith(".pdf") ? doc.getName() : doc.getName() + ".pdf";
+                if (!newName.equals(doc.getName())) {
+                    doc.setName(newName);
+                    doc.setMimeType("application/pdf");
+                }
+
+                fileStorageService.writeBytes(caseId, doc.getStoragePath(), signedContent);
+
+                doc.setStatus(DocumentStatus.SIGNED);
+                doc.setSize((long) signedContent.length);
+                documentRepository.save(doc);
+
+                log.info("Document {} signed successfully for case: {}", doc.getId(), caseId);
+            } catch (Exception e) {
+                log.error("Failed to sign document {} for case {}: {}", doc.getId(), caseId, e.getMessage());
+            }
+        }
+    }
+
     @Override
     public CaseStatusResponse requestAmendment(UUID caseId, UUID ownerId, CreateCaseRequest request) {
         Procedure procedure = findAndVerifyOwnership(caseId, ownerId);
@@ -161,6 +219,8 @@ public class CaseServiceImpl implements CaseService {
         if (procedure.getStatus() != CaseStatus.AMENDMENT_REQUIRED) {
             throw new ConflictException("PROC", "Can only amend a case in AMENDMENT_REQUIRED status. Current: " + procedure.getStatus());
         }
+
+        signPendingDocuments(caseId);
 
         procedure.setStatus(CaseStatus.RESUBMITTED);
         if (request.formData() != null) {
@@ -199,30 +259,30 @@ public class CaseServiceImpl implements CaseService {
         Procedure procedure = findAndVerifyOwnership(caseId, ownerId);
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-        Document document = new Document();
-        PdfWriter.getInstance(document, output);
-        document.open();
+        com.lowagie.text.Document pdfDocument = new com.lowagie.text.Document();
+        PdfWriter.getInstance(pdfDocument, output);
+        pdfDocument.open();
 
         Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16);
         Font bodyFont = FontFactory.getFont(FontFactory.HELVETICA, 11);
 
-        document.add(new Paragraph("Justificante de presentacion de expediente", titleFont));
-        document.add(new Paragraph(" "));
-        document.add(new Paragraph("Identificador: " + procedure.getId(), bodyFont));
-        document.add(new Paragraph("Titulo: " + procedure.getTitle(), bodyFont));
-        document.add(new Paragraph("Estado: " + procedure.getStatus().name(), bodyFont));
+        pdfDocument.add(new Paragraph("Justificante de presentacion de expediente", titleFont));
+        pdfDocument.add(new Paragraph(" "));
+        pdfDocument.add(new Paragraph("Identificador: " + procedure.getId(), bodyFont));
+        pdfDocument.add(new Paragraph("Titulo: " + procedure.getTitle(), bodyFont));
+        pdfDocument.add(new Paragraph("Estado: " + procedure.getStatus().name(), bodyFont));
         String submittedAt = procedure.getSubmittedAt() == null
                 ? "No enviado"
                 : DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
                 .withZone(ZoneId.of("Europe/Madrid"))
                 .format(procedure.getSubmittedAt());
-        document.add(new Paragraph("Fecha de envio: " + submittedAt + " (Europe/Madrid)", bodyFont));
-        document.add(new Paragraph("Unidad asignada: " + (procedure.getAssignedUnit() == null ? "No asignada" : procedure.getAssignedUnit()), bodyFont));
+        pdfDocument.add(new Paragraph("Fecha de envio: " + submittedAt + " (Europe/Madrid)", bodyFont));
+        pdfDocument.add(new Paragraph("Unidad asignada: " + (procedure.getAssignedUnit() == null ? "No asignada" : procedure.getAssignedUnit()), bodyFont));
         String issuedAt = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
                 .withZone(ZoneId.of("Europe/Madrid"))
                 .format(Instant.now());
-        document.add(new Paragraph("Emitido: " + issuedAt + " (Europe/Madrid)", bodyFont));
-        document.add(new Paragraph(" "));
+        pdfDocument.add(new Paragraph("Emitido: " + issuedAt + " (Europe/Madrid)", bodyFont));
+        pdfDocument.add(new Paragraph(" "));
 
         String digest = sha256Hex(String.join("|",
                 procedure.getId().toString(),
@@ -231,10 +291,10 @@ public class CaseServiceImpl implements CaseService {
                 String.valueOf(procedure.getSubmittedAt()),
                 String.valueOf(procedure.getAssignedUnit()),
                 issuedAt));
-        document.add(new Paragraph("Codigo de verificacion (SHA-256): " + digest, bodyFont));
-        document.add(new Paragraph("Documento emitido por la Sede Electronica a efectos informativos.", bodyFont));
+        pdfDocument.add(new Paragraph("Codigo de verificacion (SHA-256): " + digest, bodyFont));
+        pdfDocument.add(new Paragraph("Documento emitido por la Sede Electronica a efectos informativos.", bodyFont));
 
-        document.close();
+        pdfDocument.close();
         return new ByteArrayResource(output.toByteArray());
     }
 

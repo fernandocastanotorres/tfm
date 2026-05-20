@@ -7,6 +7,8 @@ import { PublicLayoutComponent } from './public-layout.component';
 import { I18nService, SupportedLocale } from '../../../application/services/i18n.service';
 import { GuidedTourService } from '../../../application/services/guided-tour.service';
 import { AuthService } from '../../../application/services/auth.service';
+import { HttpClientTestingModule, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('PublicLayoutComponent', () => {
   let component: PublicLayoutComponent;
@@ -35,12 +37,14 @@ describe('PublicLayoutComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [PublicLayoutComponent],
-      imports: [TranslateModule.forRoot()],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
       providers: [
         { provide: I18nService, useValue: i18nSpy },
         { provide: Router, useValue: routerSpy },
         { provide: GuidedTourService, useValue: tourSpy },
-        { provide: AuthService, useValue: authSpy }
+        { provide: AuthService, useValue: authSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ],
       schemas: [NO_ERRORS_SCHEMA]
     });
@@ -292,13 +296,13 @@ describe('PublicLayoutComponent', () => {
   // ─── Navigation Actions ────────────────────────────────────────────────────
 
   describe('Navigation Actions', () => {
-    it('onChangePassword should close menu and navigate to recovery', () => {
+    it('onChangePassword should close menu and navigate to profile', () => {
       spyOn(component, 'closeUserMenu');
 
       component.onChangePassword();
 
       expect(component.closeUserMenu).toHaveBeenCalled();
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['/sede/recuperacion']);
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/sede/perfil']);
     });
 
     it('onSearchCases should close menu and navigate to search', () => {

@@ -11,11 +11,6 @@
       {{ 'DOCUMENTS.LOADING' | translate }}
     </div>
 
-    <!-- Error state -->
-    <div *ngIf="error && !isLoading" class="mt-6 card p-6 text-center text-red-600">
-      {{ error }}
-    </div>
-
     <!-- No cases available -->
     <div *ngIf="!isLoading && !selectedCaseId && cases.length === 0" class="mt-6 card p-6 text-center text-surface-600">
       {{ 'DOCUMENTS.NO_CASES' | translate }}
@@ -43,6 +38,7 @@
             id="document-upload"
             type="file"
             class="field-input flex-1"
+            accept="{{ ALLOWED_EXTENSIONS }}"
             (change)="onFileSelected($event)"
             [disabled]="isUploading"
           />
@@ -52,6 +48,18 @@
             </div>
             <span class="text-sm text-surface-600">{{ uploadProgress }}%</span>
           </div>
+        </div>
+        <div class="mt-2 flex items-center gap-2 text-xs text-surface-500">
+          <svg class="w-4 h-4 text-surface-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span>Tipos aceptados:
+            <span *ngFor="let t of ALLOWED_MIME_TYPES; let last = last" class="font-medium text-surface-600">
+              {{ t.label }}<span *ngIf="!last">, </span>
+            </span>
+          </span>
+          <span class="text-surface-300">|</span>
+          <span>Tamano maximo: <span class="font-medium text-surface-600">10 MB</span></span>
         </div>
         <p *ngIf="uploadError" class="mt-2 text-sm text-red-600">{{ uploadError }}</p>
       </div>
@@ -105,26 +113,54 @@
               </p>
               <p class="text-sm text-surface-500">{{ doc.caseId }}</p>
             </div>
-            <span class="text-xs font-semibold px-3 py-1 rounded-full" [ngClass]="doc.status === 'validated' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'">
-              {{ doc.status | translate }}
-            </span>
+            <div class="flex items-center gap-2">
+              <span *ngIf="doc.isSigned" class="text-xs font-semibold px-3 py-1 rounded-full bg-blue-100 text-blue-700 flex items-center gap-1" title="Documento firmado electronicamente">
+                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                {{ 'DOCUMENTS.SIGNED' | translate }}
+              </span>
+              <span class="text-xs font-semibold px-3 py-1 rounded-full" [ngClass]="doc.status === 'validated' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'">
+                {{ 'DOCUMENT_STATUS.' + doc.status | translate }}
+              </span>
+            </div>
           </div>
           <div class="mt-4 grid gap-2 text-sm text-surface-600">
             <p><strong>{{ 'DOCUMENTS.SIZE' | translate }}:</strong> {{ formatFileSize(doc.size) }}</p>
           </div>
           <div class="mt-4 flex flex-wrap gap-3">
             <button
-              class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300"
+              class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300 flex items-center gap-2"
               type="button"
               (click)="downloadDocument(doc.id, doc.name)"
             >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m0 0v8"/></svg>
               {{ 'DOCUMENTS.DOWNLOAD' | translate }}
             </button>
             <button
-              class="btn-primary bg-red-100 text-red-700 hover:bg-red-200"
+              class="btn-primary bg-brand-500 text-white hover:bg-brand-600 flex items-center gap-2"
+              type="button"
+              (click)="signDocument(doc.id, doc.name)"
+              [disabled]="isSigning"
+            >
+              <svg *ngIf="!isSigning" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+              <svg *ngIf="isSigning" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
+              <span>{{ isSigning ? ('DOCUMENTS.SIGNING' | translate) : ('DOCUMENTS.SIGN' | translate) }}</span>
+            </button>
+            <button
+              class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300 flex items-center gap-2"
+              type="button"
+              (click)="verifyDocument(doc.id, doc.name)"
+              [disabled]="isVerifying"
+            >
+              <svg *ngIf="!isVerifying" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <svg *ngIf="isVerifying" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
+              <span>{{ isVerifying ? ('DOCUMENTS.VERIFYING' | translate) : ('DOCUMENTS.VERIFY' | translate) }}</span>
+            </button>
+            <button
+              class="btn-primary bg-red-100 text-red-700 hover:bg-red-200 flex items-center gap-2"
               type="button"
               (click)="deleteDocument(doc.id)"
             >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
               {{ 'DOCUMENTS.DELETE' | translate }}
             </button>
           </div>

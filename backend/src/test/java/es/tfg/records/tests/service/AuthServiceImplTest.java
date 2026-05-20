@@ -7,6 +7,8 @@ import es.tfg.records.application.service.EmailGateway;
 import es.tfg.records.application.service.AuthServiceImpl;
 import es.tfg.records.domain.model.User;
 import es.tfg.records.domain.port.UserRepository;
+import es.tfg.records.infrastructure.audit.AuditService;
+import es.tfg.records.infrastructure.security.AccountLockoutManager;
 import es.tfg.records.infrastructure.security.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,6 +45,12 @@ class AuthServiceImplTest {
     @Mock
     private EmailGateway emailGateway;
 
+    @Mock
+    private AccountLockoutManager lockoutManager;
+
+    @Mock
+    private AuditService auditService;
+
     private AuthServiceImpl authService;
 
     private UUID userId;
@@ -53,26 +61,28 @@ class AuthServiceImplTest {
     void setUp() {
         userId = UUID.randomUUID();
         email = "test@example.com";
-        password = "Password123";
-        authService = new AuthServiceImpl(userRepository, jwtTokenProvider, passwordEncoder, emailGateway, "http://localhost:4200/sede/verificar-email");
+        password = "Password123!";
+        authService = new AuthServiceImpl(
+                userRepository, jwtTokenProvider, passwordEncoder, emailGateway,
+                lockoutManager, auditService,
+                "http://localhost:4200/sede/verificar-email");
         doNothing().when(emailGateway).sendVerificationEmail(any(), any(), any());
+        when(lockoutManager.isLocked(any())).thenReturn(false);
+        doNothing().when(lockoutManager).resetFailedAttempts(any());
     }
 
     @Test
     void login_shouldThrowExceptionWhenUserNotFound() {
-        // Given
         LoginRequest request = new LoginRequest(email, password);
 
         when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
 
-        // When/Then
         assertThatThrownBy(() -> authService.login(request))
                 .isInstanceOf(AuthenticationException.class);
     }
 
     @Test
     void login_shouldThrowExceptionWhenPasswordIsIncorrect() {
-        // Given
         User user = new User();
         user.setId(userId);
         user.setEmail(email);
@@ -83,14 +93,12 @@ class AuthServiceImplTest {
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("wrongPassword", "encodedPassword")).thenReturn(false);
 
-        // When/Then
         assertThatThrownBy(() -> authService.login(request))
                 .isInstanceOf(AuthenticationException.class);
     }
 
     @Test
     void register_shouldCreateUserWhenEmailIsNotInUse() {
-        // Given
         RegisterRequest request = new RegisterRequest(
                 email,
                 "Test User",
@@ -108,17 +116,14 @@ class AuthServiceImplTest {
             return u;
         });
 
-        // When
         var result = authService.register(request);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.email()).isEqualTo(email);
     }
 
     @Test
     void register_shouldThrowExceptionWhenEmailIsAlreadyInUse() {
-        // Given
         User existingUser = new User();
         existingUser.setId(UUID.randomUUID());
         existingUser.setEmail(email);
@@ -134,16 +139,12 @@ class AuthServiceImplTest {
 
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(existingUser));
 
-        // When/Then
         assertThatThrownBy(() -> authService.register(request))
                 .isInstanceOf(Exception.class);
     }
 
-    // ===== Additional Edge Case Tests =====
-
     @Test
     void login_shouldThrowExceptionWhenAccountIsNotActive() {
-        // Given
         User user = new User();
         user.setId(userId);
         user.setEmail(email);
@@ -155,7 +156,6 @@ class AuthServiceImplTest {
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(password, "encodedPassword")).thenReturn(true);
 
-        // When/Then
         assertThatThrownBy(() -> authService.login(request))
                 .isInstanceOf(AuthenticationException.class)
                 .hasMessageContaining("not verified");
@@ -163,7 +163,6 @@ class AuthServiceImplTest {
 
     @Test
     void login_shouldSucceedWhenCredentialsAreValidAndActive() {
-        // Given
         User user = new User();
         user.setId(userId);
         user.setEmail(email);
@@ -179,10 +178,8 @@ class AuthServiceImplTest {
         when(jwtTokenProvider.generateRefreshToken(any(), any())).thenReturn("refreshToken");
         when(jwtTokenProvider.getAccessTokenExpiration()).thenReturn(3600000L);
 
-        // When
         var result = authService.login(request);
 
-        // Then
         assertThat(result.accessToken()).isEqualTo("accessToken");
         assertThat(result.refreshToken()).isEqualTo("refreshToken");
         assertThat(result.user().email()).isEqualTo(email);
@@ -190,79 +187,70 @@ class AuthServiceImplTest {
 
     @Test
     void register_shouldThrowExceptionWhenPasswordTooShort() {
-        // Given - password less than 8 characters
         RegisterRequest request = new RegisterRequest(
                 "new@example.com",
                 "New User",
                 "12345678A",
                 "600123456",
                 "Calle Mayor 10",
-                "Pass1" // Only 5 characters
+                "Pass1"
         );
 
-        // When/Then
         assertThatThrownBy(() -> authService.register(request))
                 .isInstanceOf(Exception.class);
     }
 
     @Test
     void register_shouldThrowExceptionWhenPasswordMissingUppercase() {
-        // Given - password without uppercase
         RegisterRequest request = new RegisterRequest(
                 "new@example.com",
                 "New User",
                 "12345678A",
                 "600123456",
                 "Calle Mayor 10",
-                "password123" // No uppercase
+                "password123"
         );
 
-        // When/Then
         assertThatThrownBy(() -> authService.register(request))
                 .isInstanceOf(Exception.class);
     }
 
     @Test
     void register_shouldThrowExceptionWhenPasswordMissingDigit() {
-        // Given - password without digit
         RegisterRequest request = new RegisterRequest(
                 "new@example.com",
                 "New User",
                 "12345678A",
                 "600123456",
                 "Calle Mayor 10",
-                "Password" // No digit
+                "Password"
         );
 
-        // When/Then
         assertThatThrownBy(() -> authService.register(request))
                 .isInstanceOf(Exception.class);
     }
 
     @Test
     void register_shouldEncodePasswordAndSetDefaultRole() {
-        // Given
         RegisterRequest request = new RegisterRequest(
                 "new@example.com",
                 "New User",
                 "12345678A",
                 "600123456",
                 "Calle Mayor 10",
-                "Password123"
+                "Password123!"
         );
 
         when(userRepository.findByEmail("new@example.com")).thenReturn(Optional.empty());
-        when(passwordEncoder.encode("Password123")).thenReturn("encodedPassword");
+        when(passwordEncoder.encode("Password123!")).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
             User u = invocation.getArgument(0);
             u.setId(userId);
             return u;
         });
 
-        // When
         var result = authService.register(request);
 
-        // Then
         assertThat(result.roles()).contains("ROLE_CITIZEN");
     }
 }

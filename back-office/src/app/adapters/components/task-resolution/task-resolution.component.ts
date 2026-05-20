@@ -5,9 +5,10 @@ import { AdminCasesService } from '../../../application/services/admin-cases.ser
 import { TaskResolutionRequest } from '../../../application/models/backoffice.models';
 
 @Component({
-  selector: 'bo-task-resolution',
-  templateUrl: './task-resolution.component.html',
-  styleUrls: ['./task-resolution.component.css']
+    selector: 'bo-task-resolution',
+    templateUrl: './task-resolution.component.html',
+    styleUrls: ['./task-resolution.component.css'],
+    standalone: false
 })
 export class TaskResolutionComponent implements OnInit {
   private readonly adminCasesService = inject(AdminCasesService);
