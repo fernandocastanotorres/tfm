@@ -10,7 +10,7 @@ public record ContactMessageDto(
         String subject,
         String message,
         String category,
-        boolean isRead,
+        boolean read,
         Instant createdAt
 ) {
 }
