@@ -122,6 +122,7 @@ docker compose up -d
    - `backend/db/postgresql/008_backfill_public_content_relations.sql`
 3. Keep `ddl-auto: validate` in non-dev profiles.
 4. Enable queue mode (`mailing.queue.enabled=true`) when RabbitMQ is available.
+5. For local/self-contained email validation, keep Mailpit enabled and verify SMTP points to `MAIL_HOST=mailpit`, `MAIL_PORT=1025`.
 
 ## Recommended Post-Deploy Verification
 
@@ -137,3 +138,6 @@ docker compose up -d
   - register user,
   - verify link,
   - resend verification cooldown behavior.
+- Mail validation:
+  - open `http://localhost:8025`,
+  - confirm verification email is captured after register/resend operations.

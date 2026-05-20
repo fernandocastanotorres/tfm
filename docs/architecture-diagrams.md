@@ -31,7 +31,7 @@ graph TB
 
     subgraph "External Services"
         N[LibreOffice<br/>PDF/A Conversion]
-        O[Brevo/SendGrid<br/>Email Service]
+        O[Mailpit<br/>SMTP + Web UI]
     end
 
     A --> C
@@ -81,7 +81,7 @@ graph TB
         D2[JWT Provider<br/>Token Generation]
         D3[File Storage<br/>Local FS]
         D4[Bouncy Castle<br/>Crypto Operations]
-        D5[Email Gateway<br/>Brevo Integration]
+        D5[Email Gateway<br/>SMTP Integration]
     end
 
     subgraph "Infrastructure"

@@ -194,6 +194,8 @@ describe('ProcedureFlowComponent', () => {
     });
 
     it('should return empty string when no procedure', () => {
+      setupComponent({ procedureId: 'test-procedure' }, { data: mockProcedure });
+      fixture.detectChanges();
       component.procedure = null;
       expect(component.taskStepLabel).toBe('');
     });

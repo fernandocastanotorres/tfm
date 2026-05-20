@@ -55,6 +55,11 @@ The system is divided into three decoupled core modules:
     *   Detached signature files (.xsig).
     *   An `index.xml` valid against the official **ENI XSD schemas**.
 
+### 4.4. Transactional Email (Project Scope)
+*   **Mandatory local runtime:** Account verification and notification emails must work in a self-contained environment without external SaaS dependency.
+*   **SMTP baseline:** The backend must use SMTP configuration (`MAIL_HOST`, `MAIL_PORT`, auth/tls toggles) to avoid provider lock-in.
+*   **Inspection service:** The containerized stack must include a local SMTP sink and UI (Mailpit) for deterministic validation in development and demos.
+
 ## 5. Security & Audit Specs
 *   **Public Identifiers:** Use **UUID v4** exclusively (no sequential IDs in URLs).
 *   **Audit Trail:** Detailed logging of `timestamp`, `user_id`, `action`, `resource_uuid`, `client_ip`, and `app_context`.

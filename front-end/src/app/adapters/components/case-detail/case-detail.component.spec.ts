@@ -3,6 +3,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { of, throwError, Subject } from 'rxjs';
 import { CaseDetailComponent } from './case-detail.component';
 import { CasesApiService } from '../../../application/services/cases-api.service';
@@ -49,7 +50,7 @@ describe('CaseDetailComponent', () => {
 
     TestBed.configureTestingModule({
     declarations: [CaseDetailComponent],
-    imports: [TranslateModule.forRoot(), RouterTestingModule],
+    imports: [TranslateModule.forRoot(), RouterTestingModule, FormsModule],
     providers: [
         { provide: CasesApiService, useValue: casesApiService },
         { provide: ConfirmDialogService, useValue: confirmDialogService },

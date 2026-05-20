@@ -555,8 +555,7 @@ describe('DocumentsComponent', () => {
       setupComponent();
       const blob = new Blob(['content'], { type: 'application/pdf' });
       documentsSpy.download.and.returnValue(of(blob));
-      documentsSpy['signatureApiService'] = jasmine.createSpyObj('SignatureApiService', ['signDocument']);
-      documentsSpy['signatureApiService'].signDocument.and.returnValue(of(blob));
+      signatureSpy.signDocument.and.returnValue(of(blob));
 
       component.signDocument('doc-1', 'test.pdf');
       tick();
@@ -584,8 +583,7 @@ describe('DocumentsComponent', () => {
       setupComponent();
       const blob = new Blob(['content'], { type: 'application/pdf' });
       documentsSpy.download.and.returnValue(of(blob));
-      documentsSpy['signatureApiService'] = jasmine.createSpyObj('SignatureApiService', ['verifySignature']);
-      documentsSpy['signatureApiService'].verifySignature.and.returnValue(of({ valid: true, message: 'Valid signature' }));
+      signatureSpy.verifySignature.and.returnValue(of({ valid: true, filename: 'test.pdf', message: 'Valid signature' }));
 
       component.verifyDocument('doc-1', 'test.pdf');
       tick();
@@ -598,8 +596,7 @@ describe('DocumentsComponent', () => {
       setupComponent();
       const blob = new Blob(['content'], { type: 'application/pdf' });
       documentsSpy.download.and.returnValue(of(blob));
-      documentsSpy['signatureApiService'] = jasmine.createSpyObj('SignatureApiService', ['verifySignature']);
-      documentsSpy['signatureApiService'].verifySignature.and.returnValue(of({ valid: false, message: 'Invalid signature' }));
+      signatureSpy.verifySignature.and.returnValue(of({ valid: false, filename: 'test.pdf', message: 'Invalid signature' }));
 
       component.verifyDocument('doc-1', 'test.pdf');
       tick();

@@ -10,6 +10,7 @@ This folder contains project-level technical documentation.
 - ADR entry point: [ADR Index](./adr/INDEX.md)
 - ADR conventions and lifecycle: [ADR Guidelines](./adr/README.md)
 - New ADR template: [ADR Template](./adr/_template.md)
+- Current email runtime decision: [ADR-0014](./adr/0014-local-email-delivery-with-mailpit-over-brevo.md)
 
 ## Architecture Rules
 - Architecture entry point: [Architecture Index](./architecture/INDEX.md)

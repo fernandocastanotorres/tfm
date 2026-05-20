@@ -50,6 +50,17 @@ spring:
         max-size: 4
         queue-capacity: 100
       thread-name-prefix: async-
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:1025}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: ${MAIL_SMTP_AUTH:false}
+          starttls:
+            enable: ${MAIL_SMTP_STARTTLS:false}
 
 flowable:
   database-schema-update: true
@@ -112,5 +123,3 @@ mailing:
   from:
     email: ${MAILING_FROM_EMAIL:no-reply@records.local}
     name: ${MAILING_FROM_NAME:Records}
-  brevo:
-    api-key: ${BREVO_API_KEY:}

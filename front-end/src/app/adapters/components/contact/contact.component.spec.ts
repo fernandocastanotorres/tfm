@@ -25,9 +25,19 @@ describe('ContactComponent', () => {
   ];
 
   beforeEach(async () => {
-    contactService = jasmine.createSpyObj('ContactService', ['getOffices', 'getChannels']);
+    contactService = jasmine.createSpyObj('ContactService', ['getOffices', 'getChannels', 'sendMessage']);
     contactService.getOffices.and.returnValue(of(mockOffices));
     contactService.getChannels.and.returnValue(of(mockChannels));
+    contactService.sendMessage.and.returnValue(of({
+      id: 'msg-1',
+      fullName: 'John Doe',
+      email: 'john@example.com',
+      subject: 'Test Subject',
+      message: 'This is a test message with sufficient length for validation',
+      category: null,
+      read: false,
+      createdAt: new Date().toISOString()
+    }));
 
     await TestBed.configureTestingModule({
     declarations: [ContactComponent],

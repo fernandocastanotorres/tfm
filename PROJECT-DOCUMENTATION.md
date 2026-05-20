@@ -18,6 +18,7 @@ Electronic Citizen Records Management System (TFG) - A full-stack platform for m
 | **Crypto** | Bouncy Castle 1.78.1 (CMS/PKCS#7) |
 | **PDF** | OpenPDF 1.3.39 |
 | **Conversion** | JODConverter 4.4.8 (LibreOffice) |
+| **Email (dev/runtime)** | SMTP + Mailpit |
 | **Testing** | JUnit 5, Mockito, Testcontainers, k6 |
 
 ### Architecture Pattern
@@ -300,6 +301,10 @@ BASE_URL=http://localhost:8080/api/v1 EMAIL=citizen@tfg.es PASSWORD=Citizen1 k6 
 | `STORAGE_DOCUMENTS_PATH` | `./data/documents` | Local file storage path |
 | `LIBREOFFICE_HOME` | *(auto-detect)* | LibreOffice installation path |
 | `LIBREOFFICE_PORT` | `2002` | LibreOffice socket port |
+| `MAIL_HOST` | `mailpit` | SMTP host for outbound transactional email |
+| `MAIL_PORT` | `1025` | SMTP port |
+| `MAIL_SMTP_AUTH` | `false` | SMTP auth enabled/disabled |
+| `MAIL_SMTP_STARTTLS` | `false` | SMTP STARTTLS enabled/disabled |
 
 ## Project Structure
 
@@ -351,7 +356,7 @@ TFG/
 
 1. **Certificate Management**: Replace self-signed certificate with CA-signed certificate
 2. **Database Migration**: Apply schema migrations for PostgreSQL
-3. **Email Service**: Configure Brevo/SendGrid for transactional emails
+3. **Email Service**: Keep SMTP + Mailpit for local validation; evaluate external provider only for production hardening
 4. **LibreOffice**: Install and configure for PDF/A conversion
 5. **Monitoring**: Set up Prometheus + Grafana for metrics
 6. **Load Balancer**: Configure Nginx reverse proxy

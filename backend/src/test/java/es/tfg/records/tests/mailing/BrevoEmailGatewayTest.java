@@ -2,7 +2,13 @@ package es.tfg.records.tests.mailing;
 
 import es.tfg.records.infrastructure.mailing.BrevoEmailGateway;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.client.RestClient;
+import org.springframework.mail.javamail.JavaMailSender;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -11,60 +17,58 @@ class BrevoEmailGatewayTest {
 
     @Test
     void sendVerificationEmail_shouldDoNothingWhenDisabled() {
-        // Given - mailing.enabled = false
+        JavaMailSender sender = mock(JavaMailSender.class);
         BrevoEmailGateway gateway = new BrevoEmailGateway(
-                "some-api-key", false, "no-reply@test.com", "Test");
+                false, "no-reply@test.com", "Test", sender);
 
-        // When/Then - should not throw, just log
         gateway.sendVerificationEmail("user@example.com", "John", "https://example.com/verify");
-        // No assertion needed - the method returns void and should not throw
+        verify(sender, never()).send(any(jakarta.mail.internet.MimeMessage.class));
     }
 
     @Test
-    void sendVerificationEmail_shouldDoNothingWhenApiKeyIsBlank() {
-        // Given - empty API key
+    void sendVerificationEmail_shouldAttemptSendWhenEnabled() {
+        JavaMailSender sender = mock(JavaMailSender.class);
+        jakarta.mail.internet.MimeMessage mimeMessage = mock(jakarta.mail.internet.MimeMessage.class);
+        org.mockito.Mockito.when(sender.createMimeMessage()).thenReturn(mimeMessage);
         BrevoEmailGateway gateway = new BrevoEmailGateway(
-                "", true, "no-reply@test.com", "Test");
+                true, "no-reply@test.com", "Test", sender);
 
-        // When/Then - should not throw, just log
         gateway.sendVerificationEmail("user@example.com", "John", "https://example.com/verify");
+        verify(sender).send(mimeMessage);
     }
 
     @Test
-    void sendVerificationEmail_shouldAttemptHttpCallWhenEnabledWithValidKey() {
-        // Given - enabled with valid API key, this will make a real HTTP call
-        // which will fail since we don't have a mock server, but we can verify
-        // the gateway is constructed correctly
+    void sendVerificationEmail_shouldThrowWhenMailSenderFails() throws Exception {
+        JavaMailSender sender = mock(JavaMailSender.class);
+        jakarta.mail.internet.MimeMessage mimeMessage = mock(jakarta.mail.internet.MimeMessage.class);
+        org.mockito.Mockito.when(sender.createMimeMessage()).thenReturn(mimeMessage);
+        doThrow(new RuntimeException("smtp down")).when(sender).send(mimeMessage);
         BrevoEmailGateway gateway = new BrevoEmailGateway(
-                "test-api-key", true, "no-reply@test.com", "Test Service");
+                true, "no-reply@test.com", "Test Service", sender);
 
-        // When/Then - will throw because the API call fails (no real Brevo server)
-        // This verifies the HTTP request is being built and attempted
         assertThatThrownBy(() ->
                 gateway.sendVerificationEmail("user@example.com", "John", "https://example.com/verify"))
-                .isInstanceOf(Exception.class);
+                .isInstanceOf(IllegalStateException.class);
     }
 
     @Test
     void constructor_shouldUseDefaultValues() {
-        // Given - using defaults
+        JavaMailSender sender = mock(JavaMailSender.class);
         BrevoEmailGateway gateway = new BrevoEmailGateway(
-                "", false, "no-reply@records.local", "Records");
+                false, "no-reply@records.local", "Records", sender);
 
-        // Then - gateway is constructed without error
         assertThat(gateway).isNotNull();
     }
 
     @Test
     void sendVerificationEmail_shouldIncludeRecipientNameInEmail() {
-        // Given - enabled with valid key
+        JavaMailSender sender = mock(JavaMailSender.class);
+        jakarta.mail.internet.MimeMessage mimeMessage = mock(jakarta.mail.internet.MimeMessage.class);
+        org.mockito.Mockito.when(sender.createMimeMessage()).thenReturn(mimeMessage);
         BrevoEmailGateway gateway = new BrevoEmailGateway(
-                "x-valid-key", true, "sender@test.com", "Sender Name");
+                true, "sender@test.com", "Sender Name", sender);
 
-        // When/Then - the HTTP call will fail but we verify the method doesn't
-        // short-circuit (i.e., it attempts the call with the provided params)
-        assertThatThrownBy(() ->
-                gateway.sendVerificationEmail("recipient@test.com", "Jane Doe", "https://verify.link"))
-                .isInstanceOf(Exception.class);
+        gateway.sendVerificationEmail("recipient@test.com", "Jane Doe", "https://verify.link");
+        verify(sender).send(mimeMessage);
     }
 }

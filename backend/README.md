@@ -31,7 +31,7 @@ This API provides the backend services for managing electronic citizen records (
 | PDF | OpenPDF 1.3.39 |
 | Conversion | JODConverter 4.4.8 (LibreOffice) |
 | Migration | Flyway (baseline v3) |
-| Email | Brevo API |
+| Email | SMTP (`JavaMailSender`) + Mailpit (local runtime) |
 
 ## Architecture
 
@@ -189,11 +189,16 @@ java -jar target/records-api-0.0.1-SNAPSHOT.jar
 
 ### Docker Compose
 
-The project includes a `docker-compose.yml` at the repository root that orchestrates PostgreSQL and the backend:
+The project includes a `docker-compose.yml` at the repository root that orchestrates PostgreSQL, backend, and Mailpit:
 
 ```bash
 docker compose up -d
 ```
+
+Mailpit access:
+
+- SMTP endpoint: `localhost:1025`
+- Web UI: `http://localhost:8025`
 
 ## API Documentation
 
@@ -273,6 +278,10 @@ http://localhost:8080/api/v1/api-docs
 | `DB_PASSWORD` | `records_pass` | Database password |
 | `JWT_SECRET` | *(insecure default)* | Base64-encoded secret key (min 256 bits) |
 | `STORAGE_DOCUMENTS_PATH` | `./data/documents` | Local file storage path for uploads |
+| `MAIL_HOST` | `mailpit` | SMTP host for outgoing mail |
+| `MAIL_PORT` | `1025` | SMTP port |
+| `MAIL_SMTP_AUTH` | `false` | SMTP auth toggle |
+| `MAIL_SMTP_STARTTLS` | `false` | STARTTLS toggle |
 
 ## Testing
 

@@ -43,7 +43,10 @@ services:
       MAILING_QUEUE_ENABLED: ${MAILING_QUEUE_ENABLED:-false}
       MAILING_FROM_EMAIL: ${MAILING_FROM_EMAIL:-no-reply@records.local}
       MAILING_FROM_NAME: ${MAILING_FROM_NAME:-Records}
-      BREVO_API_KEY: ${BREVO_API_KEY}
+      MAIL_HOST: ${MAIL_HOST:-mailpit}
+      MAIL_PORT: ${MAIL_PORT:-1025}
+      MAIL_SMTP_AUTH: ${MAIL_SMTP_AUTH:-false}
+      MAIL_SMTP_STARTTLS: ${MAIL_SMTP_STARTTLS:-false}
       MAILING_VERIFICATION_BASE_URL: ${MAILING_VERIFICATION_BASE_URL:-http://localhost:4200/sede/verificar-email}
       STORAGE_DOCUMENTS_PATH: ${STORAGE_DOCUMENTS_PATH:-/app/data/documents}
     ports:
@@ -53,12 +56,24 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      mailpit:
+        condition: service_started
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8080/api/v1/health/live || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 60s
+    restart: unless-stopped
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: tfg-mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - tfg-network
     restart: unless-stopped
 
   frontend:

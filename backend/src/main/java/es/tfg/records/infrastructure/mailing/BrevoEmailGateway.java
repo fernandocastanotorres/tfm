@@ -1,42 +1,37 @@
 package es.tfg.records.infrastructure.mailing;
+
+import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClient;
-
-import java.util.Map;
 
 @Component
 public class BrevoEmailGateway {
 
     private static final Logger log = LoggerFactory.getLogger(BrevoEmailGateway.class);
 
-    private final RestClient restClient;
-    private final String apiKey;
+    private final JavaMailSender mailSender;
     private final boolean enabled;
     private final String fromEmail;
     private final String fromName;
 
     public BrevoEmailGateway(
-            @Value("${mailing.brevo.api-key:}") String apiKey,
             @Value("${mailing.enabled:false}") boolean enabled,
             @Value("${mailing.from.email:no-reply@records.local}") String fromEmail,
-            @Value("${mailing.from.name:Records}") String fromName
+            @Value("${mailing.from.name:Records}") String fromName,
+            JavaMailSender mailSender
     ) {
-        this.apiKey = apiKey;
         this.enabled = enabled;
         this.fromEmail = fromEmail;
         this.fromName = fromName;
-        this.restClient = RestClient.builder()
-                .baseUrl("https://api.brevo.com/v3")
-                .build();
+        this.mailSender = mailSender;
     }
 
     public void sendVerificationEmail(String recipientEmail, String recipientName, String verificationUrl) {
-        if (!enabled || apiKey.isBlank()) {
+        if (!enabled) {
             log.info("Mail disabled. Verification URL for {}: {}", recipientEmail, verificationUrl);
             return;
         }
@@ -56,24 +51,11 @@ public class BrevoEmailGateway {
                 </div>
                 """.formatted(recipientName, verificationUrl);
 
-        Map<String, Object> body = Map.of(
-                "sender", Map.of("email", fromEmail, "name", fromName),
-                "to", new Object[]{Map.of("email", recipientEmail, "name", recipientName)},
-                "subject", "Confirma tu cuenta en la Sede Electronica",
-                "htmlContent", html
-        );
-
-        restClient.post()
-                .uri("/smtp/email")
-                .header("api-key", apiKey)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .retrieve()
-                .toBodilessEntity();
+        sendHtml(recipientEmail, recipientName, "Confirma tu cuenta en la Sede Electronica", html);
     }
 
     public void sendNewMessageNotification(String recipientEmail, String senderName, String messagePreview, String caseId) {
-        if (!enabled || apiKey.isBlank()) {
+        if (!enabled) {
             log.info("Mail disabled. New message notification for {}: case {}", recipientEmail, caseId);
             return;
         }
@@ -99,19 +81,25 @@ public class BrevoEmailGateway {
                 </div>
                 """.formatted(senderName, preview != null ? preview : "(sin contenido)", caseId);
 
-        Map<String, Object> body = Map.of(
-                "sender", Map.of("email", fromEmail, "name", fromName),
-                "to", new Object[]{Map.of("email", recipientEmail)},
-                "subject", "Nuevo mensaje en tu expediente - Sede Electronica",
-                "htmlContent", html
-        );
+        sendHtml(recipientEmail, null, "Nuevo mensaje en tu expediente - Sede Electronica", html);
+    }
 
-        restClient.post()
-                .uri("/smtp/email")
-                .header("api-key", apiKey)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .retrieve()
-                .toBodilessEntity();
+    private void sendHtml(String toEmail, String toName, String subject, String html) {
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
+            helper.setFrom(fromEmail, fromName);
+            if (toName != null && !toName.isBlank()) {
+                helper.setTo(toEmail);
+            } else {
+                helper.setTo(toEmail);
+            }
+            helper.setSubject(subject);
+            helper.setText(html, true);
+            mailSender.send(mimeMessage);
+        } catch (Exception ex) {
+            log.error("Failed to send email to {}", toEmail, ex);
+            throw new IllegalStateException("Unable to send email", ex);
+        }
     }
 }

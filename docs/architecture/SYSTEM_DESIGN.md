@@ -11,8 +11,8 @@ This document describes the implemented technical design as of 2026-05.
 ## Context
 
 The platform provides electronic records processing with three modules:
-- Citizen frontend (`front-end`) — Angular 16
-- Backoffice frontend (`back-office`) — Angular 16
+- Citizen frontend (`front-end`) — Angular 18 LTS
+- Backoffice frontend (`back-office`) — Angular 18 LTS
 - Core backend (`backend`) — Spring Boot 3.x
 
 The system is developed with H2 in dev/test and prepared for PostgreSQL in production.
@@ -25,6 +25,7 @@ The system is developed with H2 in dev/test and prepared for PostgreSQL in produ
 | Presentation | Backoffice UI | Dashboard, tasks, users, procedure management, i18n management |
 | Application/Core | Backend API | JWT auth, RBAC, case/procedure logic, catalog i18n, BPM integration |
 | Data | PostgreSQL/H2 | Domain persistence + `procedure_type_i18n` translations |
+| Messaging | SMTP + Mailpit | Local transactional email delivery and inspection |
 
 ## Key Flows
 
@@ -48,6 +49,12 @@ The system is developed with H2 in dev/test and prepared for PostgreSQL in produ
 1. UI calls protected `/admin/*` endpoints with access token.
 2. If token is expired, backend returns `401`.
 3. Backoffice interceptor refreshes token via `/auth/refresh` and retries original request.
+
+### 4) Transactional Email (Local Runtime)
+
+1. Backend emits verification/notification email through `JavaMailSender`.
+2. SMTP delivery goes to Mailpit (`mailpit:1025` in Compose network).
+3. Developers/QA validate delivery and content in Mailpit UI (`http://localhost:8025`).
 
 ## Data Design: Catalog i18n
 

@@ -408,10 +408,39 @@ El sistema soporta 5 idiomas oficiales de España:
 2. **PAdES completo:** Implementar PAdES-EPES con políticas de firma
 3. **CI/CD:** Pipeline con GitHub Actions/GitLab CI
 4. **Monitoring:** Prometheus + Grafana para métricas en producción
-5. **Email:** Integración con Brevo/SendGrid para notificaciones
+5. **Email:** Mantener Mailpit + SMTP local en entorno de proyecto y evaluar proveedor externo solo para produccion
 6. **Backoffice:** Completar portal de administración
 7. **Tests E2E:** Cypress/Playwright para tests de interfaz
 8. **Documentación:** OpenAPI completa, guías de usuario
+
+---
+
+## 11. Impacto ENS y Operacion - Decision de correo local (Mailpit)
+
+### 11.1. Decision aplicada
+
+Para el ambito del TFG se adopta **SMTP local + Mailpit** como runtime por defecto para correo transaccional (verificacion de cuenta y notificaciones). Esta decision esta formalizada en `ADR-0014`.
+
+### 11.2. Impacto en ENS (Nivel Medio)
+
+- **Trazabilidad:** mejora la verificabilidad operativa en entorno de proyecto, ya que los correos quedan inspeccionables en una bandeja local controlada (`http://localhost:8025`).
+- **Gestion de configuracion y seguridad operativa:** reduce superficie de error al eliminar la necesidad de distribuir secretos de terceros (API keys) en desarrollo.
+- **Control del entorno:** favorece reproducibilidad y consistencia de evidencias durante pruebas tecnicas y defensa.
+
+### 11.3. Impacto operativo
+
+- **Ventajas:**
+  - Entorno autocontenido sin dependencia de internet para validar flujos de email.
+  - Menor friccion de onboarding y menos fallos de configuracion.
+  - Validacion end-to-end mas rapida en CI/local.
+- **Limitaciones:**
+  - No cubre entregabilidad real a destinatarios externos.
+  - No incluye gestion avanzada de rebotes o reputacion de dominio.
+
+### 11.4. Alcance y continuidad
+
+- Esta decision cubre **desarrollo, pruebas y demostracion del TFG**.
+- Para despliegue productivo, se requiere una decision posterior (nuevo ADR) para seleccionar proveedor externo, politica de secretos y estrategia de fallback.
 
 ---
 
