@@ -2,6 +2,7 @@ package es.tfg.records.entrypoints.controller;
 
 import es.tfg.records.application.dto.*;
 import es.tfg.records.application.service.CaseService;
+import es.tfg.records.application.service.EniPackagerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -32,9 +34,11 @@ import java.util.UUID;
 public class CaseController {
 
     private final CaseService caseService;
+    private final EniPackagerService eniPackagerService;
 
-    public CaseController(CaseService caseService) {
+    public CaseController(CaseService caseService, EniPackagerService eniPackagerService) {
         this.caseService = caseService;
+        this.eniPackagerService = eniPackagerService;
     }
 
     @GetMapping
@@ -175,6 +179,22 @@ public class CaseController {
 
         UUID ownerId = extractUserId(authentication);
         return ResponseEntity.ok(caseService.updateDraft(id, ownerId, request));
+    }
+
+    @GetMapping("/{id}/enidoc")
+    @Operation(summary = "Download ENI-compliant case package", description = "Download the complete case as an ENI-compliant .enidoc ZIP package containing PDF/A documents, detached XAdES signatures, and index.xml")
+    public ResponseEntity<Resource> downloadEniDoc(
+            Authentication authentication,
+            @PathVariable("id") UUID id) {
+
+        UUID ownerId = extractUserId(authentication);
+        byte[] eniDocBytes = eniPackagerService.generateEniDoc(id, ownerId);
+        ByteArrayResource resource = new ByteArrayResource(eniDocBytes);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/zip"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"expediente-" + id + ".enidoc\"")
+                .contentLength(eniDocBytes.length)
+                .body(resource);
     }
 
     @GetMapping("/{id}/receipt")

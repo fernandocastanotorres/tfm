@@ -1,135 +1,22 @@
 {
-  "ca-ES": {
-    "backoffice": {
-      "title": "Backoffice",
-      "subtitle": "Gestio d'Expedients Electronics",
-      "login": {
-        "username": "Usuari",
-        "password": "Contrasenya",
-        "submit": "Iniciar sessio",
-        "loading": "Carregant..."
-      },
-      "nav": {
-        "dashboard": "Panell Principal",
-        "cases": "Expedients",
-        "tasks": "Tasques Pendents",
-        "users": "Usuaris",
-        "procedures": "Procediments",
-        "publicContent": "Contingut Public",
-        "transparency": "Transparencia",
-        "statistics": "Estadistiques",
-        "logout": "Tancar sessio"
-      },
-      "dashboard": {
-        "totalCases": "Total Expedients",
-        "pendingCases": "Pendents",
-        "inProgress": "En Tramitacio",
-        "completedToday": "Completats Avui"
-      },
-      "cases": {
-        "title": "Expedients",
-        "filterByStatus": "Estat",
-        "all": "Tots",
-        "viewDetail": "Veure detall",
-        "noCases": "No s'han trobat expedients"
-      },
-      "status": {
-        "DRAFT": "Esborrany",
-        "SUBMITTED": "Presentat",
-        "IN_PROGRESS": "En Tramitacio",
-        "PENDING_AMENDMENT": "Pendent Esmena",
-        "RESOLVED": "Resolt",
-        "REJECTED": "Rebutjat"
-      },
-      "procedures": {
-        "title": "Gestio de Procediments",
-        "subtitle": "Configurar catalog, tasques BPMN i camps de formulari.",
-        "search": "Buscar procediment",
-        "new": "Nou procediment",
-        "edit": "Editar procediment",
-        "activate": "Activar",
-        "deactivate": "Desactivar",
-        "category": "Categoria",
-        "unit": "Unitat",
-        "deadline": "Termini",
-        "fee": "Taxa",
-        "days": "dies",
-        "tasks": "Tasques",
-        "noProcedures": "No hi ha procediments",
-        "loading": "Carregant procediments...",
-        "i18n": {
-          "title": "Internacionalitzacio",
-          "syncNote": "La configuracio regional es-ES se sincronitza amb els camps principals"
-        },
-        "bpmn": {
-          "title": "Tasques BPMN",
-          "addTask": "Afegir tasca",
-          "removeTask": "Eliminar tasca",
-          "taskTitle": "Titol",
-          "taskDescription": "Descripcio"
-        },
-        "form": {
-          "title": "Formulari dynamic",
-          "addField": "Afegir camp",
-          "removeField": "Eliminar camp",
-          "label": "Etiqueta",
-          "required": "Obligatori"
-        },
-        "fieldI18n": {
-          "title": "Traduccio de camps del formulari",
-          "subtitle": "Tradueix les etiquetes i placeholders dels camps del formulari dynamic.",
-          "manage": "Gestionar traduccions",
-          "loading": "Carregant camps...",
-          "noFields": "No hi ha camps configurats a les tasques d'aquest procediment.",
-          "save": "Guardar traduccions",
-          "saving": "Guardant...",
-          "close": "Tancar",
-          "name": "Nom",
-          "placeholder": "Placeholder",
-          "options": "Opcions",
-          "confirmSaveTitle": "Guardar traduccions de camps",
-          "confirmSaveMessage": "S'actualitzaran les traduccions de tots els camps modificats per a la configuracio regional seleccionada."
-        }
-      },
-      "common": {
-        "save": "Guardar",
-        "saving": "Guardant...",
-        "cancel": "Cancel·lar",
-        "close": "Tancar",
-        "delete": "Eliminar",
-        "edit": "Editar",
-        "search": "Buscar",
-        "loading": "Carregant...",
-        "noData": "No hi ha dades disponibles"
-      },
-      "caseDetail": {
-        "messages": {
-          "tabLabel": "Missatges",
-          "replyTitle": "Respondre al ciutada",
-          "templateLabel": "Plantilla (opcional)",
-          "attachLabel": "Adjuntar arxius",
-          "notifyByEmail": "Notificar per email",
-          "sendButton": "Enviar missatge",
-          "sendingButton": "Enviant...",
-          "emptyState": "No hi ha missatges en aquest expedient.",
-          "noMessages": "Sense missatges",
-          "pagination": "Pagina {{page}} de {{total}}",
-          "previous": "Anterior",
-          "next": "Seguent",
-          "pageSize": "{{size}} per pagina",
-          "senderCitizen": "Ciutada",
-          "senderAdmin": "Administracio",
-          "senderSystem": "Sistema",
-          "templates": {
-            "freeText": "Text lliure",
-            "requestInfo": "Sol·licitud d'informacio addicional",
-            "documentIncomplete": "Documentacio incompleta",
-            "approved": "Expedient aprovat",
-            "rejected": "Expedient rebutjat",
-            "amendmentRequired": "Esmena requerida"
-          }
-        }
-      }
-    }
+  "BO": {
+    "TITLE": "Backoffice",
+    "SUBTITLE": "Gestio d'Expedients Electronics",
+    "SIDEBAR": { "TOGGLE": "Alternar barra lateral", "LOGOUT": "Tancar sessio" },
+    "HEADER": { "GUIDE": "Guia", "UNREAD_MESSAGES": "Missatges sense llegir", "PENDING_CASES": "{{count}} expedient(s) pendent(s)", "NO_UNREAD": "No hi ha missatges sense llegir", "NO_CONTENT": "Sense contingut", "VIEW_ALL_CASES": "Veure tots els expedients", "NOTIFICATION_BELL": "Missatges no llegits" },
+    "NAV": { "DASHBOARD": "Panell Principal", "CASES": "Expedients", "TASKS": "Tasques Pendents", "USERS": "Usuaris", "PROCEDURES": "Procediments", "PUBLIC_CONTENT": "Contingut Public", "TRANSPARENCY": "Transparencia", "STATISTICS": "Estadistiques", "CONTACT_INBOX": "Bustia de Contacte", "LOGOUT": "Tancar sessio" },
+    "LOGIN": { "TITLE": "Backoffice", "SUBTITLE": "Gestio d'Expedients Electronics", "EMAIL_LABEL": "Email", "EMAIL_PLACEHOLDER": "usuari@organisme.es", "PASSWORD_LABEL": "Contrasenya", "PASSWORD_PLACEHOLDER": "Introdueix la teva contrasenya", "SUBMIT": "Iniciar sessio", "LOADING": "Carregant...", "INVALID_CREDENTIALS": "Credencials invalides" },
+    "DASHBOARD": { "LOADING": "Carregant dashboard...", "TOTAL_CASES": "Total Expedients", "PENDING": "Pendents", "IN_PROGRESS": "En Tramitacio", "COMPLETED_TODAY": "Completats Avui", "RESOLVED": "Resolts", "SLA_COMPLIANCE": "SLA Complert", "AVG_RESOLUTION": "Mitjana Resolucio", "PENDING_TASKS": "Tasques Pendents", "NO_PENDING_TASKS": "No hi ha tasques pendents", "URGENT": "Urgent", "NORMAL": "Normal", "RECENT_ACTIVITY": "Activitat Recent", "NO_ACTIVITY": "Els expedients apareixeran aqui quan es rebin dades del backend.", "STATUS_DISTRIBUTION": "Distribucio per Estat", "NO_DATA": "Sense dades", "WEEKLY_TREND": "Tendencia Ultims 7 Dies", "TOP_PROCEDURES": "Top Procediments", "UNIT_LOAD": "Carrega per Unitat", "CREATED": "C", "RESOLVED_SHORT": "R" },
+    "CASES": { "TITLE": "Expedients", "SEARCH_PLACEHOLDER": "Buscar expedient", "STATUS_LABEL": "Estat", "ALL": "Tots", "LOADING": "Carregant expedients...", "NO_CASES": "No s'han trobat expedients", "VIEW_DETAIL": "Veure detall", "CASE": "Expedient", "TYPE": "Tipus", "CITIZEN": "Ciutada", "STATUS": "Estat", "CURRENT_TASK": "Tasca Actual", "LAST_UPDATE": "Ultima Actualitzacio", "ACTIONS": "Accions", "SHOWING": "Mostrant {{from}} - {{to}} de {{total}}", "PREVIOUS": "Anterior", "NEXT": "Seguent" },
+    "STATUS": { "DRAFT": "Esborrany", "SUBMITTED": "Presentat", "IN_REVIEW": "En revisio", "IN_PROGRESS": "En Tramitacio", "AMENDMENT_REQUIRED": "Subsanacio requerida", "PENDING_AMENDMENT": "Pendent Subsanacio", "RESUBMITTED": "Reenviat", "APPROVED": "Aprovat", "RESOLVED": "Resolt", "REJECTED": "Rebutjat" },
+    "TASKS": { "TITLE": "Bandeja de Tasques", "SUBTITLE": "Treball pendent de revisio, subsanacio i resolucio.", "ALL": "Totes", "URGENT": "Urgents", "UNASSIGNED": "Sense assignar", "LOADING": "Carregant tasques...", "TASK": "Tasca", "CASE": "Expedient", "ASSIGNED": "Assignat", "DUE_DATE": "Venciment", "PRIORITY": "Prioritat", "ACTIONS": "Accions", "VIEW_CASE": "Veure expedient", "RESOLVE": "Resoldre", "NO_TASKS": "No hi ha tasques per al filtre seleccionat", "URGENT_LABEL": "Urgent", "NORMAL_LABEL": "Normal", "NOT_ASSIGNED": "Sense assignar" },
+    "USERS": { "TITLE": "Gestio d'Usuaris", "SUBTITLE": "Administrar tramitadors, administradors i permisos operatius.", "SEARCH_PLACEHOLDER": "Buscar usuari o rol", "NEW_USER": "Nou usuari", "LOADING": "Carregant usuaris...", "USER": "Usuari", "ROLES": "Rols", "STATUS": "Estat", "LAST_ACCESS": "Ultim acces", "ACTIONS": "Accions", "ACTIVE": "Actiu", "INACTIVE": "Inactiu", "EDIT": "Editar", "ACTIVATE": "Activar", "DEACTIVATE": "Desactivar", "NO_USERS": "No hi ha usuaris" },
+    "PROCEDURES": { "TITLE": "Gestio de Procediments", "SUBTITLE": "Configurar catalog, tasques BPMN i camps de formulari.", "SEARCH": "Buscar procediment", "NEW": "Nou procediment", "NO_PROCEDURES": "No hi ha procediments", "LOADING": "Carregant procediments...", "SAVE": "Guardar", "CANCEL": "Cancel·lar" },
+    "STATISTICS": { "TITLE": "Estadistiques", "SUBTITLE": "Metriques de rendiment i compliment SLA del sistema.", "DATE_FROM": "Des de", "DATE_TO": "Fins a", "LOAD": "Carregar", "EXPORT_PDF": "Exportar PDF", "LOADING": "Carregant estadistiques..." },
+    "TRANSPARENCY": { "TITLE": "Gestio de Transparencia", "SUBTITLE": "Publicar informes i metriques de transparencia activa.", "NEW_REPORT": "Nou informe", "LOADING": "Carregant informes...", "NO_REPORTS": "No hi ha informes de transparencia" },
+    "PUBLIC_CONTENT": { "TITLE": "Gestio de Contingut Public", "SUBTITLE": "Administrar seccions institucionals, normativa, FAQ i calendari." },
+    "CONTACT_INBOX": { "TITLE": "Bustia de Contacte", "SUBTITLE": "Missatges rebuts des del formulari de contacte de la seu.", "LOADING": "Carregant missatges...", "NO_MESSAGES": "No hi ha missatges de contacte" },
+    "FIELD_I18N": { "TITLE": "Traduccio de camps del formulari", "SUBTITLE": "Tradueix les etiquetes i placeholders dels camps del formulari dinamic." },
+    "COMMON": { "SAVE": "Guardar", "SAVING": "Guardant...", "CANCEL": "Cancel·lar", "CLOSE": "Tancar", "DELETE": "Eliminar", "EDIT": "Editar", "SEARCH": "Buscar", "LOADING": "Carregant...", "NO_DATA": "No hi ha dades disponibles" }
   }
 }

@@ -5,13 +5,14 @@ import { Injectable } from '@angular/core';
 })
 export class OtpService {
   private readonly storageKey = 'tfg.otp';
+  private static readonly OTP_EXPIRY_MS = 5 * 60 * 1000;
 
   generateOtp(destination: string): string {
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     const payload = {
       destination,
       code,
-      expiresAt: Date.now() + 5 * 60 * 1000
+      expiresAt: Date.now() + OtpService.OTP_EXPIRY_MS
     };
     localStorage.setItem(this.storageKey, JSON.stringify(payload));
     return code;

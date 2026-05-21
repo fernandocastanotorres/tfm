@@ -33,6 +33,9 @@ public class AuthServiceImpl implements AuthService {
 
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,}$");
 
+    private static final long OTP_EXPIRY_SECONDS = 86400L;
+    private static final long PASSWORD_RESET_TOKEN_EXPIRY_SECONDS = 3600L;
+
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
@@ -110,6 +113,9 @@ public class AuthServiceImpl implements AuthService {
 
         lockoutManager.resetFailedAttempts(email);
 
+        user.setLastLogin(Instant.now());
+        userRepository.save(user);
+
         String accessToken = jwtTokenProvider.generateAccessToken(
                 user.getId(), user.getEmail(), user.getRoles());
         String refreshToken = jwtTokenProvider.generateRefreshToken(
@@ -150,7 +156,7 @@ public class AuthServiceImpl implements AuthService {
 
         String otpCode = generateOtpCode();
         user.setOtpCode(otpCode);
-        user.setOtpExpiry(Instant.now().plusSeconds(86400));
+        user.setOtpExpiry(Instant.now().plusSeconds(OTP_EXPIRY_SECONDS));
         user.setLastVerificationEmailSentAt(Instant.now());
 
         User saved = userRepository.save(user);
@@ -228,7 +234,7 @@ public class AuthServiceImpl implements AuthService {
     public void forgotPassword(PasswordResetRequest request) {
         userRepository.findByEmail(request.email()).ifPresent(user -> {
             String resetToken = UUID.randomUUID().toString();
-            Instant expiry = Instant.now().plusSeconds(3600);
+            Instant expiry = Instant.now().plusSeconds(PASSWORD_RESET_TOKEN_EXPIRY_SECONDS);
 
             resetTokenStore.put(resetToken, new ResetTokenEntry(user.getId(), expiry));
 
@@ -252,7 +258,7 @@ public class AuthServiceImpl implements AuthService {
 
             String verificationToken = generateOtpCode();
             user.setOtpCode(verificationToken);
-            user.setOtpExpiry(now.plusSeconds(86400));
+            user.setOtpExpiry(now.plusSeconds(OTP_EXPIRY_SECONDS));
             user.setLastVerificationEmailSentAt(now);
             userRepository.save(user);
 

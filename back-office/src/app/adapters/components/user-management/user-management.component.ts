@@ -83,6 +83,7 @@ export class UserManagementComponent implements OnInit {
 
   async save(): Promise<void> {
     if (!this.form.email || this.form.roles.length === 0) return;
+    if (!this.selectedUser && !this.form.password) return;
 
     const confirmed = await this.confirmDialogService.confirm('Confirmar guardado', 'Se aplicaran los cambios del usuario de backoffice.', 'Si, guardar');
     if (!confirmed) return;
@@ -103,7 +104,7 @@ export class UserManagementComponent implements OnInit {
 
     const request: CreateUserRequest = {
       email: this.form.email,
-      password: this.form.password || 'ChangeMe123',
+      password: this.form.password,
       roles: this.form.roles,
       isActive: this.form.isActive
     };

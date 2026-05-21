@@ -3,6 +3,7 @@ package es.tfg.records.tests.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.tfg.records.application.dto.*;
 import es.tfg.records.application.service.CaseService;
+import es.tfg.records.application.service.EniPackagerService;
 import es.tfg.records.entrypoints.advice.GlobalExceptionHandler;
 import es.tfg.records.entrypoints.controller.CaseController;
 import org.junit.jupiter.api.Test;
@@ -42,6 +43,9 @@ class CaseControllerTest {
 
     @MockBean
     private CaseService caseService;
+
+    @MockBean
+    private EniPackagerService eniPackagerService;
 
     @Test
     void listCases_shouldReturn200() throws Exception {

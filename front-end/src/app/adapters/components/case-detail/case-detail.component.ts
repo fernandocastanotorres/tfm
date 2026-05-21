@@ -15,6 +15,9 @@ import { Subscription, interval } from 'rxjs';
     standalone: false
 })
 export class CaseDetailComponent implements OnInit, OnDestroy {
+
+  private static readonly STATUS_POLL_INTERVAL_MS = 30_000;
+
   caseDetail: CaseDetail | null = null;
   isLoading = true;
   isUploading = false;
@@ -48,7 +51,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
 
     this.loadCaseDetail();
     this.subscriptions.add(
-      interval(30000).subscribe(() => {
+      interval(CaseDetailComponent.STATUS_POLL_INTERVAL_MS).subscribe(() => {
         this.loadCaseDetail(false);
       })
     );

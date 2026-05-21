@@ -104,7 +104,7 @@
 
       <!-- Document list -->
       <section class="mt-6 grid gap-4">
-        <article class="card p-6" *ngFor="let doc of pagedDocuments" (click)="selectDocument(doc)" [ngClass]="selectedDocument?.id === doc.id ? 'ring-2 ring-brand-300' : ''">
+        <article class="card p-6" *ngFor="let doc of pagedDocuments" (click)="selectDocument(doc)" [ngClass]="selectedDocument?.id === doc.id ? 'ring-2 ring-brand-300' : ''" tabindex="0" (keydown.enter)="selectDocument(doc)" (keydown.space)="$event.preventDefault(); selectDocument(doc)" role="button" [attr.aria-label]="doc.name + ', ' + doc.type">
           <div class="flex items-start justify-between gap-4">
             <div>
               <h2 class="text-lg font-semibold text-surface-900">{{ doc.name }}</h2>
@@ -172,11 +172,11 @@
 
       <!-- Pagination -->
       <div class="mt-6 flex items-center justify-between" *ngIf="filteredDocuments.length > 0">
-        <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage - 1)" [disabled]="paginationState.currentPage === 1">
+        <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage - 1)" [disabled]="paginationState.currentPage === 1" [attr.aria-label]="'DOCUMENTS.PREVIOUS' | translate">
           {{ 'DOCUMENTS.PREVIOUS' | translate }}
         </button>
-        <span class="text-sm text-surface-600">{{ 'DOCUMENTS.PAGE' | translate }} {{ paginationState.currentPage }} / {{ paginationState.totalPages }}</span>
-        <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage + 1)" [disabled]="paginationState.currentPage === paginationState.totalPages">
+        <span class="text-sm text-surface-600" aria-live="polite">{{ 'DOCUMENTS.PAGE' | translate }} {{ paginationState.currentPage }} / {{ paginationState.totalPages }}</span>
+        <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage + 1)" [disabled]="paginationState.currentPage === paginationState.totalPages" [attr.aria-label]="'DOCUMENTS.NEXT' | translate">
           {{ 'DOCUMENTS.NEXT' | translate }}
         </button>
       </div>

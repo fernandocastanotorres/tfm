@@ -143,11 +143,11 @@
       </div>
 
       <div class="messages__pagination" *ngIf="filteredThreads.length > 0">
-        <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage - 1)" [disabled]="paginationState.currentPage === 1">
+        <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage - 1)" [disabled]="paginationState.currentPage === 1" [attr.aria-label]="'MESSAGES.PREVIOUS' | translate">
           {{ 'MESSAGES.PREVIOUS' | translate }}
         </button>
-        <span class="text-sm text-surface-600">{{ 'MESSAGES.PAGE' | translate }} {{ paginationState.currentPage }} / {{ paginationState.totalPages }}</span>
-        <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage + 1)" [disabled]="paginationState.currentPage === paginationState.totalPages">
+        <span class="text-sm text-surface-600" aria-live="polite">{{ 'MESSAGES.PAGE' | translate }} {{ paginationState.currentPage }} / {{ paginationState.totalPages }}</span>
+        <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage + 1)" [disabled]="paginationState.currentPage === paginationState.totalPages" [attr.aria-label]="'MESSAGES.NEXT' | translate">
           {{ 'MESSAGES.NEXT' | translate }}
         </button>
       </div>

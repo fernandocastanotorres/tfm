@@ -12,6 +12,8 @@ RUN mvn clean package -DskipTests -B
 # ── Runtime stage ────────────────────────────
 FROM eclipse-temurin:17-jre
 
+ENV LANG=C.UTF-8
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     tini \
@@ -19,9 +21,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libreoffice-calc \
     libreoffice-impress \
     fonts-dejavu-core \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN addgroup --system appgroup && adduser --system appuser --ingroup appgroup
+    && rm -rf /var/lib/apt/lists/* \
+    && addgroup --system appgroup && adduser --system appuser --ingroup appgroup
 
 WORKDIR /app
 

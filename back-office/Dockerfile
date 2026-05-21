@@ -4,17 +4,16 @@ FROM node:20-alpine AS build
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+RUN npm ci --ignore-scripts
 
 COPY . .
-RUN npx ng build --configuration=production
+RUN npx ng build --configuration=production --output-hashing=all
 
 # ── Runtime stage ────────────────────────────
 FROM nginx:1.25-alpine
 
-RUN apk add --no-cache curl
-
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+RUN apk add --no-cache curl && \
+    addgroup -S appgroup && adduser -S appuser -G appgroup
 
 COPY --from=build /app/dist/back-office/ /usr/share/nginx/html/
 COPY nginx.conf /etc/nginx/conf.d/default.conf

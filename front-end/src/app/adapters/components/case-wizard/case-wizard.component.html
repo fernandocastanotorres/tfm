@@ -1,7 +1,7 @@
 <main class="min-h-screen bg-surface-50 px-6 py-10" aria-labelledby="wizard-title">
   <div class="max-w-4xl mx-auto">
     <!-- Loading state -->
-    <div *ngIf="isLoading" class="card p-6 text-center text-surface-600">
+    <div *ngIf="isLoading" class="card p-6 text-center text-surface-600" role="status" aria-live="polite">
       {{ 'CASE_WIZARD.LOADING' | translate }}
     </div>
 
@@ -64,20 +64,27 @@
           <div class="space-y-4" *ngFor="let requirement of effectiveUploadRequirements">
             <label class="field-label" [attr.for]="requirement.id">{{ requirement.name | translate }}</label>
             <div
+              [id]="'dropzone-' + requirement.id"
               class="wizard-dropzone"
               [class.wizard-dropzone--active]="isDragOver(requirement.id)"
               (dragover)="onDragOver(requirement.id, $event)"
               (dragleave)="onDragLeave(requirement.id, $event)"
               (drop)="onDrop(requirement.id, $event)"
+              tabindex="0"
+              role="button"
+              [attr.aria-label]="'CASE_WIZARD.UPLOAD_DROPZONE_TEXT' | translate"
+              (keydown.enter)="triggerFileInput(requirement.id)"
+              (keydown.space)="$event.preventDefault(); triggerFileInput(requirement.id)"
             >
               <p class="wizard-dropzone__text">{{ 'CASE_WIZARD.UPLOAD_DROPZONE_TEXT' | translate }}</p>
             </div>
             <input
-              [id]="requirement.id"
+              [id]="'file-' + requirement.id"
               type="file"
-              class="field-input"
+              class="sr-only"
               multiple
               (change)="onFilesSelected(requirement.id, $any($event.target).files)"
+              [attr.aria-labelledby]="'dropzone-' + requirement.id"
             />
             <ul class="space-y-2" *ngIf="attachments.value[requirement.id]?.length">
               <li class="text-surface-600 flex items-center justify-between" *ngFor="let file of attachments.value[requirement.id]; let i = index">
@@ -129,7 +136,7 @@
       </form>
 
       <!-- Submitting state -->
-      <div *ngIf="isSubmitting" class="mt-8 card p-6 text-center text-surface-600">
+      <div *ngIf="isSubmitting" class="mt-8 card p-6 text-center text-surface-600" role="status" aria-live="polite">
         {{ 'CASE_WIZARD.SUBMITTING' | translate }}
       </div>
 

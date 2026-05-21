@@ -24,6 +24,7 @@ public class User {
     private Instant lastVerificationEmailSentAt;
     private Instant createdAt;
     private Instant updatedAt;
+    private Instant lastLogin;
 
     public User() {
     }
@@ -148,5 +149,13 @@ public class User {
 
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Instant getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(Instant lastLogin) {
+        this.lastLogin = lastLogin;
     }
 }

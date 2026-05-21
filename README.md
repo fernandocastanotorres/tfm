@@ -35,4 +35,6 @@ Decision arquitectonica: ver `docs/adr/0014-local-email-delivery-with-mailpit-ov
 - Requisitos: `REQUIREMENTS.md`
 - Arquitectura: `docs/architecture/SYSTEM_DESIGN.md`
 - Build y despliegue: `docs/DEPLOYMENT_AND_BUILD.md`
+- Manual de usuario: `docs/USER-MANUAL.md`
+- Guion de defensa: `docs/DEFENSE-DEMO-SCRIPT.md`
 - ADRs: `docs/adr/INDEX.md`

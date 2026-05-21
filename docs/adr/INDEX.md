@@ -16,6 +16,7 @@
 | [ADR-0012](./0012-db-persisted-form-field-i18n.md) | DB-Persisted Form Field i18n for Dynamic Procedure Forms | Proposed | 2026-05-18 |
 | [ADR-0013](./0013-framework-version-selection-lts-strategy.md) | Framework Version Selection (LTS Strategy) | Accepted | 2026-05-19 |
 | [ADR-0014](./0014-local-email-delivery-with-mailpit-over-brevo.md) | Local Email Delivery with Mailpit over Brevo | Accepted | 2026-05-20 |
+| [ADR-0015](./0015-in-memory-caching-with-caffeine.md) | In-Memory Caching with Caffeine for Read-Heavy Endpoints | Accepted | 2026-05-21 |
 
 ## Supporting Files
 - [ADR Guidelines](./README.md)

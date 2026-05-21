@@ -86,6 +86,34 @@ public class SignatureService {
     }
 
     /**
+     * Generates a detached XAdES-like CMS signature (.xsig) for a document.
+     * The signature is stored separately from the document for ENI compliance.
+     */
+    public byte[] generateDetachedSignature(byte[] documentContent) throws Exception {
+        log.info("Generating detached CMS signature for document ({} bytes)", documentContent.length);
+
+        CMSSignedDataGenerator gen = new CMSSignedDataGenerator();
+
+        ContentSigner signer = new JcaContentSignerBuilder("SHA256withRSA")
+                .setProvider("BC")
+                .build((java.security.PrivateKey) signingKeyStore.getKey("signing", "changeit".toCharArray()));
+
+        gen.addSignerInfoGenerator(new JcaSignerInfoGeneratorBuilder(
+                new JcaDigestCalculatorProviderBuilder().setProvider("BC").build())
+                .build(signer, signingCertificate));
+
+        Store<?> certs = new JcaCertStore(java.util.List.of(signingCertificate));
+        gen.addCertificates(certs);
+
+        CMSTypedData msg = new CMSProcessableByteArray(documentContent);
+        CMSSignedData signedData = gen.generate(msg, true);
+
+        byte[] signatureBytes = signedData.getEncoded();
+        log.info("Detached signature generated ({} bytes)", signatureBytes.length);
+        return signatureBytes;
+    }
+
+    /**
      * Converts a document to PDF (if not already PDF) and signs it.
      * Uses JODConverter (LibreOffice) for conversion when available.
      * Falls back to signing the original content if conversion is not available.

@@ -55,7 +55,7 @@ updates:
       - "frontend"
     open-pull-requests-limit: 10
     ignore:
-      # Pin Angular to v16 major
+      # Pin Angular to v18 major (LTS per ADR-0013)
       - dependency-name: "@angular/*"
         update-types: ["version-update:semver-major"]
       - dependency-name: "@angular-devkit/*"
@@ -84,7 +84,7 @@ updates:
       - "frontend"
     open-pull-requests-limit: 10
     ignore:
-      # Pin Angular to v16 major
+      # Pin Angular to v18 major (LTS per ADR-0013)
       - dependency-name: "@angular/*"
         update-types: ["version-update:semver-major"]
       - dependency-name: "@angular-devkit/*"

@@ -2,28 +2,28 @@
   <div class="bg-white rounded-lg shadow p-6">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       <div>
-        <h3 class="text-lg font-semibold text-gray-900">Bandeja de Tareas</h3>
-        <p class="text-sm text-gray-500 mt-1">Trabajo pendiente de revision, subsanacion y resolucion.</p>
+        <h3 class="text-lg font-semibold text-gray-900">{{ 'BO.TASKS.TITLE' | translate }}</h3>
+        <p class="text-sm text-gray-500 mt-1">{{ 'BO.TASKS.SUBTITLE' | translate }}</p>
       </div>
-      <div class="flex gap-2">
-        <button type="button" (click)="filter = 'all'" class="px-3 py-2 text-sm rounded-md border" [class.bg-blue-600]="filter === 'all'" [class.text-white]="filter === 'all'">Todas</button>
-        <button type="button" (click)="filter = 'urgent'" class="px-3 py-2 text-sm rounded-md border" [class.bg-blue-600]="filter === 'urgent'" [class.text-white]="filter === 'urgent'">Urgentes</button>
-        <button type="button" (click)="filter = 'unassigned'" class="px-3 py-2 text-sm rounded-md border" [class.bg-blue-600]="filter === 'unassigned'" [class.text-white]="filter === 'unassigned'">Sin asignar</button>
+      <div class="flex gap-2" role="group" [attr.aria-label]="'BO.TASKS.FILTER_LABEL' | translate">
+        <button type="button" (click)="filter = 'all'" class="px-3 py-2 text-sm rounded-md border" [class.bg-blue-600]="filter === 'all'" [class.text-white]="filter === 'all'" [attr.aria-pressed]="filter === 'all'">{{ 'BO.TASKS.ALL' | translate }}</button>
+        <button type="button" (click)="filter = 'urgent'" class="px-3 py-2 text-sm rounded-md border" [class.bg-blue-600]="filter === 'urgent'" [class.text-white]="filter === 'urgent'" [attr.aria-pressed]="filter === 'urgent'">{{ 'BO.TASKS.URGENT' | translate }}</button>
+        <button type="button" (click)="filter = 'unassigned'" class="px-3 py-2 text-sm rounded-md border" [class.bg-blue-600]="filter === 'unassigned'" [class.text-white]="filter === 'unassigned'" [attr.aria-pressed]="filter === 'unassigned'">{{ 'BO.TASKS.UNASSIGNED' | translate }}</button>
       </div>
     </div>
   </div>
 
   <div class="bg-white rounded-lg shadow overflow-hidden">
-    <div *ngIf="isLoading" class="p-8 text-center text-gray-500">Cargando tareas...</div>
+    <div *ngIf="isLoading" class="p-8 text-center text-gray-500" role="status" aria-live="polite">{{ 'BO.TASKS.LOADING' | translate }}</div>
     <table *ngIf="!isLoading" class="w-full">
       <thead class="bg-gray-50 border-b border-gray-200">
         <tr>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tarea</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Expediente</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Asignado</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Vencimiento</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Prioridad</th>
-          <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Acciones</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'BO.TASKS.TASK' | translate }}</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'BO.TASKS.CASE' | translate }}</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'BO.TASKS.ASSIGNED' | translate }}</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'BO.TASKS.DUE_DATE' | translate }}</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'BO.TASKS.PRIORITY' | translate }}</th>
+          <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">{{ 'BO.TASKS.ACTIONS' | translate }}</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-200">
@@ -33,20 +33,20 @@
             <div class="text-sm text-gray-500">{{ task.taskType }}</div>
           </td>
           <td class="px-6 py-4 text-sm text-gray-700">{{ task.caseTitle }}</td>
-          <td class="px-6 py-4 text-sm text-gray-500">{{ task.assignedTo || 'Sin asignar' }}</td>
+          <td class="px-6 py-4 text-sm text-gray-500">{{ task.assignedTo || ('BO.TASKS.NOT_ASSIGNED' | translate) }}</td>
           <td class="px-6 py-4 text-sm text-gray-500">{{ task.dueDate ? (task.dueDate | date: 'dd/MM/yyyy') : '-' }}</td>
           <td class="px-6 py-4">
             <span class="px-2 py-1 text-xs font-medium rounded-full" [class.bg-red-100]="task.priority === 'urgent'" [class.text-red-800]="task.priority === 'urgent'" [class.bg-yellow-100]="task.priority === 'normal'" [class.text-yellow-800]="task.priority === 'normal'">
-              {{ task.priority === 'urgent' ? 'Urgente' : 'Normal' }}
+              {{ task.priority === 'urgent' ? ('BO.TASKS.URGENT_LABEL' | translate) : ('BO.TASKS.NORMAL_LABEL' | translate) }}
             </span>
           </td>
           <td class="px-6 py-4 text-right space-x-3">
-            <button type="button" (click)="openCase(task)" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Ver expediente</button>
-            <button type="button" (click)="openTask(task)" class="text-blue-600 hover:text-blue-800 text-sm font-medium">Resolver</button>
+            <button type="button" (click)="openCase(task)" class="text-gray-600 hover:text-gray-900 text-sm font-medium">{{ 'BO.TASKS.VIEW_CASE' | translate }}</button>
+            <button type="button" (click)="openTask(task)" class="text-blue-600 hover:text-blue-800 text-sm font-medium">{{ 'BO.TASKS.RESOLVE' | translate }}</button>
           </td>
         </tr>
         <tr *ngIf="filteredTasks.length === 0">
-          <td colspan="6" class="px-6 py-8 text-center text-gray-500">No hay tareas para el filtro seleccionado</td>
+          <td colspan="6" class="px-6 py-8 text-center text-gray-500">{{ 'BO.TASKS.NO_TASKS' | translate }}</td>
         </tr>
       </tbody>
     </table>

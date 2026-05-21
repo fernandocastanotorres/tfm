@@ -1,5 +1,6 @@
+<a class="skip-link" href="#bo-main-content">Saltar al contenido principal</a>
+
 <div class="flex h-screen bg-gray-50">
-  <!-- Sidebar -->
   <aside
     class="bg-gray-900 text-white transition-all duration-300 flex flex-col"
     [class.w-64]="sidebarOpen"
@@ -7,26 +8,29 @@
     data-tour="bo-sidebar"
   >
     <div class="flex items-center justify-between p-4 border-b border-gray-700">
-      <span *ngIf="sidebarOpen" class="text-lg font-semibold">Backoffice</span>
+      <span *ngIf="sidebarOpen" class="text-lg font-semibold">{{ 'BO.TITLE' | translate }}</span>
       <button
         (click)="toggleSidebar()"
         class="p-1 rounded hover:bg-gray-700 transition-colors"
-        aria-label="Toggle sidebar"
+        [attr.aria-label]="'BO.SIDEBAR.TOGGLE' | translate"
       >
         {{ sidebarOpen ? '&#9664;' : '&#9654;' }}
       </button>
     </div>
 
-    <nav class="flex-1 py-4">
+    <nav class="flex-1 py-4" aria-label="Menu principal">
       <a
         *ngFor="let item of navItems"
         [routerLink]="isVisible(item) ? [item.route] : null"
         [class.opacity-50]="!isVisible(item)"
         [class.pointer-events-none]="!isVisible(item)"
         routerLinkActive="bg-gray-700"
+        #rla="routerLinkActive"
+        [attr.aria-current]="rla.isActive ? 'page' : null"
         class="flex items-center px-4 py-3 hover:bg-gray-700 transition-colors cursor-pointer relative"
+        [attr.aria-label]="item.label"
       >
-        <span class="text-xl w-8 text-center">{{ getIcon(item.icon) }}</span>
+        <span class="text-xl w-8 text-center" aria-hidden="true">{{ getIcon(item.icon) }}</span>
         <span *ngIf="sidebarOpen" class="ml-3">{{ item.label }}</span>
         <span *ngIf="item.icon === 'inbox' && unreadContactCount > 0 && sidebarOpen" class="ml-auto bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold">
           {{ unreadContactCount > 9 ? '9+' : unreadContactCount }}
@@ -39,16 +43,15 @@
       <button
         (click)="logout()"
         class="flex items-center w-full px-2 py-2 text-sm hover:bg-gray-700 rounded transition-colors"
+        [attr.aria-label]="'BO.SIDEBAR.LOGOUT' | translate"
       >
-        <span class="text-xl w-8 text-center">&#128682;</span>
-        <span *ngIf="sidebarOpen" class="ml-3">Cerrar sesion</span>
+        <span class="text-xl w-8 text-center" aria-hidden="true">&#128682;</span>
+        <span *ngIf="sidebarOpen" class="ml-3">{{ 'BO.SIDEBAR.LOGOUT' | translate }}</span>
       </button>
     </div>
   </aside>
 
-  <!-- Main content -->
   <div class="flex-1 flex flex-col overflow-hidden">
-    <!-- Header -->
     <header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4" data-tour="bo-header">
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-semibold text-gray-800">{{ getPageTitle() }}</h2>
@@ -59,14 +62,16 @@
             data-tour="bo-help"
             (click)="startTour()"
           >
-            Guia
+            {{ 'BO.HEADER.GUIDE' | translate }}
           </button>
           <div class="relative">
             <button
               type="button"
               class="relative p-2 rounded hover:bg-gray-100 transition-colors"
               (click)="toggleMessagesDropdown()"
-              aria-label="Mensajes no leidos"
+              [attr.aria-label]="'BO.HEADER.NOTIFICATION_BELL' | translate"
+              [attr.aria-expanded]="messagesDropdownOpen"
+              aria-controls="bo-notifications-panel"
             >
               <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
@@ -76,13 +81,13 @@
               </span>
             </button>
             <div *ngIf="messagesDropdownOpen" class="fixed inset-0 z-40" (click)="closeMessagesDropdown()"></div>
-            <div *ngIf="messagesDropdownOpen" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+            <div *ngIf="messagesDropdownOpen" id="bo-notifications-panel" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50" role="region" aria-label="Notificaciones">
               <div class="px-4 py-3 border-b border-gray-100">
-                <h3 class="text-sm font-semibold text-gray-900">Mensajes sin leer</h3>
-                <p class="text-xs text-gray-500 mt-0.5">{{ unreadCounts.adminUnread }} expediente(s) pendiente(s)</p>
+                <h3 class="text-sm font-semibold text-gray-900">{{ 'BO.HEADER.UNREAD_MESSAGES' | translate }}</h3>
+                <p class="text-xs text-gray-500 mt-0.5">{{ 'BO.HEADER.PENDING_CASES' | translate: { count: unreadCounts.adminUnread } }}</p>
               </div>
               <div *ngIf="unreadThreads.length === 0" class="px-4 py-6 text-center text-sm text-gray-400">
-                No hay mensajes sin leer
+                {{ 'BO.HEADER.NO_UNREAD' | translate }}
               </div>
               <div *ngIf="unreadThreads.length > 0" class="max-h-72 overflow-y-auto">
                 <button
@@ -96,13 +101,13 @@
                       {{ thread.unreadCount }}
                     </span>
                   </div>
-                  <p class="text-xs text-gray-500 mt-0.5 truncate">{{ thread.lastMessagePreview || 'Sin contenido' }}</p>
+                  <p class="text-xs text-gray-500 mt-0.5 truncate">{{ thread.lastMessagePreview || ('BO.HEADER.NO_CONTENT' | translate) }}</p>
                   <p class="text-xs text-gray-400 mt-0.5">{{ thread.lastMessageAt | date: 'dd/MM/yyyy HH:mm' }}</p>
                 </button>
               </div>
               <div class="px-4 py-2 border-t border-gray-100">
                 <button (click)="navigateToCases()" class="w-full text-sm text-blue-600 hover:text-blue-800 font-medium text-center py-1">
-                  Ver todos los expedientes
+                  {{ 'BO.HEADER.VIEW_ALL_CASES' | translate }}
                 </button>
               </div>
             </div>
@@ -115,8 +120,7 @@
       </div>
     </header>
 
-    <!-- Page content -->
-    <main class="flex-1 overflow-y-auto p-6" data-tour="bo-main">
+    <main class="flex-1 overflow-y-auto p-6" id="bo-main-content" data-tour="bo-main">
       <router-outlet></router-outlet>
     </main>
   </div>

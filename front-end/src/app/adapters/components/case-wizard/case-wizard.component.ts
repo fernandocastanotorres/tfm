@@ -166,6 +166,11 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
     return Boolean(this.dragOverState.value[requirementId]);
   }
 
+  triggerFileInput(requirementId: string): void {
+    const input = document.getElementById('file-' + requirementId) as HTMLInputElement | null;
+    input?.click();
+  }
+
   getReviewFormEntries(): Array<{ label: string; value: string }> {
     if (!this.procedure) {
       return [];

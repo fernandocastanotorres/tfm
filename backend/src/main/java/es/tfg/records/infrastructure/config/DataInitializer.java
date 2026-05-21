@@ -564,13 +564,13 @@ public class DataInitializer {
         UUID org1GroupId = UUID.randomUUID();
         for (String locale : locales) {
             repository.save(createPublicContentEntry("ORGANISM", locale, org1GroupId, "planning", titleFor(locale, "Plaza Mayor 1"), titleFor(locale, "Urbanismo"),
-                    bodyFor(locale, "Gestion de licencias urbanisticas y disciplina territorial."), null, "https://sede.example.org/urbanismo", "urbanismo@ayto.example.org", "900100100", 0, true, now));
+                    bodyFor(locale, "Gestion de licencias urbanisticas y disciplina territorial."), null, "https://sede.local/urbanismo", "urbanismo@ayto.local", "900100100", 0, true, now));
         }
         
         UUID org2GroupId = UUID.randomUUID();
         for (String locale : locales) {
             repository.save(createPublicContentEntry("ORGANISM", locale, org2GroupId, "citizen", titleFor(locale, "Avenida Centro 12"), titleFor(locale, "Registro General"),
-                    bodyFor(locale, "Atencion al ciudadano para tramites de registro y certificaciones."), null, "https://sede.example.org/registro", "registro@ayto.example.org", "900100200", 1, true, now));
+                    bodyFor(locale, "Atencion al ciudadano para tramites de registro y certificaciones."), null, "https://sede.local/registro", "registro@ayto.local", "900100200", 1, true, now));
         }
 
         // Resource entries - shared translationGroupId per resource

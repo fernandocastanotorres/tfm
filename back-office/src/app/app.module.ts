@@ -7,7 +7,6 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { NgChartsModule } from 'ng2-charts';
 
-import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
@@ -27,13 +26,9 @@ import { ContactInboxComponent } from './adapters/components/contact-inbox/conta
 import { FieldI18nManagementComponent } from './adapters/components/field-i18n-management/field-i18n-management.component';
 
 import { AuthService } from './application/services/auth.service';
-import { MockAuthService } from './application/services/mock-auth.service';
 import { AdminCasesService } from './application/services/admin-cases.service';
-import { MockAdminCasesService } from './application/services/mock-admin-cases.service';
 import { UserManagementService } from './application/services/user-management.service';
-import { MockUserManagementService } from './application/services/mock-user-management.service';
 import { ProcedureManagementService } from './application/services/procedure-management.service';
-import { MockProcedureManagementService } from './application/services/mock-procedure-management.service';
 
 import { HttpErrorInterceptor } from './application/interceptors/http-error.interceptor';
 import { JwtAuthInterceptor } from './application/interceptors/jwt-auth.interceptor';
@@ -75,10 +70,10 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
             },
             defaultLanguage: 'es-ES'
         })], providers: [
-        { provide: AuthService, useClass: environment.useMocks ? MockAuthService : AuthService },
-        { provide: AdminCasesService, useClass: environment.useMocks ? MockAdminCasesService : AdminCasesService },
-        { provide: UserManagementService, useClass: environment.useMocks ? MockUserManagementService : UserManagementService },
-        { provide: ProcedureManagementService, useClass: environment.useMocks ? MockProcedureManagementService : ProcedureManagementService },
+        { provide: AuthService, useClass: AuthService },
+        { provide: AdminCasesService, useClass: AdminCasesService },
+        { provide: UserManagementService, useClass: UserManagementService },
+        { provide: ProcedureManagementService, useClass: ProcedureManagementService },
         { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: AcceptLanguageInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: JwtAuthInterceptor, multi: true },

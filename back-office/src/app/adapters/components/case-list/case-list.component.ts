@@ -96,4 +96,8 @@ export class CaseListComponent implements OnInit {
     };
     return classes[status] || 'bg-gray-100 text-gray-800';
   }
+
+  minEnd(): number {
+    return Math.min((this.currentPage + 1) * this.pageSize, this.totalItems);
+  }
 }

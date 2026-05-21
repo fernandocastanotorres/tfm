@@ -131,7 +131,7 @@ jobs:
 
       - name: Run tests with coverage
         working-directory: back-office
-        run: npm test -- --no-watch --browsers=ChromeHeadless --code-coverage
+        run: npm test -- --no-watch --browsers=ChromeHeadlessNoSandbox --code-coverage
 
       - name: Upload backoffice coverage
         uses: actions/upload-artifact@v4
@@ -389,6 +389,49 @@ jobs:
           tags: tfg-backoffice:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  # ──────────────────────────────────────────────
+  # Docker Compose Smoke Test
+  # ──────────────────────────────────────────────
+  docker-smoke-test:
+    name: Docker Compose Smoke Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: docker-build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build all images
+        run: |
+          docker build -t tfg-backend:ci ./backend
+          docker build -t tfg-frontend:ci ./front-end
+          docker build -t tfg-backoffice:ci ./back-office
+
+      - name: Start stack with Docker Compose
+        env:
+          POSTGRES_PASSWORD: test_pass_123
+          JWT_SECRET: dGVzdC1zZWNyZXQta2V5LWZvci1jaS1waXBlbGluZS1tdXN0LWJlLWxvbmc=
+          SPRING_PROFILES_ACTIVE: dev
+        run: |
+          sed -i 's|build:.*context:.*|image: tfg-backend:ci|' docker-compose.yml
+          sed -i 's|build:.*context:.*|image: tfg-frontend:ci|' docker-compose.yml
+          sed -i 's|build:.*context:.*|image: tfg-backoffice:ci|' docker-compose.yml
+          docker compose up -d postgres mailpit
+          docker compose up -d backend
+          sleep 30
+          docker compose ps
+
+      - name: Verify backend health
+        run: |
+          curl -f http://localhost:8080/api/v1/health/live || exit 1
+
+      - name: Cleanup
+        if: always()
+        run: docker compose down -v
 
   # ──────────────────────────────────────────────
   # Coverage Gates

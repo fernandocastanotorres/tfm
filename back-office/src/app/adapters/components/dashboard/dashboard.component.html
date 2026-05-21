@@ -1,52 +1,50 @@
 <div *ngIf="isLoading" class="flex items-center justify-center h-64">
-  <div class="text-gray-500">Cargando dashboard...</div>
+  <div class="text-gray-500">{{ 'BO.DASHBOARD.LOADING' | translate }}</div>
 </div>
 
 <div *ngIf="!isLoading">
-  <!-- Stats cards -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
     <div class="bg-white rounded-lg shadow p-6">
-      <div class="text-sm text-gray-500 mb-1">Total Expedientes</div>
+      <div class="text-sm text-gray-500 mb-1">{{ 'BO.DASHBOARD.TOTAL_CASES' | translate }}</div>
       <div class="text-3xl font-bold text-gray-900">{{ stats?.totalCases || 0 }}</div>
     </div>
     <div class="bg-white rounded-lg shadow p-6">
-      <div class="text-sm text-gray-500 mb-1">Pendientes</div>
+      <div class="text-sm text-gray-500 mb-1">{{ 'BO.DASHBOARD.PENDING' | translate }}</div>
       <div class="text-3xl font-bold text-yellow-600">{{ stats?.pendingCases || 0 }}</div>
     </div>
     <div class="bg-white rounded-lg shadow p-6">
-      <div class="text-sm text-gray-500 mb-1">En Tramitacion</div>
+      <div class="text-sm text-gray-500 mb-1">{{ 'BO.DASHBOARD.IN_PROGRESS' | translate }}</div>
       <div class="text-3xl font-bold text-blue-600">{{ stats?.casesInProgress || 0 }}</div>
     </div>
     <div class="bg-white rounded-lg shadow p-6">
-      <div class="text-sm text-gray-500 mb-1">Completados Hoy</div>
+      <div class="text-sm text-gray-500 mb-1">{{ 'BO.DASHBOARD.COMPLETED_TODAY' | translate }}</div>
       <div class="text-3xl font-bold text-green-600">{{ stats?.completedToday || 0 }}</div>
     </div>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
     <div class="bg-white rounded-lg shadow p-6">
-      <div class="text-sm text-gray-500 mb-1">Resueltos</div>
+      <div class="text-sm text-gray-500 mb-1">{{ 'BO.DASHBOARD.RESOLVED' | translate }}</div>
       <div class="text-2xl font-bold text-emerald-700">{{ report?.summary?.resolvedCases || 0 }}</div>
     </div>
     <div class="bg-white rounded-lg shadow p-6">
-      <div class="text-sm text-gray-500 mb-1">SLA Cumplido</div>
+      <div class="text-sm text-gray-500 mb-1">{{ 'BO.DASHBOARD.SLA_COMPLIANCE' | translate }}</div>
       <div class="text-2xl font-bold text-indigo-700">{{ report?.summary?.slaComplianceRate || 0 }}%</div>
     </div>
     <div class="bg-white rounded-lg shadow p-6">
-      <div class="text-sm text-gray-500 mb-1">Media Resolucion</div>
+      <div class="text-sm text-gray-500 mb-1">{{ 'BO.DASHBOARD.AVG_RESOLUTION' | translate }}</div>
       <div class="text-2xl font-bold text-sky-700">{{ report?.summary?.averageResolutionHours || 0 }}h</div>
     </div>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <!-- Pending tasks -->
     <div class="bg-white rounded-lg shadow">
       <div class="px-6 py-4 border-b border-gray-200">
-        <h3 class="text-lg font-semibold text-gray-900">Tareas Pendientes</h3>
+        <h3 class="text-lg font-semibold text-gray-900">{{ 'BO.DASHBOARD.PENDING_TASKS' | translate }}</h3>
       </div>
       <div class="p-6">
         <div *ngIf="pendingTasks.length === 0" class="text-gray-500 text-sm">
-          No hay tareas pendientes
+          {{ 'BO.DASHBOARD.NO_PENDING_TASKS' | translate }}
         </div>
         <ul class="space-y-3">
           <li *ngFor="let task of pendingTasks" class="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
@@ -61,21 +59,20 @@
               [class.bg-red-100]="task.priority === 'urgent'"
               [class.text-red-800]="task.priority === 'urgent'"
             >
-              {{ task.priority === 'urgent' ? 'Urgente' : 'Normal' }}
+              {{ task.priority === 'urgent' ? ('BO.DASHBOARD.URGENT' | translate) : ('BO.DASHBOARD.NORMAL' | translate) }}
             </span>
           </li>
         </ul>
       </div>
     </div>
 
-    <!-- Recent cases -->
     <div class="bg-white rounded-lg shadow">
       <div class="px-6 py-4 border-b border-gray-200">
-        <h3 class="text-lg font-semibold text-gray-900">Actividad Reciente</h3>
+        <h3 class="text-lg font-semibold text-gray-900">{{ 'BO.DASHBOARD.RECENT_ACTIVITY' | translate }}</h3>
       </div>
       <div class="p-6">
         <div class="text-gray-500 text-sm">
-          Los expedientes apareceran aqui cuando se reciban datos del backend.
+          {{ 'BO.DASHBOARD.NO_ACTIVITY' | translate }}
         </div>
       </div>
     </div>
@@ -84,10 +81,10 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
     <div class="bg-white rounded-lg shadow">
       <div class="px-6 py-4 border-b border-gray-200">
-        <h3 class="text-lg font-semibold text-gray-900">Distribucion por Estado</h3>
+        <h3 class="text-lg font-semibold text-gray-900">{{ 'BO.DASHBOARD.STATUS_DISTRIBUTION' | translate }}</h3>
       </div>
       <div class="p-6">
-        <div *ngIf="statusDistribution.length === 0" class="text-gray-500 text-sm">Sin datos</div>
+        <div *ngIf="statusDistribution.length === 0" class="text-gray-500 text-sm">{{ 'BO.DASHBOARD.NO_DATA' | translate }}</div>
         <ul class="space-y-2" *ngIf="statusDistribution.length > 0">
           <li *ngFor="let item of statusDistribution" class="flex items-center justify-between text-sm">
             <span class="text-gray-700">{{ item.label }}</span>
@@ -99,14 +96,14 @@
 
     <div class="bg-white rounded-lg shadow">
       <div class="px-6 py-4 border-b border-gray-200">
-        <h3 class="text-lg font-semibold text-gray-900">Tendencia Ultimos 7 Dias</h3>
+        <h3 class="text-lg font-semibold text-gray-900">{{ 'BO.DASHBOARD.WEEKLY_TREND' | translate }}</h3>
       </div>
       <div class="p-6">
-        <div *ngIf="dailyTrend.length === 0" class="text-gray-500 text-sm">Sin datos</div>
+        <div *ngIf="dailyTrend.length === 0" class="text-gray-500 text-sm">{{ 'BO.DASHBOARD.NO_DATA' | translate }}</div>
         <ul class="space-y-2" *ngIf="dailyTrend.length > 0">
           <li *ngFor="let day of dailyTrend" class="flex items-center justify-between text-sm">
             <span class="text-gray-700">{{ day.day }}</span>
-            <span class="text-gray-900">C: {{ day.createdCases }} | R: {{ day.resolvedCases }}</span>
+            <span class="text-gray-900">{{ 'BO.DASHBOARD.CREATED' | translate }}: {{ day.createdCases }} | {{ 'BO.DASHBOARD.RESOLVED_SHORT' | translate }}: {{ day.resolvedCases }}</span>
           </li>
         </ul>
       </div>
@@ -116,10 +113,10 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
     <div class="bg-white rounded-lg shadow">
       <div class="px-6 py-4 border-b border-gray-200">
-        <h3 class="text-lg font-semibold text-gray-900">Top Procedimientos</h3>
+        <h3 class="text-lg font-semibold text-gray-900">{{ 'BO.DASHBOARD.TOP_PROCEDURES' | translate }}</h3>
       </div>
       <div class="p-6">
-        <div *ngIf="procedureDistribution.length === 0" class="text-gray-500 text-sm">Sin datos</div>
+        <div *ngIf="procedureDistribution.length === 0" class="text-gray-500 text-sm">{{ 'BO.DASHBOARD.NO_DATA' | translate }}</div>
         <ul class="space-y-2" *ngIf="procedureDistribution.length > 0">
           <li *ngFor="let item of procedureDistribution" class="flex items-center justify-between text-sm">
             <span class="text-gray-700">{{ item.label }}</span>
@@ -131,10 +128,10 @@
 
     <div class="bg-white rounded-lg shadow">
       <div class="px-6 py-4 border-b border-gray-200">
-        <h3 class="text-lg font-semibold text-gray-900">Carga por Unidad</h3>
+        <h3 class="text-lg font-semibold text-gray-900">{{ 'BO.DASHBOARD.UNIT_LOAD' | translate }}</h3>
       </div>
       <div class="p-6">
-        <div *ngIf="unitDistribution.length === 0" class="text-gray-500 text-sm">Sin datos</div>
+        <div *ngIf="unitDistribution.length === 0" class="text-gray-500 text-sm">{{ 'BO.DASHBOARD.NO_DATA' | translate }}</div>
         <ul class="space-y-2" *ngIf="unitDistribution.length > 0">
           <li *ngFor="let item of unitDistribution" class="flex items-center justify-between text-sm">
             <span class="text-gray-700">{{ item.label }}</span>

@@ -9,3 +9,17 @@ yarn-error.log*
 .vscode/
 .idea/
 **/*.iml
+playwright-report/
+test-results/
+.git/
+.gitignore
+.env*
+.env
+.env.*
+.opencode/
+.atl/
+.agents/
+e2e/
+playwright.config.*
+cypress.*
+.github/

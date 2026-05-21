@@ -4,6 +4,8 @@ import es.tfg.records.application.dto.PublicContentDtos;
 import es.tfg.records.application.exception.ResourceNotFoundException;
 import es.tfg.records.infrastructure.persistence.entity.PublicContentEntryEntity;
 import es.tfg.records.infrastructure.persistence.repository.PublicContentEntryJpaRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +45,7 @@ public class PublicContentService {
     }
 
     @Transactional
+    @CacheEvict(value = "public-content", allEntries = true)
     public PublicContentDtos.LegislationEntry createLegislation(PublicContentDtos.LegislationUpsertRequest request) {
         PublicContentEntryEntity entity = baseEntity(KIND_LEGISLATION, request.locale(), request.translationGroupId());
         applyLegislation(entity, request);
@@ -50,6 +53,7 @@ public class PublicContentService {
     }
 
     @Transactional
+    @CacheEvict(value = "public-content", allEntries = true)
     public PublicContentDtos.LegislationEntry updateLegislation(UUID id, PublicContentDtos.LegislationUpsertRequest request) {
         PublicContentEntryEntity entity = findByGroup(KIND_LEGISLATION, id, normalizeLocale(request.locale()));
         applyLegislation(entity, request);
@@ -57,6 +61,7 @@ public class PublicContentService {
     }
 
     @Transactional
+    @CacheEvict(value = "public-content", allEntries = true)
     public void deleteLegislation(UUID id) {
         repository.deleteByEntryKindAndTranslationGroupId(KIND_LEGISLATION, id);
     }
@@ -72,6 +77,7 @@ public class PublicContentService {
     }
 
     @Transactional
+    @CacheEvict(value = "public-content", allEntries = true)
     public PublicContentDtos.FaqCategoryEntry createFaqCategory(PublicContentDtos.FaqCategoryUpsertRequest request) {
         PublicContentEntryEntity entity = baseEntity(KIND_FAQ_CATEGORY, request.locale(), request.translationGroupId());
         applyFaqCategory(entity, request);
@@ -79,6 +85,7 @@ public class PublicContentService {
     }
 
     @Transactional
+    @CacheEvict(value = "public-content", allEntries = true)
     public PublicContentDtos.FaqCategoryEntry updateFaqCategory(UUID id, PublicContentDtos.FaqCategoryUpsertRequest request) {
         PublicContentEntryEntity entity = findByGroup(KIND_FAQ_CATEGORY, id, normalizeLocale(request.locale()));
         applyFaqCategory(entity, request);
@@ -86,11 +93,13 @@ public class PublicContentService {
     }
 
     @Transactional
+    @CacheEvict(value = "public-content", allEntries = true)
     public void deleteFaqCategory(UUID id) {
         repository.deleteByEntryKindAndTranslationGroupId(KIND_FAQ_CATEGORY, id);
     }
 
     @Transactional
+    @CacheEvict(value = "public-content", allEntries = true)
     public PublicContentDtos.FaqEntry createFaq(PublicContentDtos.FaqUpsertRequest request) {
         PublicContentEntryEntity entity = baseEntity(KIND_FAQ, request.locale(), request.translationGroupId());
         applyFaq(entity, request);
@@ -98,6 +107,7 @@ public class PublicContentService {
     }
 
     @Transactional
+    @CacheEvict(value = "public-content", allEntries = true)
     public PublicContentDtos.FaqEntry updateFaq(UUID id, PublicContentDtos.FaqUpsertRequest request) {
         PublicContentEntryEntity entity = findByGroup(KIND_FAQ, id, normalizeLocale(request.locale()));
         applyFaq(entity, request);
@@ -105,6 +115,7 @@ public class PublicContentService {
     }
 
     @Transactional
+    @CacheEvict(value = "public-content", allEntries = true)
     public void deleteFaq(UUID id) {
         repository.deleteByEntryKindAndTranslationGroupId(KIND_FAQ, id);
     }
@@ -115,6 +126,7 @@ public class PublicContentService {
     }
 
     @Transactional
+    @CacheEvict(value = "public-content", allEntries = true)
     public PublicContentDtos.CalendarEntry createCalendar(PublicContentDtos.CalendarUpsertRequest request) {
         PublicContentEntryEntity entity = baseEntity(KIND_CALENDAR, request.locale(), request.translationGroupId());
         applyCalendar(entity, request);
@@ -122,6 +134,7 @@ public class PublicContentService {
     }
 
     @Transactional
+    @CacheEvict(value = "public-content", allEntries = true)
     public PublicContentDtos.CalendarEntry updateCalendar(UUID id, PublicContentDtos.CalendarUpsertRequest request) {
         PublicContentEntryEntity entity = findByGroup(KIND_CALENDAR, id, normalizeLocale(request.locale()));
         applyCalendar(entity, request);
@@ -129,6 +142,7 @@ public class PublicContentService {
     }
 
     @Transactional
+    @CacheEvict(value = "public-content", allEntries = true)
     public void deleteCalendar(UUID id) {
         repository.deleteByEntryKindAndTranslationGroupId(KIND_CALENDAR, id);
     }
@@ -139,6 +153,7 @@ public class PublicContentService {
     }
 
     @Transactional
+    @CacheEvict(value = "public-content", allEntries = true)
     public PublicContentDtos.InstitutionalEntry createInstitutional(PublicContentDtos.InstitutionalUpsertRequest request) {
         PublicContentEntryEntity entity = baseEntity(KIND_INSTITUTIONAL, request.locale(), request.translationGroupId());
         applyInstitutional(entity, request);
@@ -146,6 +161,7 @@ public class PublicContentService {
     }
 
     @Transactional
+    @CacheEvict(value = "public-content", allEntries = true)
     public PublicContentDtos.InstitutionalEntry updateInstitutional(UUID id, PublicContentDtos.InstitutionalUpsertRequest request) {
         PublicContentEntryEntity entity = findByGroup(KIND_INSTITUTIONAL, id, normalizeLocale(request.locale()));
         applyInstitutional(entity, request);
@@ -153,6 +169,7 @@ public class PublicContentService {
     }
 
     @Transactional
+    @CacheEvict(value = "public-content", allEntries = true)
     public void deleteInstitutional(UUID id) {
         repository.deleteByEntryKindAndTranslationGroupId(KIND_INSTITUTIONAL, id);
     }
@@ -168,6 +185,7 @@ public class PublicContentService {
     }
 
     @Transactional
+    @CacheEvict(value = "public-content", allEntries = true)
     public PublicContentDtos.OrganismEntry createOrganism(PublicContentDtos.OrganismUpsertRequest request) {
         PublicContentEntryEntity entity = baseEntity(KIND_ORGANISM, request.locale(), request.translationGroupId());
         applyOrganism(entity, request);
@@ -175,6 +193,7 @@ public class PublicContentService {
     }
 
     @Transactional
+    @CacheEvict(value = "public-content", allEntries = true)
     public PublicContentDtos.OrganismEntry updateOrganism(UUID id, PublicContentDtos.OrganismUpsertRequest request) {
         PublicContentEntryEntity entity = findByGroup(KIND_ORGANISM, id, normalizeLocale(request.locale()));
         applyOrganism(entity, request);
@@ -182,6 +201,7 @@ public class PublicContentService {
     }
 
     @Transactional
+    @CacheEvict(value = "public-content", allEntries = true)
     public void deleteOrganism(UUID id) {
         repository.deleteByEntryKindAndTranslationGroupId(KIND_ORGANISM, id);
     }
@@ -192,6 +212,7 @@ public class PublicContentService {
     }
 
     @Transactional
+    @CacheEvict(value = "public-content", allEntries = true)
     public PublicContentDtos.ResourceEntry createResource(PublicContentDtos.ResourceUpsertRequest request) {
         PublicContentEntryEntity entity = baseEntity(KIND_RESOURCE, request.locale(), request.translationGroupId());
         applyResource(entity, request);
@@ -199,6 +220,7 @@ public class PublicContentService {
     }
 
     @Transactional
+    @CacheEvict(value = "public-content", allEntries = true)
     public PublicContentDtos.ResourceEntry updateResource(UUID id, PublicContentDtos.ResourceUpsertRequest request) {
         PublicContentEntryEntity entity = findByGroup(KIND_RESOURCE, id, normalizeLocale(request.locale()));
         applyResource(entity, request);
@@ -206,11 +228,13 @@ public class PublicContentService {
     }
 
     @Transactional
+    @CacheEvict(value = "public-content", allEntries = true)
     public void deleteResource(UUID id) {
         repository.deleteByEntryKindAndTranslationGroupId(KIND_RESOURCE, id);
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "public-content", key = "'legislation:' + #type + ':' + T(org.springframework.context.i18n.LocaleContextHolder).getLocale().toLanguageTag()")
     public List<PublicContentDtos.LegislationEntry> listPublicLegislation(String type) {
         List<PublicContentEntryEntity> localized = localize(repository.findByEntryKindAndPublishedTrueOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_LEGISLATION));
         return localized.stream()
@@ -255,6 +279,7 @@ public class PublicContentService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "public-content", key = "'faq-categories:' + T(org.springframework.context.i18n.LocaleContextHolder).getLocale().toLanguageTag()")
     public List<PublicContentDtos.FaqCategoryEntry> listPublicFaqCategories() {
         return localize(repository.findByEntryKindAndPublishedTrueOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_FAQ_CATEGORY)).stream()
                 .map(this::toFaqCategory)
@@ -262,6 +287,7 @@ public class PublicContentService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "public-content", key = "'faq:' + #categoryCode + ':' + #q + ':' + T(org.springframework.context.i18n.LocaleContextHolder).getLocale().toLanguageTag()")
     public List<PublicContentDtos.FaqEntry> listPublicFaq(String categoryCode, String q) {
         String query = normalize(q);
         return localize(repository.findByEntryKindAndPublishedTrueOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_FAQ)).stream()
@@ -274,6 +300,7 @@ public class PublicContentService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "public-content", key = "'calendar:' + #type + ':' + #upcomingLimit + ':' + T(org.springframework.context.i18n.LocaleContextHolder).getLocale().toLanguageTag()")
     public List<PublicContentDtos.CalendarEntry> listPublicCalendar(String type, Integer upcomingLimit) {
         List<PublicContentDtos.CalendarEntry> items = localize(repository.findByEntryKindAndPublishedTrueOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_CALENDAR)).stream()
                 .filter(item -> isBlank(type) || Objects.equals(normalize(item.getValueType()), normalize(type)))
@@ -287,6 +314,7 @@ public class PublicContentService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "public-content", key = "'institutional:' + T(org.springframework.context.i18n.LocaleContextHolder).getLocale().toLanguageTag()")
     public List<PublicContentDtos.InstitutionalEntry> listPublicInstitutional() {
         return localize(repository.findByEntryKindAndPublishedTrueOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_INSTITUTIONAL)).stream()
                 .map(this::toInstitutional)
@@ -294,6 +322,7 @@ public class PublicContentService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "public-content", key = "'organisms:' + #category + ':' + #q + ':' + T(org.springframework.context.i18n.LocaleContextHolder).getLocale().toLanguageTag()")
     public List<PublicContentDtos.OrganismEntry> listPublicOrganisms(String category, String q) {
         String query = normalize(q);
         return localize(repository.findByEntryKindAndPublishedTrueOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_ORGANISM)).stream()
@@ -308,6 +337,7 @@ public class PublicContentService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "public-content", key = "'resources:' + #resourceType + ':' + #q + ':' + T(org.springframework.context.i18n.LocaleContextHolder).getLocale().toLanguageTag()")
     public List<PublicContentDtos.ResourceEntry> listPublicResources(String resourceType, String q) {
         String query = normalize(q);
         return localize(repository.findByEntryKindAndPublishedTrueOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_RESOURCE)).stream()
@@ -321,6 +351,7 @@ public class PublicContentService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "public-content", key = "'theme-palette'")
     public PublicContentDtos.ThemePalette getPublicThemePalette() {
         PublicContentDtos.ThemeCatalog catalog = toThemeCatalog(repository.findByEntryKindOrderBySortOrderAscEventDateAscCreatedAtAsc(KIND_THEME));
         String activeThemeId = isBlank(catalog.activeThemeId())
@@ -367,6 +398,7 @@ public class PublicContentService {
     }
 
     @Transactional
+    @CacheEvict(value = "public-content", allEntries = true)
     public PublicContentDtos.ThemeCatalog saveThemePalette(PublicContentDtos.ThemePaletteUpsertRequest request) {
         List<PublicContentDtos.ThemeVariant> themes = request == null || request.themes() == null
                 ? List.of()

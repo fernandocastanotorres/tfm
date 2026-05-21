@@ -8,3 +8,16 @@ target/
 **/.settings/
 **/logs/
 **/*.log
+.git/
+.gitignore
+.env*
+.opencode/
+.atl/
+.agents/
+docs/
+performance/
+scripts/
+tests/
+docker-compose.yml
+.github/
+node_modules/

@@ -8,6 +8,9 @@ import es.tfg.records.application.mapper.ProcedureTypeMapper;
 import es.tfg.records.domain.model.ProcedureTask;
 import es.tfg.records.domain.model.ProcedureType;
 import es.tfg.records.domain.port.ProcedureTypeRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +33,7 @@ public class ProcedureServiceImpl implements ProcedureService {
     }
 
     @Override
+    @Cacheable(value = "procedure-catalog", key = "'all:' + T(org.springframework.context.i18n.LocaleContextHolder).getLocale().toLanguageTag()")
     public List<ProcedureItem> listAllProcedures() {
         return procedureTypeRepository.findAll().stream()
                 .map(this::toLocalizedProcedureItem)
@@ -37,11 +41,13 @@ public class ProcedureServiceImpl implements ProcedureService {
     }
 
     @Override
+    @Cacheable(value = "procedure-catalog", key = "'by-slug:' + #slug + ':' + T(org.springframework.context.i18n.LocaleContextHolder).getLocale().toLanguageTag()")
     public ProcedureItem getProcedureBySlug(String slug) {
         return toLocalizedProcedureItem(findProcedureByIdentifier(slug));
     }
 
     @Override
+    @Cacheable(value = "procedure-catalog", key = "'form-schema:' + #slug + ':' + T(org.springframework.context.i18n.LocaleContextHolder).getLocale().toLanguageTag()")
     public List<ProcedureTaskDto> getFormSchema(String slug) {
         ProcedureType procedureType = findProcedureBySlug(slug);
 
@@ -52,6 +58,7 @@ public class ProcedureServiceImpl implements ProcedureService {
     }
 
     @Override
+    @Cacheable(value = "procedure-catalog", key = "'task-schema:' + #slug + ':' + #taskId + ':' + T(org.springframework.context.i18n.LocaleContextHolder).getLocale().toLanguageTag()")
     public List<ProcedureTaskDto> getTaskSchema(String slug, String taskId) {
         ProcedureType procedureType = findProcedureBySlug(slug);
 

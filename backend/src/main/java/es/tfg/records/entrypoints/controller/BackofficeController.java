@@ -10,11 +10,13 @@ import es.tfg.records.application.service.PublicContentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -312,6 +314,21 @@ public class BackofficeController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
         return ResponseEntity.ok(backofficeService.analyticsReport(from, to));
+    }
+
+    @GetMapping("/analytics/export")
+    @Operation(summary = "Export analytics report as PDF")
+    public ResponseEntity<Resource> exportAnalyticsPdf(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+        byte[] pdfBytes = backofficeService.exportAnalyticsPdf(from, to);
+        ByteArrayResource resource = new ByteArrayResource(pdfBytes);
+        String filename = "informe-estadisticas-" + (from != null ? from.toString() : "inicio") + "-" + (to != null ? to.toString() : "fin") + ".pdf";
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .contentType(MediaType.APPLICATION_PDF)
+                .contentLength(pdfBytes.length)
+                .body(resource);
     }
 
     @GetMapping("/eni/metadata/procedures/{id}")

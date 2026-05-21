@@ -24,6 +24,9 @@ export interface MenuItem {
     standalone: false
 })
 export class PublicLayoutComponent implements OnInit, OnDestroy {
+
+  private static readonly UNREAD_POLL_INTERVAL_MS = 30_000;
+
   menuOpen = false;
   activeDropdown: string | null = null;
   locales: { code: SupportedLocale; label: string }[] = [];
@@ -99,7 +102,7 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
       this.userMenuOpen = false;
     });
     this.loadUnreadMessageCount();
-    this.unreadPollSub = interval(30000)
+    this.unreadPollSub = interval(PublicLayoutComponent.UNREAD_POLL_INTERVAL_MS)
       .pipe(switchMap(() => this.messagesService.getUnreadCount()))
       .subscribe({
         next: (count) => { this.unreadMessageCount = count; },

@@ -2,6 +2,15 @@ package es.tfg.records.application.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lowagie.text.Document;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
 import es.tfg.records.application.dto.BackofficeDtos;
 import es.tfg.records.application.dto.CaseAttachmentDto;
 import es.tfg.records.application.dto.CaseStatusResponse;
@@ -14,6 +23,7 @@ import es.tfg.records.domain.model.CaseStatus;
 import es.tfg.records.domain.model.TaskType;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureEntity;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTypeI18nEntity;
+import org.springframework.cache.annotation.CacheEvict;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTaskEntity;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTypeEntity;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTaskFieldI18nEntity;
@@ -27,12 +37,16 @@ import es.tfg.records.infrastructure.persistence.repository.ProcedureTaskFieldI1
 import es.tfg.records.infrastructure.persistence.repository.ProcedureTaskJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureTypeJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.UserJpaRepository;
+import es.tfg.records.infrastructure.audit.AuditService;
+import es.tfg.records.infrastructure.persistence.entity.AuditLogEntity.AuditAction;
+import es.tfg.records.infrastructure.persistence.entity.AuditLogEntity.AuditResult;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayOutputStream;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -51,6 +65,8 @@ import java.util.stream.Collectors;
 @Service
 public class BackofficeService {
 
+    private static final long SECONDS_PER_DAY = 86400L;
+
     private final ProcedureJpaRepository procedureRepository;
     private final ProcedureTypeJpaRepository procedureTypeRepository;
     private final ProcedureTypeI18nJpaRepository procedureTypeI18nRepository;
@@ -61,17 +77,19 @@ public class BackofficeService {
     private final UserJpaRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ObjectMapper objectMapper;
+    private final AuditService auditService;
 
     public BackofficeService(ProcedureJpaRepository procedureRepository,
-                             ProcedureTypeJpaRepository procedureTypeRepository,
-                              ProcedureTypeI18nJpaRepository procedureTypeI18nRepository,
-                              ProcedureTaskFieldI18nJpaRepository fieldI18nRepository,
-                              ProcedureTaskJpaRepository taskRepository,
-                              DocumentJpaRepository documentRepository,
-                              CaseTimelineEventJpaRepository timelineRepository,
-                              UserJpaRepository userRepository,
-                              PasswordEncoder passwordEncoder,
-                              ObjectMapper objectMapper) {
+                              ProcedureTypeJpaRepository procedureTypeRepository,
+                               ProcedureTypeI18nJpaRepository procedureTypeI18nRepository,
+                               ProcedureTaskFieldI18nJpaRepository fieldI18nRepository,
+                               ProcedureTaskJpaRepository taskRepository,
+                               DocumentJpaRepository documentRepository,
+                               CaseTimelineEventJpaRepository timelineRepository,
+                               UserJpaRepository userRepository,
+                               PasswordEncoder passwordEncoder,
+                               ObjectMapper objectMapper,
+                               AuditService auditService) {
         this.procedureRepository = procedureRepository;
         this.procedureTypeRepository = procedureTypeRepository;
         this.procedureTypeI18nRepository = procedureTypeI18nRepository;
@@ -82,6 +100,7 @@ public class BackofficeService {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.objectMapper = objectMapper;
+        this.auditService = auditService;
     }
 
     @Transactional(readOnly = true)
@@ -104,13 +123,14 @@ public class BackofficeService {
         ProcedureEntity procedure = findProcedure(id);
         ProcedureTypeEntity type = procedureTypeRepository.findById(procedure.getProcedureTypeId()).orElse(null);
         UserEntity citizen = userRepository.findById(procedure.getOwnerId()).orElse(null);
+        String uploader = citizen != null ? citizen.getEmail() : "Desconocido";
         List<CaseAttachmentDto> attachments = documentRepository.findByProcedureId(procedure.getId()).stream()
                 .map(doc -> new CaseAttachmentDto(
                         doc.getId(),
                         doc.getName(),
                         doc.getMimeType(),
                         doc.getSize(),
-                        "Sistema",
+                        uploader,
                         doc.getUploadedAt(),
                         "SIGNED".equals(doc.getStatus())))
                 .toList();
@@ -159,7 +179,7 @@ public class BackofficeService {
                             currentTask(procedure, type),
                             "REVIEW",
                             null,
-                            procedure.getSubmittedAt() == null ? null : procedure.getSubmittedAt().plusSeconds(86400L * Math.max(1, type == null ? 10 : type.getDeadlineDays())),
+                            procedure.getSubmittedAt() == null ? null : procedure.getSubmittedAt().plusSeconds(SECONDS_PER_DAY * Math.max(1, type == null ? 10 : type.getDeadlineDays())),
                             procedure.getSubmittedAt() == null ? procedure.getCreatedAt() : procedure.getSubmittedAt(),
                             priority(procedure)
                     );
@@ -185,7 +205,7 @@ public class BackofficeService {
         long inProgress = procedures.stream().filter(p -> p.getStatus() == CaseStatus.IN_REVIEW || p.getStatus() == CaseStatus.RESUBMITTED).count();
         long completedToday = procedures.stream()
                 .filter(p -> p.getStatus() == CaseStatus.APPROVED || p.getStatus() == CaseStatus.REJECTED)
-                .filter(p -> p.getUpdatedAt() != null && p.getUpdatedAt().isAfter(Instant.now().minusSeconds(86400)))
+                .filter(p -> p.getUpdatedAt() != null && p.getUpdatedAt().isAfter(Instant.now().minusSeconds(SECONDS_PER_DAY)))
                 .count();
         return new BackofficeDtos.DashboardStats(procedures.size(), pending, inProgress, completedToday, 0, "N/D");
     }
@@ -267,26 +287,48 @@ public class BackofficeService {
         user.setPasswordHash(passwordEncoder.encode(request.password()));
         user.setRoles(toRoleSet(request.roles()));
         user.setActive(request.isActive());
-        return toUserDto(userRepository.save(user));
+        UserEntity saved = userRepository.save(user);
+        auditService.record(AuditAction.CREATE, "USER", saved.getId(), AuditResult.SUCCESS,
+                "User created with roles: " + String.join(", ", saved.getRoles()));
+        return toUserDto(saved);
     }
 
     @Transactional
     public BackofficeDtos.BackofficeUser updateUser(UUID id, BackofficeDtos.UpdateUserRequest request) {
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("USER", id.toString()));
+        List<String> oldRoles = user.getRoles().stream().sorted().toList();
+        boolean oldActive = user.isActive();
         user.setEmail(request.email());
         user.setDisplayName(request.email());
         user.setRoles(toRoleSet(request.roles()));
         user.setActive(request.isActive());
-        return toUserDto(userRepository.save(user));
+        UserEntity saved = userRepository.save(user);
+        List<String> newRoles = saved.getRoles().stream().sorted().toList();
+        StringBuilder details = new StringBuilder("User updated: ");
+        if (!oldRoles.equals(newRoles)) {
+            details.append("roles changed from [").append(String.join(", ", oldRoles))
+                    .append("] to [").append(String.join(", ", newRoles)).append("]; ");
+        }
+        if (oldActive != saved.isActive()) {
+            details.append("status changed from ").append(oldActive ? "active" : "inactive")
+                    .append(" to ").append(saved.isActive() ? "active" : "inactive");
+        }
+        auditService.record(AuditAction.UPDATE, "USER", saved.getId(), AuditResult.SUCCESS, details.toString());
+        return toUserDto(saved);
     }
 
     @Transactional
     public BackofficeDtos.BackofficeUser toggleUserStatus(UUID id, boolean active) {
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("USER", id.toString()));
+        boolean previousActive = user.isActive();
         user.setActive(active);
-        return toUserDto(userRepository.save(user));
+        UserEntity saved = userRepository.save(user);
+        auditService.record(AuditAction.UPDATE, "USER", saved.getId(), AuditResult.SUCCESS,
+                "User status changed from " + (previousActive ? "active" : "inactive")
+                        + " to " + (active ? "active" : "inactive"));
+        return toUserDto(saved);
     }
 
     @Transactional(readOnly = true)
@@ -297,6 +339,7 @@ public class BackofficeService {
     }
 
     @Transactional
+    @CacheEvict(value = "procedure-catalog", allEntries = true)
     public BackofficeDtos.ManagedProcedure createProcedure(BackofficeDtos.ProcedureRequest request) {
         ProcedureTypeEntity entity = new ProcedureTypeEntity();
         entity.setId(UUID.randomUUID());
@@ -307,6 +350,7 @@ public class BackofficeService {
     }
 
     @Transactional
+    @CacheEvict(value = "procedure-catalog", allEntries = true)
     public BackofficeDtos.ManagedProcedure updateProcedure(UUID id, BackofficeDtos.ProcedureRequest request) {
         ProcedureTypeEntity entity = procedureTypeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("PROCEDURE_TYPE", id.toString()));
@@ -317,6 +361,7 @@ public class BackofficeService {
     }
 
     @Transactional
+    @CacheEvict(value = "procedure-catalog", allEntries = true)
     public BackofficeDtos.ManagedProcedure toggleProcedureStatus(UUID id, String status) {
         ProcedureTypeEntity entity = procedureTypeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("PROCEDURE_TYPE", id.toString()));
@@ -377,7 +422,7 @@ public class BackofficeService {
     }
 
     private String priority(ProcedureEntity procedure) {
-        return procedure.getSubmittedAt() != null && procedure.getSubmittedAt().isBefore(Instant.now().minusSeconds(86400)) ? "urgent" : "normal";
+        return procedure.getSubmittedAt() != null && procedure.getSubmittedAt().isBefore(Instant.now().minusSeconds(SECONDS_PER_DAY)) ? "urgent" : "normal";
     }
 
     private String typeTitle(ProcedureTypeEntity type) {
@@ -439,7 +484,7 @@ public class BackofficeService {
     }
 
     private BackofficeDtos.BackofficeUser toUserDto(UserEntity user) {
-        return new BackofficeDtos.BackofficeUser(user.getId(), user.getEmail(), user.getRoles().stream().sorted().toList(), user.getCreatedAt(), null, user.isActive());
+        return new BackofficeDtos.BackofficeUser(user.getId(), user.getEmail(), user.getRoles().stream().sorted().toList(), user.getCreatedAt(), user.getLastLogin(), user.isActive());
     }
 
     private Set<String> toRoleSet(List<String> roles) {
@@ -698,6 +743,140 @@ public class BackofficeService {
                 computeProcedureTypeMetrics(procedures, typesById),
                 computeUnitSlaBreakdown(procedures, typesById)
         );
+    }
+
+    @Transactional(readOnly = true)
+    public byte[] exportAnalyticsPdf(LocalDate from, LocalDate to) {
+            TransparencyDtos.AnalyticsReport report = analyticsReport(from, to);
+        LocalDate resolvedTo = to == null ? LocalDate.now(ZoneOffset.UTC) : to;
+        LocalDate resolvedFrom = from == null ? resolvedTo.minusDays(89) : from;
+
+        Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
+        Font subtitleFont = FontFactory.getFont(FontFactory.HELVETICA, 12);
+        Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10);
+        Font cellFont = FontFactory.getFont(FontFactory.HELVETICA, 9);
+        Font sectionFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14);
+
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            Document document = new Document(PageSize.A4.rotate(), 36, 36, 36, 36);
+            PdfWriter.getInstance(document, baos);
+            document.open();
+
+            document.add(new Paragraph("Informe de Estadisticas", titleFont));
+            document.add(new Paragraph(" "));
+            String period = "Periodo: " + resolvedFrom + " a " + resolvedTo;
+            document.add(new Paragraph(period, subtitleFont));
+            document.add(new Paragraph("Generado: " + java.time.Instant.now().toString(), subtitleFont));
+            document.add(new Paragraph(" "));
+
+            document.add(new Paragraph("Resumen General", sectionFont));
+            document.add(new Paragraph(" "));
+
+            BackofficeDtos.DashboardReportSummary summary = report.summary();
+            PdfPTable summaryTable = new PdfPTable(2);
+            summaryTable.setWidthPercentage(60);
+            summaryTable.addCell(new PdfPCell(new Phrase("Total Expedientes", headerFont)));
+            summaryTable.addCell(new PdfPCell(new Phrase(String.valueOf(summary.totalCases()), cellFont)));
+            summaryTable.addCell(new PdfPCell(new Phrase("Pendientes", headerFont)));
+            summaryTable.addCell(new PdfPCell(new Phrase(String.valueOf(summary.pendingCases()), cellFont)));
+            summaryTable.addCell(new PdfPCell(new Phrase("En Progreso", headerFont)));
+            summaryTable.addCell(new PdfPCell(new Phrase(String.valueOf(summary.inProgressCases()), cellFont)));
+            summaryTable.addCell(new PdfPCell(new Phrase("Resueltos", headerFont)));
+            summaryTable.addCell(new PdfPCell(new Phrase(String.valueOf(summary.resolvedCases()), cellFont)));
+            summaryTable.addCell(new PdfPCell(new Phrase("Vencidos", headerFont)));
+            summaryTable.addCell(new PdfPCell(new Phrase(String.valueOf(summary.overdueCases()), cellFont)));
+            summaryTable.addCell(new PdfPCell(new Phrase("Cumplimiento SLA (%)", headerFont)));
+            summaryTable.addCell(new PdfPCell(new Phrase(String.format("%.2f", summary.slaComplianceRate()), cellFont)));
+            summaryTable.addCell(new PdfPCell(new Phrase("Tiempo Medio Resolucion (horas)", headerFont)));
+            summaryTable.addCell(new PdfPCell(new Phrase(String.format("%.2f", summary.averageResolutionHours()), cellFont)));
+            document.add(summaryTable);
+            document.add(new Paragraph(" "));
+
+            document.add(new Paragraph("Distribucion por Estado", sectionFont));
+            document.add(new Paragraph(" "));
+            PdfPTable statusTable = new PdfPTable(3);
+            statusTable.setWidthPercentage(70);
+            statusTable.addCell(new PdfPCell(new Phrase("Estado", headerFont)));
+            statusTable.addCell(new PdfPCell(new Phrase("Clave", headerFont)));
+            statusTable.addCell(new PdfPCell(new Phrase("Cantidad", headerFont)));
+            for (BackofficeDtos.DashboardDistributionItem item : report.byStatus()) {
+                statusTable.addCell(new PdfPCell(new Phrase(item.label(), cellFont)));
+                statusTable.addCell(new PdfPCell(new Phrase(item.key(), cellFont)));
+                statusTable.addCell(new PdfPCell(new Phrase(String.valueOf(item.count()), cellFont)));
+            }
+            document.add(statusTable);
+            document.add(new Paragraph(" "));
+
+            document.add(new Paragraph("Distribucion por Tipo de Procedimiento", sectionFont));
+            document.add(new Paragraph(" "));
+            PdfPTable procTable = new PdfPTable(2);
+            procTable.setWidthPercentage(70);
+            procTable.addCell(new PdfPCell(new Phrase("Tipo de Procedimiento", headerFont)));
+            procTable.addCell(new PdfPCell(new Phrase("Cantidad", headerFont)));
+            for (BackofficeDtos.DashboardDistributionItem item : report.byProcedureType()) {
+                procTable.addCell(new PdfPCell(new Phrase(item.label(), cellFont)));
+                procTable.addCell(new PdfPCell(new Phrase(String.valueOf(item.count()), cellFont)));
+            }
+            document.add(procTable);
+            document.add(new Paragraph(" "));
+
+            document.add(new Paragraph("Tendencia Mensual", sectionFont));
+            document.add(new Paragraph(" "));
+            PdfPTable monthlyTable = new PdfPTable(4);
+            monthlyTable.setWidthPercentage(80);
+            monthlyTable.addCell(new PdfPCell(new Phrase("Mes", headerFont)));
+            monthlyTable.addCell(new PdfPCell(new Phrase("Creados", headerFont)));
+            monthlyTable.addCell(new PdfPCell(new Phrase("Resueltos", headerFont)));
+            monthlyTable.addCell(new PdfPCell(new Phrase("Tiempo Medio (h)", headerFont)));
+            for (TransparencyDtos.MonthlyTrendPoint m : report.monthlyTrend()) {
+                monthlyTable.addCell(new PdfPCell(new Phrase(m.month(), cellFont)));
+                monthlyTable.addCell(new PdfPCell(new Phrase(String.valueOf(m.createdCases()), cellFont)));
+                monthlyTable.addCell(new PdfPCell(new Phrase(String.valueOf(m.resolvedCases()), cellFont)));
+                monthlyTable.addCell(new PdfPCell(new Phrase(String.format("%.2f", m.avgResolutionHours()), cellFont)));
+            }
+            document.add(monthlyTable);
+            document.add(new Paragraph(" "));
+
+            document.add(new Paragraph("Metricas por Tipo de Procedimiento", sectionFont));
+            document.add(new Paragraph(" "));
+            PdfPTable metricsTable = new PdfPTable(5);
+            metricsTable.setWidthPercentage(90);
+            metricsTable.addCell(new PdfPCell(new Phrase("Tipo", headerFont)));
+            metricsTable.addCell(new PdfPCell(new Phrase("Resueltos", headerFont)));
+            metricsTable.addCell(new PdfPCell(new Phrase("Media (h)", headerFont)));
+            metricsTable.addCell(new PdfPCell(new Phrase("Mediana (h)", headerFont)));
+            metricsTable.addCell(new PdfPCell(new Phrase("SLA (%)", headerFont)));
+            for (TransparencyDtos.ProcedureTypeMetric m : report.procedureTypeMetrics()) {
+                metricsTable.addCell(new PdfPCell(new Phrase(m.procedureType(), cellFont)));
+                metricsTable.addCell(new PdfPCell(new Phrase(String.valueOf(m.totalResolved()), cellFont)));
+                metricsTable.addCell(new PdfPCell(new Phrase(String.format("%.2f", m.avgResolutionHours()), cellFont)));
+                metricsTable.addCell(new PdfPCell(new Phrase(String.format("%.2f", m.medianResolutionHours()), cellFont)));
+                metricsTable.addCell(new PdfPCell(new Phrase(String.format("%.2f", m.slaComplianceRate()), cellFont)));
+            }
+            document.add(metricsTable);
+            document.add(new Paragraph(" "));
+
+            document.add(new Paragraph("Cumplimiento SLA por Unidad", sectionFont));
+            document.add(new Paragraph(" "));
+            PdfPTable slaTable = new PdfPTable(4);
+            slaTable.setWidthPercentage(80);
+            slaTable.addCell(new PdfPCell(new Phrase("Unidad", headerFont)));
+            slaTable.addCell(new PdfPCell(new Phrase("Total Casos", headerFont)));
+            slaTable.addCell(new PdfPCell(new Phrase("Resueltos dentro SLA", headerFont)));
+            slaTable.addCell(new PdfPCell(new Phrase("Cumplimiento (%)", headerFont)));
+            for (TransparencyDtos.UnitSlaBreakdown u : report.unitSlaBreakdown()) {
+                slaTable.addCell(new PdfPCell(new Phrase(u.unit(), cellFont)));
+                slaTable.addCell(new PdfPCell(new Phrase(String.valueOf(u.totalCases()), cellFont)));
+                slaTable.addCell(new PdfPCell(new Phrase(String.valueOf(u.totalResolved()), cellFont)));
+                slaTable.addCell(new PdfPCell(new Phrase(String.format("%.2f", u.slaComplianceRate()), cellFont)));
+            }
+            document.add(slaTable);
+
+            document.close();
+            return baos.toByteArray();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to generate analytics PDF", e);
+        }
     }
 
     private List<TransparencyDtos.MonthlyTrendPoint> computeMonthlyTrend(
