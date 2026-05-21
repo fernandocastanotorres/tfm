@@ -359,7 +359,7 @@ jobs:
 
       - name: Build backend image
         if: ${{ hashFiles('backend/Dockerfile') != '' }}
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ./backend
           push: false
@@ -370,7 +370,7 @@ jobs:
 
       - name: Build front-end image
         if: ${{ hashFiles('front-end/Dockerfile') != '' }}
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ./front-end
           push: false
@@ -381,7 +381,7 @@ jobs:
 
       - name: Build back-office image
         if: ${{ hashFiles('back-office/Dockerfile') != '' }}
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ./back-office
           push: false
