@@ -1,7 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Directive,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  ViewChildren
+} from '@angular/core';
+import { FocusKeyManager } from '@angular/cdk/a11y';
 import { FormBuilder } from '@angular/forms';
 import { PaymentsService, PaymentItem } from '../../../application/services/payments.service';
 import { changePage, updatePageSize, getPaginationState, PaginationState } from '../../../application/utils/pagination';
+import { Subject } from 'rxjs';
+import { startWith, takeUntil } from 'rxjs/operators';
+
+@Directive({
+  selector: '[appPaymentCard]',
+  standalone: false
+})
+export class PaymentCardDirective {
+  constructor(private readonly elementRef: ElementRef<HTMLButtonElement>) {}
+
+  focus(): void {
+    this.elementRef.nativeElement.focus();
+  }
+}
 
 @Component({
     selector: 'app-payments',
@@ -9,11 +33,16 @@ import { changePage, updatePageSize, getPaginationState, PaginationState } from 
     styleUrls: [],
     standalone: false
 })
-export class PaymentsComponent implements OnInit {
+export class PaymentsComponent implements OnInit, AfterViewInit, OnDestroy {
   payments: PaymentItem[] = [];
   selectedPayment: PaymentItem | null = null;
   readonly paginationOptions = [10, 20, 50];
   paginationState: PaginationState = { currentPage: 1, totalPages: 1, pageSize: 10 };
+  private readonly destroy$ = new Subject<void>();
+  private keyManager?: FocusKeyManager<PaymentCardDirective>;
+  private activePaymentId: string | null = null;
+
+  @ViewChildren(PaymentCardDirective) paymentCards!: QueryList<PaymentCardDirective>;
 
   readonly filterForm = this.fb.group({
     search: [''],
@@ -32,7 +61,19 @@ export class PaymentsComponent implements OnInit {
   ngOnInit(): void {
     this.payments = this.paymentsService.getPayments();
     this.selectedPayment = this.payments[0] ?? null;
+    this.activePaymentId = this.selectedPayment?.id ?? null;
     this.updatePaginationState();
+  }
+
+  ngAfterViewInit(): void {
+    this.paymentCards.changes
+      .pipe(startWith(this.paymentCards), takeUntil(this.destroy$))
+      .subscribe(() => this.configureKeyManager());
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   get filteredPayments(): PaymentItem[] {
@@ -88,6 +129,7 @@ export class PaymentsComponent implements OnInit {
 
   selectPayment(payment: PaymentItem): void {
     this.selectedPayment = payment;
+    this.activePaymentId = payment.id;
   }
 
   markAsPaid(payment: PaymentItem): void {
@@ -109,7 +151,47 @@ export class PaymentsComponent implements OnInit {
     this.updatePaginationState();
   }
 
+  onPaymentListKeydown(event: KeyboardEvent): void {
+    if (!this.keyManager) {
+      return;
+    }
+
+    this.keyManager.onKeydown(event);
+    const activeIndex = this.keyManager.activeItemIndex;
+    if (activeIndex === null || activeIndex === undefined) {
+      return;
+    }
+
+    const payment = this.pagedPayments[activeIndex];
+    if (payment) {
+      this.activePaymentId = payment.id;
+    }
+  }
+
+  onPaymentListFocus(): void {
+    if (!this.keyManager || this.pagedPayments.length === 0 || this.keyManager.activeItemIndex !== null) {
+      return;
+    }
+
+    const preferredIndex = this.activePaymentId === null
+      ? 0
+      : this.pagedPayments.findIndex(payment => payment.id === this.activePaymentId);
+    this.keyManager.setActiveItem(preferredIndex >= 0 ? preferredIndex : 0);
+  }
+
   private updatePaginationState(): void {
     this.paginationState = getPaginationState(this.filteredPayments.length, this.filterForm);
+  }
+
+  private configureKeyManager(): void {
+    this.keyManager = new FocusKeyManager(this.paymentCards).withWrap().withHomeAndEnd();
+    if (this.pagedPayments.length === 0) {
+      return;
+    }
+
+    const preferredIndex = this.activePaymentId === null
+      ? 0
+      : this.pagedPayments.findIndex(payment => payment.id === this.activePaymentId);
+    this.keyManager.setActiveItem(preferredIndex >= 0 ? preferredIndex : 0);
   }
 }

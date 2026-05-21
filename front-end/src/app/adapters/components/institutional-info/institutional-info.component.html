@@ -16,7 +16,41 @@
 
     <div class="institutional__grid" *ngIf="!isLoading">
       <article class="card p-6 institutional__card" *ngFor="let section of sections">
-        <div class="institutional__card-icon" aria-hidden="true">{{ section.icon }}</div>
+        <div class="institutional__card-icon" aria-hidden="true" [ngSwitch]="section.icon">
+          <svg *ngSwitchCase="'building'" class="institutional__card-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M4 20h16M6 20V8l6-4 6 4v12"/>
+            <path d="M9 11h2M13 11h2M9 14h2M13 14h2" stroke-linecap="round"/>
+          </svg>
+          <svg *ngSwitchCase="'target'" class="institutional__card-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="8"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+          </svg>
+          <svg *ngSwitchCase="'users'" class="institutional__card-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="9" cy="8" r="2.5"/>
+            <circle cx="16" cy="9" r="2"/>
+            <path d="M4.5 18a4.5 4.5 0 0 1 9 0" stroke-linecap="round"/>
+            <path d="M13 18a3.5 3.5 0 0 1 7 0" stroke-linecap="round"/>
+          </svg>
+          <svg *ngSwitchCase="'shield'" class="institutional__card-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 3.5 5.5 6v5.5c0 4.1 2.6 7.8 6.5 9 3.9-1.2 6.5-4.9 6.5-9V6z"/>
+            <path d="m9.5 12 1.8 1.8L14.8 10.3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <svg *ngSwitchCase="'file'" class="institutional__card-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M7 3.5h7l4 4V20a.5.5 0 0 1-.5.5h-10A.5.5 0 0 1 7 20z"/>
+            <path d="M14 3.5V8h4"/>
+            <path d="M9 12h6M9 15h6" stroke-linecap="round"/>
+          </svg>
+          <svg *ngSwitchCase="'info'" class="institutional__card-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="8"/>
+            <path d="M12 10v6" stroke-linecap="round"/>
+            <circle cx="12" cy="7.5" r=".9" fill="currentColor" stroke="none"/>
+          </svg>
+          <svg *ngSwitchDefault class="institutional__card-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="8"/>
+            <path d="M9 12h6M12 9v6" stroke-linecap="round"/>
+          </svg>
+        </div>
         <h2 class="institutional__card-title">{{ section.title }}</h2>
         <p class="institutional__card-content">{{ section.content }}</p>
       </article>

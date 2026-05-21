@@ -113,6 +113,25 @@
     <h2 id="accesos-title" class="text-xl font-semibold text-surface-900">{{ 'DASHBOARD.QUICK_ACCESS' | translate }}</h2>
     <div class="mt-6 grid gap-6 md:grid-cols-2">
       <a class="card p-6 transition hover:-translate-y-0.5 hover:shadow-xl" *ngFor="let quickLink of quickAccess" [routerLink]="quickLink.route">
+        <div class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-700" [ngSwitch]="quickLink.id" aria-hidden="true">
+          <svg *ngSwitchCase="'ACC-1'" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M4 6h16M4 12h16M4 18h10" stroke-linecap="round"/>
+          </svg>
+          <svg *ngSwitchCase="'ACC-2'" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M8 7h8l3 3v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/>
+            <path d="M8 7v4h8V7"/>
+          </svg>
+          <svg *ngSwitchCase="'ACC-3'" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M4 6h16v10a2 2 0 0 1-2 2H9l-5 4V8a2 2 0 0 1 2-2z"/>
+          </svg>
+          <svg *ngSwitchCase="'ACC-4'" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="8" r="3.5"/>
+            <path d="M5 19c1.7-3 4-4.5 7-4.5s5.3 1.5 7 4.5" stroke-linecap="round"/>
+          </svg>
+          <svg *ngSwitchDefault class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M4 7h16M6 7v10h12V7M10 11h4" stroke-linecap="round"/>
+          </svg>
+        </div>
         <h3 class="text-lg font-semibold">{{ quickLink.titleKey | translate }}</h3>
         <p class="text-surface-600">{{ quickLink.descriptionKey | translate }}</p>
       </a>

@@ -1,7 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Directive,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  ViewChildren
+} from '@angular/core';
+import { FocusKeyManager } from '@angular/cdk/a11y';
 import { FormBuilder } from '@angular/forms';
 import { NotificationsService, NotificationInboxItem } from '../../../application/services/notifications.service';
 import { changePage, updatePageSize, getPaginationState, PaginationState } from '../../../application/utils/pagination';
+import { Subject } from 'rxjs';
+import { startWith, takeUntil } from 'rxjs/operators';
+
+@Directive({
+  selector: '[appNotificationCard]',
+  standalone: false
+})
+export class NotificationCardDirective {
+  constructor(private readonly elementRef: ElementRef<HTMLElement>) {}
+
+  focus(): void {
+    this.elementRef.nativeElement.focus();
+  }
+}
 
 @Component({
     selector: 'app-notifications',
@@ -9,12 +33,17 @@ import { changePage, updatePageSize, getPaginationState, PaginationState } from 
     styleUrls: [],
     standalone: false
 })
-export class NotificationsComponent implements OnInit {
+export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy {
   inbox: NotificationInboxItem[] = [];
   filter: 'all' | 'unread' = 'all';
   readonly paginationOptions = [10, 20, 50];
   paginationState: PaginationState = { currentPage: 1, totalPages: 1, pageSize: 10 };
   selectedItem: NotificationInboxItem | null = null;
+  private readonly destroy$ = new Subject<void>();
+  private keyManager?: FocusKeyManager<NotificationCardDirective>;
+  private activeItemId: string | null = null;
+
+  @ViewChildren(NotificationCardDirective) notificationCards!: QueryList<NotificationCardDirective>;
 
   readonly filterForm = this.fb.group({
     search: [''],
@@ -33,7 +62,19 @@ export class NotificationsComponent implements OnInit {
   ngOnInit(): void {
     this.inbox = this.notificationsService.getInbox();
     this.selectedItem = this.inbox[0] ?? null;
+    this.activeItemId = this.selectedItem?.id ?? null;
     this.updatePaginationState();
+  }
+
+  ngAfterViewInit(): void {
+    this.notificationCards.changes
+      .pipe(startWith(this.notificationCards), takeUntil(this.destroy$))
+      .subscribe(() => this.configureKeyManager());
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   get filteredInbox(): NotificationInboxItem[] {
@@ -98,6 +139,7 @@ export class NotificationsComponent implements OnInit {
 
   selectItem(item: NotificationInboxItem): void {
     this.selectedItem = item;
+    this.activeItemId = item.id;
   }
 
   changePage(page: number): void {
@@ -109,7 +151,47 @@ export class NotificationsComponent implements OnInit {
     this.updatePaginationState();
   }
 
+  onNotificationListKeydown(event: KeyboardEvent): void {
+    if (!this.keyManager) {
+      return;
+    }
+
+    this.keyManager.onKeydown(event);
+    const activeIndex = this.keyManager.activeItemIndex;
+    if (activeIndex === null || activeIndex === undefined) {
+      return;
+    }
+
+    const item = this.pagedInbox[activeIndex];
+    if (item) {
+      this.activeItemId = item.id;
+    }
+  }
+
+  onNotificationListFocus(): void {
+    if (!this.keyManager || this.pagedInbox.length === 0 || this.keyManager.activeItemIndex !== null) {
+      return;
+    }
+
+    const preferredIndex = this.activeItemId === null
+      ? 0
+      : this.pagedInbox.findIndex(item => item.id === this.activeItemId);
+    this.keyManager.setActiveItem(preferredIndex >= 0 ? preferredIndex : 0);
+  }
+
   private updatePaginationState(): void {
     this.paginationState = getPaginationState(this.filteredInbox.length, this.filterForm);
+  }
+
+  private configureKeyManager(): void {
+    this.keyManager = new FocusKeyManager(this.notificationCards).withWrap().withHomeAndEnd();
+    if (this.pagedInbox.length === 0) {
+      return;
+    }
+
+    const preferredIndex = this.activeItemId === null
+      ? 0
+      : this.pagedInbox.findIndex(item => item.id === this.activeItemId);
+    this.keyManager.setActiveItem(preferredIndex >= 0 ? preferredIndex : 0);
   }
 }

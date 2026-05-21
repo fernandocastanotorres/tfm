@@ -38,6 +38,7 @@
 
 .public-home__container {
   @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  max-width: 64rem;
 }
 
 .public-home__section-title {
@@ -52,10 +53,17 @@
   @apply p-6 transition hover:-translate-y-1 hover:shadow-xl no-underline cursor-pointer;
   color: var(--sede-color-text);
   border: 1px solid var(--sede-color-border);
+  text-align: center;
 }
 
 .public-home__quick-icon {
-  @apply text-3xl mb-3;
+  @apply mb-3 inline-flex h-11 w-11 items-center justify-center rounded-xl;
+  background: color-mix(in srgb, var(--sede-color-primary) 12%, white);
+  color: var(--sede-color-primary);
+}
+
+.public-home__quick-svg {
+  @apply h-6 w-6;
 }
 
 .public-home__quick-title {

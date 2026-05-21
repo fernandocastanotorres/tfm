@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { CasesApiService } from '../../../application/services/cases-api.service';
@@ -143,16 +143,22 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
 
   onDragOver(requirementId: string, event: DragEvent): void {
     event.preventDefault();
+    event.stopPropagation();
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'copy';
+    }
     this.dragOverState.setValue({ ...this.dragOverState.value, [requirementId]: true });
   }
 
   onDragLeave(requirementId: string, event: DragEvent): void {
     event.preventDefault();
+    event.stopPropagation();
     this.dragOverState.setValue({ ...this.dragOverState.value, [requirementId]: false });
   }
 
   onDrop(requirementId: string, event: DragEvent): void {
     event.preventDefault();
+    event.stopPropagation();
     this.dragOverState.setValue({ ...this.dragOverState.value, [requirementId]: false });
     const files = event.dataTransfer?.files;
     if (!files) {
@@ -162,13 +168,30 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
     this.addFiles(requirementId, Array.from(files));
   }
 
-  isDragOver(requirementId: string): boolean {
-    return Boolean(this.dragOverState.value[requirementId]);
+  openFilePicker(requirementId: string): void {
+    const input = document.getElementById(`file-input-${requirementId}`) as HTMLInputElement | null;
+    input?.click();
   }
 
-  triggerFileInput(requirementId: string): void {
-    const input = document.getElementById('file-' + requirementId) as HTMLInputElement | null;
-    input?.click();
+  onDropzoneKeydown(requirementId: string, event: KeyboardEvent): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.openFilePicker(requirementId);
+    }
+  }
+
+  @HostListener('document:dragover', ['$event'])
+  preventDocumentDragOver(event: DragEvent): void {
+    event.preventDefault();
+  }
+
+  @HostListener('document:drop', ['$event'])
+  preventDocumentDrop(event: DragEvent): void {
+    event.preventDefault();
+  }
+
+  isDragOver(requirementId: string): boolean {
+    return Boolean(this.dragOverState.value[requirementId]);
   }
 
   getReviewFormEntries(): Array<{ label: string; value: string }> {

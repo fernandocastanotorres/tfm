@@ -49,8 +49,15 @@
     </div>
 
     <section class="mt-8 grid gap-6 lg:grid-cols-[2fr_1fr]">
-      <div class="grid gap-4">
-        <button type="button" class="card p-6 text-left" *ngFor="let payment of pagedPayments" (click)="selectPayment(payment)" [ngClass]="selectedPayment?.id === payment.id ? 'ring-2 ring-brand-300' : ''">
+      <div class="grid gap-4" (keydown)="onPaymentListKeydown($event)" (focusin)="onPaymentListFocus()">
+        <button
+          type="button"
+          class="card p-6 text-left"
+          *ngFor="let payment of pagedPayments"
+          appPaymentCard
+          (click)="selectPayment(payment)"
+          [ngClass]="selectedPayment?.id === payment.id ? 'ring-2 ring-brand-300' : ''"
+        >
           <div class="flex items-center justify-between gap-4">
             <div>
               <h2 class="text-lg font-semibold text-surface-900">{{ payment.conceptKey | translate }}</h2>

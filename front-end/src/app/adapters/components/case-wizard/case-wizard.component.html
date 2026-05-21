@@ -70,16 +70,19 @@
               (dragover)="onDragOver(requirement.id, $event)"
               (dragleave)="onDragLeave(requirement.id, $event)"
               (drop)="onDrop(requirement.id, $event)"
+              (click)="openFilePicker(requirement.id)"
               tabindex="0"
               role="button"
               [attr.aria-label]="'CASE_WIZARD.UPLOAD_DROPZONE_TEXT' | translate"
-              (keydown.enter)="triggerFileInput(requirement.id)"
-              (keydown.space)="$event.preventDefault(); triggerFileInput(requirement.id)"
+              (keydown)="onDropzoneKeydown(requirement.id, $event)"
             >
               <p class="wizard-dropzone__text">{{ 'CASE_WIZARD.UPLOAD_DROPZONE_TEXT' | translate }}</p>
+              <button type="button" class="btn-primary mt-3" (click)="openFilePicker(requirement.id); $event.stopPropagation()">
+                {{ 'CASE_WIZARD.ADD_ATTACHMENT' | translate }}
+              </button>
             </div>
             <input
-              [id]="'file-' + requirement.id"
+              [id]="'file-input-' + requirement.id"
               type="file"
               class="sr-only"
               multiple

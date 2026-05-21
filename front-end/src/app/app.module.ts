@@ -43,7 +43,9 @@ import { CalendarComponent } from './adapters/components/calendar/calendar.compo
 import { GlossaryComponent } from './adapters/components/glossary/glossary.component';
 import { AccessibilityStatementComponent } from './adapters/components/accessibility-statement/accessibility-statement.component';
 import { SitemapComponent } from './adapters/components/sitemap/sitemap.component';
-import { ContactInboxComponent } from './adapters/components/contact-inbox/contact-inbox.component';
+import { ContactInboxComponent, InboxItemDirective } from './adapters/components/contact-inbox/contact-inbox.component';
+import { NotificationCardDirective } from './adapters/components/notifications/notifications.component';
+import { PaymentCardDirective } from './adapters/components/payments/payments.component';
 
 // Interceptors
 import { HttpErrorInterceptor } from './application/interceptors/http-error.interceptor';
@@ -73,10 +75,12 @@ export function HttpLoaderFactory(http: HttpClient): CustomLoader {
         DashboardComponent,
         ProfileComponent,
         NotificationsComponent,
+        NotificationCardDirective,
         DocumentsComponent,
         CaseDetailComponent,
         CaseSearchComponent,
         PaymentsComponent,
+        PaymentCardDirective,
         AppointmentsComponent,
         MessagesComponent,
         ProceduresComponent,
@@ -95,7 +99,8 @@ export function HttpLoaderFactory(http: HttpClient): CustomLoader {
         GlossaryComponent,
         AccessibilityStatementComponent,
         SitemapComponent,
-        ContactInboxComponent
+        ContactInboxComponent,
+        InboxItemDirective
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
         FormsModule,

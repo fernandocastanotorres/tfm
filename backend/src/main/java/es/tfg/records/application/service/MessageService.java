@@ -140,7 +140,11 @@ public class MessageService {
     @Transactional(readOnly = true)
     public PagedMessages getThreadMessages(UUID procedureId, int page, int size) {
         MessageThreadEntity thread = threadRepository.findByProcedureId(procedureId)
-                .orElseThrow(() -> new ResourceNotFoundException("THREAD", procedureId.toString()));
+                .orElse(null);
+
+        if (thread == null) {
+            return new PagedMessages(List.of(), page, size, 0, 0);
+        }
 
         long total = messageRepository.countByThreadId(thread.getId());
         PageRequest pageRequest = PageRequest.of(page, size);
@@ -156,7 +160,11 @@ public class MessageService {
     @Transactional
     public void markThreadAsRead(UUID procedureId, MessageSenderRole readerRole) {
         MessageThreadEntity thread = threadRepository.findByProcedureId(procedureId)
-                .orElseThrow(() -> new ResourceNotFoundException("THREAD", procedureId.toString()));
+                .orElse(null);
+
+        if (thread == null) {
+            return;
+        }
 
         if (readerRole == MessageSenderRole.CITIZEN) {
             thread.setUnreadCountCitizen(0);

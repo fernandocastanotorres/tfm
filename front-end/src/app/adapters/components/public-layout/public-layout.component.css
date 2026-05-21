@@ -5,7 +5,7 @@
 }
 
 .public-header__container {
-  max-width: 80rem;
+  max-width: 64rem;
   margin-left: auto;
   margin-right: auto;
   padding-left: 1rem;
@@ -374,11 +374,10 @@
 .public-footer {
   background-color: var(--sede-color-footer-bg);
   color: var(--sede-color-footer-text);
-  margin-top: 4rem;
 }
 
 .public-footer__container {
-  max-width: 80rem;
+  max-width: 64rem;
   margin-left: auto;
   margin-right: auto;
   padding: 3rem 1rem;
@@ -440,7 +439,7 @@
 .public-footer__bottom {
   border-top: 1px solid rgba(255,255,255,0.1);
   padding: 1.5rem 1rem;
-  max-width: 80rem;
+  max-width: 64rem;
   margin-left: auto;
   margin-right: auto;
   display: flex;
