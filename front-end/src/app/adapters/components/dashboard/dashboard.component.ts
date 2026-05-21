@@ -71,9 +71,9 @@ export class DashboardComponent implements OnInit {
   get summaryStats(): { labelKey: string; value: number }[] {
     return [
       { labelKey: 'DASHBOARD.STAT_TOTAL', value: this.cases.length },
-      { labelKey: 'CASE_STATUS.REVIEW', value: this.cases.filter((item) => item.status === 'REVIEW' || item.status === 'UNDER_REVIEW').length },
-      { labelKey: 'CASE_STATUS.PENDING', value: this.cases.filter((item) => item.status === 'PENDING').length },
-      { labelKey: 'CASE_STATUS.APPROVED', value: this.cases.filter((item) => item.status === 'APPROVED' || item.status === 'COMPLETED').length }
+      { labelKey: 'CASE_STATUS.REVIEW', value: this.cases.filter((item) => this.toCaseStatusKey(item.status) === 'REVIEW' || this.toCaseStatusKey(item.status) === 'UNDER_REVIEW' || this.toCaseStatusKey(item.status) === 'IN_REVIEW').length },
+      { labelKey: 'CASE_STATUS.PENDING', value: this.cases.filter((item) => this.toCaseStatusKey(item.status) === 'PENDING').length },
+      { labelKey: 'CASE_STATUS.APPROVED', value: this.cases.filter((item) => this.toCaseStatusKey(item.status) === 'APPROVED' || this.toCaseStatusKey(item.status) === 'COMPLETED').length }
     ];
   }
 
@@ -86,7 +86,7 @@ export class DashboardComponent implements OnInit {
         caseItem.title.toLowerCase().includes(search) ||
         caseItem.id.toLowerCase().includes(search) ||
         caseItem.procedureType.toLowerCase().includes(search);
-      const matchesStatus = status === 'all' || caseItem.status === status;
+      const matchesStatus = status === 'all' || this.toCaseStatusKey(caseItem.status) === this.toCaseStatusKey(status);
       return matchesSearch && matchesStatus;
     });
   }
@@ -108,7 +108,7 @@ export class DashboardComponent implements OnInit {
   }
 
   statusClass(status: string): string {
-    switch (status) {
+    switch (this.toCaseStatusKey(status)) {
       case 'APPROVED':
       case 'COMPLETED':
         return 'bg-green-100 text-green-700';
@@ -118,6 +118,10 @@ export class DashboardComponent implements OnInit {
       default:
         return 'bg-blue-100 text-blue-700';
     }
+  }
+
+  toCaseStatusKey(status: string): string {
+    return (status ?? '').trim().replace(/[^a-zA-Z0-9]+/g, '_').toUpperCase();
   }
 
   changePage(page: number): void {

@@ -54,7 +54,7 @@
           <div class="space-y-2 text-sm text-surface-700">
             <p><strong>{{ 'PROCEDURES.DETAIL_FEE' | translate }}:</strong> {{ procedure.fee === 0 ? ('PROCEDURES.FEE_FREE' | translate) : (procedure.fee + ' €') }}</p>
             <p><strong>{{ 'PROCEDURES.DETAIL_DEADLINE' | translate }}:</strong> {{ procedure.deadline }} {{ 'PROCEDURES.DETAIL_DEADLINE_UNIT' | translate }}</p>
-            <p><strong>{{ 'PROCEDURES.DETAIL_STATUS' | translate }}:</strong> {{ procedure.status }}</p>
+            <p><strong>{{ 'PROCEDURES.DETAIL_STATUS' | translate }}:</strong> {{ 'CASE_STATUS.' + toCaseStatusKey(procedure.status) | translate }}</p>
             <p><strong>{{ 'PROCEDURES.DETAIL_UNIT' | translate }}:</strong> {{ procedure.category }}</p>
           </div>
           <div class="rounded-xl bg-surface-100 p-4 text-sm text-surface-600">

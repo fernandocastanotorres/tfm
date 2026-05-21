@@ -58,7 +58,7 @@
               <p class="text-surface-500 text-sm">{{ caseItem.id }} · {{ caseItem.procedureType | translate }}</p>
             </div>
             <span class="px-3 py-1 rounded-full text-xs font-semibold" [ngClass]="statusClass(caseItem.status)">
-              {{ 'CASE_STATUS.' + caseItem.status | translate }}
+              {{ 'CASE_STATUS.' + toCaseStatusKey(caseItem.status) | translate }}
             </span>
           </div>
           <p class="text-surface-600 mt-3">{{ caseItem.description | translate }}</p>
@@ -82,7 +82,7 @@
         <div class="mt-4 space-y-2 text-surface-700">
           <p><strong>{{ 'DASHBOARD.DETAIL_ID' | translate }}:</strong> {{ selectedCase.id }}</p>
           <p><strong>{{ 'DASHBOARD.DETAIL_TYPE' | translate }}:</strong> {{ selectedCase.procedureType | translate }}</p>
-          <p><strong>{{ 'DASHBOARD.DETAIL_STATUS' | translate }}:</strong> {{ 'CASE_STATUS.' + selectedCase.status | translate }}</p>
+          <p><strong>{{ 'DASHBOARD.DETAIL_STATUS' | translate }}:</strong> {{ 'CASE_STATUS.' + toCaseStatusKey(selectedCase.status) | translate }}</p>
           <p><strong>{{ 'DASHBOARD.DETAIL_SUBMITTED' | translate }}:</strong> {{ selectedCase.createdAt | date:'dd/MM/yyyy' }}</p>
           <p><strong>{{ 'DASHBOARD.DETAIL_UPDATED' | translate }}:</strong> {{ selectedCase.lastUpdated | date:'dd/MM/yyyy' }}</p>
         </div>

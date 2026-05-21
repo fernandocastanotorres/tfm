@@ -12,7 +12,7 @@
       <h1 id="case-title" class="text-2xl font-semibold text-surface-900">{{ caseDetail.title | translate }}</h1>
       <p class="text-surface-600">{{ caseDetail.id }} · {{ caseDetail.procedureType | translate }}</p>
       <span class="inline-flex w-fit px-3 py-1 rounded-full text-xs font-semibold" [ngClass]="statusClass(caseDetail.status)">
-        {{ 'CASE_STATUS.' + caseDetail.status | translate }}
+        {{ 'CASE_STATUS.' + toCaseStatusKey(caseDetail.status) | translate }}
       </span>
     </header>
 
@@ -21,12 +21,12 @@
         <h2 class="text-lg font-semibold text-surface-900">{{ 'CASE_DETAIL.SUMMARY' | translate }}</h2>
         <p class="text-surface-600 mt-2">{{ caseDetail.description | translate }}</p>
         <div class="mt-4 grid gap-3 sm:grid-cols-2">
-          <p><strong>{{ 'CASE_DETAIL.STATUS' | translate }}:</strong> {{ 'CASE_STATUS.' + caseDetail.status | translate }}</p>
+          <p><strong>{{ 'CASE_DETAIL.STATUS' | translate }}:</strong> {{ 'CASE_STATUS.' + toCaseStatusKey(caseDetail.status) | translate }}</p>
           <p><strong>{{ 'CASE_DETAIL.UNIT' | translate }}:</strong> {{ caseDetail.assignedUnit | translate }}</p>
           <p><strong>{{ 'CASE_DETAIL.SUBMITTED' | translate }}:</strong> {{ caseDetail.createdAt | date:'dd/MM/yyyy' }}</p>
         </div>
         <div class="mt-5 flex flex-wrap gap-3">
-          <button class="btn-primary" type="button" *ngIf="caseDetail.status === 'DRAFT'" (click)="continueProcessing()">{{ 'CASE_DETAIL.CONTINUE' | translate }}</button>
+          <button class="btn-primary" type="button" *ngIf="toCaseStatusKey(caseDetail.status) === 'DRAFT'" (click)="continueProcessing()">{{ 'CASE_DETAIL.CONTINUE' | translate }}</button>
           <label class="btn-primary cursor-pointer">
             {{ isUploading ? 'Subiendo...' : ('CASE_DETAIL.ATTACH' | translate) }}
             <input type="file" multiple class="hidden" (change)="onSelectFiles($any($event.target).files)" />

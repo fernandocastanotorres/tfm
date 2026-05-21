@@ -252,7 +252,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
   }
 
   statusClass(status: string): string {
-    switch (status) {
+    switch (this.toCaseStatusKey(status)) {
       case 'APPROVED':
       case 'COMPLETED':
         return 'bg-green-100 text-green-700';
@@ -262,6 +262,10 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
       default:
         return 'bg-blue-100 text-blue-700';
     }
+  }
+
+  toCaseStatusKey(status: string): string {
+    return (status ?? '').trim().replace(/[^a-zA-Z0-9]+/g, '_').toUpperCase();
   }
 
   formatFileSize(bytes: number): string {

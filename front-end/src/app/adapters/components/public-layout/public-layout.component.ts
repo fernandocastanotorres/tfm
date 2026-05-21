@@ -38,6 +38,9 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
   authenticatedUserLabel = '';
   userMenuOpen = false;
   unreadMessageCount = 0;
+  private leftCtrlPressed = false;
+  private typedHintBuffer = '';
+  private hintTargets: Array<{ hint: string; element: HTMLElement; marker: HTMLSpanElement }> = [];
   private localeSub?: Subscription;
   private routeSub?: Subscription;
   private unreadPollSub?: Subscription;
@@ -111,6 +114,7 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.hideKeyboardHints();
     this.unlockBodyScroll();
     this.localeSub?.unsubscribe();
     this.routeSub?.unsubscribe();
@@ -219,6 +223,64 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
     }
   }
 
+  @HostListener('window:keydown', ['$event'])
+  onGlobalKeydown(event: KeyboardEvent): void {
+    if (event.code === 'ControlLeft') {
+      if (!this.leftCtrlPressed) {
+        this.leftCtrlPressed = true;
+        this.typedHintBuffer = '';
+        this.showKeyboardHints();
+      }
+      return;
+    }
+
+    if (!this.leftCtrlPressed) {
+      return;
+    }
+
+    const key = this.normalizeHintKey(event.key);
+    if (!key) {
+      return;
+    }
+
+    this.typedHintBuffer += key;
+    const exactMatch = this.hintTargets.find((target) => target.hint === this.typedHintBuffer);
+    if (exactMatch) {
+      event.preventDefault();
+      event.stopPropagation();
+      exactMatch.element.click();
+      exactMatch.element.focus();
+      this.leftCtrlPressed = false;
+      this.typedHintBuffer = '';
+      this.hideKeyboardHints();
+      return;
+    }
+
+    const hasPrefixMatch = this.hintTargets.some((target) => target.hint.startsWith(this.typedHintBuffer));
+    if (!hasPrefixMatch) {
+      this.typedHintBuffer = '';
+    }
+  }
+
+  @HostListener('window:keyup', ['$event'])
+  onGlobalKeyup(event: KeyboardEvent): void {
+    if (event.code !== 'ControlLeft') {
+      return;
+    }
+    this.leftCtrlPressed = false;
+    this.typedHintBuffer = '';
+    this.hideKeyboardHints();
+  }
+
+  @HostListener('window:scroll')
+  @HostListener('window:resize')
+  onViewportChange(): void {
+    if (!this.leftCtrlPressed || this.hintTargets.length === 0) {
+      return;
+    }
+    this.repositionKeyboardHints();
+  }
+
   onDropdownFocusOut(event: FocusEvent): void {
     const relatedTarget = event.relatedTarget as HTMLElement | null;
     if (!relatedTarget || !relatedTarget.closest('.public-header__dropdown')) {
@@ -260,5 +322,113 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
 
   private unlockBodyScroll(): void {
     document.body.classList.remove('mobile-menu-open');
+  }
+
+  private showKeyboardHints(): void {
+    this.hideKeyboardHints();
+    const root = document.querySelector('app-public-layout');
+    if (!root) {
+      return;
+    }
+
+    const selector = 'a[href], button:not([disabled]), [role="button"], [role="menuitem"], input[type="button"], input[type="submit"]';
+    const elements = Array.from(root.querySelectorAll<HTMLElement>(selector))
+      .filter((element) => this.isHintEligible(element));
+
+    elements.forEach((element, index) => {
+      const hint = this.toHint(index);
+      const marker = document.createElement('span');
+      marker.className = 'keyboard-hint-marker';
+      marker.textContent = hint;
+      marker.setAttribute('aria-hidden', 'true');
+      marker.style.position = 'absolute';
+      marker.style.zIndex = '2000';
+      marker.style.display = 'inline-flex';
+      marker.style.alignItems = 'center';
+      marker.style.justifyContent = 'center';
+      marker.style.minWidth = '1.5rem';
+      marker.style.height = '1.5rem';
+      marker.style.borderRadius = '999px';
+      marker.style.padding = '0 0.35rem';
+      marker.style.fontSize = '0.7rem';
+      marker.style.fontWeight = '700';
+      marker.style.lineHeight = '1';
+      marker.style.background = '#111827';
+      marker.style.color = '#ffffff';
+      marker.style.border = '1px solid #ffffff';
+      marker.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.25)';
+      marker.style.pointerEvents = 'none';
+      marker.style.textTransform = 'uppercase';
+
+      document.body.appendChild(marker);
+      this.positionMarker(element, marker);
+      this.hintTargets.push({ hint, element, marker });
+    });
+  }
+
+  private hideKeyboardHints(): void {
+    this.hintTargets.forEach((target) => target.marker.remove());
+    this.hintTargets = [];
+  }
+
+  private normalizeHintKey(value: string): string | null {
+    const key = value.trim().toLowerCase();
+    return /^[0-9a-z]$/.test(key) ? key : null;
+  }
+
+  private toHint(index: number): string {
+    const alphabet = '123456789abcdefghijklmnopqrstuvwxyz';
+    const base = alphabet.length;
+    let value = index;
+    let result = '';
+
+    do {
+      result = alphabet[value % base] + result;
+      value = Math.floor(value / base) - 1;
+    } while (value >= 0);
+
+    return result;
+  }
+
+  private isHintEligible(element: HTMLElement): boolean {
+    if (element.hasAttribute('data-keyboard-hint-ignore')) {
+      return false;
+    }
+    const style = window.getComputedStyle(element);
+    if (style.display === 'none' || style.visibility === 'hidden' || style.pointerEvents === 'none') {
+      return false;
+    }
+    const rect = element.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) {
+      return false;
+    }
+    if (!element.isConnected || element.closest('[aria-hidden="true"]')) {
+      return false;
+    }
+    if (element.classList.contains('public-header__mobile-backdrop')) {
+      return false;
+    }
+    const mobileClosedMenu = element.closest('.public-header__menu') as HTMLElement | null;
+    if (mobileClosedMenu && !mobileClosedMenu.classList.contains('public-header__menu--open') && window.innerWidth < 1024) {
+      return false;
+    }
+    return true;
+  }
+
+  private repositionKeyboardHints(): void {
+    this.hintTargets.forEach((target) => this.positionMarker(target.element, target.marker));
+  }
+
+  private positionMarker(element: HTMLElement, marker: HTMLSpanElement): void {
+    const rect = element.getBoundingClientRect();
+    const markerRect = marker.getBoundingClientRect();
+    const rawLeft = window.scrollX + rect.left + rect.width - markerRect.width * 0.45;
+    const rawTop = window.scrollY + rect.top - markerRect.height * 0.45;
+    const minLeft = window.scrollX + 4;
+    const maxLeft = window.scrollX + window.innerWidth - markerRect.width - 4;
+    const minTop = window.scrollY + 4;
+
+    marker.style.left = `${Math.min(Math.max(rawLeft, minLeft), maxLeft)}px`;
+    marker.style.top = `${Math.max(rawTop, minTop)}px`;
   }
 }

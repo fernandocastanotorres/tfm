@@ -66,4 +66,8 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
       || item.procedureType.toLowerCase().includes(term)
     );
   }
+
+  toCaseStatusKey(status: string): string {
+    return (status ?? '').trim().replace(/[^a-zA-Z0-9]+/g, '_').toUpperCase();
+  }
 }

@@ -81,4 +81,8 @@ export class ProcedureFlowComponent implements OnInit {
         return '';
     }
   }
+
+  toCaseStatusKey(status: string): string {
+    return (status ?? '').trim().replace(/[^a-zA-Z0-9]+/g, '_').toUpperCase();
+  }
 }
