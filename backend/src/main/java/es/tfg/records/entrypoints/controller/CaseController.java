@@ -182,7 +182,7 @@ public class CaseController {
     }
 
     @GetMapping("/{id}/enidoc")
-    @Operation(summary = "Download ENI-compliant case package", description = "Download the complete case as an ENI-compliant .enidoc ZIP package containing PDF/A documents, detached XAdES signatures, and index.xml")
+    @Operation(summary = "Download ENI-compliant case package", description = "Download the complete case as an ENI-compliant .enidoc ZIP package containing PDF documents, detached CMS/PKCS#7 signatures, and index.xml")
     public ResponseEntity<Resource> downloadEniDoc(
             Authentication authentication,
             @PathVariable("id") UUID id) {

@@ -84,7 +84,7 @@ body.theme-dark {
   }
 
   :focus-visible {
-    @apply outline outline-2 outline-offset-2 outline-brand-300;
+    @apply outline outline-2 outline-offset-2 outline-brand-500;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -111,7 +111,7 @@ body.theme-dark {
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-xl px-4 py-3 font-semibold transition focus-visible:outline-brand-300 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center rounded-xl px-4 py-3 font-semibold transition focus-visible:outline-brand-500 disabled:cursor-not-allowed;
     background-color: var(--sede-color-primary);
     color: var(--sede-color-primary-contrast);
   }
@@ -140,7 +140,7 @@ body.theme-dark {
   }
 
   .field-input {
-    @apply w-full rounded-xl border border-surface-200 px-4 py-3 text-surface-900 focus-visible:outline-brand-300;
+    @apply w-full rounded-xl border border-surface-200 px-4 py-3 text-surface-900 focus-visible:outline-brand-500;
     background-color: var(--sede-color-surface);
     color: var(--sede-color-text);
     border-color: var(--sede-color-border);

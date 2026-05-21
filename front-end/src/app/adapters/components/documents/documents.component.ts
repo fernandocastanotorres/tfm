@@ -170,6 +170,32 @@ export class DocumentsComponent implements OnInit, OnDestroy {
     this.selectedDocument = document;
   }
 
+  onDocumentKeydown(event: KeyboardEvent): void {
+    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') {
+      return;
+    }
+
+    const current = event.currentTarget as HTMLElement | null;
+    if (!current) {
+      return;
+    }
+
+    const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-document-card="true"]'));
+    const currentIndex = cards.indexOf(current);
+    if (currentIndex === -1) {
+      return;
+    }
+
+    const nextIndex = event.key === 'ArrowDown'
+      ? Math.min(currentIndex + 1, cards.length - 1)
+      : Math.max(currentIndex - 1, 0);
+
+    if (nextIndex !== currentIndex) {
+      event.preventDefault();
+      cards[nextIndex].focus();
+    }
+  }
+
   setFilter(filter: 'all' | 'pending' | 'validated'): void {
     this.filter = filter;
     this.filterForm.patchValue({ status: filter });

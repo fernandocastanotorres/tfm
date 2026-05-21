@@ -26,7 +26,7 @@
         </div>
         <div class="flex items-center gap-2 flex-shrink-0">
           <button type="button" (click)="downloadReport(report)" class="text-blue-600 text-sm hover:underline" title="Descargar">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
           </button>
           <button type="button" (click)="openEditForm(report)" class="text-blue-600 text-sm hover:underline">Editar</button>
           <button type="button" (click)="deleteReport(report)" class="text-red-600 text-sm hover:underline">Eliminar</button>
@@ -36,10 +36,10 @@
   </div>
 
   <!-- Form Modal -->
-  <div *ngIf="showForm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+  <div *ngIf="showForm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true" aria-labelledby="transparency-modal-title">
     <div class="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
       <div class="p-6 border-b">
-        <h4 class="text-lg font-semibold">{{ formMode === 'create' ? 'Nuevo informe' : 'Editar informe' }}</h4>
+        <h4 id="transparency-modal-title" class="text-lg font-semibold">{{ formMode === 'create' ? 'Nuevo informe' : 'Editar informe' }}</h4>
       </div>
       <div class="p-6 space-y-4">
         <div *ngIf="formError" class="bg-red-50 text-red-700 text-sm p-3 rounded-md">{{ formError }}</div>

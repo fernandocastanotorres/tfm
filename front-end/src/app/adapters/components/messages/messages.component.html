@@ -37,14 +37,14 @@
     </div>
 
     <section class="messages__layout">
-      <div *ngIf="isLoadingThreads" class="messages__empty">
+      <div *ngIf="isLoadingThreads" class="messages__empty" role="status" aria-live="polite">
         <div class="messages__empty-icon"></div>
         <p class="messages__empty-text">{{ 'backoffice.common.loading' | translate }}</p>
       </div>
 
-      <div *ngIf="!isLoadingThreads && pagedThreads.length === 0" class="messages__empty">
+      <div *ngIf="!isLoadingThreads && pagedThreads.length === 0" class="messages__empty" role="status" aria-live="polite">
         <div class="messages__empty-icon">
-          <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-16 h-16" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
           </svg>
         </div>
@@ -53,9 +53,9 @@
       </div>
 
       <div *ngFor="let thread of pagedThreads" class="message-thread" [class.message-thread--expanded]="expandedThreadId === thread.procedureId" [class.message-thread--unread]="thread.unreadCount > 0">
-        <button type="button" class="message-thread__header" (click)="toggleThread(thread.procedureId)" [attr.aria-expanded]="expandedThreadId === thread.procedureId">
+        <button type="button" class="message-thread__header" (click)="toggleThread(thread.procedureId)" (keydown)="onThreadKeydown($event)" [attr.aria-expanded]="expandedThreadId === thread.procedureId">
           <div class="message-thread__avatar" [class.message-thread__avatar--unread]="thread.unreadCount > 0">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-6 h-6" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
             </svg>
           </div>
@@ -68,8 +68,11 @@
             <p class="message-thread__case-id">Expediente: {{ thread.procedureId }}</p>
           </div>
           <div class="message-thread__meta">
-            <span *ngIf="thread.unreadCount > 0" class="message-thread__badge">{{ thread.unreadCount }}</span>
-            <svg class="message-thread__chevron" [class.message-thread__chevron--open]="expandedThreadId === thread.procedureId" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <span *ngIf="thread.unreadCount > 0" class="message-thread__badge">
+              {{ thread.unreadCount }}
+              <span class="sr-only">mensajes no leidos</span>
+            </span>
+            <svg class="message-thread__chevron" aria-hidden="true" [class.message-thread__chevron--open]="expandedThreadId === thread.procedureId" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
             </svg>
           </div>
@@ -77,7 +80,7 @@
 
         <div class="message-thread__body" *ngIf="expandedThreadId === thread.procedureId">
           <div class="message-thread__messages" #messageContainer>
-            <div *ngIf="isLoadingMessages && selectedThread?.procedureId === thread.procedureId" class="message-thread__loading">
+            <div *ngIf="isLoadingMessages && selectedThread?.procedureId === thread.procedureId" class="message-thread__loading" role="status" aria-live="polite">
               <div class="message-thread__spinner"></div>
               <span>Cargando mensajes...</span>
             </div>
@@ -85,10 +88,10 @@
             <div *ngFor="let msg of messages" class="message-bubble" [class.message-bubble--admin]="msg.senderRole === 'ADMIN'" [class.message-bubble--citizen]="msg.senderRole === 'CITIZEN'">
               <div class="message-bubble__header">
                 <span class="message-bubble__sender">
-                  <svg *ngIf="msg.senderRole === 'ADMIN'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg *ngIf="msg.senderRole === 'ADMIN'" class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                   </svg>
-                  <svg *ngIf="msg.senderRole === 'CITIZEN'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg *ngIf="msg.senderRole === 'CITIZEN'" class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                   </svg>
                   {{ msg.senderRole === 'CITIZEN' ? ('MESSAGES.SENDER_CITIZEN' | translate) : ('MESSAGES.SENDER_OFFICE' | translate) }}
@@ -98,7 +101,7 @@
               <p class="message-bubble__content">{{ msg.content }}</p>
               <div *ngIf="msg.attachments.length > 0" class="message-bubble__attachments">
                 <button *ngFor="let att of msg.attachments" (click)="downloadAttachment(att.id, att.name)" class="message-bubble__attachment">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
                   </svg>
                   <span>{{ att.name }}</span>
@@ -107,8 +110,8 @@
               </div>
             </div>
 
-            <div *ngIf="messages.length === 0 && !isLoadingMessages" class="message-thread__no-messages">
-              <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div *ngIf="messages.length === 0 && !isLoadingMessages" class="message-thread__no-messages" role="status" aria-live="polite">
+              <svg class="w-12 h-12" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
               </svg>
               <p>No hay mensajes en este expediente.</p>
@@ -117,7 +120,7 @@
 
           <div *ngIf="messageTotalPages > 1" class="message-thread__pagination">
             <button (click)="changeMessagePage(messagePage - 1)" [disabled]="messagePage === 0" class="message-thread__page-btn">{{ 'MESSAGES.PREVIOUS' | translate }}</button>
-            <span>Pagina {{ messagePage + 1 }} de {{ messageTotalPages }}</span>
+            <span aria-live="polite">Pagina {{ messagePage + 1 }} de {{ messageTotalPages }}</span>
             <button (click)="changeMessagePage(messagePage + 1)" [disabled]="messagePage >= messageTotalPages - 1" class="message-thread__page-btn">{{ 'MESSAGES.NEXT' | translate }}</button>
           </div>
 
@@ -132,7 +135,7 @@
             ></textarea>
             <div class="message-thread__reply-actions">
               <button class="btn-primary" type="button" (click)="sendReply()" [disabled]="isSending || !reply.trim()">
-                <svg *ngIf="!isSending" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg *ngIf="!isSending" class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                 </svg>
                 {{ isSending ? ('backoffice.common.saving' | translate) : ('MESSAGES.REPLY' | translate) }}

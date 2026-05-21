@@ -31,7 +31,7 @@ import java.util.zip.ZipOutputStream;
 
 /**
  * Service to generate ENI-compliant .enidoc exchange packages.
- * Produces a ZIP containing PDF/A documents, detached XAdES signatures (.xsig),
+ * Produces a ZIP containing PDF documents, detached CMS signatures (.xsig),
  * and an index.xml valid against the official ENI XSD schema (NTI-2011).
  */
 @Service
@@ -175,8 +175,8 @@ public class EniPackagerService {
             sb.append("      <eni:FechaInclusion>").append(docTimestamp).append("</eni:FechaInclusion>\n");
             if (doc.getStatus() == DocumentStatus.SIGNED) {
                 sb.append("      <eni:Firma>\n");
-                sb.append("        <eni:TipoFirma>XAdES</eni:TipoFirma>\n");
-                sb.append("        <eni:FormatoFirma>XML</eni:FormatoFirma>\n");
+                sb.append("        <eni:TipoFirma>PAdES</eni:TipoFirma>\n");
+                sb.append("        <eni:FormatoFirma>CMS/PKCS7</eni:FormatoFirma>\n");
                 String sigName = fileName.replaceFirst("\\.[^.]+$", "") + ".xsig";
                 sb.append("        <eni:FicheroFirma>").append("signatures/" + escapeXml(sigName)).append("</eni:FicheroFirma>\n");
                 sb.append("      </eni:Firma>\n");

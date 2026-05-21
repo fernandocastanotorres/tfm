@@ -81,6 +81,32 @@ export class MessagesComponent implements OnInit, OnDestroy {
     }
   }
 
+  onThreadKeydown(event: KeyboardEvent): void {
+    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') {
+      return;
+    }
+
+    const current = event.currentTarget as HTMLElement | null;
+    if (!current) {
+      return;
+    }
+
+    const headers = Array.from(document.querySelectorAll<HTMLElement>('.message-thread__header'));
+    const currentIndex = headers.indexOf(current);
+    if (currentIndex === -1) {
+      return;
+    }
+
+    const nextIndex = event.key === 'ArrowDown'
+      ? Math.min(currentIndex + 1, headers.length - 1)
+      : Math.max(currentIndex - 1, 0);
+
+    if (nextIndex !== currentIndex) {
+      event.preventDefault();
+      headers[nextIndex].focus();
+    }
+  }
+
   loadMessages(procedureId: string): void {
     this.isLoadingMessages = true;
     this.messagesService.getThreadMessages(procedureId, this.messagePage, this.messagePageSize).subscribe({

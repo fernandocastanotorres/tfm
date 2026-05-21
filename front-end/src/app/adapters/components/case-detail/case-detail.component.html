@@ -44,7 +44,7 @@
               <div class="flex items-center gap-2">
                 <p class="font-semibold">{{ attachment.name | translate }}</p>
                 <span *ngIf="attachment.signed" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700" title="Firmado electronicamente con CMS/PAdES (SHA256withRSA). Certificado: CN=TFG Service Signing, O=TFG Records, C=ES">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                  <svg class="w-3 h-3" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                   Firmado
                 </span>
               </div>
@@ -83,10 +83,10 @@
           <div *ngFor="let msg of messages" class="message-bubble" [class.message-bubble--admin]="msg.senderRole === 'ADMIN'" [class.message-bubble--citizen]="msg.senderRole === 'CITIZEN'">
             <div class="message-bubble__header">
               <span class="message-bubble__sender">
-                <svg *ngIf="msg.senderRole === 'ADMIN'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg *ngIf="msg.senderRole === 'ADMIN'" class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                 </svg>
-                <svg *ngIf="msg.senderRole === 'CITIZEN'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg *ngIf="msg.senderRole === 'CITIZEN'" class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                 </svg>
                 {{ msg.senderRole === 'CITIZEN' ? ('MESSAGES.SENDER_CITIZEN' | translate) : ('MESSAGES.SENDER_OFFICE' | translate) }}
@@ -96,7 +96,7 @@
             <p class="message-bubble__content">{{ msg.content }}</p>
             <div *ngIf="msg.attachments.length > 0" class="message-bubble__attachments">
               <button *ngFor="let att of msg.attachments" (click)="downloadMessageAttachment(att.id, att.name)" class="message-bubble__attachment">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
                 </svg>
                 <span>{{ att.name }}</span>
@@ -127,7 +127,7 @@
           ></textarea>
           <div class="mt-3 flex justify-end">
             <button class="btn-primary" type="button" (click)="sendReply()" [disabled]="isSending || !reply.trim()">
-              <svg *ngIf="!isSending" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg *ngIf="!isSending" class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
               </svg>
               {{ isSending ? ('backoffice.common.saving' | translate) : ('MESSAGES.REPLY' | translate) }}
