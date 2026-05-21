@@ -75,7 +75,7 @@ Este proyecto implementa el Nivel Medio, que requiere:
 
 El ENI establece los estándares para la interoperabilidad entre administraciones:
 - Metadatos de documentos (ENI Metadata Schema)
-- Formato de documentos (PDF/A para conservación)
+- Formato de documentos (PDF para intercambio, con posibilidad de evolucion a PDF/A)
 - Identificadores únicos de documentos
 - Trazabilidad de versiones
 
@@ -347,7 +347,7 @@ BUILD SUCCESS
 | Requisito ENI | Implementación | Estado |
 |---------------|----------------|--------|
 | Metadatos | ENI Metadata Schema | ✅ |
-| Formato documento | PDF/A (vía LibreOffice) | ✅ |
+| Formato documento | PDF (via LibreOffice) | ✅ |
 | Identificador único | UUID para documentos | ✅ |
 | Trazabilidad | Versionado de documentos | ✅ |
 
@@ -379,7 +379,7 @@ El sistema soporta 5 idiomas oficiales de España:
 - ✅ Plataforma completa de gestión de expedientes electrónicos
 - ✅ Firma electrónica PAdES-BES funcional
 - ✅ Cumplimiento ENS Nivel Medio
-- ✅ Cumplimiento ENI (metadatos, PDF/A)
+- ✅ Cumplimiento ENI (metadatos, formato PDF)
 - ✅ Arquitectura hexagonal documentada
 - ✅ 543 tests unitarios pasando
 - ✅ 80% cobertura de instrucciones

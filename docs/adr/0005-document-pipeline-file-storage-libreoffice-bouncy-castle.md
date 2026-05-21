@@ -10,7 +10,7 @@ Accepted (Revised)
 2026-05-20
 
 ## Context
-The system must support ENI-compliant documentary exchange, PDF/A preservation, and server-side electronic signature generation with system seal. Document custody and metadata traceability are critical.
+The system must support ENI-compliant documentary exchange, PDF conversion for interoperable exchange, and server-side electronic signature generation with system seal. Document custody and metadata traceability are critical.
 
 ## Decision
 Use the following document pipeline:

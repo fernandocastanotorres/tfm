@@ -7,7 +7,7 @@ ADRs document **why** key technical decisions were made, what alternatives were 
 
 ## Naming Convention
 - File pattern: `NNNN-short-kebab-case-title.md`
-- Example: `0004-select-camunda-7-as-bpmn-engine.md`
+- Example: `0008-select-flowable-as-bpmn-engine.md`
 
 ## Recommended Structure
 Each ADR should include at least:
@@ -40,5 +40,5 @@ Current ADR set covers:
 - Frontend stack
 - Backend and persistence stack
 - BPM engine choice
-- Document pipeline (DMS, PDF/A, signature)
+- Document pipeline (storage, PDF conversion, signature)
 - Containerized deployment topology

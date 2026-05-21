@@ -41,10 +41,10 @@ It complements `REQUIREMENTS.md`, ADR-0003 (security stack), and boundary rules.
 | Public Catalog | `/api/v1/citizen/procedures/catalog/{identifier}/tasks/{taskId}/schema` | GET | ✅ | ✅ | ✅ | Public read-only schema |
 | Backoffice Dashboard | `/api/v1/admin/dashboard/stats` | GET | ❌ | ✅ | ✅ | Internal dashboard |
 | Backoffice Queue | `/api/v1/admin/tasks/pending` | GET | ❌ | ✅ | ✅ | Pending queue |
-| Backoffice Cases | `/api/v1/admin/cases` | GET | ❌ | ✅ | ✅ | Case list |
-| Backoffice Cases | `/api/v1/admin/cases/{caseId}` | GET | ❌ | ✅ | ✅ | Case detail |
-| Backoffice Cases | `/api/v1/admin/cases/{caseId}/status` | PATCH | ❌ | ✅ | ✅ | Status updates |
-| Backoffice Cases | `/api/v1/admin/cases/{caseId}/tasks/resolve` | POST | ❌ | ✅ | ✅ | Task resolution |
+| Backoffice Cases | `/api/v1/admin/procedures` | GET | ❌ | ✅ | ✅ | Case list |
+| Backoffice Cases | `/api/v1/admin/procedures/{caseId}` | GET | ❌ | ✅ | ✅ | Case detail |
+| Backoffice Cases | `/api/v1/admin/procedures/{caseId}/status` | PATCH | ❌ | ✅ | ✅ | Status updates |
+| Backoffice Cases | `/api/v1/admin/procedures/{caseId}/tasks/{taskId}/resolve` | POST | ❌ | ✅ | ✅ | Task resolution |
 | Admin Users | `/api/v1/admin/users` | GET | ❌ | ❌ | ✅ | User management scope |
 | Admin Users | `/api/v1/admin/users` | POST | ❌ | ❌ | ✅ | Create user/assign roles |
 | Admin Users | `/api/v1/admin/users/{userId}` | PUT | ❌ | ❌ | ✅ | Update user/roles |

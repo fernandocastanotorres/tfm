@@ -357,7 +357,7 @@ TFG/
 1. **Certificate Management**: Replace self-signed certificate with CA-signed certificate
 2. **Database Migration**: Apply schema migrations for PostgreSQL
 3. **Email Service**: Keep SMTP + Mailpit for local validation; evaluate external provider only for production hardening
-4. **LibreOffice**: Install and configure for PDF/A conversion
+4. **LibreOffice**: Install and configure for document-to-PDF conversion before signing
 5. **Monitoring**: Set up Prometheus + Grafana for metrics
 6. **Load Balancer**: Configure Nginx reverse proxy
 7. **HTTPS**: Enable TLS with Let's Encrypt

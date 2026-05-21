@@ -53,7 +53,7 @@ Notes:
 ## 4) Mandatory Contents
 
 1. `index.xml` (ENI-compliant, XSD-valid)
-2. At least one document artifact (PDF/A when conversion is required)
+2. At least one document artifact (PDF when conversion is required)
 3. Detached signature file(s) (`.xsig`) for signed artifacts
 4. Checksum manifest for integrity verification
 
@@ -82,7 +82,7 @@ Validation sequence:
 
 ## 7) Signature and Integrity Rules
 
-- Signature profile: XAdES-T (Baseline T), detached signature model.
+- Signature profile: CMS/PKCS#7 detached (PAdES-like in current implementation).
 - Signature files must unambiguously reference signed document identifiers.
 - Hash/checksum entries must cover:
   - signed document payload,

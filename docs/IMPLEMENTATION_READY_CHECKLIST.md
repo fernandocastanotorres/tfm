@@ -78,7 +78,7 @@ Recommended next step:
 
 ## 8) Document Pipeline and Interoperability
 
-- ✅ Alfresco + LibreOffice + SD-DSS selected (ADR-0005)
+- ✅ Local file storage + LibreOffice + Bouncy Castle selected (ADR-0005)
 - 🟡 ENIDOC package composition is defined at high level
 - ❌ Conversion/signature failure handling and retry policy are defined
 - ❌ XML/XSD validation workflow and error reporting contract are defined

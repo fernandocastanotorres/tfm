@@ -12,7 +12,7 @@
 | [ADR-0008](./0008-select-flowable-as-bpmn-engine.md) | Select Flowable as the BPMN Engine | Accepted | 2026-05-17 |
 | [ADR-0009](./0009-stable-procedure-id-and-db-backed-catalog-i18n.md) | Stable Procedure Identifier and DB-Backed Catalog i18n | Accepted | 2026-05-17 |
 | [ADR-0010](./0010-async-verification-email-with-rabbitmq-and-db-throttle.md) | Async Verification Email Delivery with RabbitMQ and DB-Backed Resend Throttle | Accepted | 2026-05-17 |
-| [ADR-0011](./0011-self-contained-eni-metadata-store-with-postgresql.md) | Self-Contained ENI Metadata Store with PostgreSQL (Alfresco Optional) | Accepted | 2026-05-17 |
+| [ADR-0011](./0011-self-contained-eni-metadata-store-with-postgresql.md) | Self-Contained ENI Metadata Store with PostgreSQL (External DMS Optional) | Accepted | 2026-05-17 |
 | [ADR-0012](./0012-db-persisted-form-field-i18n.md) | DB-Persisted Form Field i18n for Dynamic Procedure Forms | Proposed | 2026-05-18 |
 | [ADR-0013](./0013-framework-version-selection-lts-strategy.md) | Framework Version Selection (LTS Strategy) | Accepted | 2026-05-19 |
 | [ADR-0014](./0014-local-email-delivery-with-mailpit-over-brevo.md) | Local Email Delivery with Mailpit over Brevo | Accepted | 2026-05-20 |

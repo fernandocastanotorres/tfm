@@ -273,7 +273,7 @@ Backoffice (Angular) ──┘                                         │
 1. Abrir un expediente RESUELTO (APROBADO o RECHAZADO)
 2. Descargar el paquete `.enidoc` (endpoint: `GET /citizen/cases/{id}/enidoc`)
 3. Explicar el contenido del ZIP:
-   - Documentos PDF/A
+   - Documentos PDF
    - Firmas desprendidas (.xsig)
    - `index.xml` válido contra XSD oficial ENI
    - `justificante.txt`
@@ -389,7 +389,7 @@ Backoffice (Angular) ──┘                                         │
 
 ### P3: ¿Qué es el paquete .enidoc?
 
-> "Es un archivo ZIP conforme al Esquema Nacional de Interoperabilidad que contiene los documentos PDF/A del expediente, las firmas desprendidas (.xsig), un index.xml válido contra el XSD oficial de ENI con hashes SHA-256, y un justificante de descarga. Solo se genera para expedientes resueltos."
+> "Es un archivo ZIP conforme al Esquema Nacional de Interoperabilidad que contiene los documentos PDF del expediente, las firmas desprendidas (.xsig), un index.xml válido contra el XSD oficial de ENI con hashes SHA-256, y un justificante de descarga. Solo se genera para expedientes resueltos."
 
 ### P4: ¿Por qué Mailpit y no un servicio real de email?
 

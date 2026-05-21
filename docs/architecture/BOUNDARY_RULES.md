@@ -17,7 +17,7 @@ Rule: outer layers can depend on inner layers; inner layers must never depend on
 
 | From | To | Allowed | Notes |
 |---|---|---:|---|
-| domain | Spring/JPA/Flowable/Alfresco SDK | No | Keep domain framework-agnostic |
+| domain | Spring/JPA/Flowable/storage SDK | No | Keep domain framework-agnostic |
 | application | domain | Yes | Use-case orchestration |
 | application | controllers | No | No web coupling |
 | infrastructure adapters | application/domain | Yes | Implement ports |
@@ -49,7 +49,7 @@ Recommended package layout (adapt names to final code style):
 
 - `.../domain` -> entities, value objects, domain services, domain policies
 - `.../application` -> use cases, ports, command/query handlers
-- `.../infrastructure` -> adapters (JPA repos, Flowable, Alfresco, DSS, converters)
+- `.../infrastructure` -> adapters (JPA repos, Flowable, storage, signature, converters)
 - `.../entrypoints` -> REST controllers, request/response mappers
 
 Rules:

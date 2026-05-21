@@ -1,4 +1,4 @@
-# ADR-0011: Self-Contained ENI Metadata Store with PostgreSQL (Alfresco Optional)
+# ADR-0011: Self-Contained ENI Metadata Store with PostgreSQL (External DMS Optional)
 
 ## Status
 Accepted

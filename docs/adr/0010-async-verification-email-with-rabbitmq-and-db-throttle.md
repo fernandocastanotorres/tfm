@@ -10,10 +10,11 @@ Accepted
 Email verification became part of citizen registration lifecycle. Sending verification emails synchronously from the request path increases API latency and makes registration reliability depend directly on SMTP availability. Additionally, resend throttling in memory is not safe in multi-instance deployments.
 
 ## Decision
-1. Use a **producer-consumer model with RabbitMQ** for verification email delivery.
-2. Keep a **configurable direct-send fallback** (`mailing.queue.enabled=false`) for local development and degraded scenarios.
-3. Persist resend throttle timestamp in **`users.last_verification_email_sent_at`** and enforce cooldown at application level.
-4. Expose delivery outcome via **Micrometer metrics** (`records_mail_delivery_total{type,status}`).
+1. Use a **producer-consumer model with RabbitMQ** for verification email delivery **when `mailing.queue.enabled=true`**.
+2. **Default mode is direct-send** (`mailing.queue.enabled=false`) for local development and self-contained deployments (docker-compose does not include RabbitMQ).
+3. Keep a **configurable direct-send fallback** (`mailing.queue.enabled=false`) for local development and degraded scenarios.
+4. Persist resend throttle timestamp in **`users.last_verification_email_sent_at`** and enforce cooldown at application level.
+5. Expose delivery outcome via **Micrometer metrics** (`records_mail_delivery_total{type,status}`).
 
 ## Rationale
 - Queue decouples user-facing registration from SMTP volatility.

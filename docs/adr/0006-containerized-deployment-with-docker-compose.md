@@ -7,13 +7,13 @@ Accepted
 2026-05-13
 
 ## Context
-The platform requires repeatable multi-service deployment for API, DB, DMS, office conversion, and two frontends, with explicit internal networking and persistent storage.
+The platform requires repeatable multi-service deployment for API, DB, email, office conversion, and two frontends, with explicit internal networking and persistent storage.
 
 ## Decision
 Use Docker + Docker Compose as the default deployment topology in development/integration environments, with:
 - Multi-stage Dockerfiles per module
 - Private bridge network for internal service communication
-- Persistent external volumes for PostgreSQL and Alfresco storage
+- Persistent external volumes for PostgreSQL and document storage
 
 ## Rationale
 - Reproducible environments reduce integration drift.

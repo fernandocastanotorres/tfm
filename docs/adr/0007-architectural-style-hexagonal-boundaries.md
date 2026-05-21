@@ -14,7 +14,7 @@ We adopt a **Hexagonal/Clean architectural style** with explicit boundaries and 
 
 1. **Core API**
    - Domain and application use-cases are framework-agnostic.
-   - External systems (DB, BPM engine, Alfresco, signature, conversion) are accessed through ports/adapters.
+   - External systems (DB, BPM engine, storage/DMS, signature, conversion) are accessed through ports/adapters.
    - Security and audit are cross-cutting policies, not domain logic.
 
 2. **Frontends (Citizen and Backoffice)**
