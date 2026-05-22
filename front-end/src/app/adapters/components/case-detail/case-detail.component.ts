@@ -21,6 +21,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
   caseDetail: CaseDetail | null = null;
   isLoading = true;
   isUploading = false;
+  isDownloadingEni = false;
   private caseId: string | null = null;
   private readonly subscriptions = new Subscription();
 
@@ -137,6 +138,37 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
         this.toast.error('Error', 'No se ha podido descargar el justificante.');
       }
     });
+  }
+
+  downloadEniDoc(): void {
+    if (!this.caseDetail) {
+      return;
+    }
+
+    this.isDownloadingEni = true;
+    this.casesApiService.downloadEniDoc(this.caseDetail.id).subscribe({
+      next: (blob) => {
+        const objectUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = objectUrl;
+        link.download = `expediente-${this.caseDetail!.id}.enidoc`;
+        link.click();
+        URL.revokeObjectURL(objectUrl);
+        this.isDownloadingEni = false;
+      },
+      error: () => {
+        this.toast.error('Error', 'No se ha podido descargar el expediente electronico ENI.');
+        this.isDownloadingEni = false;
+      }
+    });
+  }
+
+  isResolved(): boolean {
+    if (!this.caseDetail) {
+      return false;
+    }
+    const key = this.toCaseStatusKey(this.caseDetail.status);
+    return key === 'APPROVED' || key === 'REJECTED';
   }
 
   async requestAmendment(): Promise<void> {

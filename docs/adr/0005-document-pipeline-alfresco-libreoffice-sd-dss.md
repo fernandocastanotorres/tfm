@@ -1,7 +1,7 @@
 # ADR-0005: Adopt Alfresco + LibreOffice Headless + SD-DSS for Document Pipeline
 
 ## Status
-Accepted
+Superseded (see revised [ADR-0005](./0005-document-pipeline-file-storage-libreoffice-bouncy-castle.md))
 
 ## Date
 2026-05-13

@@ -386,7 +386,10 @@
     "CONTINUE": "Continuar tramitacion",
     "ERROR_RESUME": "No se ha podido identificar el procedimiento para continuar la tramitacion.",
     "MESSAGES": "Mensajes",
-    "LOADING_MESSAGES": "Cargando mensajes..."
+    "LOADING_MESSAGES": "Cargando mensajes...",
+    "ENI_DOWNLOAD": "Descargar expediente ENI",
+    "ENI_DOWNLOADING": "Descargando...",
+    "ENI_HINT": "Paquete electrónico conforme al Esquema Nacional de Interoperabilidad (NTI-2011). Contiene documentos, firmas y metadatos XML."
   },
   "CASE_STATUS": {
     "DRAFT": "Borrador",

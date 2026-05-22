@@ -32,6 +32,18 @@
             <input type="file" multiple class="hidden" (change)="onSelectFiles($any($event.target).files)" />
           </label>
           <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="downloadReceipt()">{{ 'CASE_DETAIL.DOWNLOAD' | translate }}</button>
+          <button
+            *ngIf="isResolved()"
+            class="btn-primary bg-indigo-600 text-white hover:bg-indigo-700"
+            type="button"
+            (click)="downloadEniDoc()"
+            [disabled]="isDownloadingEni"
+            title="Expediente electrónico conforme al Esquema Nacional de Interoperabilidad (NTI-2011)">
+            <svg class="w-4 h-4 inline-block mr-1 -mt-0.5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            {{ isDownloadingEni ? ('CASE_DETAIL.ENI_DOWNLOADING' | translate) : ('CASE_DETAIL.ENI_DOWNLOAD' | translate) }}
+          </button>
           <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="requestAmendment()">{{ 'CASE_DETAIL.REQUEST' | translate }}</button>
         </div>
       </div>

@@ -16,7 +16,7 @@ References: proposal.md, specs/transparency-api.md, specs/statistics-api.md, spe
 | Controller placement | New `TransparencyController` for admin + extend `PublicContentController` for public | All in `BackofficeController` | Public endpoints belong with other public content; admin CRUD is a separate concern |
 | File storage | Extend `FileStorageService` with `store(subdir, file)` overload | New dedicated service | Reuses existing UUID naming, path traversal protection, and extension extraction |
 | Analytics extension | New `analyticsReport()` method in `BackofficeService` | Separate `AnalyticsService` class | Reuses existing `dashboardReport()` logic, avoids duplication of date-range resolution and filtering |
-| Chart library | `chart.js` 4.x + `ng2-charts` 4.x | D3.js, ApexCharts | ng2-charts 4.x is the Angular 16-compatible version; Chart.js 4 supports tree-shaking |
+| Chart library | `chart.js` 4.x + `ng2-charts` 4.x | D3.js, ApexCharts | ng2-charts 4.x is Angular 16-compatible (upgraded to Angular 19 in the project); Chart.js 4 supports tree-shaking |
 | PDF export | Server-side HTML-to-PDF via OpenPDF | Client-side html2canvas + jsPDF | Server-side keeps PDF generation deterministic; OpenPDF is lightweight and already JVM-native |
 | Frontend service pattern | Dedicated `TransparencyReportsService` (back-office) + refactor `TransparencyService` (front-end) | Single shared service | Back-office needs auth interceptor + multipart; front-end needs public endpoints; different concerns |
 
@@ -264,7 +264,7 @@ Add public transparency download to explicit permit list (defense in depth):
 
 ## 5. Charting Integration
 
-### Dependencies (Angular 16 compatible)
+### Dependencies (Angular 19 compatible)
 
 Both `front-end/` and `back-office/` need:
 ```json

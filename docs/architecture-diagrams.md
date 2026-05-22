@@ -30,7 +30,7 @@ graph TB
     end
 
     subgraph "External Services"
-        N[LibreOffice<br/>PDF/A Conversion]
+        N[LibreOffice<br/>PDF Conversion]
         O[Mailpit<br/>SMTP + Web UI]
     end
 

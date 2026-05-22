@@ -314,7 +314,7 @@ describe('CaseWizardComponent', () => {
 
   it('onDragOver should set drag state to true', () => {
     configureAndCreate();
-    const event = { preventDefault: () => {} } as DragEvent;
+    const event = { preventDefault: () => {}, stopPropagation: () => {} } as DragEvent;
     component.onDragOver('doc-1', event);
     expect(component.dragOverState.value['doc-1']).toBeTrue();
   });
@@ -322,7 +322,7 @@ describe('CaseWizardComponent', () => {
   it('onDragLeave should set drag state to false', () => {
     configureAndCreate();
     component.dragOverState.setValue({ 'doc-1': true });
-    const event = { preventDefault: () => {} } as DragEvent;
+    const event = { preventDefault: () => {}, stopPropagation: () => {} } as DragEvent;
     component.onDragLeave('doc-1', event);
     expect(component.dragOverState.value['doc-1']).toBeFalse();
   });
@@ -336,7 +336,7 @@ describe('CaseWizardComponent', () => {
     (component as any).buildForms(task);
     const file = new File(['content'], 'dropped.pdf', { type: 'application/pdf' });
     const dataTransfer = { files: [file] } as unknown as DataTransfer;
-    const event = { preventDefault: () => {}, dataTransfer } as unknown as DragEvent;
+    const event = { preventDefault: () => {}, stopPropagation: () => {}, dataTransfer } as unknown as DragEvent;
     component.onDrop('doc-1', event);
     expect(component.dragOverState.value['doc-1']).toBeFalse();
     expect(component.attachments.value['doc-1'].length).toBe(1);

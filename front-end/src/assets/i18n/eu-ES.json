@@ -383,7 +383,10 @@
     "MOCK_ATTACHMENT_ID": "Eskaneatutako NAN.pdf",
     "ERROR_LOAD": "Ezin izan da espedientea kargatu. Saiatu berriro geroago.",
     "CONTINUE": "Jarraitu izapidetzea",
-    "ERROR_RESUME": "Ezin izan da prozedura identifikatu izapidetzearekin jarraitzeko."
+    "ERROR_RESUME": "Ezin izan da prozedura identifikatu izapidetzearekin jarraitzeko.",
+    "ENI_DOWNLOAD": "ENI espedientea deskargatu",
+    "ENI_DOWNLOADING": "Deskargatzen...",
+    "ENI_HINT": "Interoperabilitate Eskema Nazionalarekin (NTI-2011) bat datorren pakete elektronikoa. Dokumentuak, sinadurak eta XML metadatuak ditu."
   },
   "CASE_STATUS": {
     "DRAFT": "Zirriborroa",

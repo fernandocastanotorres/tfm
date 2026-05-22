@@ -4,9 +4,9 @@
 This file is the high-level SDD index for the current implementation baseline.
 
 ## Current Baseline (2026-05)
-- **Backend**: Spring Boot 3.2.x, Java 17, JWT auth, JPA (PostgreSQL target), H2 for dev/test.
+- **Backend**: Spring Boot 3.4.5, Java 17, JWT auth, JPA (PostgreSQL target), H2 for dev/test.
 - **BPM Engine**: Flowable embedded process engine.
-- **Frontends**: Angular 16 citizen portal and Angular 16 backoffice.
+- **Frontends**: Angular 19 citizen portal and Angular 19 backoffice.
 - **i18n**: `Accept-Language` driven catalog localization (`es-ES`, `ca-ES`, `eu-ES`, `gl-ES`, `va-ES`).
 - **Identifier Policy**: Procedure start flow uses stable procedure identifier (UUID) end-to-end.
 - **Theme System**: Multi-theme with light/dark palettes per theme, persisted per locale.

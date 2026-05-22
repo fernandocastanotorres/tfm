@@ -147,6 +147,13 @@ export class CasesApiService {
   }
 
   /**
+   * GET /api/v1/citizen/procedures/{id}/enidoc — Download ENI-compliant electronic file package.
+   */
+  downloadEniDoc(caseId: string): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/${caseId}/enidoc`, { responseType: 'blob' });
+  }
+
+  /**
    * GET /api/v1/citizen/procedures/{id}/status — Get case status.
    */
   getStatus(id: string): Observable<CaseStatusResponse> {

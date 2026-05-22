@@ -383,7 +383,10 @@
     "MOCK_ATTACHMENT_ID": "DNI escaneado.pdf",
     "ERROR_LOAD": "Non se puido cargar o expediente. Téntao de novo máis tarde.",
     "CONTINUE": "Continuar tramitación",
-    "ERROR_RESUME": "Non se puido identificar o procedemento para continuar coa tramitación."
+    "ERROR_RESUME": "Non se puido identificar o procedemento para continuar coa tramitación.",
+    "ENI_DOWNLOAD": "Descargar expediente ENI",
+    "ENI_DOWNLOADING": "Descargando...",
+    "ENI_HINT": "Paquete electrónico conforme ao Esquema Nacional de Interoperabilidade (NTI-2011). Contén documentos, sinaturas e metadatos XML."
   },
   "CASE_STATUS": {
     "DRAFT": "Borrador",

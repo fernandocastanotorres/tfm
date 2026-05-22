@@ -53,8 +53,8 @@ Every auditable event MUST include:
 | DOC_UPLOADED | Document Operations | Upload document | ALLOW | Document persisted |
 | DOC_CONVERT_PDF_A_SUCCESS | Document Operations | Convert to PDF/A | ALLOW | Conversion successful |
 | DOC_CONVERT_PDF_A_FAILURE | Document Operations | Convert to PDF/A | DENY | Conversion failed |
-| DOC_SIGN_XADES_T_SUCCESS | Document Operations | Sign document | ALLOW | Signature successful |
-| DOC_SIGN_XADES_T_FAILURE | Document Operations | Sign document | DENY | Signature failed/policy rejected |
+| DOC_SIGN_PADES_BES_SUCCESS | Document Operations | Sign document | ALLOW | Signature successful |
+| DOC_SIGN_PADES_BES_FAILURE | Document Operations | Sign document | DENY | Signature failed/policy rejected |
 | ENIDOC_BUILD_SUCCESS | Document Operations | Generate .enidoc package | ALLOW | Package generated |
 | ENIDOC_BUILD_FAILURE | Document Operations | Generate .enidoc package | DENY | Package generation failed |
 | ENI_INDEX_XML_VALID | Interoperability/Validation | Validate ENI index.xml | ALLOW | XSD validation success |

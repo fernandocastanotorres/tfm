@@ -11,8 +11,8 @@ This document describes the implemented technical design as of 2026-05.
 ## Context
 
 The platform provides electronic records processing with three modules:
-- Citizen frontend (`front-end`) — Angular 18 LTS
-- Backoffice frontend (`back-office`) — Angular 18 LTS
+- Citizen frontend (`front-end`) — Angular 19
+- Backoffice frontend (`back-office`) — Angular 19
 - Core backend (`backend`) — Spring Boot 3.x
 
 The system is developed with H2 in dev/test and prepared for PostgreSQL in production.

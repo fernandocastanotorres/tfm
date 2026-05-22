@@ -383,7 +383,10 @@
     "MOCK_ATTACHMENT_ID": "DNI escanejat.pdf",
     "ERROR_LOAD": "No s'ha pogut carregar l'expedient. Torna-ho a provar més tard.",
     "CONTINUE": "Continuar tramitació",
-    "ERROR_RESUME": "No s'ha pogut identificar el procediment per a continuar la tramitació."
+    "ERROR_RESUME": "No s'ha pogut identificar el procediment per a continuar la tramitació.",
+    "ENI_DOWNLOAD": "Descarregar expedient ENI",
+    "ENI_DOWNLOADING": "Descarregant...",
+    "ENI_HINT": "Paquet electrònic conforme a l'Esquema Nacional d'Interoperabilitat (NTI-2011). Conté documents, signatures i metadades XML."
   },
   "CASE_STATUS": {
     "DRAFT": "Esborrany",

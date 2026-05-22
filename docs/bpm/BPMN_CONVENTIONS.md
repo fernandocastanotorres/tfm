@@ -80,7 +80,7 @@ Rule:
 ## 7) Error Handling in Processes
 
 Use explicit BPMN error boundaries for:
-- PDF/A conversion failures
+- PDF conversion failures
 - Signature failures
 - ENI XML validation failures
 - External dependency timeouts

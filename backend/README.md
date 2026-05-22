@@ -381,9 +381,9 @@ The platform supports PAdES-like electronic document signing using Bouncy Castle
 - **Validity**: 1 year from service startup
 - **Type**: PAdES-BES (Basic Electronic Signature)
 
-### PDF/A Conversion
+### PDF Conversion
 
-Documents can be converted to PDF/A format using LibreOffice via JODConverter before signing. Configure in `application.yml`:
+Documents can be converted to PDF format using LibreOffice via JODConverter before signing. Configure in `application.yml`:
 
 ```yaml
 jodconverter:

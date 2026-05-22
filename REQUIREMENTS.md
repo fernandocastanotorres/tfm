@@ -13,8 +13,8 @@
 
 ## 2. Module Architecture
 The system is divided into three decoupled core modules:
-1.  **Public Frontend (Citizen):** Angular 16 app with Tailwind CSS for procedure submission and status tracking.
-2.  **Private Backoffice (Processor):** Angular 16 app with Tailwind CSS for case management, workflow tasks, and BPMN configuration.
+1.  **Public Frontend (Citizen):** Angular 19 app with Tailwind CSS for procedure submission and status tracking.
+2.  **Private Backoffice (Processor):** Angular 19 app with Tailwind CSS for case management, workflow tasks, and BPMN configuration.
 3.  **Core Backend:** Spring Boot 3.x API handling business logic, BPMN orchestration, and integrations.
 
 ## 3. Technology Stack & Tooling
@@ -22,12 +22,10 @@ The system is divided into three decoupled core modules:
 *   **Business Logic:** Spring Boot 3.x, Spring Security (JWT-based).
 *   **Process Engine:** Flowable embedded engine (BPMN 2.0).
 *   **Persistence:** PostgreSQL via Spring Data JPA.
-*   **DMS (Document Management):** Alfresco Content Services (CMIS/REST API).
+*   **Document Storage:** Local file system (configurable path).
 *   **Orchestration:** **Docker & Docker Compose**. Essential services to containerize:
-    *   `api-server` (Spring Boot).
+    *   `api-server` (Spring Boot, includes LibreOffice for PDF conversion).
     *   `db-postgres` (PostgreSQL).
-    *   `dms-alfresco` (Alfresco).
-    *   `office-headless` (LibreOffice for PDF/A conversion).
     *   `frontend-citizen` & `backoffice-admin` (Nginx).
 
 ## 4. Functional Requirements
@@ -45,13 +43,13 @@ The system is divided into three decoupled core modules:
 *   **Fallback:** If DB translation is missing, fallback to server bundle/default language.
 
 ### 4.2. Document Management Pipeline
-*   **Automated Conversion:** Server-side conversion of all uploaded documents to **PDF/A** (standard for long-term preservation).
-*   **Electronic Signature:** Implementation of **XAdES-T** (Baseline T) server-side signature using an Organization Seal via the **SD-DSS** library.
+*   **Automated Conversion:** Server-side conversion of all uploaded documents to **PDF** via LibreOffice (JODConverter).
+*   **Electronic Signature:** Implementation of **PAdES-BES** (CMS/PKCS#7) server-side signature using an Organization Seal via the **Bouncy Castle** library.
 *   **ENI Metadata Inference:** Automatic mapping of process context to ENI metadata (e.g., Mapping `task_id` "Upload_ID" to ENI document type "TD99").
 
 ### 4.3. Interoperability & Exchange
 *   **Packager:** Service to generate a **ZIP (.enidoc)** containing:
-    *   Original/Converted PDF/A documents.
+    *   Original/Converted PDF documents.
     *   Detached signature files (.xsig).
     *   An `index.xml` valid against the official **ENI XSD schemas**.
 
@@ -68,5 +66,5 @@ The system is divided into three decoupled core modules:
 
 ## 6. Deployment & DevOps
 *   **Dockerization:** Multi-stage `Dockerfile` for each module.
-*   **Persistence:** External volumes for PostgreSQL data and Alfresco Content Store.
-*   **Networking:** Private bridge network for internal service communication (Backend ↔ Alfresco ↔ Office).
+*   **Persistence:** External volumes for PostgreSQL data.
+*   **Networking:** Private bridge network for internal service communication (Backend ↔ Office).
