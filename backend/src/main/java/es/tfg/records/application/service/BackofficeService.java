@@ -45,6 +45,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.flowable.bpmn.model.BpmnModel;
+import org.flowable.bpmn.model.FlowElement;
+import org.flowable.bpmn.model.SequenceFlow;
+import org.flowable.engine.HistoryService;
+import org.flowable.engine.RepositoryService;
+import org.flowable.engine.TaskService;
+import org.flowable.task.api.Task;
 
 import java.io.ByteArrayOutputStream;
 import java.time.Instant;
@@ -54,6 +61,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +74,33 @@ import java.util.stream.Collectors;
 public class BackofficeService {
 
     private static final long SECONDS_PER_DAY = 86400L;
+    private static final List<String> WORKFLOW_STATE_ORDER = List.of(
+            "DRAFT",
+            "SUBMITTED",
+            "IN_REVIEW",
+            "RESUBMITTED",
+            "AMENDMENT_REQUIRED",
+            "APPROVED",
+            "REJECTED"
+    );
+    private static final Map<String, String> WORKFLOW_STATE_LABELS = Map.ofEntries(
+            Map.entry("DRAFT", "Borrador"),
+            Map.entry("SUBMITTED", "Presentado"),
+            Map.entry("IN_REVIEW", "En revision"),
+            Map.entry("RESUBMITTED", "Reenviado"),
+            Map.entry("AMENDMENT_REQUIRED", "Subsanacion requerida"),
+            Map.entry("APPROVED", "Aprobado"),
+            Map.entry("REJECTED", "Rechazado")
+    );
+    private static final Map<String, List<String>> WORKFLOW_TRANSITIONS = Map.ofEntries(
+            Map.entry("DRAFT", List.of("SUBMITTED")),
+            Map.entry("SUBMITTED", List.of("IN_REVIEW", "AMENDMENT_REQUIRED", "APPROVED", "REJECTED")),
+            Map.entry("IN_REVIEW", List.of("AMENDMENT_REQUIRED", "APPROVED", "REJECTED")),
+            Map.entry("AMENDMENT_REQUIRED", List.of("RESUBMITTED", "REJECTED")),
+            Map.entry("RESUBMITTED", List.of("IN_REVIEW", "APPROVED", "REJECTED")),
+            Map.entry("APPROVED", List.of()),
+            Map.entry("REJECTED", List.of())
+    );
 
     private final ProcedureJpaRepository procedureRepository;
     private final ProcedureTypeJpaRepository procedureTypeRepository;
@@ -78,6 +113,9 @@ public class BackofficeService {
     private final PasswordEncoder passwordEncoder;
     private final ObjectMapper objectMapper;
     private final AuditService auditService;
+    private final HistoryService historyService;
+    private final RepositoryService repositoryService;
+    private final TaskService taskService;
 
     public BackofficeService(ProcedureJpaRepository procedureRepository,
                               ProcedureTypeJpaRepository procedureTypeRepository,
@@ -86,10 +124,13 @@ public class BackofficeService {
                                ProcedureTaskJpaRepository taskRepository,
                                DocumentJpaRepository documentRepository,
                                CaseTimelineEventJpaRepository timelineRepository,
-                               UserJpaRepository userRepository,
-                               PasswordEncoder passwordEncoder,
-                               ObjectMapper objectMapper,
-                               AuditService auditService) {
+                                UserJpaRepository userRepository,
+                                PasswordEncoder passwordEncoder,
+                                ObjectMapper objectMapper,
+                                AuditService auditService,
+                                HistoryService historyService,
+                                RepositoryService repositoryService,
+                                TaskService taskService) {
         this.procedureRepository = procedureRepository;
         this.procedureTypeRepository = procedureTypeRepository;
         this.procedureTypeI18nRepository = procedureTypeI18nRepository;
@@ -101,6 +142,9 @@ public class BackofficeService {
         this.passwordEncoder = passwordEncoder;
         this.objectMapper = objectMapper;
         this.auditService = auditService;
+        this.historyService = historyService;
+        this.repositoryService = repositoryService;
+        this.taskService = taskService;
     }
 
     @Transactional(readOnly = true)
@@ -151,6 +195,164 @@ public class BackofficeService {
                 attachments,
                 parseFormData(procedure.getFormData())
         );
+    }
+
+    @Transactional(readOnly = true)
+    public BackofficeDtos.CaseWorkflowGraph getCaseWorkflowGraph(UUID id) {
+        ProcedureEntity procedure = findProcedure(id);
+        String currentStatus = procedure.getStatus().name();
+
+        if (procedure.getProcessInstanceId() != null && !procedure.getProcessInstanceId().isBlank()) {
+            BackofficeDtos.CaseWorkflowGraph graph = buildWorkflowGraphFromFlowable(procedure);
+            if (graph != null) {
+                return graph;
+            }
+        }
+
+        Set<String> visitedStates = new HashSet<>();
+        visitedStates.add("DRAFT");
+        if (procedure.getSubmittedAt() != null) {
+            visitedStates.add("SUBMITTED");
+        }
+
+        timelineRepository.findByProcedureIdOrderByDateAsc(procedure.getId()).forEach(event -> {
+            String inferredStatus = inferStatusFromTimelineEvent(event.getDescription());
+            if (inferredStatus != null) {
+                visitedStates.add(inferredStatus);
+            }
+        });
+        visitedStates.add(currentStatus);
+
+        Set<String> reachableStates = new HashSet<>(WORKFLOW_TRANSITIONS.getOrDefault(currentStatus, List.of()));
+
+        List<BackofficeDtos.CaseWorkflowNode> nodes = WORKFLOW_STATE_ORDER.stream()
+                .map(state -> new BackofficeDtos.CaseWorkflowNode(
+                        state,
+                        WORKFLOW_STATE_LABELS.getOrDefault(state, state),
+                        categoryForState(state, currentStatus, visitedStates, reachableStates),
+                        WORKFLOW_STATE_ORDER.indexOf(state),
+                        visitedStates.contains(state),
+                        state.equals(currentStatus),
+                        reachableStates.contains(state)
+                ))
+                .toList();
+
+        List<BackofficeDtos.CaseWorkflowTransition> transitions = WORKFLOW_TRANSITIONS.entrySet().stream()
+                .flatMap(entry -> entry.getValue().stream().map(target -> {
+                    boolean fromVisited = visitedStates.contains(entry.getKey());
+                    boolean toVisited = visitedStates.contains(target);
+                    boolean candidate = entry.getKey().equals(currentStatus);
+                    return new BackofficeDtos.CaseWorkflowTransition(
+                            entry.getKey(),
+                            target,
+                            null,
+                            fromVisited && toVisited,
+                            candidate
+                    );
+                }))
+                .toList();
+
+        return new BackofficeDtos.CaseWorkflowGraph(procedure.getId(), currentStatus, nodes, transitions);
+    }
+
+    private BackofficeDtos.CaseWorkflowGraph buildWorkflowGraphFromFlowable(ProcedureEntity procedure) {
+        var historicProcess = historyService.createHistoricProcessInstanceQuery()
+                .processInstanceId(procedure.getProcessInstanceId())
+                .singleResult();
+        if (historicProcess == null) {
+            return null;
+        }
+
+        String processDefinitionId = historicProcess.getProcessDefinitionId();
+        if (processDefinitionId == null || processDefinitionId.isBlank()) {
+            return null;
+        }
+
+        BpmnModel model = repositoryService.getBpmnModel(processDefinitionId);
+        if (model == null || model.getMainProcess() == null) {
+            return null;
+        }
+
+        Set<String> visitedNodeIds = historyService.createHistoricActivityInstanceQuery()
+                .processInstanceId(procedure.getProcessInstanceId())
+                .list()
+                .stream()
+                .map(activity -> activity.getActivityId())
+                .filter(activityId -> activityId != null && !activityId.isBlank())
+                .collect(Collectors.toSet());
+
+        Set<String> currentNodeIds = taskService.createTaskQuery()
+                .processInstanceId(procedure.getProcessInstanceId())
+                .active()
+                .list()
+                .stream()
+                .map(Task::getTaskDefinitionKey)
+                .filter(taskKey -> taskKey != null && !taskKey.isBlank())
+                .collect(Collectors.toSet());
+
+        Set<String> reachableNodeIds = new HashSet<>();
+        for (String nodeId : currentNodeIds) {
+            FlowElement element = model.getMainProcess().getFlowElement(nodeId, true);
+            if (element != null) {
+                model.getMainProcess().findFlowElementsOfType(SequenceFlow.class, true).stream()
+                        .filter(sequenceFlow -> nodeId.equals(sequenceFlow.getSourceRef()))
+                        .forEach(sequenceFlow -> reachableNodeIds.add(sequenceFlow.getTargetRef()));
+            }
+        }
+
+        List<FlowElement> flowElements = model.getMainProcess().getFlowElements().stream().toList();
+        Map<String, Integer> orderById = new LinkedHashMap<>();
+        int index = 0;
+        for (FlowElement element : flowElements) {
+            if (element.getId() != null && !element.getId().isBlank()) {
+                orderById.putIfAbsent(element.getId(), index++);
+            }
+        }
+
+        List<BackofficeDtos.CaseWorkflowNode> nodes = flowElements.stream()
+                .filter(element -> element.getId() != null && !element.getId().isBlank())
+                .filter(element -> !(element instanceof SequenceFlow))
+                .map(element -> {
+                    String elementId = element.getId();
+                    String label = (element.getName() == null || element.getName().isBlank()) ? elementId : element.getName();
+                    boolean isCurrent = currentNodeIds.contains(elementId);
+                    boolean isVisited = visitedNodeIds.contains(elementId);
+                    boolean isReachable = reachableNodeIds.contains(elementId);
+                    String category = isCurrent ? "current" : (isReachable ? "next" : (isVisited ? "visited" : "idle"));
+                    return new BackofficeDtos.CaseWorkflowNode(
+                            elementId,
+                            label,
+                            category,
+                            orderById.getOrDefault(elementId, 0),
+                            isVisited,
+                            isCurrent,
+                            isReachable
+                    );
+                })
+                .toList();
+
+        List<BackofficeDtos.CaseWorkflowTransition> transitions = model.getMainProcess()
+                .findFlowElementsOfType(SequenceFlow.class, true)
+                .stream()
+                .map(sequenceFlow -> {
+                    boolean visited = visitedNodeIds.contains(sequenceFlow.getSourceRef())
+                            && visitedNodeIds.contains(sequenceFlow.getTargetRef());
+                    boolean candidate = currentNodeIds.contains(sequenceFlow.getSourceRef());
+                    return new BackofficeDtos.CaseWorkflowTransition(
+                            sequenceFlow.getSourceRef(),
+                            sequenceFlow.getTargetRef(),
+                            sequenceFlow.getName(),
+                            visited,
+                            candidate
+                    );
+                })
+                .toList();
+
+        String current = currentNodeIds.isEmpty()
+                ? procedure.getStatus().name()
+                : currentNodeIds.stream().sorted().collect(Collectors.joining(", "));
+
+        return new BackofficeDtos.CaseWorkflowGraph(procedure.getId(), current, nodes, transitions);
     }
 
     @Transactional
@@ -421,6 +623,35 @@ public class BackofficeService {
         return "";
     }
 
+    private String categoryForState(String state,
+                                    String currentStatus,
+                                    Set<String> visitedStates,
+                                    Set<String> reachableStates) {
+        if (state.equals(currentStatus)) {
+            return "current";
+        }
+        if (reachableStates.contains(state)) {
+            return "next";
+        }
+        if (visitedStates.contains(state)) {
+            return "visited";
+        }
+        return "idle";
+    }
+
+    private String inferStatusFromTimelineEvent(String description) {
+        if (description == null || description.isBlank()) {
+            return null;
+        }
+        String marker = "Backoffice actualizo estado a:";
+        int markerIndex = description.indexOf(marker);
+        if (markerIndex < 0) {
+            return null;
+        }
+        String extracted = description.substring(markerIndex + marker.length()).trim().toUpperCase();
+        return WORKFLOW_STATE_LABELS.containsKey(extracted) ? extracted : null;
+    }
+
     private String priority(ProcedureEntity procedure) {
         return procedure.getSubmittedAt() != null && procedure.getSubmittedAt().isBefore(Instant.now().minusSeconds(SECONDS_PER_DAY)) ? "urgent" : "normal";
     }
@@ -502,7 +733,7 @@ public class BackofficeService {
                 .map(this::parseFormSchema)
                 .orElse(List.of());
         return new BackofficeDtos.ManagedProcedure(
-                entity.getId(), entity.getTitle(), entity.getDescription(), entity.getTitle(), entity.getStatus(), entity.getUnit(),
+                entity.getId(), entity.getTitle(), entity.getDescription(), entity.getTitle(), entity.getStatus(), entity.getProcessKey(), entity.getUnit(),
                 entity.getDeadlineDays(), entity.getFeeAmount(), entity.getCreatedAt(), entity.getUpdatedAt(), tasks.stream().map(this::toTaskConfig).toList(), formSchema);
     }
 
@@ -514,6 +745,7 @@ public class BackofficeService {
         entity.setTitle(request.title());
         entity.setDescription(request.description());
         entity.setStatus(request.status());
+        entity.setProcessKey((request.processKey() == null || request.processKey().isBlank()) ? "simpleCitizenProcedure" : request.processKey().trim());
         entity.setUnit(request.assignedUnit());
         entity.setDeadlineDays(request.deadlineDays());
         entity.setFeeAmount(request.feeAmount());

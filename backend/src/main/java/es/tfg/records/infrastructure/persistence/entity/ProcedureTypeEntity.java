@@ -43,6 +43,9 @@ public class ProcedureTypeEntity {
     @Column(length = 100)
     private String unit;
 
+    @Column(name = "process_key", nullable = false, length = 100)
+    private String processKey = "simpleCitizenProcedure";
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
@@ -108,6 +111,14 @@ public class ProcedureTypeEntity {
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public String getProcessKey() {
+        return processKey;
+    }
+
+    public void setProcessKey(String processKey) {
+        this.processKey = processKey;
     }
 
     public Instant getCreatedAt() {

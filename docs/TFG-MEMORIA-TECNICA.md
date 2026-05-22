@@ -13,9 +13,9 @@
 
 Este proyecto desarrolla una plataforma completa de gestión de expedientes electrónicos para ciudadanos, implementando los requisitos del Esquema Nacional de Seguridad (ENS) Nivel Medio y el Esquema Nacional de Interoperabilidad (ENI). La solución incluye firma electrónica PAdES, gestión documental, flujo de trabajo BPMN, y una arquitectura hexagonal que garantiza la mantenibilidad y testabilidad del código.
 
-**Tecnologías principales:** Spring Boot 3.4.5, Angular 17+, PostgreSQL 16, Flowable 7.0.1, Bouncy Castle 1.78.1.
+**Tecnologías principales:** Spring Boot 3.4.5, Angular 19, PostgreSQL 16, Flowable 7.0.1, Bouncy Castle 1.78.1.
 
-**Resultados clave:** 543 tests unitarios (100% pass), 80% cobertura de instrucciones, arquitectura hexagonal documentada, firma electrónica funcional con CMS/PKCS#7.
+**Resultados clave:** 579 tests unitarios backend (100% pass), 820 tests front-end (100% pass), 84% cobertura de instrucciones backend, arquitectura hexagonal documentada, firma electrónica funcional con CMS/PKCS#7.
 
 ---
 
@@ -157,7 +157,7 @@ La arquitectura hexagonal (Ports & Adapters) separa la lógica de dominio de los
 |------|------------|---------|---------------|
 | Backend | Spring Boot | 3.4.5 | Framework enterprise estándar |
 | Lenguaje | Java | 17 | LTS con records, sealed classes |
-| Frontend | Angular | 17+ | Framework enterprise con signals |
+| Frontend | Angular | 19 | Framework enterprise con signals |
 | Base de datos | PostgreSQL | 16 | Open source, ACID, extensible |
 | BPM Engine | Flowable | 7.0.1 | Fork activo de Activiti, Spring Boot 3 |
 | Crypto | Bouncy Castle | 1.78.1 | Estándar para CMS/PKCS#7 |
@@ -275,12 +275,12 @@ backend/src/main/java/es/tfg/records/
 | Integración | @SpringBootTest + Testcontainers | Endpoints críticos |
 | Controller | @WebMvcTest | Request/response contracts |
 | Repository | @DataJpaTest | Queries JPA |
-| Performance | k6 | p95 < 500ms |
+| Performance | k6 | p95 < 500ms (real: 57ms) |
 
 ### 6.2. Resultados de Tests
 
 ```
-Tests run: 543, Failures: 0, Errors: 0, Skipped: 0
+Tests run: 579, Failures: 0, Errors: 0, Skipped: 0
 BUILD SUCCESS
 ```
 
@@ -289,16 +289,12 @@ BUILD SUCCESS
 | Capa | Instrucciones | Ramas |
 |------|---------------|-------|
 | Domain Model | 100% | n/a |
-| Application Exception | 92% | n/a |
+| Application Layer | 80% | — |
+| Controller Layer | 87% | — |
+| Persistence Layer | 82% | — |
 | Infrastructure Config | 96% | 77% |
-| Application Mapper | 76% | 71% |
-| Persistence Adapter | 64% | n/a |
-| Persistence Mapper | 60% | 26% |
-| Persistence Entity | 55% | 0% |
-| Application DTO | 34% | n/a |
-| Controller Layer | 31% | 14% |
-| Application Service | 24% | 13% |
-| **Total** | **80%** | **58%** |
+| Infrastructure (security, storage) | 80% | — |
+| **Total** | **84%** | **63%** |
 
 ### 6.3. Tests de Integración
 
@@ -321,9 +317,18 @@ BUILD SUCCESS
 - Steady: 1m @ 20 usuarios
 - Ramp-down: 30s → 0 usuarios
 
+**Resultados (Mayo 2026):**
+- Peticiones totales: 2,716
+- Iteraciones completadas: 543
+- Checks pasados: 3,802 / 3,802 (100%)
+- Fallos: 0
+
 **Thresholds:**
-- p95 response time < 500ms
-- Error rate < 1%
+| Métrica | Objetivo | Real | Estado |
+|---------|----------|------|--------|
+| p95 response time | < 500ms | 21.5ms | ✅ |
+| Error rate | < 1% | 0% | ✅ |
+| Average response | — | 7.2ms | ✅ |
 
 ---
 
@@ -381,8 +386,8 @@ El sistema soporta 5 idiomas oficiales de España:
 - ✅ Cumplimiento ENS Nivel Medio
 - ✅ Cumplimiento ENI (metadatos, formato PDF)
 - ✅ Arquitectura hexagonal documentada
-- ✅ 543 tests unitarios pasando
-- ✅ 80% cobertura de instrucciones
+- ✅ 579 tests unitarios backend + 820 tests front-end + 39 tests back-office
+- ✅ 84% cobertura de instrucciones backend
 - ✅ Internacionalización en 5 idiomas
 - ✅ Accesibilidad WCAG 2.1 AA
 

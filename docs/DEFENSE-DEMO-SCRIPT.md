@@ -48,8 +48,8 @@ Esperar ~30 segundos a que todos los servicios estén saludables.
 - **Arquitectura hexagonal** (Ports & Adapters) con separación clara de responsabilidades
 - **Tres módulos independientes:**
   - Backend: Spring Boot 3.4, Java 17, API REST
-  - Frontend ciudadano: Angular 18, Tailwind CSS
-  - Backoffice: Angular 18, Tailwind CSS
+  - Frontend ciudadano: Angular 19, Tailwind CSS
+  - Backoffice: Angular 19, Tailwind CSS
 - **Motor de procesos:** Flowable 7.0.1 (BPMN 2.0)
 - **Base de datos:** PostgreSQL 16 con Flyway para migraciones
 - **Despliegue:** Docker Compose con 5 servicios orquestados
@@ -359,8 +359,8 @@ Backoffice (Angular) ──┘                                         │
 | Módulo | Tests | Estado |
 |--------|-------|--------|
 | Backend | 579 | ✅ Todos pasan |
-| Frontend (Sede) | 695 | ✅ Todos pasan |
-| Backoffice | 34 | ✅ Todos pasan |
+| Frontend (Sede) | 820 | ✅ Todos pasan |
+| Backoffice | 39 | ✅ Todos pasan |
 
 ### Herramientas de testing
 
@@ -409,7 +409,7 @@ Backoffice (Angular) ──┘                                         │
 
 ### Resumen final
 
-> "En resumen, esta plataforma implementa un sistema completo de gestión de expedientes electrónicos que cumple con los requisitos del ENS (nivel medio) y ENI, con arquitectura hexagonal, motor BPMN embebido, firma electrónica, y despliegue containerizado. Los más de 1.300 tests automatizados garantizan la calidad del código."
+> "En resumen, esta plataforma implementa un sistema completo de gestión de expedientes electrónicos que cumple con los requisitos del ENS (nivel medio) y ENI, con arquitectura hexagonal, motor BPMN embebido, firma electrónica, y despliegue containerizado. Los más de 1.400 tests automatizados garantizan la calidad del código."
 
 ### Tecnologías utilizadas
 

@@ -48,6 +48,31 @@ public final class BackofficeDtos {
             Map<String, Object> formData
     ) {}
 
+    public record CaseWorkflowGraph(
+            UUID caseId,
+            String currentStatus,
+            List<CaseWorkflowNode> nodes,
+            List<CaseWorkflowTransition> transitions
+    ) {}
+
+    public record CaseWorkflowNode(
+            String key,
+            String label,
+            String category,
+            int order,
+            boolean visited,
+            boolean current,
+            boolean reachable
+    ) {}
+
+    public record CaseWorkflowTransition(
+            String from,
+            String to,
+            String label,
+            boolean visited,
+            boolean candidate
+    ) {}
+
     public record PendingTask(
             String id,
             UUID caseId,
@@ -143,6 +168,7 @@ public final class BackofficeDtos {
             String description,
             String category,
             String status,
+            String processKey,
             String assignedUnit,
             int deadlineDays,
             BigDecimal feeAmount,
@@ -157,6 +183,7 @@ public final class BackofficeDtos {
             String description,
             String category,
             String status,
+            String processKey,
             String assignedUnit,
             int deadlineDays,
             BigDecimal feeAmount,

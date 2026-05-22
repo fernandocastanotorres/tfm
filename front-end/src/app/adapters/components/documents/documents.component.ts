@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
-import { HttpEventType } from '@angular/common/http';
+import { HttpEventType, HttpProgressEvent } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { DocumentsApiService, UploadMetadata } from '../../../application/services/documents-api.service';
 import { SignatureApiService } from '../../../application/services/signature-api.service';
@@ -70,6 +70,13 @@ export class DocumentsComponent implements OnInit, OnDestroy {
     private readonly confirmDialogService: ConfirmDialogService,
     private readonly toastService: ToastService
   ) {}
+
+  private isHttpProgressEvent(event: unknown): event is HttpProgressEvent {
+    return !!event
+      && typeof event === 'object'
+      && 'type' in event
+      && typeof (event as { type?: unknown }).type === 'number';
+  }
 
   ngOnInit(): void {
     // Load user's cases first
@@ -225,12 +232,18 @@ export class DocumentsComponent implements OnInit, OnDestroy {
     }
 
     // Validate file type
+    const extension = this.getFileExtension(file.name);
     const isAllowedType = this.ALLOWED_MIME_TYPES.some(t => t.mime === file.type);
+    const isAllowedByExtension = this.isAllowedExtension(extension);
     if (!isAllowedType) {
+      if (file.type === '' && isAllowedByExtension) {
+        // Continue: some files provide empty MIME type in browser APIs.
+      } else {
       const allowedLabels = this.ALLOWED_MIME_TYPES.map(t => t.label).join(', ');
       this.toastService.warning('Tipo de archivo no valido', `Tipos aceptados: ${allowedLabels}. Tamano maximo: 10 MB`);
       input.value = '';
       return;
+      }
     }
 
     // Validate file size
@@ -251,20 +264,31 @@ export class DocumentsComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.documentsApiService.upload(this.selectedCaseId, file, metadata).subscribe({
         next: (event) => {
-          if (event.type === HttpEventType.UploadProgress && event.total) {
-            this.uploadProgress = Math.round((event.loaded / event.total) * 100);
+          if (this.isHttpProgressEvent(event)) {
+            if (event.type === HttpEventType.UploadProgress && event.total) {
+              this.uploadProgress = Math.round((event.loaded / event.total) * 100);
+            }
+            return;
           }
-        },
-        complete: () => {
+
           this.isUploading = false;
           this.uploadProgress = 0;
           if (this.selectedCaseId) {
             this.loadDocuments(this.selectedCaseId);
           }
-          if (input) {
+          input.value = '';
+          this.toastService.success('Documento subido', `${event.name} se ha adjuntado correctamente.`);
+        },
+        complete: () => {
+          if (this.isUploading) {
+            this.isUploading = false;
+            this.uploadProgress = 0;
+            if (this.selectedCaseId) {
+              this.loadDocuments(this.selectedCaseId);
+            }
             input.value = '';
+            this.toastService.success('Documento subido', `${file.name} se ha adjuntado correctamente.`);
           }
-          this.toastService.success('Documento subido', `${file.name} se ha adjuntado correctamente.`);
         },
         error: (err) => {
           this.isUploading = false;
@@ -423,5 +447,17 @@ export class DocumentsComponent implements OnInit, OnDestroy {
       month: '2-digit',
       year: 'numeric'
     });
+  }
+
+  private getFileExtension(fileName: string): string {
+    const index = fileName.lastIndexOf('.');
+    if (index < 0 || index === fileName.length - 1) {
+      return '';
+    }
+    return fileName.slice(index).toLowerCase();
+  }
+
+  private isAllowedExtension(extension: string): boolean {
+    return extension !== '' && this.ALLOWED_EXTENSIONS.split(',').includes(extension);
   }
 }

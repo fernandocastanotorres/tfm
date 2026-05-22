@@ -3,10 +3,10 @@ FROM node:20-alpine AS build
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY back-office/package*.json ./
 RUN npm ci --ignore-scripts
 
-COPY . .
+COPY back-office/ .
 RUN npx ng build --configuration=production --output-hashing=all
 
 # ── Runtime stage ────────────────────────────
@@ -16,7 +16,7 @@ RUN apk add --no-cache curl && \
     addgroup -S appgroup && adduser -S appuser -G appgroup
 
 COPY --from=build /app/dist/back-office/ /usr/share/nginx/html/
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY back-office/nginx.conf /etc/nginx/conf.d/default.conf
 COPY certs/tfg-selfsigned.crt /etc/nginx/certs/
 COPY certs/tfg-selfsigned.key /etc/nginx/certs/
 

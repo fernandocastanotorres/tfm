@@ -236,6 +236,62 @@
       </div>
     </div>
 
+    <!-- Workflow tab -->
+    <div *ngIf="activeTab === 'workflow'" class="p-6">
+      <div *ngIf="!workflowGraph" class="text-gray-500 text-sm">No se pudo cargar el diagrama de estados.</div>
+
+      <div *ngIf="workflowGraph" class="space-y-6">
+        <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
+          <div class="text-xs uppercase tracking-wide text-gray-500 mb-3">Ruta del expediente</div>
+          <div class="flex flex-wrap items-center gap-2">
+            <ng-container *ngFor="let node of workflowNodesInOrder; let last = last">
+              <button
+                type="button"
+                (click)="selectWorkflowNode(node.key)"
+                class="rounded-md border px-3 py-2 text-sm font-medium transition-colors"
+                [ngClass]="getNodeClass(node)"
+              >
+                {{ node.label }}
+              </button>
+              <span *ngIf="!last" class="text-gray-400">→</span>
+            </ng-container>
+          </div>
+        </div>
+
+        <div *ngIf="selectedWorkflowNode as node" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div class="rounded-lg border border-gray-200 p-4">
+            <h4 class="text-base font-semibold text-gray-900 mb-2">Estado seleccionado</h4>
+            <div class="text-sm text-gray-600 space-y-2">
+              <p><strong>Nombre:</strong> {{ node.label }}</p>
+              <p><strong>Clave:</strong> {{ node.key }}</p>
+              <p><strong>Situacion:</strong>
+                <span *ngIf="node.current">Estado actual</span>
+                <span *ngIf="!node.current && node.reachable">Posible siguiente estado</span>
+                <span *ngIf="!node.current && !node.reachable && node.visited">Estado ya recorrido</span>
+                <span *ngIf="!node.current && !node.reachable && !node.visited">Estado no recorrido</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="rounded-lg border border-gray-200 p-4">
+            <h4 class="text-base font-semibold text-gray-900 mb-2">Transiciones disponibles</h4>
+            <ul class="space-y-2 text-sm text-gray-700" *ngIf="getNodeTransitions(node.key).length > 0">
+              <li *ngFor="let transition of getNodeTransitions(node.key)" class="flex items-center justify-between rounded border border-gray-200 px-3 py-2">
+                <span>{{ node.label }} → {{ transition.to.label }}</span>
+                <span class="text-xs font-medium"
+                      [class.text-emerald-700]="transition.candidate"
+                      [class.text-slate-600]="!transition.candidate && transition.visited"
+                      [class.text-gray-500]="!transition.candidate && !transition.visited">
+                  {{ transition.candidate ? 'Posible ahora' : (transition.visited ? 'Usada' : 'No usada') }}
+                </span>
+              </li>
+            </ul>
+            <p *ngIf="getNodeTransitions(node.key).length === 0" class="text-sm text-gray-500">No hay transiciones salientes para este estado.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Actions tab -->
     <div *ngIf="activeTab === 'actions'" class="p-6">
       <div class="space-y-4">

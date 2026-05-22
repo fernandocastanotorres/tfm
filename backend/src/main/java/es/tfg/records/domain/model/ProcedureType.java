@@ -17,6 +17,7 @@ public class ProcedureType {
     private int deadlineDays;
     private String status;
     private String unit;
+    private String processKey;
     private List<ProcedureTask> tasks;
     private Instant createdAt;
     private Instant updatedAt;
@@ -33,6 +34,7 @@ public class ProcedureType {
         this.deadlineDays = deadlineDays;
         this.status = status;
         this.unit = unit;
+        this.processKey = "simpleCitizenProcedure";
     }
 
     public UUID getId() {
@@ -97,6 +99,14 @@ public class ProcedureType {
 
     public void setTasks(List<ProcedureTask> tasks) {
         this.tasks = tasks;
+    }
+
+    public String getProcessKey() {
+        return processKey;
+    }
+
+    public void setProcessKey(String processKey) {
+        this.processKey = processKey;
     }
 
     public Instant getCreatedAt() {

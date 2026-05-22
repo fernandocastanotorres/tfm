@@ -50,6 +50,12 @@ public class AdminCaseController {
         return ResponseEntity.ok(backofficeService.getCaseDetail(id));
     }
 
+    @GetMapping("/{id}/workflow-graph")
+    @Operation(summary = "Get case workflow graph", description = "Get workflow states graph showing visited, current and possible next states for a case.")
+    public ResponseEntity<BackofficeDtos.CaseWorkflowGraph> getCaseWorkflowGraph(@PathVariable UUID id) {
+        return ResponseEntity.ok(backofficeService.getCaseWorkflowGraph(id));
+    }
+
     @PatchMapping("/{id}/status")
     @Operation(summary = "Update case status (admin)", description = "Update the status of any case. Restricted to admin users only.")
     @ApiResponses({

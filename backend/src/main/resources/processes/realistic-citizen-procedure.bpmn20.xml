@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:flowable="http://flowable.org/bpmn"
+             targetNamespace="http://tfg.es/workflow">
+
+  <process id="realisticCitizenProcedure" name="Realistic Citizen Procedure" isExecutable="true">
+    <startEvent id="startEvent" name="Start"/>
+    <sequenceFlow id="flow1" sourceRef="startEvent" targetRef="intakeReviewTask"/>
+
+    <userTask id="intakeReviewTask"
+              name="Intake review"
+              flowable:candidateGroups="ROLE_TRAMITADOR,ROLE_ADMIN"
+              flowable:formFieldValidation="true"/>
+
+    <boundaryEvent id="intakeSlaBoundary" attachedToRef="intakeReviewTask" cancelActivity="false" name="SLA warning">
+      <timerEventDefinition>
+        <timeDuration>PT48H</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flowSla1" sourceRef="intakeSlaBoundary" targetRef="slaEscalationTask"/>
+
+    <userTask id="slaEscalationTask"
+              name="SLA escalation follow-up"
+              flowable:candidateGroups="ROLE_ADMIN"/>
+    <sequenceFlow id="flowSla2" sourceRef="slaEscalationTask" targetRef="intakeReviewTask"/>
+
+    <sequenceFlow id="flow2" sourceRef="intakeReviewTask" targetRef="docsCompleteGateway"/>
+
+    <exclusiveGateway id="docsCompleteGateway" name="Documentation complete?"/>
+
+    <sequenceFlow id="flow3a" sourceRef="docsCompleteGateway" targetRef="amendmentRequestTask">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${documentationComplete == false}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow3b" sourceRef="docsCompleteGateway" targetRef="legalReviewTask">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${documentationComplete == true}]]></conditionExpression>
+    </sequenceFlow>
+
+    <userTask id="amendmentRequestTask"
+              name="Request amendment"
+              flowable:candidateGroups="ROLE_TRAMITADOR,ROLE_ADMIN"/>
+    <sequenceFlow id="flow4" sourceRef="amendmentRequestTask" targetRef="intakeReviewTask"/>
+
+    <userTask id="legalReviewTask"
+              name="Legal review"
+              flowable:candidateGroups="ROLE_TRAMITADOR,ROLE_ADMIN"/>
+    <sequenceFlow id="flow5" sourceRef="legalReviewTask" targetRef="parallelSplit"/>
+
+    <parallelGateway id="parallelSplit" name="Parallel checks"/>
+    <sequenceFlow id="flow6a" sourceRef="parallelSplit" targetRef="securityCheckTask"/>
+    <sequenceFlow id="flow6b" sourceRef="parallelSplit" targetRef="complianceCheckTask"/>
+
+    <userTask id="securityCheckTask"
+              name="Security check"
+              flowable:candidateGroups="ROLE_ADMIN"/>
+    <userTask id="complianceCheckTask"
+              name="Compliance check"
+              flowable:candidateGroups="ROLE_TRAMITADOR,ROLE_ADMIN"/>
+
+    <parallelGateway id="parallelJoin" name="Checks completed"/>
+    <sequenceFlow id="flow7a" sourceRef="securityCheckTask" targetRef="parallelJoin"/>
+    <sequenceFlow id="flow7b" sourceRef="complianceCheckTask" targetRef="parallelJoin"/>
+
+    <sequenceFlow id="flow8" sourceRef="parallelJoin" targetRef="finalDecisionTask"/>
+
+    <userTask id="finalDecisionTask"
+              name="Final decision"
+              flowable:candidateGroups="ROLE_ADMIN"/>
+    <sequenceFlow id="flow9" sourceRef="finalDecisionTask" targetRef="approvedGateway"/>
+
+    <exclusiveGateway id="approvedGateway" name="Approved?"/>
+    <sequenceFlow id="flow10a" sourceRef="approvedGateway" targetRef="approvedEnd">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approved == true}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow10b" sourceRef="approvedGateway" targetRef="rejectedEnd">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approved == false}]]></conditionExpression>
+    </sequenceFlow>
+
+    <endEvent id="approvedEnd" name="Approved"/>
+    <endEvent id="rejectedEnd" name="Rejected"/>
+  </process>
+
+</definitions>

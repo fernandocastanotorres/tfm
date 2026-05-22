@@ -25,6 +25,7 @@ public final class ProcedureEntityMapper {
         procedure.setStatus(entity.getStatus());
         procedure.setFormData(entity.getFormData());
         procedure.setAssignedUnit(entity.getAssignedUnit());
+        procedure.setProcessInstanceId(entity.getProcessInstanceId());
         procedure.setSubmittedAt(entity.getSubmittedAt());
         procedure.setCreatedAt(entity.getCreatedAt());
         procedure.setUpdatedAt(entity.getUpdatedAt());
@@ -41,6 +42,7 @@ public final class ProcedureEntityMapper {
         entity.setStatus(domain.getStatus());
         entity.setFormData(domain.getFormData());
         entity.setAssignedUnit(domain.getAssignedUnit());
+        entity.setProcessInstanceId(domain.getProcessInstanceId());
         entity.setSubmittedAt(domain.getSubmittedAt());
         return entity;
     }

@@ -71,6 +71,31 @@ export interface CaseStatusResponse {
   lastUpdated: string;
 }
 
+export interface CaseWorkflowNode {
+  key: string;
+  label: string;
+  category: 'current' | 'visited' | 'next' | 'idle' | string;
+  order: number;
+  visited: boolean;
+  current: boolean;
+  reachable: boolean;
+}
+
+export interface CaseWorkflowTransition {
+  from: string;
+  to: string;
+  label: string | null;
+  visited: boolean;
+  candidate: boolean;
+}
+
+export interface CaseWorkflowGraph {
+  caseId: string;
+  currentStatus: string;
+  nodes: CaseWorkflowNode[];
+  transitions: CaseWorkflowTransition[];
+}
+
 export interface PendingTask {
   id: string;
   caseId: string;

@@ -663,6 +663,7 @@ public class DataInitializer {
         entity.setDeadlineDays(deadlineDays);
         entity.setStatus(status);
         entity.setUnit(esUnit);
+        entity.setProcessKey("simpleCitizenProcedure");
         typeRepo.save(entity);
 
         for (ProcedureTask task : tasks) {

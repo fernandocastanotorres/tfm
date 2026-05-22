@@ -319,6 +319,13 @@ describe('CaseWizardComponent', () => {
     expect(component.dragOverState.value['doc-1']).toBeTrue();
   });
 
+  it('onDragEnter should set drag state to true', () => {
+    configureAndCreate();
+    const event = { preventDefault: () => {}, stopPropagation: () => {} } as DragEvent;
+    component.onDragEnter('doc-1', event);
+    expect(component.dragOverState.value['doc-1']).toBeTrue();
+  });
+
   it('onDragLeave should set drag state to false', () => {
     configureAndCreate();
     component.dragOverState.setValue({ 'doc-1': true });
@@ -732,6 +739,24 @@ describe('CaseWizardComponent', () => {
     } as unknown as DragEvent;
     component.onDrop('doc-1', event);
     expect(component.attachments.value['doc-1']).toBeUndefined();
+  });
+
+  it('preventDocumentDrop should prevent browser default drop behavior', () => {
+    configureAndCreate();
+    const preventDefault = jasmine.createSpy('preventDefault');
+    const stopPropagation = jasmine.createSpy('stopPropagation');
+    component.preventDocumentDrop({ preventDefault, stopPropagation } as unknown as DragEvent);
+    expect(preventDefault).toHaveBeenCalled();
+    expect(stopPropagation).toHaveBeenCalled();
+  });
+
+  it('preventWindowDrop should prevent browser default drop behavior', () => {
+    configureAndCreate();
+    const preventDefault = jasmine.createSpy('preventDefault');
+    const stopPropagation = jasmine.createSpy('stopPropagation');
+    component.preventWindowDrop({ preventDefault, stopPropagation } as unknown as DragEvent);
+    expect(preventDefault).toHaveBeenCalled();
+    expect(stopPropagation).toHaveBeenCalled();
   });
 
   it('should not add duplicate files', () => {

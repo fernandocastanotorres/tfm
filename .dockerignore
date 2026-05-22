@@ -1,0 +1,14 @@
+node_modules/
+.git/
+.gitignore
+*.md
+docs/
+performance/
+scripts/
+.env*
+.backup/
+.vscode/
+.idea/
+*.log
+dist/
+target/

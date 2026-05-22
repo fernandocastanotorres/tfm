@@ -126,6 +126,27 @@ class AdminCaseControllerTest {
                 .andExpect(jsonPath("$.path").value("/admin/procedures/" + caseId));
     }
 
+    @Test
+    void getCaseWorkflowGraph_shouldReturn200() throws Exception {
+        UUID caseId = UUID.randomUUID();
+        var graph = new BackofficeDtos.CaseWorkflowGraph(
+                caseId,
+                "IN_REVIEW",
+                List.of(
+                        new BackofficeDtos.CaseWorkflowNode("SUBMITTED", "Presentado", "visited", 1, true, false, false),
+                        new BackofficeDtos.CaseWorkflowNode("IN_REVIEW", "En revision", "current", 2, true, true, false)
+                ),
+                List.of(new BackofficeDtos.CaseWorkflowTransition("SUBMITTED", "IN_REVIEW", null, true, false))
+        );
+        when(backofficeService.getCaseWorkflowGraph(eq(caseId))).thenReturn(graph);
+
+        mockMvc.perform(get("/admin/procedures/{id}/workflow-graph", caseId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.caseId").value(caseId.toString()))
+                .andExpect(jsonPath("$.currentStatus").value("IN_REVIEW"))
+                .andExpect(jsonPath("$.nodes.length()").value(2));
+    }
+
     // ===== POST /admin/procedures/{id}/tasks/{taskId}/resolve — resolveTask =====
 
     @Test

@@ -15,6 +15,7 @@ public class Procedure {
     private CaseStatus status;
     private String formData;
     private String assignedUnit;
+    private String processInstanceId;
     private Instant submittedAt;
     private Instant createdAt;
     private Instant updatedAt;
@@ -89,6 +90,14 @@ public class Procedure {
 
     public void setAssignedUnit(String assignedUnit) {
         this.assignedUnit = assignedUnit;
+    }
+
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
     }
 
     public Instant getSubmittedAt() {

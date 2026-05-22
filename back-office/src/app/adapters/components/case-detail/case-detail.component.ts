@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminCasesService } from '../../../application/services/admin-cases.service';
 import { MessagingAdminService, MessageDto, PagedMessages } from '../../../application/services/messaging-admin.service';
-import { CaseDetail } from '../../../application/models/backoffice.models';
+import { CaseDetail, CaseWorkflowGraph, CaseWorkflowNode } from '../../../application/models/backoffice.models';
 
 @Component({
     selector: 'bo-case-detail',
@@ -18,10 +18,12 @@ export class CaseDetailComponent implements OnInit {
 
   caseDetail: CaseDetail | null = null;
   isLoading = true;
-  activeTab: 'timeline' | 'documents' | 'data' | 'tasks' | 'messages' | 'actions' = 'timeline';
+  activeTab: 'timeline' | 'documents' | 'data' | 'tasks' | 'messages' | 'workflow' | 'actions' = 'timeline';
   showStatusModal = false;
   newStatus = '';
-  tabs: ('timeline' | 'documents' | 'data' | 'tasks' | 'messages' | 'actions')[] = ['timeline', 'documents', 'tasks', 'messages', 'data', 'actions'];
+  tabs: ('timeline' | 'documents' | 'data' | 'tasks' | 'messages' | 'workflow' | 'actions')[] = ['timeline', 'documents', 'tasks', 'workflow', 'messages', 'data', 'actions'];
+  workflowGraph: CaseWorkflowGraph | null = null;
+  selectedWorkflowNodeKey: string | null = null;
 
   pendingTasks: { id: string; name: string; description: string; type: string; assignedRole: string }[] = [];
 
@@ -58,7 +60,7 @@ export class CaseDetailComponent implements OnInit {
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     const tab = this.route.snapshot.queryParamMap.get('tab');
-    if (tab && ['timeline', 'documents', 'data', 'tasks', 'messages', 'actions'].includes(tab)) {
+    if (tab && ['timeline', 'documents', 'data', 'tasks', 'messages', 'workflow', 'actions'].includes(tab)) {
       this.activeTab = tab as typeof this.activeTab;
     }
     if (id) {
@@ -72,6 +74,7 @@ export class CaseDetailComponent implements OnInit {
       next: (detail) => {
         this.caseDetail = detail;
         this.loadPendingTasks(id);
+        this.loadWorkflowGraph(id);
         this.loadMessages(id);
         this.isLoading = false;
       },
@@ -79,6 +82,59 @@ export class CaseDetailComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  loadWorkflowGraph(caseId: string): void {
+    this.adminCasesService.getWorkflowGraph(caseId).subscribe({
+      next: (graph) => {
+        this.workflowGraph = graph;
+        this.selectedWorkflowNodeKey = graph.nodes.find((node) => node.current)?.key ?? graph.nodes[0]?.key ?? null;
+      },
+      error: () => {
+        this.workflowGraph = null;
+        this.selectedWorkflowNodeKey = null;
+      }
+    });
+  }
+
+  get workflowNodesInOrder(): CaseWorkflowNode[] {
+    return [...(this.workflowGraph?.nodes ?? [])].sort((a, b) => a.order - b.order);
+  }
+
+  get selectedWorkflowNode(): CaseWorkflowNode | null {
+    if (!this.workflowGraph || !this.selectedWorkflowNodeKey) {
+      return null;
+    }
+    return this.workflowGraph.nodes.find((node) => node.key === this.selectedWorkflowNodeKey) ?? null;
+  }
+
+  selectWorkflowNode(nodeKey: string): void {
+    this.selectedWorkflowNodeKey = nodeKey;
+  }
+
+  getNodeTransitions(nodeKey: string): { to: CaseWorkflowNode; candidate: boolean; visited: boolean }[] {
+    if (!this.workflowGraph) {
+      return [];
+    }
+    const nodeByKey = new Map(this.workflowGraph.nodes.map((node) => [node.key, node]));
+    return this.workflowGraph.transitions
+      .filter((transition) => transition.from === nodeKey)
+      .map((transition) => ({
+        to: nodeByKey.get(transition.to),
+        candidate: transition.candidate,
+        visited: transition.visited
+      }))
+      .filter((item): item is { to: CaseWorkflowNode; candidate: boolean; visited: boolean } => Boolean(item.to));
+  }
+
+  getNodeClass(node: CaseWorkflowNode): string {
+    const byCategory: Record<string, string> = {
+      current: 'border-blue-600 bg-blue-50 text-blue-700',
+      next: 'border-emerald-500 bg-emerald-50 text-emerald-700',
+      visited: 'border-slate-400 bg-slate-100 text-slate-700',
+      idle: 'border-gray-200 bg-white text-gray-600'
+    };
+    return byCategory[node.category] ?? byCategory['idle'];
   }
 
   loadMessages(caseId: string): void {
@@ -270,6 +326,7 @@ export class CaseDetailComponent implements OnInit {
       documents: 'Documentos',
       tasks: 'Tareas',
       messages: 'Mensajes',
+      workflow: 'Diagrama',
       data: 'Datos',
       actions: 'Acciones'
     };

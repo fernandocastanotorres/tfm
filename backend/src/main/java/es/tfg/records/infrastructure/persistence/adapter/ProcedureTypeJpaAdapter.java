@@ -50,6 +50,7 @@ public class ProcedureTypeJpaAdapter implements ProcedureTypeRepository {
         procedureType.setDeadlineDays(entity.getDeadlineDays());
         procedureType.setStatus(entity.getStatus());
         procedureType.setUnit(entity.getUnit());
+        procedureType.setProcessKey(entity.getProcessKey());
         procedureType.setCreatedAt(entity.getCreatedAt());
         procedureType.setUpdatedAt(entity.getUpdatedAt());
 

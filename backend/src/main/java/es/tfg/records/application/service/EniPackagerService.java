@@ -1,6 +1,8 @@
 package es.tfg.records.application.service;
 
 import es.tfg.records.application.exception.AccessDeniedException;
+import es.tfg.records.application.exception.ConflictException;
+import es.tfg.records.application.exception.RecordsException;
 import es.tfg.records.application.exception.ResourceNotFoundException;
 import es.tfg.records.domain.model.CaseStatus;
 import es.tfg.records.domain.model.Document;
@@ -88,6 +90,10 @@ public class EniPackagerService {
         ProcedureTypeEntity type = procedureTypeRepository.findById(procedure.getProcedureTypeId()).orElse(null);
         List<Document> documents = documentRepository.findByProcedureId(caseId);
 
+        if (documents.isEmpty()) {
+            throw new ConflictException("PROC", "Cannot generate ENI package without attached documents", "NO_DOCUMENTS");
+        }
+
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
              ZipOutputStream zos = new ZipOutputStream(baos)) {
 
@@ -123,6 +129,8 @@ public class EniPackagerService {
             zos.finish();
             log.info("ENI package generated for case {} ({} documents, {} bytes)", caseId, documents.size(), baos.size());
             return baos.toByteArray();
+        } catch (RecordsException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException("Failed to generate ENI package for case " + caseId, e);
         }
@@ -197,16 +205,16 @@ public class EniPackagerService {
     }
 
     void validateAgainstXsd(String xml) {
-        try {
-            ClassPathResource xsdResource = new ClassPathResource("eni/xsd/eni-documento.xsd");
+        try (InputStream xsdInputStream = new ClassPathResource("eni/xsd/eni-documento.xsd").getInputStream()) {
             SchemaFactory factory = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            Schema schema = factory.newSchema(xsdResource.getFile());
+            Schema schema = factory.newSchema(new StreamSource(xsdInputStream));
             Validator validator = schema.newValidator();
             Source xmlSource = new StreamSource(new java.io.StringReader(xml));
             validator.validate(xmlSource);
             log.info("ENI index.xml validated successfully against eni-documento.xsd");
         } catch (Exception e) {
-            log.warn("ENI index.xml validation FAILED against eni-documento.xsd: {}", e.getMessage());
+            log.error("ENI index.xml validation FAILED against eni-documento.xsd: {}", e.getMessage());
+            throw new RuntimeException("ENI index.xml validation failed: " + e.getMessage(), e);
         }
     }
 

@@ -46,6 +46,9 @@ public class ProcedureEntity {
     @Column(name = "assigned_unit", length = 100)
     private String assignedUnit;
 
+    @Column(name = "process_instance_id", length = 100)
+    private String processInstanceId;
+
     @Column(name = "submitted_at")
     private Instant submittedAt;
 
@@ -114,6 +117,14 @@ public class ProcedureEntity {
 
     public void setAssignedUnit(String assignedUnit) {
         this.assignedUnit = assignedUnit;
+    }
+
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
     }
 
     public Instant getSubmittedAt() {

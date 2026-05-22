@@ -18,6 +18,18 @@ import { Subscription } from 'rxjs';
 })
 export class CaseWizardComponent implements OnInit, OnDestroy {
   private static readonly GENERIC_UPLOAD_ID = '__genericUpload__';
+  private static readonly MAX_FILE_SIZE = 10 * 1024 * 1024;
+  private static readonly ALLOWED_MIME_TYPES = new Set([
+    'application/pdf',
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+  ]);
+  private static readonly ALLOWED_EXTENSIONS = new Set([
+    '.pdf', '.jpg', '.jpeg', '.png', '.gif', '.doc', '.docx'
+  ]);
   private localeSubscription: Subscription | null = null;
   private procedureIdentifier: string | null = null;
   procedure: ProcedureDetail | null = null;
@@ -133,12 +145,33 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
     this.buildForms(this.currentTask);
   }
 
-  onFilesSelected(requirementId: string, files: FileList | null): void {
+  onFilesSelected(requirementId: string, files: FileList | null, input?: HTMLInputElement | null): void {
+    
+    console.log("Files selected for requirement", requirementId, files);
+    
     if (!files) {
+      if (input) {
+        input.value = '';
+      }
       return;
     }
 
-    this.addFiles(requirementId, Array.from(files));
+    console.log("Processing selected files for requirement", requirementId, files);
+
+    const acceptedFiles = this.filterAllowedFiles(Array.from(files));
+    this.addFiles(requirementId, acceptedFiles);
+
+    console.log("Finished processing selected files for requirement", requirementId, acceptedFiles);
+
+    if (input) {
+      input.value = '';
+    }
+
+    console.log("Current attachments state after file selection for requirement", requirementId, this.attachments.value);
+
+    if (acceptedFiles.length === 0) {
+      this.toast.info('Sin adjuntos nuevos', 'No se ha anadido ningun fichero.');
+    }
   }
 
   onDragOver(requirementId: string, event: DragEvent): void {
@@ -147,6 +180,12 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
     if (event.dataTransfer) {
       event.dataTransfer.dropEffect = 'copy';
     }
+    this.dragOverState.setValue({ ...this.dragOverState.value, [requirementId]: true });
+  }
+
+  onDragEnter(requirementId: string, event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
     this.dragOverState.setValue({ ...this.dragOverState.value, [requirementId]: true });
   }
 
@@ -160,17 +199,22 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
     event.preventDefault();
     event.stopPropagation();
     this.dragOverState.setValue({ ...this.dragOverState.value, [requirementId]: false });
-    const files = event.dataTransfer?.files;
-    if (!files) {
+    const files = this.extractDroppedFiles(event.dataTransfer);
+    if (files.length === 0) {
       return;
     }
 
-    this.addFiles(requirementId, Array.from(files));
+    this.addFiles(requirementId, this.filterAllowedFiles(files));
   }
 
   openFilePicker(requirementId: string): void {
     const input = document.getElementById(`file-input-${requirementId}`) as HTMLInputElement | null;
-    input?.click();
+    if (!input) {
+      this.toast.error('Error', 'No se ha encontrado el selector de archivos.');
+      return;
+    }
+
+    input.click();
   }
 
   onDropzoneKeydown(requirementId: string, event: KeyboardEvent): void {
@@ -180,14 +224,40 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
     }
   }
 
+  @HostListener('document:dragenter', ['$event'])
+  preventDocumentDragEnter(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  @HostListener('window:dragenter', ['$event'])
+  preventWindowDragEnter(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
   @HostListener('document:dragover', ['$event'])
   preventDocumentDragOver(event: DragEvent): void {
     event.preventDefault();
+    event.stopPropagation();
   }
 
   @HostListener('document:drop', ['$event'])
   preventDocumentDrop(event: DragEvent): void {
     event.preventDefault();
+    event.stopPropagation();
+  }
+
+  @HostListener('window:dragover', ['$event'])
+  preventWindowDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  @HostListener('window:drop', ['$event'])
+  preventWindowDrop(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
   }
 
   isDragOver(requirementId: string): boolean {
@@ -225,6 +295,13 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
   }
 
   private addFiles(requirementId: string, files: File[]): void {
+    
+    console.log("Adding files for requirement", requirementId, files);
+    
+    if (files.length === 0) {
+      return;
+    }
+
     const current = this.attachments.value[requirementId] ?? [];
     const next = [...current];
     files.forEach((file) => {
@@ -244,6 +321,25 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
       [requirementId]: next
     });
     this.uploadForm.get(requirementId)?.setValue(next.map((file) => file.name));
+  }
+
+  private extractDroppedFiles(dataTransfer: DataTransfer | null | undefined): File[] {
+    if (!dataTransfer) {
+      return [];
+    }
+
+    if (dataTransfer.files && dataTransfer.files.length > 0) {
+      return Array.from(dataTransfer.files);
+    }
+
+    if (dataTransfer.items && dataTransfer.items.length > 0) {
+      return Array.from(dataTransfer.items)
+        .filter((item) => item.kind === 'file')
+        .map((item) => item.getAsFile())
+        .filter((file): file is File => file !== null);
+    }
+
+    return [];
   }
 
   removeAttachment(requirementId: string, index: number): void {
@@ -436,11 +532,59 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
       next: () => {
         this.uploadAttachmentsAndSubmit(caseId, files, index + 1);
       },
-      error: () => {
+      error: (err) => {
         this.isSubmitting = false;
-        this.toast.error('Error', 'No se ha podido subir el documento adjunto.');
+        this.toast.error('Error', err?.error?.message ?? 'No se ha podido subir el documento adjunto.');
       }
     });
+  }
+
+  private filterAllowedFiles(files: File[]): File[] {
+    const accepted: File[] = [];
+    const rejectedByType: string[] = [];
+    const rejectedBySize: string[] = [];
+
+    files.forEach((file) => {
+      if (file.size > CaseWizardComponent.MAX_FILE_SIZE) {
+        rejectedBySize.push(file.name);
+        return;
+      }
+
+      const extension = this.getFileExtension(file.name);
+      const allowedByMime = CaseWizardComponent.ALLOWED_MIME_TYPES.has(file.type);
+      const allowedByExtension = CaseWizardComponent.ALLOWED_EXTENSIONS.has(extension);
+
+      if (!allowedByMime && !allowedByExtension) {
+        rejectedByType.push(file.name);
+        return;
+      }
+
+      accepted.push(file);
+    });
+
+    if (rejectedByType.length > 0) {
+      this.toast.warning(
+        'Tipo de archivo no valido',
+        `No se han anadido: ${rejectedByType.join(', ')}. Formatos permitidos: PDF, JPG, PNG, GIF, DOC, DOCX.`
+      );
+    }
+
+    if (rejectedBySize.length > 0) {
+      this.toast.warning(
+        'Archivo demasiado grande',
+        `No se han anadido: ${rejectedBySize.join(', ')}. Tamano maximo por archivo: 10 MB.`
+      );
+    }
+
+    return accepted;
+  }
+
+  private getFileExtension(fileName: string): string {
+    const index = fileName.lastIndexOf('.');
+    if (index < 0 || index === fileName.length - 1) {
+      return '';
+    }
+    return fileName.slice(index).toLowerCase();
   }
 
   private submitCreatedCase(caseId: string): void {

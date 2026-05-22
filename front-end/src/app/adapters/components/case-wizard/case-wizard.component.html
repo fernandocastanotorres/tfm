@@ -62,33 +62,16 @@
           <h2 class="text-lg font-semibold">{{ currentTask.name | translate }}</h2>
           <p class="text-surface-600">{{ currentTask.description | translate }}</p>
           <div class="space-y-4" *ngFor="let requirement of effectiveUploadRequirements">
-            <label class="field-label" [attr.for]="requirement.id">{{ requirement.name | translate }}</label>
-            <div
-              [id]="'dropzone-' + requirement.id"
-              class="wizard-dropzone"
-              [class.wizard-dropzone--active]="isDragOver(requirement.id)"
-              (dragover)="onDragOver(requirement.id, $event)"
-              (dragleave)="onDragLeave(requirement.id, $event)"
-              (drop)="onDrop(requirement.id, $event)"
-              (click)="openFilePicker(requirement.id)"
-              tabindex="0"
-              role="button"
-              [attr.aria-label]="'CASE_WIZARD.UPLOAD_DROPZONE_TEXT' | translate"
-              (keydown)="onDropzoneKeydown(requirement.id, $event)"
-            >
-              <p class="wizard-dropzone__text">{{ 'CASE_WIZARD.UPLOAD_DROPZONE_TEXT' | translate }}</p>
-              <button type="button" class="btn-primary mt-3" (click)="openFilePicker(requirement.id); $event.stopPropagation()">
-                {{ 'CASE_WIZARD.ADD_ATTACHMENT' | translate }}
-              </button>
-            </div>
+            <label class="field-label" [attr.for]="'file-input-' + requirement.id">{{ requirement.name | translate }}</label>
             <input
               [id]="'file-input-' + requirement.id"
               type="file"
-              class="sr-only"
+              class="field-input"
+              accept=".pdf,.jpg,.jpeg,.png,.gif,.doc,.docx,application/pdf,image/jpeg,image/png,image/gif,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
               multiple
-              (change)="onFilesSelected(requirement.id, $any($event.target).files)"
-              [attr.aria-labelledby]="'dropzone-' + requirement.id"
+              (change)="onFilesSelected(requirement.id, $any($event.target).files, $any($event.target))"
             />
+
             <ul class="space-y-2" *ngIf="attachments.value[requirement.id]?.length">
               <li class="text-surface-600 flex items-center justify-between" *ngFor="let file of attachments.value[requirement.id]; let i = index">
                 <span>{{ file.name }}</span>

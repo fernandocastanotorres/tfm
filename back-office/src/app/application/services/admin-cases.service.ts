@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import {
   CaseDetail,
   CaseItem,
+  CaseWorkflowGraph,
   CaseStatusResponse,
   DashboardStats,
   DashboardReport,
@@ -112,5 +113,9 @@ export class AdminCasesService {
     return this.http.get(`${this.baseUrl}/procedures/documents/${documentId}/download`, {
       responseType: 'blob'
     });
+  }
+
+  getWorkflowGraph(caseId: string): Observable<CaseWorkflowGraph> {
+    return this.http.get<CaseWorkflowGraph>(`${this.baseUrl}/procedures/${caseId}/workflow-graph`);
   }
 }

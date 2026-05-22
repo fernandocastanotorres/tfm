@@ -17,6 +17,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.flowable.engine.HistoryService;
+import org.flowable.engine.RepositoryService;
+import org.flowable.engine.TaskService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -45,6 +48,9 @@ class BackofficeServiceTest {
     @Mock private UserJpaRepository userRepository;
     @Mock private PasswordEncoder passwordEncoder;
     @Mock private AuditService auditService;
+    @Mock private HistoryService historyService;
+    @Mock private RepositoryService repositoryService;
+    @Mock private TaskService taskService;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     private BackofficeService service;
@@ -54,7 +60,8 @@ class BackofficeServiceTest {
         service = new BackofficeService(procedureRepository, procedureTypeRepository,
                 procedureTypeI18nRepository, fieldI18nRepository, taskRepository,
                 documentRepository, timelineRepository, userRepository,
-                passwordEncoder, objectMapper, auditService);
+                passwordEncoder, objectMapper, auditService,
+                historyService, repositoryService, taskService);
     }
 
     // ===== listCases =====
@@ -127,6 +134,36 @@ class BackofficeServiceTest {
 
         assertThatThrownBy(() -> service.getCaseDetail(UUID.randomUUID()))
                 .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    void getCaseWorkflowGraph_shouldMarkVisitedCurrentAndReachableStates() {
+        UUID procId = UUID.randomUUID();
+        UUID typeId = UUID.randomUUID();
+        UUID ownerId = UUID.randomUUID();
+        ProcedureEntity procedure = createProcedureWithIds(procId, typeId, ownerId, CaseStatus.IN_REVIEW);
+        procedure.setSubmittedAt(Instant.now().minusSeconds(3600));
+
+        CaseTimelineEventEntity statusChangeEvent = new CaseTimelineEventEntity();
+        statusChangeEvent.setId(UUID.randomUUID());
+        statusChangeEvent.setProcedureId(procId);
+        statusChangeEvent.setTitle("Cambio de estado");
+        statusChangeEvent.setDescription("Backoffice actualizo estado a: AMENDMENT_REQUIRED");
+        statusChangeEvent.setDate(Instant.now());
+
+        when(procedureRepository.findById(procId)).thenReturn(Optional.of(procedure));
+        when(timelineRepository.findByProcedureIdOrderByDateAsc(procId)).thenReturn(List.of(statusChangeEvent));
+
+        var graph = service.getCaseWorkflowGraph(procId);
+
+        assertThat(graph.caseId()).isEqualTo(procId);
+        assertThat(graph.currentStatus()).isEqualTo("IN_REVIEW");
+        assertThat(graph.nodes().stream().filter(BackofficeDtos.CaseWorkflowNode::current).map(BackofficeDtos.CaseWorkflowNode::key))
+                .containsExactly("IN_REVIEW");
+        assertThat(graph.nodes().stream().filter(BackofficeDtos.CaseWorkflowNode::visited).map(BackofficeDtos.CaseWorkflowNode::key))
+                .contains("DRAFT", "SUBMITTED", "IN_REVIEW", "AMENDMENT_REQUIRED");
+        assertThat(graph.nodes().stream().filter(BackofficeDtos.CaseWorkflowNode::reachable).map(BackofficeDtos.CaseWorkflowNode::key))
+                .contains("AMENDMENT_REQUIRED", "APPROVED", "REJECTED");
     }
 
     // ===== updateCaseStatus =====
@@ -351,7 +388,7 @@ class BackofficeServiceTest {
         when(procedureTypeRepository.save(any())).thenReturn(saved);
 
         var result = service.createProcedure(new BackofficeDtos.ProcedureRequest(
-                "New Procedure", "Description", null, "active", "Unit A", 10, null, List.of(), List.of()));
+                "New Procedure", "Description", null, "active", "simpleCitizenProcedure", "Unit A", 10, null, List.of(), List.of()));
 
         assertThat(result.title()).isEqualTo("New Procedure");
         verify(procedureTypeRepository).save(any());
@@ -365,7 +402,7 @@ class BackofficeServiceTest {
         when(procedureTypeRepository.save(any())).thenReturn(existing);
 
         var result = service.updateProcedure(procId, new BackofficeDtos.ProcedureRequest(
-                "New Title", "New Desc", null, "active", "Unit B", 15, null, List.of(), List.of()));
+                "New Title", "New Desc", null, "active", "simpleCitizenProcedure", "Unit B", 15, null, List.of(), List.of()));
 
         assertThat(result.title()).isEqualTo("New Title");
     }
@@ -375,7 +412,7 @@ class BackofficeServiceTest {
         when(procedureTypeRepository.findById(any())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.updateProcedure(UUID.randomUUID(), new BackofficeDtos.ProcedureRequest(
-                "Title", "Desc", null, "active", "Unit", 10, null, List.of(), List.of())))
+                "Title", "Desc", null, "active", "simpleCitizenProcedure", "Unit", 10, null, List.of(), List.of())))
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 

@@ -54,6 +54,7 @@ public class CaseServiceImpl implements CaseService {
     private final EniMetadataService eniMetadataService;
     private final SignatureService signatureService;
     private final FileStorageService fileStorageService;
+    private final WorkflowService workflowService;
 
     public CaseServiceImpl(ProcedureRepository procedureRepository,
                            ProcedureTypeRepository procedureTypeRepository,
@@ -61,7 +62,8 @@ public class CaseServiceImpl implements CaseService {
                            CaseTimelineEventJpaRepository timelineRepository,
                            EniMetadataService eniMetadataService,
                            SignatureService signatureService,
-                           FileStorageService fileStorageService) {
+                           FileStorageService fileStorageService,
+                           WorkflowService workflowService) {
         this.procedureRepository = procedureRepository;
         this.procedureTypeRepository = procedureTypeRepository;
         this.documentRepository = documentRepository;
@@ -69,6 +71,7 @@ public class CaseServiceImpl implements CaseService {
         this.eniMetadataService = eniMetadataService;
         this.signatureService = signatureService;
         this.fileStorageService = fileStorageService;
+        this.workflowService = workflowService;
     }
 
     @Override
@@ -167,9 +170,35 @@ public class CaseServiceImpl implements CaseService {
         procedure.setSubmittedAt(Instant.now());
         Procedure saved = procedureRepository.save(procedure);
         addTimelineEvent(saved.getId(), "Expediente enviado", "El ciudadano ha presentado el expediente.");
+        startWorkflowForSubmittedCase(saved);
         eniMetadataService.upsertProcedureMetadata(saved);
 
         return ProcedureMapper.toCaseStatusResponse(saved, null);
+    }
+
+    private void startWorkflowForSubmittedCase(Procedure procedure) {
+        if (workflowService == null) {
+            return;
+        }
+
+        String processKey = procedureTypeRepository.findById(procedure.getProcedureTypeId())
+                .map(ProcedureType::getProcessKey)
+                .filter(key -> key != null && !key.isBlank())
+                .orElse("simpleCitizenProcedure");
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("caseId", procedure.getId().toString());
+        variables.put("ownerId", procedure.getOwnerId().toString());
+        variables.put("procedureTypeId", procedure.getProcedureTypeId().toString());
+        variables.put("submittedAt", procedure.getSubmittedAt() == null ? null : procedure.getSubmittedAt().toString());
+
+        WorkflowDtos.ProcessInstanceResponse process = workflowService.startProcess(new WorkflowDtos.StartProcessRequest(
+                processKey,
+                procedure.getId().toString(),
+                variables
+        ));
+        procedure.setProcessInstanceId(process.processInstanceId());
+        procedureRepository.save(procedure);
     }
 
     private void signPendingDocuments(UUID caseId) {

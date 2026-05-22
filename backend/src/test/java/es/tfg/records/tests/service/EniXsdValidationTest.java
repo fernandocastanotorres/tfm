@@ -10,6 +10,7 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import java.io.StringReader;
+import java.io.InputStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,9 +19,10 @@ class EniXsdValidationTest {
     private final Schema eniSchema;
 
     EniXsdValidationTest() throws Exception {
-        ClassPathResource xsdResource = new ClassPathResource("eni/xsd/eni-documento.xsd");
         SchemaFactory factory = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        eniSchema = factory.newSchema(xsdResource.getFile());
+        try (InputStream xsdInputStream = new ClassPathResource("eni/xsd/eni-documento.xsd").getInputStream()) {
+            eniSchema = factory.newSchema(new StreamSource(xsdInputStream));
+        }
     }
 
     @Test
