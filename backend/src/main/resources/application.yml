@@ -78,10 +78,10 @@ jwt:
 springdoc:
   api-docs:
     path: /api-docs
-    enabled: true
+    enabled: ${SPRINGDOC_ENABLED:true}
   swagger-ui:
     path: /swagger-ui.html
-    enabled: true
+    enabled: ${SPRINGDOC_ENABLED:true}
     operations-sorter: method
     tags-sorter: alpha
   packages-to-scan: es.tfg.records.entrypoints
@@ -91,7 +91,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,prometheus
+        include: health,info,metrics
   endpoint:
     health:
       show-details: when_authorized
@@ -115,11 +115,17 @@ jodconverter:
   office-home: ${LIBREOFFICE_HOME:/usr/lib/libreoffice}
   port-numbers: ${LIBREOFFICE_PORT:2002}
 
+# Electronic signature keystore
+signing:
+  keystore:
+    password: ${SIGNING_KEYSTORE_PASSWORD:changeit}
+
 mailing:
   enabled: ${MAILING_ENABLED:false}
   queue:
     enabled: ${MAILING_QUEUE_ENABLED:true}
   verification-base-url: ${MAILING_VERIFICATION_BASE_URL:http://localhost:4200/sede/verificar-email}
+  password-reset-base-url: ${MAILING_PASSWORD_RESET_BASE_URL:http://localhost:4200/sede/restablecer-contrasena}
   from:
     email: ${MAILING_FROM_EMAIL:no-reply@records.local}
     name: ${MAILING_FROM_NAME:Records}

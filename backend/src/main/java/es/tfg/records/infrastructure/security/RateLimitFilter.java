@@ -38,7 +38,8 @@ public class RateLimitFilter extends OncePerRequestFilter {
             "/auth/reset-password",
             "/auth/refresh",
             "/auth/verify-otp",
-            "/auth/resend-verification"
+            "/auth/resend-verification",
+            "/auth/verify-email"
     };
 
     private static final String[] ADMIN_RATE_LIMITED_PATHS = {

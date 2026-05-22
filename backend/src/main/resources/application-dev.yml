@@ -26,7 +26,7 @@ spring:
             enable: false
 
 jwt:
-  secret: ZGV2LXNlY3JldC1rZXktZm9yLXRlc3RpbmctcHVycG9zZXMtb25seS1kb25vdC11c2UtaW4tcHJvZHVjdGlvbg==
+  secret: ${JWT_SECRET:ZGV2LXNlY3JldC1rZXktZm9yLXRlc3RpbmctcHVycG9zZXMtb25seS1kb25vdC11c2UtaW4tcHJvZHVjdGlvbg==}
 
 springdoc:
   api-docs:
@@ -38,6 +38,8 @@ mailing:
   enabled: true
   queue:
     enabled: false
+  verification-base-url: http://localhost:4200/sede/verificar-email
+  password-reset-base-url: http://localhost:4200/sede/restablecer-contrasena
   from:
     email: no-reply@records.local
     name: Records

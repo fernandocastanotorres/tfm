@@ -29,4 +29,12 @@ public class QueuedEmailGateway implements EmailGateway {
         NewMessageNotificationMessage message = new NewMessageNotificationMessage(recipientEmail, senderName, messagePreview, caseId);
         rabbitTemplate.convertAndSend(MailQueueConfig.MAIL_EXCHANGE, MailQueueConfig.MAIL_ROUTING_KEY, message);
     }
+
+    @Override
+    public void sendPasswordResetEmail(String recipientEmail, String recipientName, String resetUrl) {
+        PasswordResetEmailMessage message = new PasswordResetEmailMessage(recipientEmail, recipientName, resetUrl);
+        rabbitTemplate.convertAndSend(MailQueueConfig.MAIL_EXCHANGE, MailQueueConfig.MAIL_ROUTING_KEY, message);
+    }
+
+    public record PasswordResetEmailMessage(String recipientEmail, String recipientName, String resetUrl) {}
 }

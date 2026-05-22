@@ -65,8 +65,10 @@ class AuthServiceImplTest {
         authService = new AuthServiceImpl(
                 userRepository, jwtTokenProvider, passwordEncoder, emailGateway,
                 lockoutManager, auditService,
-                "http://localhost:4200/sede/verificar-email");
+                "http://localhost:4200/sede/verificar-email",
+                "http://localhost:4200/sede/restablecer-contrasena");
         doNothing().when(emailGateway).sendVerificationEmail(any(), any(), any());
+        doNothing().when(emailGateway).sendPasswordResetEmail(any(), any(), any());
         when(lockoutManager.isLocked(any())).thenReturn(false);
         doNothing().when(lockoutManager).resetFailedAttempts(any());
     }

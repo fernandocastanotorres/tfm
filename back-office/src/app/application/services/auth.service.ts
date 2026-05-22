@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, of } from 'rxjs';
+import { map, tap, catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LoginRequest, LoginResponse, BackofficeUserProfile } from '../models/backoffice.models';
 
@@ -44,6 +44,12 @@ export class AuthService {
   }
 
   logout(): void {
+    const refresh = this.getRefreshToken();
+    if (refresh) {
+      this.http.post<void>(`${this.baseUrl}/logout`, { refreshToken: refresh }).pipe(
+        catchError(() => of(undefined))
+      ).subscribe();
+    }
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(REFRESH_TOKEN_KEY);
     localStorage.removeItem(USER_KEY);

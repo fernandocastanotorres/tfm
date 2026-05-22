@@ -54,6 +54,30 @@ public class BrevoEmailGateway {
         sendHtml(recipientEmail, recipientName, "Confirma tu cuenta en la Sede Electronica", html);
     }
 
+    public void sendPasswordResetEmail(String recipientEmail, String recipientName, String resetUrl) {
+        if (!enabled) {
+            log.info("Mail disabled. Password reset URL for {}: {}", recipientEmail, resetUrl);
+            return;
+        }
+
+        String html = """
+                <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:24px;background:#f8fafc;color:#0f172a">
+                  <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:24px">
+                    <h1 style="margin:0 0 12px;font-size:22px">Restablece tu contrasena</h1>
+                    <p style="margin:0 0 10px">Hola %s,</p>
+                    <p style="margin:0 0 18px">Hemos recibido una solicitud para restablecer la contrasena de tu cuenta. Pulsa el siguiente boton para continuar:</p>
+                    <p style="margin:0 0 20px">
+                      <a href="%s" style="display:inline-block;background:#0f766e;color:#ffffff;text-decoration:none;padding:12px 18px;border-radius:8px;font-weight:700">Restablecer contrasena</a>
+                    </p>
+                    <p style="margin:0 0 6px;color:#475569">Este enlace caduca en 1 hora.</p>
+                    <p style="margin:0;color:#475569">Si no has solicitado este cambio, puedes ignorar este mensaje.</p>
+                  </div>
+                </div>
+                """.formatted(recipientName, resetUrl);
+
+        sendHtml(recipientEmail, recipientName, "Restablece tu contrasena - Sede Electronica", html);
+    }
+
     public void sendNewMessageNotification(String recipientEmail, String senderName, String messagePreview, String caseId) {
         if (!enabled) {
             log.info("Mail disabled. New message notification for {}: case {}", recipientEmail, caseId);

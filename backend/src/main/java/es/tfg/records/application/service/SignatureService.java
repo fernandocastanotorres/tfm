@@ -17,6 +17,7 @@ import org.jodconverter.core.DocumentConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
@@ -42,14 +43,17 @@ public class SignatureService {
     private final DocumentConverter documentConverter;
     private final KeyStore signingKeyStore;
     private final X509Certificate signingCertificate;
+    private final char[] keystorePassword;
 
     static {
         Security.addProvider(new BouncyCastleProvider());
     }
 
     @Autowired
-    public SignatureService(@Autowired(required = false) DocumentConverter documentConverter) throws Exception {
+    public SignatureService(@Autowired(required = false) DocumentConverter documentConverter,
+                            @Value("${signing.keystore.password}") String keystorePassword) throws Exception {
         this.documentConverter = documentConverter;
+        this.keystorePassword = keystorePassword.toCharArray();
         this.signingKeyStore = createSigningKeyStore();
         this.signingCertificate = (X509Certificate) signingKeyStore.getCertificate("signing");
         if (documentConverter == null) {
@@ -67,7 +71,7 @@ public class SignatureService {
 
         ContentSigner signer = new JcaContentSignerBuilder("SHA256withRSA")
                 .setProvider("BC")
-                .build((java.security.PrivateKey) signingKeyStore.getKey("signing", "changeit".toCharArray()));
+                .build((java.security.PrivateKey) signingKeyStore.getKey("signing", keystorePassword));
 
         gen.addSignerInfoGenerator(new JcaSignerInfoGeneratorBuilder(
                 new JcaDigestCalculatorProviderBuilder().setProvider("BC").build())
@@ -96,7 +100,7 @@ public class SignatureService {
 
         ContentSigner signer = new JcaContentSignerBuilder("SHA256withRSA")
                 .setProvider("BC")
-                .build((java.security.PrivateKey) signingKeyStore.getKey("signing", "changeit".toCharArray()));
+                .build((java.security.PrivateKey) signingKeyStore.getKey("signing", keystorePassword));
 
         gen.addSignerInfoGenerator(new JcaSignerInfoGeneratorBuilder(
                 new JcaDigestCalculatorProviderBuilder().setProvider("BC").build())
@@ -169,6 +173,7 @@ public class SignatureService {
 
     /**
      * Verifies a CMS signature embedded in a PDF document.
+     * Validates the cryptographic signature against the signing certificate.
      */
     public boolean verifySignature(byte[] signedPdfContent) {
         try {
@@ -178,7 +183,36 @@ public class SignatureService {
             }
 
             CMSSignedData signedData = new CMSSignedData(signatureBytes);
-            return signedData.getSignerInfos().getSigners().size() > 0;
+
+            org.bouncycastle.util.Store certStore = signedData.getCertificates();
+            if (certStore == null) {
+                log.warn("No certificates found in signature");
+                return false;
+            }
+
+            for (Object signerObj : signedData.getSignerInfos().getSigners()) {
+                org.bouncycastle.cms.SignerInformation signer = (org.bouncycastle.cms.SignerInformation) signerObj;
+
+                java.util.Collection certMatches = certStore.getMatches(signer.getSID());
+                if (certMatches.isEmpty()) {
+                    log.warn("No matching certificate found for signer");
+                    return false;
+                }
+
+                X509CertificateHolder certHolder = (X509CertificateHolder) certMatches.iterator().next();
+
+                org.bouncycastle.cms.SignerInformationVerifier verifier =
+                        new org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder()
+                                .setProvider("BC")
+                                .build(certHolder);
+
+                if (!signer.verify(verifier)) {
+                    log.warn("Signature cryptographic verification failed");
+                    return false;
+                }
+            }
+
+            return true;
         } catch (Exception e) {
             log.error("Signature verification failed: {}", e.getMessage());
             return false;
@@ -255,7 +289,7 @@ public class SignatureService {
 
         KeyStore keyStore = KeyStore.getInstance("PKCS12", "BC");
         keyStore.load(null, null);
-        keyStore.setKeyEntry("signing", keyPair.getPrivate(), "changeit".toCharArray(),
+        keyStore.setKeyEntry("signing", keyPair.getPrivate(), keystorePassword,
                 new java.security.cert.Certificate[]{cert});
         return keyStore;
     }

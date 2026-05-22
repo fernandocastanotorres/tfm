@@ -22,9 +22,14 @@ public class User {
     private String otpCode;
     private Instant otpExpiry;
     private Instant lastVerificationEmailSentAt;
+    private String verificationToken;
+    private Instant verificationTokenExpiry;
+    private String passwordResetToken;
+    private Instant passwordResetExpiry;
     private Instant createdAt;
     private Instant updatedAt;
     private Instant lastLogin;
+    private String refreshTokenHash;
 
     public User() {
     }
@@ -139,6 +144,38 @@ public class User {
         this.lastVerificationEmailSentAt = lastVerificationEmailSentAt;
     }
 
+    public String getVerificationToken() {
+        return verificationToken;
+    }
+
+    public void setVerificationToken(String verificationToken) {
+        this.verificationToken = verificationToken;
+    }
+
+    public Instant getVerificationTokenExpiry() {
+        return verificationTokenExpiry;
+    }
+
+    public void setVerificationTokenExpiry(Instant verificationTokenExpiry) {
+        this.verificationTokenExpiry = verificationTokenExpiry;
+    }
+
+    public String getPasswordResetToken() {
+        return passwordResetToken;
+    }
+
+    public void setPasswordResetToken(String passwordResetToken) {
+        this.passwordResetToken = passwordResetToken;
+    }
+
+    public Instant getPasswordResetExpiry() {
+        return passwordResetExpiry;
+    }
+
+    public void setPasswordResetExpiry(Instant passwordResetExpiry) {
+        this.passwordResetExpiry = passwordResetExpiry;
+    }
+
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
@@ -157,5 +194,13 @@ public class User {
 
     public void setLastLogin(Instant lastLogin) {
         this.lastLogin = lastLogin;
+    }
+
+    public String getRefreshTokenHash() {
+        return refreshTokenHash;
+    }
+
+    public void setRefreshTokenHash(String refreshTokenHash) {
+        this.refreshTokenHash = refreshTokenHash;
     }
 }

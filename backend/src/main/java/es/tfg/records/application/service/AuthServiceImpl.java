@@ -14,10 +14,12 @@ import es.tfg.records.infrastructure.security.AccountLockoutManager;
 import es.tfg.records.infrastructure.security.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Value;
 
+import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -25,6 +27,7 @@ import java.util.regex.Pattern;
 /**
  * Implementation of authentication and user management use cases.
  * Handles login, registration, OTP verification, password reset, and token refresh.
+ * All tokens (verification, password reset, refresh) are persisted in the database.
  */
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -43,10 +46,7 @@ public class AuthServiceImpl implements AuthService {
     private final AccountLockoutManager lockoutManager;
     private final AuditService auditService;
     private final String verificationBaseUrl;
-
-    private final Map<String, ResetTokenEntry> resetTokenStore = new HashMap<>();
-
-    private final Set<String> activeRefreshTokens = new HashSet<>();
+    private final String passwordResetBaseUrl;
 
     public AuthServiceImpl(UserRepository userRepository,
                            JwtTokenProvider jwtTokenProvider,
@@ -54,7 +54,8 @@ public class AuthServiceImpl implements AuthService {
                            EmailGateway emailGateway,
                            AccountLockoutManager lockoutManager,
                            AuditService auditService,
-                           @Value("${mailing.verification-base-url:http://localhost:4200/sede/verificar-email}") String verificationBaseUrl) {
+                           @Value("${mailing.verification-base-url:http://localhost:4200/sede/verificar-email}") String verificationBaseUrl,
+                           @Value("${mailing.password-reset-base-url:http://localhost:4200/sede/restablecer-contrasena}") String passwordResetBaseUrl) {
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.passwordEncoder = passwordEncoder;
@@ -62,6 +63,7 @@ public class AuthServiceImpl implements AuthService {
         this.lockoutManager = lockoutManager;
         this.auditService = auditService;
         this.verificationBaseUrl = verificationBaseUrl;
+        this.passwordResetBaseUrl = passwordResetBaseUrl;
     }
 
     @Override
@@ -121,7 +123,8 @@ public class AuthServiceImpl implements AuthService {
         String refreshToken = jwtTokenProvider.generateRefreshToken(
                 user.getId(), user.getEmail());
 
-        activeRefreshTokens.add(refreshToken);
+        user.setRefreshTokenHash(hashToken(refreshToken));
+        userRepository.save(user);
 
         auditService.record(AuditAction.LOGIN, "USER", AuditResult.SUCCESS,
                 "Login successful for " + email);
@@ -157,11 +160,13 @@ public class AuthServiceImpl implements AuthService {
         String otpCode = generateOtpCode();
         user.setOtpCode(otpCode);
         user.setOtpExpiry(Instant.now().plusSeconds(OTP_EXPIRY_SECONDS));
+        user.setVerificationToken(UUID.randomUUID().toString());
+        user.setVerificationTokenExpiry(Instant.now().plusSeconds(OTP_EXPIRY_SECONDS));
         user.setLastVerificationEmailSentAt(Instant.now());
 
         User saved = userRepository.save(user);
 
-        String verificationUrl = verificationBaseUrl + "?token=" + otpCode;
+        String verificationUrl = verificationBaseUrl + "?token=" + user.getVerificationToken();
         try {
             emailGateway.sendVerificationEmail(request.email(), request.fullName(), verificationUrl);
             log.info("Verification email generated for {} with expiry {}", request.email(), user.getOtpExpiry());
@@ -187,14 +192,6 @@ public class AuthServiceImpl implements AuthService {
                     "Refresh token is expired or invalid");
         }
 
-        if (!activeRefreshTokens.contains(token)) {
-            auditService.record(AuditAction.LOGIN, "USER", AuditResult.FAILURE,
-                    "Token refresh failed - token already rotated");
-            throw new AuthenticationException(
-                    "AUTH-401-TOKEN_EXPIRED",
-                    "Refresh token has been rotated");
-        }
-
         var claims = jwtTokenProvider.getClaims(token);
         String type = claims.get("type", String.class);
         if (!"refresh".equals(type)) {
@@ -202,8 +199,6 @@ public class AuthServiceImpl implements AuthService {
                     "AUTH-401-TOKEN_EXPIRED",
                     "Invalid token type");
         }
-
-        activeRefreshTokens.remove(token);
 
         UUID userId = jwtTokenProvider.getUserId(token);
         String email = jwtTokenProvider.getEmail(token);
@@ -213,12 +208,22 @@ public class AuthServiceImpl implements AuthService {
                         "AUTH-401-USER_NOT_FOUND",
                         "User not found"));
 
+        String tokenHash = hashToken(token);
+        if (!tokenHash.equals(user.getRefreshTokenHash())) {
+            auditService.record(AuditAction.LOGIN, "USER", AuditResult.FAILURE,
+                    "Token refresh failed - token hash mismatch for " + email);
+            throw new AuthenticationException(
+                    "AUTH-401-TOKEN_EXPIRED",
+                    "Refresh token has been rotated");
+        }
+
         String newAccessToken = jwtTokenProvider.generateAccessToken(
                 userId, email, user.getRoles());
         String newRefreshToken = jwtTokenProvider.generateRefreshToken(
                 userId, email);
 
-        activeRefreshTokens.add(newRefreshToken);
+        user.setRefreshTokenHash(hashToken(newRefreshToken));
+        userRepository.save(user);
 
         auditService.record(AuditAction.LOGIN, "USER", AuditResult.SUCCESS,
                 "Token refreshed for " + email);
@@ -236,10 +241,19 @@ public class AuthServiceImpl implements AuthService {
             String resetToken = UUID.randomUUID().toString();
             Instant expiry = Instant.now().plusSeconds(PASSWORD_RESET_TOKEN_EXPIRY_SECONDS);
 
-            resetTokenStore.put(resetToken, new ResetTokenEntry(user.getId(), expiry));
+            user.setPasswordResetToken(resetToken);
+            user.setPasswordResetExpiry(expiry);
+            userRepository.save(user);
 
-            log.info("=== PASSWORD RESET TOKEN FOR {} === Token: {} (expires at {}) ===",
-                    request.email(), resetToken, expiry);
+            String resetUrl = passwordResetBaseUrl + "?token=" + resetToken;
+            try {
+                emailGateway.sendPasswordResetEmail(user.getEmail(), user.getDisplayName(), resetUrl);
+            } catch (Exception ex) {
+                log.error("Password reset email dispatch failed for {}: {}", user.getEmail(), ex.getMessage(), ex);
+            }
+
+            log.info("Password reset token persisted for {} (expires at {})",
+                    request.email(), expiry);
         });
     }
 
@@ -256,9 +270,9 @@ public class AuthServiceImpl implements AuthService {
                 return;
             }
 
-            String verificationToken = generateOtpCode();
-            user.setOtpCode(verificationToken);
-            user.setOtpExpiry(now.plusSeconds(OTP_EXPIRY_SECONDS));
+            String verificationToken = UUID.randomUUID().toString();
+            user.setVerificationToken(verificationToken);
+            user.setVerificationTokenExpiry(now.plusSeconds(OTP_EXPIRY_SECONDS));
             user.setLastVerificationEmailSentAt(now);
             userRepository.save(user);
 
@@ -308,18 +322,20 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void verifyEmailToken(String token) {
-        User user = userRepository.findByOtpCode(token)
+        User user = userRepository.findByVerificationToken(token)
                 .orElseThrow(() -> new AuthenticationException(
                         "AUTH-400-INVALID_OTP",
                         "Invalid verification token"));
 
-        if (user.getOtpExpiry() == null || Instant.now().isAfter(user.getOtpExpiry())) {
+        if (user.getVerificationTokenExpiry() == null || Instant.now().isAfter(user.getVerificationTokenExpiry())) {
             throw new AuthenticationException(
                     "AUTH-400-INVALID_OTP",
                     "Verification token has expired");
         }
 
         user.setActive(true);
+        user.setVerificationToken(null);
+        user.setVerificationTokenExpiry(null);
         user.setOtpCode(null);
         user.setOtpExpiry(null);
         userRepository.save(user);
@@ -352,17 +368,21 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void resetPassword(PasswordResetConfirmRequest request) {
-        ResetTokenEntry entry = resetTokenStore.get(request.token());
-        if (entry == null) {
-            auditService.record(AuditAction.UPDATE, "USER", AuditResult.FAILURE,
-                    "Password reset failed - invalid token");
-            throw new AuthenticationException(
-                    "AUTH-400-INVALID_TOKEN",
-                    "Invalid or expired reset token");
-        }
+        User user = userRepository.findByPasswordResetToken(request.token())
+                .orElseThrow(() -> {
+                    auditService.record(AuditAction.UPDATE, "USER", AuditResult.FAILURE,
+                            "Password reset failed - invalid token");
+                    return new AuthenticationException(
+                            "AUTH-400-INVALID_TOKEN",
+                            "Invalid or expired reset token");
+                });
 
-        if (Instant.now().isAfter(entry.expiry())) {
-            resetTokenStore.remove(request.token());
+        if (user.getPasswordResetExpiry() == null || Instant.now().isAfter(user.getPasswordResetExpiry())) {
+            user.setPasswordResetToken(null);
+            user.setPasswordResetExpiry(null);
+            userRepository.save(user);
+            auditService.record(AuditAction.UPDATE, "USER", AuditResult.FAILURE,
+                    "Password reset failed - expired token for " + user.getEmail());
             throw new AuthenticationException(
                     "AUTH-400-INVALID_TOKEN",
                     "Reset token has expired");
@@ -370,15 +390,10 @@ public class AuthServiceImpl implements AuthService {
 
         validatePassword(request.newPassword());
 
-        User user = userRepository.findById(entry.userId())
-                .orElseThrow(() -> new AuthenticationException(
-                        "AUTH-401-USER_NOT_FOUND",
-                        "User not found"));
-
         user.setPasswordHash(passwordEncoder.encode(request.newPassword()));
+        user.setPasswordResetToken(null);
+        user.setPasswordResetExpiry(null);
         userRepository.save(user);
-
-        resetTokenStore.remove(request.token());
         log.info("Password reset for user: {}", user.getEmail());
 
         auditService.record(AuditAction.UPDATE, "USER", AuditResult.SUCCESS,
@@ -419,7 +434,17 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void logout(String refreshToken) {
-        activeRefreshTokens.remove(refreshToken);
+        if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
+            try {
+                UUID userId = jwtTokenProvider.getUserId(refreshToken);
+                userRepository.findById(userId).ifPresent(user -> {
+                    user.setRefreshTokenHash(null);
+                    userRepository.save(user);
+                });
+            } catch (Exception e) {
+                log.warn("Logout: could not resolve user, logging anyway");
+            }
+        }
         auditService.record(AuditAction.LOGOUT, "USER", AuditResult.SUCCESS,
                 "User logout");
         log.info("Logout: refresh token invalidated");
@@ -444,10 +469,24 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    private record ResetTokenEntry(UUID userId, Instant expiry) {}
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     private String generateOtpCode() {
-        int value = new Random().nextInt(1_000_000);
+        int value = SECURE_RANDOM.nextInt(1_000_000);
         return String.format("%06d", value);
+    }
+
+    private String hashToken(String token) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(token.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hash) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to hash token", e);
+        }
     }
 }

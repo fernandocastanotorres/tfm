@@ -47,6 +47,18 @@ public class UserJpaAdapter implements UserRepository {
     }
 
     @Override
+    public Optional<User> findByVerificationToken(String verificationToken) {
+        return jpaRepository.findByVerificationToken(verificationToken)
+                .map(UserEntityMapper::toDomain);
+    }
+
+    @Override
+    public Optional<User> findByPasswordResetToken(String passwordResetToken) {
+        return jpaRepository.findByPasswordResetToken(passwordResetToken)
+                .map(UserEntityMapper::toDomain);
+    }
+
+    @Override
     public boolean existsByEmail(String email) {
         return jpaRepository.existsByEmail(email);
     }

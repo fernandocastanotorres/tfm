@@ -48,6 +48,8 @@ services:
       MAIL_SMTP_AUTH: ${MAIL_SMTP_AUTH:-false}
       MAIL_SMTP_STARTTLS: ${MAIL_SMTP_STARTTLS:-false}
       MAILING_VERIFICATION_BASE_URL: ${MAILING_VERIFICATION_BASE_URL:-http://localhost:4200/sede/verificar-email}
+      MAILING_PASSWORD_RESET_BASE_URL: ${MAILING_PASSWORD_RESET_BASE_URL:-http://localhost:4200/sede/restablecer-contrasena}
+      SIGNING_KEYSTORE_PASSWORD: ${SIGNING_KEYSTORE_PASSWORD:-changeit}
       STORAGE_DOCUMENTS_PATH: ${STORAGE_DOCUMENTS_PATH:-/app/data/documents}
     ports:
       - "8080:8080"

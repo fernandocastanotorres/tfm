@@ -65,6 +65,18 @@ public class UserEntity {
     @Column(name = "last_verification_email_sent_at")
     private Instant lastVerificationEmailSentAt;
 
+    @Column(name = "verification_token", length = 36)
+    private String verificationToken;
+
+    @Column(name = "verification_token_expiry")
+    private Instant verificationTokenExpiry;
+
+    @Column(name = "password_reset_token", length = 36)
+    private String passwordResetToken;
+
+    @Column(name = "password_reset_expiry")
+    private Instant passwordResetExpiry;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
@@ -75,6 +87,9 @@ public class UserEntity {
 
     @Column(name = "last_login")
     private Instant lastLogin;
+
+    @Column(name = "refresh_token_hash", length = 64)
+    private String refreshTokenHash;
 
     public UserEntity() {
     }
@@ -175,6 +190,38 @@ public class UserEntity {
         this.lastVerificationEmailSentAt = lastVerificationEmailSentAt;
     }
 
+    public String getVerificationToken() {
+        return verificationToken;
+    }
+
+    public void setVerificationToken(String verificationToken) {
+        this.verificationToken = verificationToken;
+    }
+
+    public Instant getVerificationTokenExpiry() {
+        return verificationTokenExpiry;
+    }
+
+    public void setVerificationTokenExpiry(Instant verificationTokenExpiry) {
+        this.verificationTokenExpiry = verificationTokenExpiry;
+    }
+
+    public String getPasswordResetToken() {
+        return passwordResetToken;
+    }
+
+    public void setPasswordResetToken(String passwordResetToken) {
+        this.passwordResetToken = passwordResetToken;
+    }
+
+    public Instant getPasswordResetExpiry() {
+        return passwordResetExpiry;
+    }
+
+    public void setPasswordResetExpiry(Instant passwordResetExpiry) {
+        this.passwordResetExpiry = passwordResetExpiry;
+    }
+
     public Instant getCreatedAt() {
         return createdAt;
     }
@@ -189,5 +236,13 @@ public class UserEntity {
 
     public void setLastLogin(Instant lastLogin) {
         this.lastLogin = lastLogin;
+    }
+
+    public String getRefreshTokenHash() {
+        return refreshTokenHash;
+    }
+
+    public void setRefreshTokenHash(String refreshTokenHash) {
+        this.refreshTokenHash = refreshTokenHash;
     }
 }

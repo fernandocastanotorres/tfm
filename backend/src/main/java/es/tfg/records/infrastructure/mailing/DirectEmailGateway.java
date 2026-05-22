@@ -25,4 +25,9 @@ public class DirectEmailGateway implements EmailGateway {
     public void sendNewMessageNotification(String recipientEmail, String senderName, String messagePreview, String caseId) {
         brevoEmailGateway.sendNewMessageNotification(recipientEmail, senderName, messagePreview, caseId);
     }
+
+    @Override
+    public void sendPasswordResetEmail(String recipientEmail, String recipientName, String resetUrl) {
+        brevoEmailGateway.sendPasswordResetEmail(recipientEmail, recipientName, resetUrl);
+    }
 }

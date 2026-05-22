@@ -19,5 +19,9 @@ public interface UserRepository {
 
     Optional<User> findByOtpCode(String otpCode);
 
+    Optional<User> findByVerificationToken(String verificationToken);
+
+    Optional<User> findByPasswordResetToken(String passwordResetToken);
+
     boolean existsByEmail(String email);
 }

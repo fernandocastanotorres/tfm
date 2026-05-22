@@ -21,7 +21,7 @@ class SignatureServiceTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        signatureService = new SignatureService(documentConverter);
+        signatureService = new SignatureService(documentConverter, "changeit");
     }
 
     @Test

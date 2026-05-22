@@ -27,9 +27,14 @@ public final class UserEntityMapper {
         user.setOtpCode(entity.getOtpCode());
         user.setOtpExpiry(entity.getOtpExpiry());
         user.setLastVerificationEmailSentAt(entity.getLastVerificationEmailSentAt());
+        user.setVerificationToken(entity.getVerificationToken());
+        user.setVerificationTokenExpiry(entity.getVerificationTokenExpiry());
+        user.setPasswordResetToken(entity.getPasswordResetToken());
+        user.setPasswordResetExpiry(entity.getPasswordResetExpiry());
         user.setCreatedAt(entity.getCreatedAt());
         user.setUpdatedAt(entity.getUpdatedAt());
         user.setLastLogin(entity.getLastLogin());
+        user.setRefreshTokenHash(entity.getRefreshTokenHash());
         user.setRoles(entity.getRoles() == null || entity.getRoles().isEmpty()
                 ? Set.of("ROLE_CITIZEN")
                 : Set.copyOf(entity.getRoles()));
@@ -51,7 +56,12 @@ public final class UserEntityMapper {
         entity.setOtpCode(domain.getOtpCode());
         entity.setOtpExpiry(domain.getOtpExpiry());
         entity.setLastVerificationEmailSentAt(domain.getLastVerificationEmailSentAt());
+        entity.setVerificationToken(domain.getVerificationToken());
+        entity.setVerificationTokenExpiry(domain.getVerificationTokenExpiry());
+        entity.setPasswordResetToken(domain.getPasswordResetToken());
+        entity.setPasswordResetExpiry(domain.getPasswordResetExpiry());
         entity.setLastLogin(domain.getLastLogin());
+        entity.setRefreshTokenHash(domain.getRefreshTokenHash());
         return entity;
     }
 }
