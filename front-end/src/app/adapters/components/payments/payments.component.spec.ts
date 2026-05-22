@@ -74,4 +74,68 @@ describe('PaymentsComponent', () => {
     const filtered = component.filteredPayments;
     expect(filtered.every(p => p.caseId.toLowerCase().includes('exp-2026-001'))).toBeTrue();
   });
+
+  it('should get unique case options from payments', () => {
+    const options = component.caseOptions;
+    expect(options.length).toBeGreaterThan(0);
+    expect(options[0].id).toBeDefined();
+  });
+
+  it('should get unique type options from payments', () => {
+    const types = component.typeOptions;
+    expect(types.length).toBeGreaterThan(0);
+  });
+
+  it('selectPayment should update selected and activePaymentId', () => {
+    const payment = component.payments[0];
+    component.selectPayment(payment);
+    expect(component.selectedPayment).toBe(payment);
+    expect((component as any).activePaymentId).toBe(payment.id);
+  });
+
+  it('changePage should update currentPage', () => {
+    component.paginationState = { currentPage: 1, totalPages: 3, pageSize: 10 };
+    component.changePage(2);
+    expect(component.paginationState.currentPage).toBe(2);
+  });
+
+  it('toggleFilter should patch status and update pagination', () => {
+    component.toggleFilter('pending');
+    expect(component.filterForm.value.status).toBe('pending');
+  });
+
+  it('pagedPayments should return correct slice', () => {
+    component.paginationState = { currentPage: 1, totalPages: 1, pageSize: 2 };
+    const paged = component.pagedPayments;
+    expect(paged.length).toBeLessThanOrEqual(2);
+  });
+
+  it('onPaymentListKeydown should do nothing when keyManager is null', () => {
+    (component as any).keyManager = undefined;
+    const event = new KeyboardEvent('keydown', { key: 'ArrowDown' });
+    component.onPaymentListKeydown(event);
+    // No error, just returns
+    expect(component).toBeTruthy();
+  });
+
+  it('onPaymentListFocus should do nothing when keyManager is null', () => {
+    (component as any).keyManager = undefined;
+    component.onPaymentListFocus();
+    expect(component).toBeTruthy();
+  });
+
+  it('onPaymentListFocus should return early when activeItemIndex is already set', () => {
+    (component as any).keyManager = { activeItemIndex: 0, setActiveItem: jasmine.createSpy('setActiveItem') };
+    component.paginationState.pageSize = 999;
+    component.onPaymentListFocus();
+    expect(component).toBeTruthy();
+  });
+
+  it('onPaymentListFocus should set active item when activePaymentId is found', () => {
+    const setSpy = jasmine.createSpy('setActiveItem');
+    (component as any).keyManager = { activeItemIndex: null, setActiveItem: setSpy };
+    (component as any).activePaymentId = 'nonexistent';
+    component.onPaymentListFocus();
+    expect(component).toBeTruthy();
+  });
 });

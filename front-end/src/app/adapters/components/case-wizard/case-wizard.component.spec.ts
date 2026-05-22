@@ -628,4 +628,189 @@ describe('CaseWizardComponent', () => {
     component.ngOnDestroy();
     expect(unsubSpy).toHaveBeenCalled();
   });
+
+  // ===== ADDITIONAL BRANCH COVERAGE =====
+
+  it('buildForms should do nothing when task is null', () => {
+    configureAndCreate();
+    (component as any).buildForms(null);
+    // No controls added to empty forms
+    expect(Object.keys(component.wizardForm.controls).length).toBe(0);
+    expect(Object.keys(component.uploadForm.controls).length).toBe(0);
+  });
+
+  it('loadExistingCaseData should handle error', fakeAsync(() => {
+    configureAndCreate();
+    component.resumingCaseId = 'missing-case';
+    casesSpy.getDetail.and.returnValue(throwError(() => new Error('Not found')));
+    (component as any).loadExistingCaseData();
+    tick();
+    expect(component.resumingCaseId).toBeNull();
+    expect(component.isLoading).toBeFalse();
+  }));
+
+  it('updateAndSubmit should handle error', fakeAsync(() => {
+    const task = makeTask({ type: 'info' });
+    const proc = makeProcedure({ tasks: [task] });
+    configureAndCreate();
+    component.procedure = proc;
+    component.resumingCaseId = 'draft-case';
+    component.currentTask = task;
+    casesSpy.updateDraft.and.returnValue(throwError(() => ({ error: { message: 'Update failed' } })));
+    (component as any).updateAndSubmit();
+    tick();
+    expect(toastSpy.error).toHaveBeenCalled();
+    expect(component.isSubmitting).toBeFalse();
+  }));
+
+  it('submitCreatedCase should handle error', fakeAsync(() => {
+    configureAndCreate();
+    casesSpy.submit.and.returnValue(throwError(() => new Error('Submit failed')));
+    (component as any).submitCreatedCase('case-456');
+    tick();
+    expect(toastSpy.error).toHaveBeenCalled();
+    expect(component.isSubmitting).toBeFalse();
+  }));
+
+  it('uploadAttachmentsAndSubmit should call submit when all files uploaded', () => {
+    configureAndCreate();
+    casesSpy.submit.and.returnValue(of(undefined as any));
+    (component as any).uploadAttachmentsAndSubmit('case-1', [], 0);
+    expect(casesSpy.submit).toHaveBeenCalledWith('case-1');
+  });
+
+  it('uploadAttachmentsAndSubmit should handle upload error', fakeAsync(() => {
+    configureAndCreate();
+    const file = new File(['content'], 'test.pdf', { type: 'application/pdf' });
+    casesSpy.uploadDocument.and.returnValue(throwError(() => new Error('Upload failed')));
+    (component as any).uploadAttachmentsAndSubmit('case-1', [file], 0);
+    tick();
+    expect(toastSpy.error).toHaveBeenCalled();
+    expect(component.isSubmitting).toBeFalse();
+  }));
+
+  it('markCurrentTaskTouched should mark uploadForm for upload tasks', () => {
+    const req = makeUploadReq({ id: 'doc-1', required: true });
+    const task = makeTask({ type: 'upload', uploadRequirements: [req] });
+    configureAndCreate();
+    (component as any).buildForms(task);
+    component.currentTask = task;
+    (component as any).markCurrentTaskTouched();
+    expect(component.uploadForm.get('doc-1')!.touched).toBeTrue();
+  });
+
+  it('isCurrentTaskValid should return false when currentTask is null', () => {
+    configureAndCreate();
+    component.currentTask = null;
+    expect((component as any).isCurrentTaskValid()).toBeFalse();
+  });
+
+  it('isCurrentTaskValid should check uploads for upload-type tasks', () => {
+    const req = makeUploadReq({ id: 'doc-1', required: true });
+    const task = makeTask({ type: 'upload', uploadRequirements: [req] });
+    configureAndCreate();
+    (component as any).buildForms(task);
+    component.currentTask = task;
+    expect((component as any).isCurrentTaskValid()).toBeFalse();
+    // Add file to pass validation
+    (component as any).addFiles('doc-1', [new File(['content'], 'test.pdf')]);
+    expect((component as any).isCurrentTaskValid()).toBeTrue();
+  });
+
+  it('onFilesSelected should do nothing when file list is null', () => {
+    configureAndCreate();
+    component.onFilesSelected('doc-1', null);
+    expect(component.attachments.value['doc-1']).toBeUndefined();
+  });
+
+  it('onDrop should do nothing when no files in dataTransfer', () => {
+    configureAndCreate();
+    const event = {
+      preventDefault: () => {},
+      stopPropagation: () => {},
+      dataTransfer: null
+    } as unknown as DragEvent;
+    component.onDrop('doc-1', event);
+    expect(component.attachments.value['doc-1']).toBeUndefined();
+  });
+
+  it('should not add duplicate files', () => {
+    const task = makeTask({ type: 'upload' });
+    configureAndCreate();
+    (component as any).buildForms(task);
+    const file = new File(['content'], 'dup.pdf', { type: 'application/pdf', lastModified: 100 });
+    const files = [file, file] as unknown as FileList;
+    component.onFilesSelected('doc-1', files);
+    expect(component.attachments.value['doc-1'].length).toBe(1);
+  });
+
+  it('submit should NOT proceed when procedure is null', async () => {
+    configureAndCreate();
+    component.procedure = null;
+    await component.submit();
+    expect(casesSpy.create).not.toHaveBeenCalled();
+  });
+
+  it('submit should upload files after create and navigate', async () => {
+    const task = makeTask({ type: 'info' });
+    const proc = makeProcedure({ tasks: [task] });
+    configureAndCreate();
+    component.procedure = proc;
+    component.currentTask = task;
+    confirmSpy.confirm.and.resolveTo(true);
+    casesSpy.create.and.returnValue(of({ id: 'new-case' } as any));
+    casesSpy.uploadDocument.and.returnValue(of(undefined as any));
+    casesSpy.submit.and.returnValue(of(undefined as any));
+    // Add files to trigger upload flow
+    component.attachments.setValue({ 'doc-1': [new File(['content'], 'file.pdf')] });
+    await component.submit();
+    await new Promise(r => setTimeout(r, 0));
+    expect(casesSpy.create).toHaveBeenCalled();
+    expect(casesSpy.uploadDocument).toHaveBeenCalled();
+  });
+
+  it('should set isUploading after submit with files from resumingCase', fakeAsync(() => {
+    const task = makeTask({ type: 'info' });
+    const proc = makeProcedure({ tasks: [task] });
+    configureAndCreate();
+    component.procedure = proc;
+    component.resumingCaseId = 'draft-case';
+    component.currentTask = task;
+    confirmSpy.confirm.and.resolveTo(true);
+    casesSpy.updateDraft.and.returnValue(of(undefined as any));
+    casesSpy.uploadDocument.and.returnValue(of(undefined as any));
+    casesSpy.submit.and.returnValue(of(undefined as any));
+    component.attachments.setValue({ 'doc-1': [new File(['content'], 'file.pdf')] });
+    component.submit();
+    tick();
+    expect(casesSpy.updateDraft).toHaveBeenCalled();
+    flush();
+  }));
+
+  it('should handle create error without error.message', async () => {
+    const task = makeTask({ type: 'info' });
+    const proc = makeProcedure({ tasks: [task] });
+    configureAndCreate();
+    component.procedure = proc;
+    component.currentTask = task;
+    confirmSpy.confirm.and.resolveTo(true);
+    casesSpy.create.and.returnValue(throwError(() => ({})));
+    await component.submit();
+    expect(toastSpy.error).toHaveBeenCalled();
+    expect(component.isSubmitting).toBeFalse();
+  });
+
+  it('getReviewFormEntries should handle null tasks in procedure', () => {
+    const proc = makeProcedure({ tasks: [] });
+    configureAndCreate();
+    component.procedure = proc;
+    (component as any).wizardForm.setValue({});
+    expect(component.getReviewFormEntries()).toEqual([]);
+  });
+
+  it('getReviewAttachmentGroups should handle absent upload requirements', () => {
+    configureAndCreate();
+    component.procedure = makeProcedure({ tasks: [{ type: 'form', formFields: [] }] });
+    expect(component.getReviewAttachmentGroups()).toEqual([]);
+  });
 });

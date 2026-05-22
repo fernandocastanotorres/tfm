@@ -14,9 +14,15 @@ import es.tfg.records.infrastructure.persistence.repository.ProcedureTypeJpaRepo
 import es.tfg.records.infrastructure.storage.FileStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.security.MessageDigest;
@@ -109,6 +115,7 @@ public class EniPackagerService {
             zos.closeEntry();
 
             String indexXml = buildIndexXml(procedure, type, documents, timestamp, caseRef);
+            validateAgainstXsd(indexXml);
             zos.putNextEntry(new ZipEntry("index.xml"));
             zos.write(indexXml.getBytes(java.nio.charset.StandardCharsets.UTF_8));
             zos.closeEntry();
@@ -187,6 +194,20 @@ public class EniPackagerService {
 
         sb.append("</eni:Documento>");
         return sb.toString();
+    }
+
+    void validateAgainstXsd(String xml) {
+        try {
+            ClassPathResource xsdResource = new ClassPathResource("eni/xsd/eni-documento.xsd");
+            SchemaFactory factory = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            Schema schema = factory.newSchema(xsdResource.getFile());
+            Validator validator = schema.newValidator();
+            Source xmlSource = new StreamSource(new java.io.StringReader(xml));
+            validator.validate(xmlSource);
+            log.info("ENI index.xml validated successfully against eni-documento.xsd");
+        } catch (Exception e) {
+            log.warn("ENI index.xml validation FAILED against eni-documento.xsd: {}", e.getMessage());
+        }
     }
 
     private String mapProcedureToEniType(ProcedureTypeEntity type) {

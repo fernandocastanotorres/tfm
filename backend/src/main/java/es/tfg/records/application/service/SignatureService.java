@@ -51,7 +51,7 @@ public class SignatureService {
 
     @Autowired
     public SignatureService(@Autowired(required = false) DocumentConverter documentConverter,
-                            @Value("${signing.keystore.password}") String keystorePassword) throws Exception {
+                            @Value("${signing.keystore.password:changeit}") String keystorePassword) throws Exception {
         this.documentConverter = documentConverter;
         this.keystorePassword = keystorePassword.toCharArray();
         this.signingKeyStore = createSigningKeyStore();

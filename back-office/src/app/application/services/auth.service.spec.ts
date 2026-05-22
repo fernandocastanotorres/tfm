@@ -267,12 +267,28 @@ describe('AuthService', () => {
   describe('logout', () => {
     beforeEach(() => setupService());
 
-    it('should clear all stored tokens and user', () => {
+    it('should clear all stored tokens and user without calling server when no refresh token', () => {
+      localStorage.setItem('bo_access_token', 'some-token');
+      localStorage.setItem('bo_user', JSON.stringify({ id: 'user-1', email: 'admin@tfg.es', roles: ['ROLE_ADMIN'] }));
+
+      service.logout();
+
+      expect(localStorage.getItem('bo_access_token')).toBeNull();
+      expect(localStorage.getItem('bo_refresh_token')).toBeNull();
+      expect(localStorage.getItem('bo_user')).toBeNull();
+      expect(service.currentUser).toBeNull();
+    });
+
+    it('should call server logout when refresh token exists', () => {
       localStorage.setItem('bo_access_token', 'some-token');
       localStorage.setItem('bo_refresh_token', 'some-refresh');
       localStorage.setItem('bo_user', JSON.stringify({ id: 'user-1', email: 'admin@tfg.es', roles: ['ROLE_ADMIN'] }));
 
       service.logout();
+
+      const req = httpMock.expectOne(`${environment.apiBaseUrl}/auth/logout`);
+      expect(req.request.method).toBe('POST');
+      req.flush(null);
 
       expect(localStorage.getItem('bo_access_token')).toBeNull();
       expect(localStorage.getItem('bo_refresh_token')).toBeNull();

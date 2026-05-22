@@ -25,6 +25,10 @@ spring:
           starttls:
             enable: false
 
+signing:
+  keystore:
+    password: ${SIGNING_KEYSTORE_PASSWORD:changeit}
+
 jwt:
   secret: ${JWT_SECRET:ZGV2LXNlY3JldC1rZXktZm9yLXRlc3RpbmctcHVycG9zZXMtb25seS1kb25vdC11c2UtaW4tcHJvZHVjdGlvbg==}
 

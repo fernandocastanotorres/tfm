@@ -7,6 +7,7 @@ import { PublicLayoutComponent } from './public-layout.component';
 import { I18nService, SupportedLocale } from '../../../application/services/i18n.service';
 import { GuidedTourService } from '../../../application/services/guided-tour.service';
 import { AuthService } from '../../../application/services/auth.service';
+import { MessagesService } from '../../../application/services/messages.service';
 import { HttpClientTestingModule, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
@@ -17,6 +18,7 @@ describe('PublicLayoutComponent', () => {
   let routerSpy: jasmine.SpyObj<Router>;
   let tourSpy: jasmine.SpyObj<GuidedTourService>;
   let authSpy: jasmine.SpyObj<AuthService>;
+  let messagesSpy: jasmine.SpyObj<MessagesService>;
   let localeSubject: Subject<SupportedLocale>;
 
   beforeEach(() => {
@@ -32,6 +34,8 @@ describe('PublicLayoutComponent', () => {
     authSpy.isAuthenticated.and.returnValue(false);
     authSpy.getAuthenticatedUserLabel.and.returnValue(null);
     authSpy.logout.and.returnValue(of(undefined));
+    messagesSpy = jasmine.createSpyObj('MessagesService', ['getUnreadCount']);
+    messagesSpy.getUnreadCount.and.returnValue(of(0));
 
     localStorage.clear();
 
@@ -43,6 +47,7 @@ describe('PublicLayoutComponent', () => {
         { provide: Router, useValue: routerSpy },
         { provide: GuidedTourService, useValue: tourSpy },
         { provide: AuthService, useValue: authSpy },
+        { provide: MessagesService, useValue: messagesSpy },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
       ],
@@ -371,6 +376,218 @@ describe('PublicLayoutComponent', () => {
       component.startTour();
 
       expect(tourSpy.startCitizenTour).toHaveBeenCalledWith('/sede/procedimientos');
+    });
+  });
+
+  // ─── Theme (continued) ─────────────────────────────────────────────────────
+
+  describe('Theme (continued)', () => {
+    it('applyTheme should remove class when isDark is false', () => {
+      document.body.classList.add('theme-dark');
+      spyOn(document.body.classList, 'remove');
+
+      (component as any).applyTheme(false);
+
+      expect(document.body.classList.remove).toHaveBeenCalledWith('theme-dark');
+    });
+
+    it('initTheme should not set dark mode when localStorage is light', () => {
+      localStorage.setItem('tfg.theme', 'light');
+      spyOn(document.body.classList, 'add');
+
+      (component as any).initTheme();
+
+      expect(component.isDarkMode).toBeFalse();
+      expect(document.body.classList.add).not.toHaveBeenCalled();
+    });
+  });
+
+  // ─── Escape / Keyboard (edge cases) ────────────────────────────────────────
+
+  describe('Keyboard Edge Cases', () => {
+    it('onEscapeKey should do nothing when menu is not open', () => {
+      component.menuOpen = false;
+      spyOn(component, 'closeMobileMenu');
+
+      component.onEscapeKey();
+
+      expect(component.closeMobileMenu).not.toHaveBeenCalled();
+    });
+
+    it('onGlobalKeydown should ignore when leftCtrl already pressed', () => {
+      component.menuOpen = false;
+      (component as any).leftCtrlPressed = true;
+      const event = new KeyboardEvent('keydown', { code: 'ControlLeft' });
+
+      component.onGlobalKeydown(event);
+      // leftCtrlPressed stays true because the code returns after re-setting it
+      expect((component as any).leftCtrlPressed).toBeTrue();
+    });
+
+    it('onGlobalKeydown should do nothing when key is non-alphanumeric', () => {
+      (component as any).leftCtrlPressed = true;
+      const event = new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter' });
+
+      component.onGlobalKeydown(event);
+      expect((component as any).typedHintBuffer).toBe('');
+    });
+
+    it('onGlobalKeydown should return early when key is invalid', () => {
+      (component as any).leftCtrlPressed = true;
+      const event = new KeyboardEvent('keydown', { key: '@' });
+
+      component.onGlobalKeydown(event);
+      expect((component as any).typedHintBuffer).toBe('');
+    });
+
+    it('onGlobalKeyup should do nothing when key is not ControlLeft', () => {
+      (component as any).leftCtrlPressed = true;
+      const event = new KeyboardEvent('keyup', { code: 'ShiftLeft' });
+
+      component.onGlobalKeyup(event);
+      expect((component as any).leftCtrlPressed).toBeTrue();
+    });
+
+    it('onViewportChange should return early when leftCtrl not pressed', () => {
+      (component as any).leftCtrlPressed = false;
+      component.onViewportChange();
+      // No error, just returns
+      expect((component as any).leftCtrlPressed).toBeFalse();
+    });
+
+    it('onViewportChange should return early when hintTargets is empty', () => {
+      (component as any).leftCtrlPressed = true;
+      (component as any).hintTargets = [];
+      component.onViewportChange();
+      expect((component as any).hintTargets.length).toBe(0);
+    });
+
+    it('normalizeHintKey should return null for special characters', () => {
+      const result = (component as any).normalizeHintKey('@');
+      expect(result).toBeNull();
+    });
+
+    it('normalizeHintKey should return key for valid alphanumeric', () => {
+      const result = (component as any).normalizeHintKey('A');
+      expect(result).toBe('a');
+    });
+  });
+
+  // ─── Auth State ────────────────────────────────────────────────────────────
+
+  describe('Auth State', () => {
+    it('refreshAuthState should set label to Usuario when label is null', () => {
+      authSpy.isAuthenticated.and.returnValue(true);
+      authSpy.getAuthenticatedUserLabel.and.returnValue(null);
+
+      (component as any).refreshAuthState();
+
+      expect(component.authenticatedUserLabel).toBe('Usuario');
+    });
+
+    it('refreshAuthState should use label when provided', () => {
+      authSpy.isAuthenticated.and.returnValue(true);
+      authSpy.getAuthenticatedUserLabel.and.returnValue('Juan Perez');
+
+      (component as any).refreshAuthState();
+
+      expect(component.authenticatedUserLabel).toBe('Juan Perez');
+    });
+
+    it('loadUnreadMessageCount should call service when authenticated', () => {
+      component.isAuthenticated = true;
+
+      component.loadUnreadMessageCount();
+
+      expect(messagesSpy.getUnreadCount).toHaveBeenCalled();
+    });
+
+    it('loadUnreadMessageCount should NOT call service when not authenticated', () => {
+      component.isAuthenticated = false;
+
+      component.loadUnreadMessageCount();
+
+      expect(messagesSpy.getUnreadCount).not.toHaveBeenCalled();
+    });
+  });
+
+  // ─── Keyboard Hints ────────────────────────────────────────────────────────
+
+  describe('Keyboard Hints', () => {
+    it('showKeyboardHints should return early when root not found', () => {
+      const root = document.querySelector('app-public-layout');
+      if (root) {
+        root.remove();
+      }
+
+      (component as any).showKeyboardHints();
+
+      expect((component as any).hintTargets.length).toBe(0);
+    });
+
+    it('hideKeyboardHints should clear targets', () => {
+      (component as any).hintTargets = [{ hint: '1', element: document.createElement('div'), marker: document.createElement('span') }];
+      spyOn(document, 'querySelector');
+
+      (component as any).hideKeyboardHints();
+
+      expect((component as any).hintTargets.length).toBe(0);
+    });
+
+    it('toHint should return correct hint for index 0', () => {
+      const result = (component as any).toHint(0);
+      expect(result).toBe('1');
+    });
+
+    it('toHint should return correct hint for index > alphabet length', () => {
+      const result = (component as any).toHint(35);
+      expect(result).toBe('11');
+    });
+  });
+
+  // ─── isHintEligible ────────────────────────────────────────────────────────
+
+  describe('isHintEligible', () => {
+    it('should return false when element has data-keyboard-hint-ignore', () => {
+      const el = document.createElement('button');
+      el.setAttribute('data-keyboard-hint-ignore', 'true');
+      expect((component as any).isHintEligible(el)).toBeFalse();
+    });
+
+    it('should return false when element is not visible', () => {
+      const el = document.createElement('button');
+      el.style.display = 'none';
+      document.body.appendChild(el);
+      expect((component as any).isHintEligible(el)).toBeFalse();
+      document.body.removeChild(el);
+    });
+
+    it('should return false when element has no dimensions', () => {
+      const el = document.createElement('button');
+      el.style.position = 'absolute';
+      el.style.width = '0';
+      el.style.height = '0';
+      document.body.appendChild(el);
+      expect((component as any).isHintEligible(el)).toBeFalse();
+      document.body.removeChild(el);
+    });
+  });
+
+  // ─── Dropdown Focus ────────────────────────────────────────────────────────
+
+  describe('Dropdown Focus (edge cases)', () => {
+    it('onDropdownFocusOut should NOT close when focus stays in dropdown', () => {
+      component.activeDropdown = 'PUBLIC.MENU_INFO';
+      const mockElement = document.createElement('div');
+      mockElement.classList.add('public-header__dropdown');
+      const relatedTarget = document.createElement('span');
+      mockElement.appendChild(relatedTarget);
+      spyOn(relatedTarget, 'closest').and.returnValue(mockElement);
+      const event = { relatedTarget } as unknown as FocusEvent;
+
+      component.onDropdownFocusOut(event);
+
+      expect(component.activeDropdown).toBe('PUBLIC.MENU_INFO');
     });
   });
 

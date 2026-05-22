@@ -341,5 +341,94 @@ describe('ProfileComponent', () => {
 
       expect(toastSpy.error).toHaveBeenCalled();
     });
+
+    it('should show error with validation errors from server', () => {
+      profileSpy.changePassword.and.returnValue(throwError(() => ({
+        error: { errors: [{ message: 'Password too weak' }] }
+      })));
+      component.passwordForm.patchValue({
+        currentPassword: 'Old123!',
+        newPassword: 'Strong1!@#',
+        confirmPassword: 'Strong1!@#'
+      });
+
+      component.changePassword();
+
+      expect(toastSpy.error).toHaveBeenCalled();
+    });
+
+    it('should show generic error for other error statuses', () => {
+      profileSpy.changePassword.and.returnValue(throwError(() => ({ status: 500 })));
+      component.passwordForm.patchValue({
+        currentPassword: 'Old123!',
+        newPassword: 'Strong1!@#',
+        confirmPassword: 'Strong1!@#'
+      });
+
+      component.changePassword();
+
+      expect(toastSpy.error).toHaveBeenCalledWith('Error', 'No se pudo cambiar la contraseña. Intentalo de nuevo.');
+    });
+  });
+
+  describe('password strength label', () => {
+    it('should return empty string for score 0', () => {
+      component.passwordForm.patchValue({ newPassword: '' });
+      expect(component.passwordStrengthLabel).toBe('');
+    });
+
+    it('should return Debil for score 1-2', () => {
+      component.passwordForm.patchValue({ newPassword: 'abcdefgh' });
+      expect(component.passwordStrengthLabel).toBe('Debil');
+    });
+
+    it('should return Media for score 3', () => {
+      component.passwordForm.patchValue({ newPassword: 'Abcdefgh' });
+      expect(component.passwordStrengthLabel).toBe('Media');
+    });
+
+    it('should return Fuerte for score 4', () => {
+      component.passwordForm.patchValue({ newPassword: 'Abcd1234' });
+      expect(component.passwordStrengthLabel).toBe('Fuerte');
+    });
+
+    it('should return Muy fuerte for score 5', () => {
+      component.passwordForm.patchValue({ newPassword: 'Abc123!@#' });
+      expect(component.passwordStrengthLabel).toBe('Muy fuerte');
+    });
+  });
+
+  describe('password strength color', () => {
+    it('should return red for score 0-2', () => {
+      component.passwordForm.patchValue({ newPassword: 'abcdefgh' });
+      expect(component.passwordStrengthColor).toBe('bg-red-500');
+    });
+
+    it('should return amber for score 3', () => {
+      component.passwordForm.patchValue({ newPassword: 'Abcdefgh' });
+      expect(component.passwordStrengthColor).toBe('bg-amber-500');
+    });
+
+    it('should return green for score 4', () => {
+      component.passwordForm.patchValue({ newPassword: 'Abcd1234' });
+      expect(component.passwordStrengthColor).toBe('bg-green-500');
+    });
+
+    it('should return emerald for score 5', () => {
+      component.passwordForm.patchValue({ newPassword: 'Abc123!@#' });
+      expect(component.passwordStrengthColor).toBe('bg-emerald-600');
+    });
+  });
+
+  describe('passwordsMatch edge cases', () => {
+    it('should return false when confirm password is empty', () => {
+      component.passwordForm.patchValue({ newPassword: 'Test123!', confirmPassword: '' });
+      expect(component.passwordsMatch()).toBeFalse();
+    });
+
+    it('passwordsMismatch should return false when confirm is empty', () => {
+      component.passwordForm.patchValue({ newPassword: 'Test123!', confirmPassword: '' });
+      expect(component.passwordsMismatch()).toBeFalse();
+    });
   });
 });

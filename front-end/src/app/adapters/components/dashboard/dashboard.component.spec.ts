@@ -206,4 +206,40 @@ describe('DashboardComponent', () => {
     expect(component.filterForm.value.search).toBe('');
     expect(component.filterForm.value.status).toBe('all');
   }));
+
+  it('selectCase should set selectedCase', fakeAsync(() => {
+    fixture.detectChanges();
+    const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures?page=0&size=10`);
+    req.flush(mockPagedResponse);
+    tick();
+    const caseItem = component.cases[0];
+    component.selectCase(caseItem);
+    expect(component.selectedCase).toBe(caseItem);
+  }));
+
+  it('summaryStats should compute correct counts', fakeAsync(() => {
+    fixture.detectChanges();
+    const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures?page=0&size=10`);
+    req.flush(mockPagedResponse);
+    tick();
+    const stats = component.summaryStats;
+    expect(stats.length).toBe(4);
+    expect(stats[0].value).toBe(3); // total
+  }));
+
+  it('loadCases should set isLoading to false on error without message', fakeAsync(() => {
+    fixture.detectChanges();
+    const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures?page=0&size=10`);
+    req.flush(null, { status: 500, statusText: 'Server Error' });
+    tick();
+    expect(component.isLoading).toBeFalse();
+  }));
+
+  it('toCaseStatusKey should normalize status', () => {
+    expect(component.toCaseStatusKey('under review')).toBe('UNDER_REVIEW');
+  });
+
+  it('toCaseStatusKey should handle empty status', () => {
+    expect(component.toCaseStatusKey('')).toBe('');
+  });
 });

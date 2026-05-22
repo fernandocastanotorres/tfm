@@ -19,12 +19,14 @@ services:
       retries: 5
       start_period: 30s
     restart: unless-stopped
+    logging: *default-logging
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: tfg-backend
+    logging: *default-logging
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-records_db}
@@ -66,6 +68,7 @@ services:
       timeout: 10s
       retries: 3
       start_period: 60s
+    logging: *default-logging
     restart: unless-stopped
 
   mailpit:
@@ -76,34 +79,57 @@ services:
       - "8025:8025"
     networks:
       - tfg-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8025/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    logging: *default-logging
     restart: unless-stopped
 
   frontend:
     build:
-      context: ./front-end
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./front-end/Dockerfile
     container_name: tfg-frontend
     ports:
       - "4200:80"
+      - "4201:443"
     networks:
       - tfg-network
     depends_on:
       backend:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:80/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    logging: *default-logging
     restart: unless-stopped
 
   backoffice:
     build:
-      context: ./back-office
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./back-office/Dockerfile
     container_name: tfg-backoffice
     ports:
       - "4300:80"
+      - "4301:443"
     networks:
       - tfg-network
     depends_on:
       backend:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:80/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    logging: *default-logging
     restart: unless-stopped
 
 networks:
@@ -113,3 +139,9 @@ networks:
 volumes:
   postgres-data:
     driver: local
+
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "10m"
+    max-file: "3"

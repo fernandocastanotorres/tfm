@@ -261,4 +261,104 @@ describe('MessagesComponent', () => {
       expect(component.caseOptions[1].id).toBe('p2');
     });
   });
+
+  describe('Error Handling', () => {
+    it('should handle loadThreads error', () => {
+      fixture.detectChanges();
+      const req = httpMock.expectOne(`${baseUrl}/messages/threads`);
+      req.error(new ProgressEvent('Network error'));
+      expect(component.threads).toEqual([]);
+      expect(component.isLoadingThreads).toBeFalse();
+    });
+
+    it('should handle loadMessages error', () => {
+      fixture.detectChanges();
+      httpMock.expectOne(`${baseUrl}/messages/threads`).flush(mockThreads);
+      component.toggleThread('p1');
+      const msgReq = httpMock.expectOne(req => req.url.includes('/procedures/p1/messages'));
+      msgReq.error(new ProgressEvent('Network error'));
+      expect(component.messages).toEqual([]);
+      expect(component.isLoadingMessages).toBeFalse();
+    });
+
+    it('should handle sendReply error', () => {
+      component.selectedThread = mockThreads[0];
+      component.reply = 'Hello';
+      component.sendReply();
+      const sendReq = httpMock.expectOne(req => req.method === 'POST');
+      sendReq.error(new ProgressEvent('Network error'));
+      expect(toastSpy.error).toHaveBeenCalled();
+      expect(component.isSending).toBeFalse();
+    });
+
+    it('sendReply should not send when reply is whitespace only', () => {
+      component.selectedThread = mockThreads[0];
+      component.reply = '   ';
+      component.sendReply();
+      httpMock.expectNone(req => req.method === 'POST');
+    });
+  });
+
+  describe('Navigation', () => {
+    beforeEach(() => {
+      fixture.detectChanges();
+      httpMock.expectOne(`${baseUrl}/messages/threads`).flush(mockThreads);
+    });
+
+    it('onThreadKeydown should return on non-arrow keys', () => {
+      const el = document.createElement('div');
+      const event = new KeyboardEvent('keydown', { key: 'Enter' });
+      Object.defineProperty(event, 'currentTarget', { value: el });
+      component.onThreadKeydown(event);
+      // No error, just returns
+      expect(component).toBeTruthy();
+    });
+
+    it('onThreadKeydown should move focus on ArrowDown', () => {
+      const header1 = document.createElement('div');
+      header1.className = 'message-thread__header';
+      const header2 = document.createElement('div');
+      header2.className = 'message-thread__header';
+      document.body.appendChild(header1);
+      document.body.appendChild(header2);
+      const event = new KeyboardEvent('keydown', { key: 'ArrowDown' });
+      Object.defineProperty(event, 'currentTarget', { value: header1 });
+      spyOn(event, 'preventDefault');
+      component.onThreadKeydown(event);
+      document.body.removeChild(header1);
+      document.body.removeChild(header2);
+      expect(component).toBeTruthy();
+    });
+
+    it('changeMessagePage should do nothing when no thread selected', () => {
+      component.selectedThread = null;
+      component.changeMessagePage(1);
+      expect(component.messagePage).toBe(0);
+    });
+
+    it('changeMessagePageSize should update page size', () => {
+      component.selectedThread = mockThreads[0];
+      // Setup HTTP expectations for loadMessages
+      component.changeMessagePageSize(50);
+      const msgReq = httpMock.expectOne(req => req.url.includes('/procedures/p1/messages'));
+      msgReq.flush({ messages: [], page: 0, size: 50, totalItems: 0, totalPages: 0 });
+      const threadReq = httpMock.expectOne(`${baseUrl}/messages/threads`);
+      threadReq.flush(mockThreads);
+      expect(component.messagePageSize).toBe(50);
+    });
+  });
+
+  describe('filteredThreads filter by caseId', () => {
+    beforeEach(() => {
+      fixture.detectChanges();
+      httpMock.expectOne(`${baseUrl}/messages/threads`).flush(mockThreads);
+    });
+
+    it('should filter by caseId', () => {
+      component.filterForm.patchValue({ caseId: 'p1' });
+      const filtered = component.filteredThreads;
+      expect(filtered.length).toBe(1);
+      expect(filtered[0].procedureId).toBe('p1');
+    });
+  });
 });

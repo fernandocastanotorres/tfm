@@ -653,5 +653,57 @@ describe('CaseDetailComponent', () => {
       const result = (component as any).toSlug('Cafe con Leccion');
       expect(result).toBe('cafe-con-leccion');
     });
+
+    it('formatFileSize should return B for bytes < 1024', () => {
+      expect(component.formatFileSize(512)).toBe('512 B');
+    });
+
+    it('formatFileSize should return KB for bytes < 1048576', () => {
+      expect(component.formatFileSize(2048)).toBe('2.0 KB');
+    });
+
+    it('formatFileSize should return MB for bytes >= 1048576', () => {
+      expect(component.formatFileSize(2097152)).toBe('2.0 MB');
+    });
+
+    it('isResolved should return false when caseDetail is null', () => {
+      component.caseDetail = null;
+      expect(component.isResolved()).toBeFalse();
+    });
+
+    it('isResolved should return true for APPROVED status', () => {
+      component.caseDetail = { ...mockCaseDetail, status: 'APPROVED' };
+      expect(component.isResolved()).toBeTrue();
+    });
+
+    it('isResolved should return true for REJECTED status', () => {
+      component.caseDetail = { ...mockCaseDetail, status: 'REJECTED' };
+      expect(component.isResolved()).toBeTrue();
+    });
+
+    it('isResolved should return false for PENDING status', () => {
+      component.caseDetail = { ...mockCaseDetail, status: 'PENDING' };
+      expect(component.isResolved()).toBeFalse();
+    });
+
+    it('toCaseStatusKey should normalize status to uppercase with underscores', () => {
+      expect(component.toCaseStatusKey('under review')).toBe('UNDER_REVIEW');
+    });
+
+    it('toCaseStatusKey should handle null/undefined status', () => {
+      expect(component.toCaseStatusKey('')).toBe('');
+    });
+
+    it('changeMessagePage should do nothing when page out of range', () => {
+      component.messageTotalPages = 3;
+      component.changeMessagePage(5);
+      expect(component.messagePage).toBe(0);
+    });
+
+    it('changeMessagePage should update when page is valid', () => {
+      component.messageTotalPages = 3;
+      component.changeMessagePage(1);
+      expect(component.messagePage).toBe(1);
+    });
   });
 });

@@ -615,5 +615,106 @@ describe('DocumentsComponent', () => {
       expect(toastSpy.error).toHaveBeenCalled();
       expect(component.isVerifying).toBeFalse();
     }));
+
+    it('verifyDocument should show error toast when verify fails', fakeAsync(() => {
+      setupComponent();
+      const blob = new Blob(['content'], { type: 'application/pdf' });
+      documentsSpy.download.and.returnValue(of(blob));
+      signatureSpy.verifySignature.and.returnValue(throwError(() => new Error('Verify failed')));
+
+      component.verifyDocument('doc-1', 'test.pdf');
+      tick();
+
+      expect(toastSpy.error).toHaveBeenCalled();
+      expect(component.isVerifying).toBeFalse();
+    }));
+  });
+
+  // ==================== FILTER SET ====================
+
+  describe('setFilter', () => {
+    it('setFilter should update filter and reload pagination', () => {
+      setupComponent();
+      component.setFilter('validated');
+      expect(component.filter).toBe('validated');
+    });
+  });
+
+  // ==================== DELETE ERROR ====================
+
+  describe('Delete Error', () => {
+    it('deleteDocument should show error when delete fails', fakeAsync(() => {
+      setupComponent();
+      confirmSpy.confirm.and.resolveTo(true);
+      documentsSpy.delete.and.returnValue(throwError(() => new Error('Delete failed')));
+
+      component.deleteDocument('doc-1');
+      tick();
+
+      expect(toastSpy.error).toHaveBeenCalled();
+    }));
+  });
+
+  // ==================== DOCUMENT LOADING ERROR ====================
+
+  describe('Document Loading Error', () => {
+    it('should handle document loading error', () => {
+      documentsSpy = jasmine.createSpyObj('DocumentsApiService', ['listByCase', 'upload', 'download', 'delete']);
+      casesSpy = jasmine.createSpyObj('CasesApiService', ['list']);
+      confirmSpy = jasmine.createSpyObj('ConfirmDialogService', ['confirm']);
+      toastSpy = jasmine.createSpyObj('ToastService', ['error', 'success', 'warning']);
+
+      casesSpy.list.and.returnValue(of({ items: [{ id: 'case-1', title: 'Test', status: 'PENDING', procedureType: 'License', createdAt: '2024-01-01', lastUpdated: '2024-01-01', description: '', assignedUnit: '' }], page: 0, size: 100, totalItems: 1, totalPages: 1 }));
+      documentsSpy.listByCase.and.returnValue(throwError(() => new Error('Doc list failed')));
+
+      TestBed.configureTestingModule({
+        declarations: [DocumentsComponent],
+        schemas: [NO_ERRORS_SCHEMA],
+        imports: [TranslateModule.forRoot(), ReactiveFormsModule],
+        providers: [
+          { provide: DocumentsApiService, useValue: documentsSpy },
+          { provide: CasesApiService, useValue: casesSpy },
+          { provide: ConfirmDialogService, useValue: confirmSpy },
+          { provide: ToastService, useValue: toastSpy },
+          { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => null } } } },
+          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClientTesting()
+        ]
+      });
+
+      fixture = TestBed.createComponent(DocumentsComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+
+      expect(toastSpy.error).toHaveBeenCalledWith('Error', 'No se han podido cargar los documentos.');
+      expect(component.isLoading).toBeFalse();
+    });
+  });
+
+  // ==================== SIGN DOCUMENT EDGE CASES ====================
+
+  describe('Sign Document Edge Cases', () => {
+    it('signDocument should set isSigned on success', fakeAsync(() => {
+      setupComponent();
+      const blob = new Blob(['content'], { type: 'application/pdf' });
+      documentsSpy.download.and.returnValue(of(blob));
+      signatureSpy.signDocument.and.returnValue(of(blob));
+
+      component.signDocument('doc-1', 'test.pdf');
+      tick();
+
+      const doc = component.documents.find(d => d.id === 'doc-1');
+      expect(doc?.isSigned).toBeTrue();
+    }));
+  });
+
+  // ==================== FORMAT DATE ====================
+
+  describe('Format Date', () => {
+    it('formatDate should format date string', () => {
+      setupComponent();
+      const result = component.formatDate('2024-01-15T10:00:00Z');
+      expect(result).toMatch(/\d{2}\/\d{2}\/\d{4}/);
+    });
   });
 });

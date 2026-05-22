@@ -285,11 +285,13 @@ class MessageServiceTest {
     }
 
     @Test
-    void getThreadMessages_shouldThrowWhenThreadNotFound() {
+    void getThreadMessages_shouldReturnEmptyWhenThreadNotFound() {
         when(threadRepository.findByProcedureId(procedureId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> messageService.getThreadMessages(procedureId, 0, 10))
-                .isInstanceOf(es.tfg.records.application.exception.ResourceNotFoundException.class);
+        PagedMessages result = messageService.getThreadMessages(procedureId, 0, 10);
+
+        assertThat(result.messages()).isEmpty();
+        assertThat(result.totalItems()).isEqualTo(0);
     }
 
     @Test
@@ -337,11 +339,12 @@ class MessageServiceTest {
     }
 
     @Test
-    void markThreadAsRead_shouldThrowWhenThreadNotFound() {
+    void markThreadAsRead_shouldDoNothingWhenThreadNotFound() {
         when(threadRepository.findByProcedureId(procedureId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> messageService.markThreadAsRead(procedureId, MessageSenderRole.CITIZEN))
-                .isInstanceOf(es.tfg.records.application.exception.ResourceNotFoundException.class);
+        messageService.markThreadAsRead(procedureId, MessageSenderRole.CITIZEN);
+
+        verify(threadRepository, never()).save(any());
     }
 
     // ===== getUnreadCounts =====

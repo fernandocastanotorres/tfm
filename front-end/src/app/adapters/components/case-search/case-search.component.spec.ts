@@ -180,5 +180,38 @@ describe('CaseSearchComponent', () => {
 
       expect(casesSpy.list).toHaveBeenCalledTimes(1);
     });
+
+    it('ngOnDestroy should do nothing when localeSubscription is null', () => {
+      component.ngOnDestroy();
+      expect(component).toBeTruthy();
+    });
+  });
+
+  describe('toCaseStatusKey', () => {
+    it('should normalize status string', () => {
+      expect(component.toCaseStatusKey('under review')).toBe('UNDER_REVIEW');
+    });
+
+    it('should handle empty/null status', () => {
+      expect(component.toCaseStatusKey('')).toBe('');
+    });
+  });
+
+  describe('Filtering edge cases', () => {
+    beforeEach(() => {
+      component.cases = mockCases;
+    });
+
+    it('filteredCases should return empty when no match', () => {
+      component.searchForm.patchValue({ term: 'zzzzz' });
+      expect(component.filteredCases).toEqual([]);
+    });
+
+    it('filteredCases should be case-insensitive', () => {
+      component.searchForm.patchValue({ term: 'LICENSE' });
+      const result = component.filteredCases;
+      expect(result.length).toBe(1);
+      expect(result[0].procedureType).toBe('License');
+    });
   });
 });

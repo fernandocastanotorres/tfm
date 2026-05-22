@@ -67,4 +67,72 @@ describe('NotificationsComponent', () => {
     const filtered = component.filteredInbox;
     expect(filtered.length).toBeGreaterThan(0);
   });
+
+  it('should get unique case options from inbox', () => {
+    const options = component.caseOptions;
+    expect(options.length).toBeGreaterThan(0);
+    expect(options[0].id).toBeDefined();
+  });
+
+  it('should get unique type options from inbox', () => {
+    const types = component.typeOptions;
+    expect(types.length).toBeGreaterThan(0);
+  });
+
+  it('selectItem should update selectedItem and activeItemId', () => {
+    const item = component.inbox[0];
+    component.selectItem(item);
+    expect(component.selectedItem).toBe(item);
+    expect((component as any).activeItemId).toBe(item.id);
+  });
+
+  it('markAsRead should set read to true', () => {
+    const item = component.inbox.find(i => !i.read);
+    if (item) {
+      component.markAsRead(item);
+      expect(item.read).toBeTrue();
+    }
+  });
+
+  it('changePage should update currentPage', () => {
+    component.paginationState = { currentPage: 1, totalPages: 3, pageSize: 10 };
+    component.changePage(2);
+    expect(component.paginationState.currentPage).toBe(2);
+  });
+
+  it('toggleFilter should patch status', () => {
+    component.toggleFilter('unread');
+    expect(component.filterForm.value.status).toBe('unread');
+  });
+
+  it('pagedInbox should return correct slice', () => {
+    component.paginationState = { currentPage: 1, totalPages: 1, pageSize: 2 };
+    const paged = component.pagedInbox;
+    expect(paged.length).toBeLessThanOrEqual(2);
+  });
+
+  it('onNotificationListKeydown should do nothing when keyManager is null', () => {
+    (component as any).keyManager = undefined;
+    const event = new KeyboardEvent('keydown', { key: 'ArrowDown' });
+    component.onNotificationListKeydown(event);
+    expect(component).toBeTruthy();
+  });
+
+  it('onNotificationListFocus should do nothing when keyManager is null', () => {
+    (component as any).keyManager = undefined;
+    component.onNotificationListFocus();
+    expect(component).toBeTruthy();
+  });
+
+  it('onNotificationListFocus should return early when activeItemIndex is not null', () => {
+    (component as any).keyManager = { activeItemIndex: 0, setActiveItem: jasmine.createSpy('setActiveItem') };
+    component.onNotificationListFocus();
+    expect(component).toBeTruthy();
+  });
+
+  it('updatePageSize should update paginationState', () => {
+    component.updatePageSize(20);
+    expect(component.paginationState.pageSize).toBe(20);
+    expect(component.paginationState.currentPage).toBe(1);
+  });
 });
