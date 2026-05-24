@@ -379,22 +379,22 @@ describe('ProfileComponent', () => {
 
     it('should return Debil for score 1-2', () => {
       component.passwordForm.patchValue({ newPassword: 'abcdefgh' });
-      expect(component.passwordStrengthLabel).toBe('Debil');
+      expect(component.passwordStrengthLabel).toBe('PROFILE.PASSWORD_STRENGTH_WEAK');
     });
 
     it('should return Media for score 3', () => {
       component.passwordForm.patchValue({ newPassword: 'Abcdefgh' });
-      expect(component.passwordStrengthLabel).toBe('Media');
+      expect(component.passwordStrengthLabel).toBe('PROFILE.PASSWORD_STRENGTH_MEDIUM');
     });
 
     it('should return Fuerte for score 4', () => {
       component.passwordForm.patchValue({ newPassword: 'Abcd1234' });
-      expect(component.passwordStrengthLabel).toBe('Fuerte');
+      expect(component.passwordStrengthLabel).toBe('PROFILE.PASSWORD_STRENGTH_STRONG');
     });
 
     it('should return Muy fuerte for score 5', () => {
       component.passwordForm.patchValue({ newPassword: 'Abc123!@#' });
-      expect(component.passwordStrengthLabel).toBe('Muy fuerte');
+      expect(component.passwordStrengthLabel).toBe('PROFILE.PASSWORD_STRENGTH_VERY_STRONG');
     });
   });
 

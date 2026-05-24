@@ -45,6 +45,7 @@ describe('PasswordRecoveryComponent', () => {
 
   it('should finish when reset form is valid', () => {
     component.step = 'reset';
+    (component as any).resetToken = 'valid-token';
     component.resetForm.setValue({ newPassword: 'Password1!', confirmPassword: 'Password1!' });
     component.resetPassword();
     expect(component.step).toBe('done');
@@ -83,6 +84,7 @@ describe('PasswordRecoveryComponent', () => {
 
   it('should show helper message on successful reset', () => {
     component.step = 'reset';
+    (component as any).resetToken = 'valid-token';
     component.resetForm.setValue({ newPassword: 'Password1!', confirmPassword: 'Password1!' });
     component.resetPassword();
     expect(component.helperMessageKey).toBe('RECOVERY.RESET_SUCCESS');
