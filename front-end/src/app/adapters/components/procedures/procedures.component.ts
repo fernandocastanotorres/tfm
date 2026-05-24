@@ -4,6 +4,8 @@ import { ProceduresApiService } from '../../../application/services/procedures-a
 import { ProcedureItem } from '../../../application/models/procedure.models';
 import { ToastService } from '../../../application/services/toast.service';
 
+import { trackByIndex } from '../../../application/utils/track-by.utils';
+
 @Component({
     selector: 'app-procedures',
     templateUrl: './procedures.component.html',
@@ -13,6 +15,8 @@ import { ToastService } from '../../../application/services/toast.service';
 export class ProceduresComponent implements OnInit {
   procedures: ProcedureItem[] = [];
   isLoading = true;
+
+  protected readonly trackByIndex = trackByIndex;
 
   constructor(
     private readonly proceduresApiService: ProceduresApiService,

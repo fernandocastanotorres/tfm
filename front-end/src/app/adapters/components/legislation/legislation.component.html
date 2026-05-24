@@ -18,7 +18,7 @@
         [value]="selectedType"
         (change)="onTypeChange($any($event.target).value)"
       >
-        <option *ngFor="let type of types" [value]="type">{{ getTypeLabel(type) | translate }}</option>
+        <option *ngFor="let type of types; trackBy: trackByIndex" [value]="type">{{ getTypeLabel(type) | translate }}</option>
       </select>
     </div>
 
@@ -27,7 +27,7 @@
     </div>
 
     <ul class="legislation__list" *ngIf="!isLoading">
-      <li class="card p-6 legislation__item" *ngFor="let item of legislation">
+      <li class="card p-6 legislation__item" *ngFor="let item of legislation; trackBy: trackByIndex">
         <div class="legislation__item-header">
           <span class="legislation__type-badge" [ngClass]="'legislation__type--' + item.type">
             {{ getTypeLabel(item.type) | translate }}

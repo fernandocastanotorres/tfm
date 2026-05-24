@@ -4,6 +4,8 @@ import { LegislationService } from '../../../application/services/legislation.se
 import { I18nService } from '../../../application/services/i18n.service';
 import { LegislationItem } from '../../../application/models/sede.models';
 
+import { trackByIndex } from '../../../application/utils/track-by.utils';
+
 @Component({
     selector: 'app-legislation',
     templateUrl: './legislation.component.html',
@@ -16,6 +18,8 @@ export class LegislationComponent implements OnInit, OnDestroy {
   selectedType = 'all';
   isLoading = true;
   private localeSub?: Subscription;
+
+  protected readonly trackByIndex = trackByIndex;
 
   constructor(
     private readonly legislationService: LegislationService,

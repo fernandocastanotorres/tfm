@@ -31,7 +31,7 @@
           (change)="onCategoryChange($any($event.target).value)"
         >
           <option value="all">{{ 'FAQ.CAT_ALL' | translate }}</option>
-          <option *ngFor="let cat of categories" [value]="cat.code">{{ cat.name }}</option>
+          <option *ngFor="let cat of categories; trackBy: trackByIndex" [value]="cat.code">{{ cat.name }}</option>
         </select>
       </div>
     </div>
@@ -41,7 +41,7 @@
     </div>
 
     <div class="faq__list" *ngIf="!isLoading">
-      <div class="faq__item card" *ngFor="let faq of faqs">
+      <div class="faq__item card" *ngFor="let faq of faqs; trackBy: trackByIndex">
         <button
           type="button"
           class="faq__question"

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { TransparencyService } from '../../../application/services/transparency.service';
 import { TransparencyMetric, TransparencyReport } from '../../../application/models/sede.models';
 
+import { trackByIndex } from '../../../application/utils/track-by.utils';
+
 @Component({
     selector: 'app-transparency',
     templateUrl: './transparency.component.html',
@@ -12,6 +14,8 @@ export class TransparencyComponent implements OnInit {
   metrics: TransparencyMetric[] = [];
   reports: TransparencyReport[] = [];
   isLoading = true;
+
+  protected readonly trackByIndex = trackByIndex;
 
   constructor(private readonly transparencyService: TransparencyService) {}
 

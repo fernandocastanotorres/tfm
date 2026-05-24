@@ -17,6 +17,8 @@ export interface MenuItem {
   route: string;
 }
 
+import { trackByIndex } from '../../../application/utils/track-by.utils';
+
 @Component({
     selector: 'app-public-layout',
     templateUrl: './public-layout.component.html',
@@ -72,6 +74,8 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
       ]
     }
   ];
+
+  protected readonly trackByIndex = trackByIndex;
 
   constructor(
     private readonly i18nService: I18nService,

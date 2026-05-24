@@ -94,7 +94,7 @@
         {{ 'PUBLIC_HOME.LOADING' | translate }}
       </div>
       <div class="public-home__procedures-grid" *ngIf="!isLoading">
-        <div class="card p-6 public-home__procedure-card" *ngFor="let proc of procedures">
+        <div class="card p-6 public-home__procedure-card" *ngFor="let proc of procedures; trackBy: trackByIndex">
           <h3 class="text-lg font-semibold public-home__card-title">{{ proc.name }}</h3>
           <p class="text-sm mt-2 public-home__card-muted">{{ proc.description }}</p>
           <div class="mt-4 flex items-center gap-4 text-sm public-home__card-muted">
@@ -119,7 +119,7 @@
     <div class="public-home__container">
       <h2 class="public-home__section-title">{{ 'PUBLIC_HOME.UPCOMING_EVENTS' | translate }}</h2>
       <ul class="public-home__events-list">
-        <li class="card p-5" *ngFor="let event of upcomingEvents">
+        <li class="card p-5" *ngFor="let event of upcomingEvents; trackBy: trackByIndex">
           <div class="public-home__event-date">
             <span class="public-home__event-day">{{ event.date | date:'dd' }}</span>
             <span class="public-home__event-month">{{ event.date | date:'MMM' }}</span>

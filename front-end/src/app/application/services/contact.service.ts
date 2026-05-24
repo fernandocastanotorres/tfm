@@ -31,6 +31,7 @@ export class ContactService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiBaseUrl}/citizen`;
 
+  // @todo Replace hardcoded mock offices/channels with backend data
   private readonly offices: ContactOffice[] = [
     {
       id: 'central',

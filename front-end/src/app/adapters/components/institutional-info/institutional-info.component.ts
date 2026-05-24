@@ -4,6 +4,8 @@ import { InstitutionalService } from '../../../application/services/institutiona
 import { I18nService } from '../../../application/services/i18n.service';
 import { InstitutionalSection } from '../../../application/models/sede.models';
 
+import { trackByIndex } from '../../../application/utils/track-by.utils';
+
 @Component({
     selector: 'app-institutional-info',
     templateUrl: './institutional-info.component.html',
@@ -14,6 +16,8 @@ export class InstitutionalInfoComponent implements OnInit, OnDestroy {
   sections: InstitutionalSection[] = [];
   isLoading = true;
   private localeSub?: Subscription;
+
+  protected readonly trackByIndex = trackByIndex;
 
   constructor(
     private readonly institutionalService: InstitutionalService,

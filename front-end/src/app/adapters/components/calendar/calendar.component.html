@@ -18,7 +18,7 @@
         [value]="selectedType"
         (change)="onTypeChange($any($event.target).value)"
       >
-        <option *ngFor="let type of types" [value]="type.value">{{ type.labelKey | translate }}</option>
+        <option *ngFor="let type of types; trackBy: trackByIndex" [value]="type.value">{{ type.labelKey | translate }}</option>
       </select>
     </div>
 
@@ -27,7 +27,7 @@
     </div>
 
     <ul class="calendar__list" *ngIf="!isLoading">
-      <li class="card p-6 calendar__event" *ngFor="let event of events">
+      <li class="card p-6 calendar__event" *ngFor="let event of events; trackBy: trackByIndex">
         <div class="calendar__event-header">
           <time class="calendar__event-date" [attr.datetime]="event.date">
             <span class="calendar__event-day">{{ event.date | date:'dd' }}</span>

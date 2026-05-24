@@ -7,7 +7,6 @@ import { ToastService } from '../../../application/services/toast.service';
 @Component({
     selector: 'app-procedure-flow',
     templateUrl: './procedure-flow.component.html',
-    styleUrls: [],
     standalone: false
 })
 export class ProcedureFlowComponent implements OnInit {

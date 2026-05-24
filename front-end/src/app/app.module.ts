@@ -53,7 +53,7 @@ import { HttpErrorInterceptor } from './application/interceptors/http-error.inte
 import { JwtAuthInterceptor } from './application/interceptors/jwt-auth.interceptor';
 import { CorrelationIdInterceptor } from './application/interceptors/correlation-id.interceptor';
 import { AcceptLanguageInterceptor } from './application/interceptors/accept-language.interceptor';
-import { SecurityInterceptor } from './application/interceptors/security.interceptor';
+import { AcceptHeaderInterceptor } from './application/interceptors/accept-header.interceptor';
 
 export class CustomLoader implements TranslateLoader {
   constructor(private http: HttpClient) {}
@@ -116,7 +116,7 @@ export function HttpLoaderFactory(http: HttpClient): CustomLoader {
                 deps: [HttpClient]
             }
         })], providers: [
-        { provide: HTTP_INTERCEPTORS, useClass: SecurityInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: AcceptHeaderInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: AcceptLanguageInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: JwtAuthInterceptor, multi: true },

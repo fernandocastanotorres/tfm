@@ -24,7 +24,7 @@
         <section class="card p-6 space-y-4" *ngIf="currentTask.type === 'form'">
           <h2 class="text-lg font-semibold">{{ currentTask.name | translate }}</h2>
           <p class="text-surface-600">{{ currentTask.description | translate }}</p>
-          <div class="space-y-4" *ngFor="let field of currentTask.formFields">
+          <div class="space-y-4" *ngFor="let field of currentTask.formFields; trackBy: trackByIndex">
             <label class="field-label" [attr.for]="field.id">{{ field.name | translate }}</label>
             <input
               *ngIf="field.type === 'text' || field.type === 'email' || field.type === 'number' || field.type === 'phone'"
@@ -48,7 +48,7 @@
               class="field-input"
             >
               <option value="">{{ field.placeholder | translate }}</option>
-              <option *ngFor="let option of field.options" [value]="option.value">
+              <option *ngFor="let option of field.options; trackBy: trackByIndex" [value]="option.value">
                 {{ option.label | translate }}
               </option>
             </select>
@@ -61,7 +61,7 @@
         <section class="card p-6 space-y-4" *ngIf="currentTask.type === 'upload'">
           <h2 class="text-lg font-semibold">{{ currentTask.name | translate }}</h2>
           <p class="text-surface-600">{{ currentTask.description | translate }}</p>
-          <div class="space-y-4" *ngFor="let requirement of effectiveUploadRequirements">
+          <div class="space-y-4" *ngFor="let requirement of effectiveUploadRequirements; trackBy: trackByIndex">
             <label class="field-label" [attr.for]="'file-input-' + requirement.id">{{ requirement.name | translate }}</label>
             <input
               [id]="'file-input-' + requirement.id"
@@ -73,7 +73,7 @@
             />
 
             <ul class="space-y-2" *ngIf="attachments.value[requirement.id]?.length">
-              <li class="text-surface-600 flex items-center justify-between" *ngFor="let file of attachments.value[requirement.id]; let i = index">
+              <li class="text-surface-600 flex items-center justify-between" *ngFor="let file of attachments.value[requirement.id]; trackBy: trackByIndex; let i = index">
                 <span>{{ file.name }}</span>
                 <button class="text-sm text-brand-600 hover:underline" type="button" (click)="removeAttachment(requirement.id, i)">
                   {{ 'CASE_WIZARD.REMOVE_FILE' | translate }}
@@ -95,7 +95,7 @@
             <div>
               <h3 class="text-sm font-semibold text-surface-900 mb-2">Datos del formulario</h3>
               <div class="space-y-2" *ngIf="getReviewFormEntries() as entries">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-2" *ngFor="let entry of entries">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2" *ngFor="let entry of entries; trackBy: trackByIndex">
                   <span class="font-semibold">{{ entry.label }}</span>
                   <span>{{ entry.value }}</span>
                 </div>
@@ -107,11 +107,11 @@
               <ng-container *ngIf="getReviewAttachmentGroups() as attachmentGroups">
                 <div *ngIf="attachmentGroups.length === 0">No se han adjuntado documentos.</div>
                 <ul class="space-y-2" *ngIf="attachmentGroups.length > 0">
-                  <li *ngFor="let group of attachmentGroups">
+                  <li *ngFor="let group of attachmentGroups; trackBy: trackByIndex">
                     <span class="font-semibold">{{ group.label }}:</span>
                     <span *ngIf="group.files.length === 0">Sin ficheros</span>
                     <ul *ngIf="group.files.length > 0" class="inline-block ml-2">
-                      <li *ngFor="let file of group.files">{{ file.name }}</li>
+                      <li *ngFor="let file of group.files; trackBy: trackByIndex">{{ file.name }}</li>
                     </ul>
                   </li>
                 </ul>

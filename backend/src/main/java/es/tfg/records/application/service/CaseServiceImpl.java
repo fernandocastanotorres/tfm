@@ -21,11 +21,16 @@ import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -56,6 +61,7 @@ public class CaseServiceImpl implements CaseService {
     private final PublicSignatureVerificationService publicSignatureVerificationService;
     private final FileStorageService fileStorageService;
     private final WorkflowService workflowService;
+    private final String publicSedeBaseUrl;
 
     public CaseServiceImpl(ProcedureRepository procedureRepository,
                            ProcedureTypeRepository procedureTypeRepository,
@@ -65,7 +71,8 @@ public class CaseServiceImpl implements CaseService {
                            SignatureService signatureService,
                            PublicSignatureVerificationService publicSignatureVerificationService,
                            FileStorageService fileStorageService,
-                           WorkflowService workflowService) {
+                           WorkflowService workflowService,
+                           @Value("${app.public-sede-base-url:http://localhost:4200/sede}") String publicSedeBaseUrl) {
         this.procedureRepository = procedureRepository;
         this.procedureTypeRepository = procedureTypeRepository;
         this.documentRepository = documentRepository;
@@ -75,6 +82,7 @@ public class CaseServiceImpl implements CaseService {
         this.publicSignatureVerificationService = publicSignatureVerificationService;
         this.fileStorageService = fileStorageService;
         this.workflowService = workflowService;
+        this.publicSedeBaseUrl = publicSedeBaseUrl;
     }
 
     @Override
@@ -346,6 +354,31 @@ public class CaseServiceImpl implements CaseService {
                 String.valueOf(procedure.getAssignedUnit()),
                 issuedAt));
         pdfDocument.add(new Paragraph("Codigo de verificacion (SHA-256): " + digest, bodyFont));
+
+        String csvCode = documentRepository.findByProcedureId(caseId).stream()
+                .map(Document::getId)
+                .map(publicSignatureVerificationService::findCsvCodeByDocumentId)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+
+        if (csvCode != null) {
+            String verifyUrl = publicSedeBaseUrl + "/validar-documento?csv=" + csvCode;
+            pdfDocument.add(new Paragraph("CSV: " + csvCode, bodyFont));
+            pdfDocument.add(new Paragraph("Validacion online: " + verifyUrl, bodyFont));
+            try {
+                QRCodeWriter qrCodeWriter = new QRCodeWriter();
+                BitMatrix bitMatrix = qrCodeWriter.encode(verifyUrl, BarcodeFormat.QR_CODE, 140, 140);
+                ByteArrayOutputStream qrOutput = new ByteArrayOutputStream();
+                MatrixToImageWriter.writeToStream(bitMatrix, "PNG", qrOutput);
+                com.lowagie.text.Image qrImage = com.lowagie.text.Image.getInstance(qrOutput.toByteArray());
+                qrImage.setAlignment(com.lowagie.text.Image.ALIGN_LEFT);
+                pdfDocument.add(qrImage);
+            } catch (Exception qrEx) {
+                log.warn("Could not embed QR in receipt for case {}: {}", caseId, qrEx.getMessage());
+            }
+        }
+
         pdfDocument.add(new Paragraph("Documento emitido por la Sede Electronica a efectos informativos.", bodyFont));
 
         pdfDocument.close();

@@ -4,6 +4,8 @@ import { ContactService, ContactMessagePayload } from '../../../application/serv
 import { ContactOffice, ContactChannel } from '../../../application/models/sede.models';
 import { ToastService } from '../../../application/services/toast.service';
 
+import { trackByIndex } from '../../../application/utils/track-by.utils';
+
 @Component({
     selector: 'app-contact',
     templateUrl: './contact.component.html',
@@ -23,6 +25,8 @@ export class ContactComponent implements OnInit {
     subject: ['', [Validators.required, Validators.minLength(5)]],
     message: ['', [Validators.required, Validators.minLength(20)]]
   });
+
+  protected readonly trackByIndex = trackByIndex;
 
   constructor(
     private readonly contactService: ContactService,

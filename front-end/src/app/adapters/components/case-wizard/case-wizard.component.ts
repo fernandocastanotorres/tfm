@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 import { CasesApiService } from '../../../application/services/cases-api.service';
 import { ProceduresApiService } from '../../../application/services/procedures-api.service';
 import { I18nService } from '../../../application/services/i18n.service';
@@ -9,6 +10,8 @@ import { CreateCaseRequest } from '../../../application/models/case.models';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
 import { ToastService } from '../../../application/services/toast.service';
 import { Subscription } from 'rxjs';
+
+import { trackByIndex } from '../../../application/utils/track-by.utils';
 
 @Component({
     selector: 'app-case-wizard',
@@ -45,11 +48,14 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
   createdCaseId: string | null = null;
   resumingCaseId: string | null = null;
 
+  protected readonly trackByIndex = trackByIndex;
+
   constructor(
     private readonly fb: FormBuilder,
     private readonly casesApiService: CasesApiService,
     private readonly proceduresApiService: ProceduresApiService,
     private readonly i18nService: I18nService,
+    private readonly translate: TranslateService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly confirmDialogService: ConfirmDialogService,
@@ -147,8 +153,6 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
 
   onFilesSelected(requirementId: string, files: FileList | null, input?: HTMLInputElement | null): void {
     
-    console.log("Files selected for requirement", requirementId, files);
-    
     if (!files) {
       if (input) {
         input.value = '';
@@ -156,21 +160,15 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
       return;
     }
 
-    console.log("Processing selected files for requirement", requirementId, files);
-
     const acceptedFiles = this.filterAllowedFiles(Array.from(files));
     this.addFiles(requirementId, acceptedFiles);
-
-    console.log("Finished processing selected files for requirement", requirementId, acceptedFiles);
 
     if (input) {
       input.value = '';
     }
 
-    console.log("Current attachments state after file selection for requirement", requirementId, this.attachments.value);
-
     if (acceptedFiles.length === 0) {
-      this.toast.info('Sin adjuntos nuevos', 'No se ha anadido ningun fichero.');
+      this.toast.info(this.translate.instant('CASE_WIZARD.NO_NEW_ATTACHMENTS'), this.translate.instant('CASE_WIZARD.NO_NEW_ATTACHMENTS_DESC'));
     }
   }
 
@@ -296,8 +294,6 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
 
   private addFiles(requirementId: string, files: File[]): void {
     
-    console.log("Adding files for requirement", requirementId, files);
-    
     if (files.length === 0) {
       return;
     }
@@ -359,9 +355,9 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
     }
 
     const confirmed = await this.confirmDialogService.confirm(
-      'Confirmar envio',
+      this.translate.instant('CASE_WIZARD.CONFIRM_SUBMIT'),
       'Esta accion enviara el expediente y no podras editarlo despues.',
-      'Si, enviar'
+      this.translate.instant('CASE_WIZARD.CONFIRM_SUBMIT_YES')
     );
     if (!confirmed) {
       return;
@@ -564,14 +560,14 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
 
     if (rejectedByType.length > 0) {
       this.toast.warning(
-        'Tipo de archivo no valido',
+        this.translate.instant('CASE_WIZARD.INVALID_FILE_TYPE'),
         `No se han anadido: ${rejectedByType.join(', ')}. Formatos permitidos: PDF, JPG, PNG, GIF, DOC, DOCX.`
       );
     }
 
     if (rejectedBySize.length > 0) {
       this.toast.warning(
-        'Archivo demasiado grande',
+        this.translate.instant('CASE_WIZARD.FILE_TOO_LARGE'),
         `No se han anadido: ${rejectedBySize.join(', ')}. Tamano maximo por archivo: 10 MB.`
       );
     }

@@ -15,7 +15,7 @@
     </div>
 
     <div class="mt-8 grid gap-6 md:grid-cols-2" *ngIf="!isLoading">
-      <article class="card p-6 transition hover:shadow-lg" *ngFor="let procedure of procedures">
+      <article class="card p-6 transition hover:shadow-lg" *ngFor="let procedure of procedures; trackBy: trackByIndex">
         <div class="flex items-start justify-between gap-4">
           <div>
             <h2 class="text-lg font-semibold text-surface-900">{{ procedure.name | translate }}</h2>

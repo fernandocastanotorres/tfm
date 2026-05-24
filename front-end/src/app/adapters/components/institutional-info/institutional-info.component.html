@@ -15,7 +15,7 @@
     </div>
 
     <div class="institutional__grid" *ngIf="!isLoading">
-      <article class="card p-6 institutional__card" *ngFor="let section of sections">
+      <article class="card p-6 institutional__card" *ngFor="let section of sections; trackBy: trackByIndex">
         <div class="institutional__card-icon" aria-hidden="true" [ngSwitch]="section.icon">
           <svg *ngSwitchCase="'building'" class="institutional__card-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M4 20h16M6 20V8l6-4 6 4v12"/>

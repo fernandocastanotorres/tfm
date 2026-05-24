@@ -4,6 +4,8 @@ import { CalendarService } from '../../../application/services/calendar.service'
 import { I18nService } from '../../../application/services/i18n.service';
 import { CalendarEvent } from '../../../application/models/sede.models';
 
+import { trackByIndex } from '../../../application/utils/track-by.utils';
+
 @Component({
     selector: 'app-calendar',
     templateUrl: './calendar.component.html',
@@ -23,6 +25,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
     { value: 'reminder', labelKey: 'CALENDAR.TYPE_REMINDER' },
     { value: 'info', labelKey: 'CALENDAR.TYPE_INFO' }
   ];
+
+  protected readonly trackByIndex = trackByIndex;
 
   constructor(
     private readonly calendarService: CalendarService,

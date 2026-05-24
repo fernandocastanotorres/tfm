@@ -19,7 +19,7 @@
 
     <div class="mt-6 space-y-4" *ngIf="!isLoading">
       <a
-        *ngFor="let item of filteredCases"
+        *ngFor="let item of filteredCases; trackBy: trackByIndex"
         class="card p-5 block no-underline hover:shadow-xl transition"
         [routerLink]="['/sede/expedientes', item.id, 'detalle']"
       >

@@ -14,6 +14,7 @@ export interface RegisterRequest {
   nationalId: string;
   phone: string;
   password: string;
+  termsAccepted: boolean;
 }
 
 export interface UserProfile {

@@ -27,7 +27,8 @@ public final class BackofficeDtos {
             String assignedTo,
             String citizenName,
             String currentTask,
-            String priority
+            String priority,
+            List<String> csvCodes
     ) {}
 
     public record AdminCaseDetail(

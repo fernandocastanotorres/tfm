@@ -6,6 +6,8 @@ import { ToastService } from '../../../application/services/toast.service';
 import { CaseItem } from '../../../application/models/case.models';
 import { Subscription } from 'rxjs';
 
+import { trackByIndex } from '../../../application/utils/track-by.utils';
+
 @Component({
     selector: 'app-case-search',
     templateUrl: './case-search.component.html',
@@ -20,6 +22,8 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   readonly searchForm = this.fb.group({
     term: ['']
   });
+
+  protected readonly trackByIndex = trackByIndex;
 
   constructor(
     private readonly fb: FormBuilder,

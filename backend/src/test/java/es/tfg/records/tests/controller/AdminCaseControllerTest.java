@@ -60,7 +60,7 @@ class AdminCaseControllerTest {
         var item = new BackofficeDtos.AdminCaseItem(
                 caseId, "Licencia", "SUBMITTED", Instant.now(), Instant.now(),
                 "Mi solicitud", "Descripcion", "Unidad1", null, "user@test.com",
-                "Revision de documentacion", "normal");
+                "Revision de documentacion", "normal", List.of());
         var paged = new PagedResponse<>(List.of(item), 0, 10, 1, 1);
         when(backofficeService.listCases(0, 10, null)).thenReturn(paged);
 

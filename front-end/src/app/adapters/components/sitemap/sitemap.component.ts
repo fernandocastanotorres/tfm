@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { SitemapSection, SitemapLink } from '../../../application/models/sede.models';
 
+import { trackByIndex } from '../../../application/utils/track-by.utils';
+
 @Component({
     selector: 'app-sitemap',
     templateUrl: './sitemap.component.html',
@@ -57,4 +59,6 @@ export class SitemapComponent {
       ]
     }
   ];
+
+  protected readonly trackByIndex = trackByIndex;
 }

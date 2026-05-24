@@ -3,14 +3,14 @@ import { FormBuilder } from '@angular/forms';
 import { DashboardService, NotificationItem, QuickAccessItem } from '../../../application/services/dashboard.service';
 import { CasesApiService } from '../../../application/services/cases-api.service';
 import { CaseItem } from '../../../application/models/case.models';
-import { TranslateService } from '@ngx-translate/core';
 import { ToastService } from '../../../application/services/toast.service';
 import { changePage, updatePageSize, getPaginationState, PaginationState } from '../../../application/utils/pagination';
+
+import { trackByIndex } from '../../../application/utils/track-by.utils';
 
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
-    styleUrls: [],
     standalone: false
 })
 export class DashboardComponent implements OnInit {
@@ -28,11 +28,12 @@ export class DashboardComponent implements OnInit {
     pageSize: [10]
   });
 
+  protected readonly trackByIndex = trackByIndex;
+
   constructor(
     private readonly dashboardService: DashboardService,
     private readonly casesApiService: CasesApiService,
     private readonly fb: FormBuilder,
-    private readonly translate: TranslateService,
     private readonly toast: ToastService
   ) {}
 

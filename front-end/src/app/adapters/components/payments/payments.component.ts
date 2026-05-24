@@ -15,6 +15,8 @@ import { changePage, updatePageSize, getPaginationState, PaginationState } from 
 import { Subject } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
 
+import { trackByIndex } from '../../../application/utils/track-by.utils';
+
 @Directive({
   selector: '[appPaymentCard]',
   standalone: false
@@ -52,6 +54,8 @@ export class PaymentsComponent implements OnInit, AfterViewInit, OnDestroy {
     sort: ['due'],
     pageSize: [10]
   });
+
+  protected readonly trackByIndex = trackByIndex;
 
   constructor(
     private readonly paymentsService: PaymentsService,

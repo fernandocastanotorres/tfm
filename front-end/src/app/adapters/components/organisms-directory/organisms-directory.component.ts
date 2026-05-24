@@ -4,6 +4,8 @@ import { OrganismsService } from '../../../application/services/organisms.servic
 import { I18nService } from '../../../application/services/i18n.service';
 import { OrganismItem } from '../../../application/models/sede.models';
 
+import { trackByIndex } from '../../../application/utils/track-by.utils';
+
 @Component({
     selector: 'app-organisms-directory',
     templateUrl: './organisms-directory.component.html',
@@ -17,6 +19,8 @@ export class OrganismsDirectoryComponent implements OnInit, OnDestroy {
   searchQuery = '';
   isLoading = true;
   private localeSub?: Subscription;
+
+  protected readonly trackByIndex = trackByIndex;
 
   constructor(
     private readonly organismsService: OrganismsService,

@@ -62,6 +62,10 @@ const routes: Routes = [
       { path: 'expedientes/detalle', canActivate: [authGuard], component: CaseDetailComponent, title: 'Detalle del Expediente' },
       { path: 'mensajes', canActivate: [authGuard], component: MessagesComponent, title: 'Mensajeria segura' },
       { path: 'perfil', canActivate: [authGuard], component: ProfileComponent, title: 'Datos personales' },
+      { path: 'dashboard', canActivate: [authGuard], component: DashboardComponent, title: 'Panel principal' },
+      { path: 'notificaciones', canActivate: [authGuard], component: NotificationsComponent, title: 'Notificaciones' },
+      { path: 'documentos', canActivate: [authGuard], component: DocumentsComponent, title: 'Documentos' },
+      { path: 'pagos', canActivate: [authGuard], component: PaymentsComponent, title: 'Pagos y tasas' },
       // Auth pages inside public layout so they share header/footer
       { path: 'login', component: LoginComponent, title: 'Iniciar sesion' },
       { path: 'registro', component: RegisterComponent, title: 'Crear cuenta' },
@@ -78,32 +82,11 @@ const routes: Routes = [
   { path: 'expedientes/:id/detalle', redirectTo: 'sede/expedientes/:id/detalle' },
   { path: 'expedientes/detalle', redirectTo: 'sede/expedientes/detalle', pathMatch: 'full' },
   { path: 'mensajes', redirectTo: 'sede/mensajes', pathMatch: 'full' },
-  { path: 'perfil', redirectTo: 'sede/perfil', pathMatch: 'full' },
-  // Authenticated routes
-  {
-    path: 'dashboard',
-    canActivate: [authGuard],
-    component: DashboardComponent,
-    title: 'Panel principal'
-  },
-  {
-    path: 'notificaciones',
-    canActivate: [authGuard],
-    component: NotificationsComponent,
-    title: 'Notificaciones'
-  },
-  {
-    path: 'documentos',
-    canActivate: [authGuard],
-    component: DocumentsComponent,
-    title: 'Documentos'
-  },
-  {
-    path: 'pagos',
-    canActivate: [authGuard],
-    component: PaymentsComponent,
-    title: 'Pagos y tasas'
-  },
+   { path: 'perfil', redirectTo: 'sede/perfil', pathMatch: 'full' },
+  { path: 'dashboard', redirectTo: 'sede/dashboard', pathMatch: 'full' },
+  { path: 'notificaciones', redirectTo: 'sede/notificaciones', pathMatch: 'full' },
+  { path: 'documentos', redirectTo: 'sede/documentos', pathMatch: 'full' },
+  { path: 'pagos', redirectTo: 'sede/pagos', pathMatch: 'full' },
   {
     path: '',
     redirectTo: 'sede',

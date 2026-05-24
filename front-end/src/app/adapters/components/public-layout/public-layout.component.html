@@ -1,4 +1,4 @@
-<a class="skip-link" href="#main-content" data-keyboard-hint-ignore="true">Saltar al contenido principal</a>
+<a class="skip-link" href="#main-content" data-keyboard-hint-ignore="true">{{ 'LAYOUT.SKIP_LINK' | translate }}</a>
 
 <header class="public-header" role="banner">
   <div class="public-header__container">
@@ -34,7 +34,7 @@
             </a>
           </li>
 
-          <li class="public-header__dropdown" *ngFor="let group of menuGroups">
+          <li class="public-header__dropdown" *ngFor="let group of menuGroups; trackBy: trackByIndex">
             <button
               type="button"
               class="public-header__dropdown-trigger"
@@ -52,7 +52,7 @@
               [class.public-header__dropdown-menu--open]="activeDropdown === group.labelKey"
               role="menu"
             >
-              <li *ngFor="let item of group.items">
+              <li *ngFor="let item of group.items; trackBy: trackByIndex">
                 <a
                   [routerLink]="item.route"
                   routerLinkActive="active"
@@ -97,15 +97,15 @@
           <span class="public-header__chevron" aria-hidden="true">&#9662;</span>
         </button>
         <div id="public-user-menu" class="public-header__user-menu" [class.public-header__user-menu--open]="userMenuOpen" role="menu">
-          <button type="button" role="menuitem" (click)="onProfile()">Datos personales</button>
-          <button type="button" role="menuitem" (click)="onSearchCases()">Buscar expedientes</button>
+          <button type="button" role="menuitem" (click)="onProfile()">{{ 'LAYOUT.USER_PROFILE' | translate }}</button>
+          <button type="button" role="menuitem" (click)="onSearchCases()">{{ 'LAYOUT.USER_SEARCH' | translate }}</button>
           <button type="button" role="menuitem" (click)="onMessages()">
-            Mensajeria
+            {{ 'LAYOUT.USER_MESSAGES' | translate }}
             <span *ngIf="unreadMessageCount > 0" class="ml-1 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 font-semibold">
               {{ unreadMessageCount > 9 ? '9+' : unreadMessageCount }}
             </span>
           </button>
-          <button type="button" role="menuitem" (click)="onLogout()">Cerrar sesion</button>
+          <button type="button" role="menuitem" (click)="onLogout()">{{ 'LAYOUT.USER_LOGOUT' | translate }}</button>
         </div>
       </div>
       <div class="public-header__locale" data-tour="citizen-locale">
@@ -117,7 +117,7 @@
           (change)="switchLocale($any($event.target).value)"
           aria-label="Selecciona idioma"
         >
-          <option *ngFor="let locale of locales" [value]="locale.code">
+          <option *ngFor="let locale of locales; trackBy: trackByIndex" [value]="locale.code">
             {{ locale.label }}
           </option>
         </select>
@@ -129,7 +129,7 @@
         data-tour="citizen-help"
         (click)="startTour()"
       >
-        Guia
+        {{ 'LAYOUT.TOUR_GUIDE' | translate }}
       </button>
     </div>
   </div>

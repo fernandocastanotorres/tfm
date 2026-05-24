@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../application/services/auth.service';
 import { RegisterRequest } from '../../../application/models/auth.models';
 
@@ -30,6 +31,7 @@ export class RegisterComponent {
   constructor(
     private readonly fb: FormBuilder,
     private readonly authService: AuthService,
+    private readonly translate: TranslateService,
     private readonly router: Router,
     private readonly route: ActivatedRoute
   ) {}
@@ -55,14 +57,15 @@ export class RegisterComponent {
       email: this.registerForm.value.email ?? '',
       nationalId: this.registerForm.value.nationalId ?? '',
       phone: this.registerForm.value.phone ?? '',
-      password: this.registerForm.value.password ?? ''
+      password: this.registerForm.value.password ?? '',
+      termsAccepted: true
     };
 
     this.authService.register(request).subscribe({
       next: () => {
         this.isSubmitting = false;
         this.successMessageKey = 'REGISTER.SUCCESS';
-        this.infoMessage = 'Te hemos enviado un enlace de verificacion al correo indicado.';
+        this.infoMessage = this.translate.instant('REGISTER.VERIFICATION_EMAIL_SENT');
       },
       error: (error) => {
         this.isSubmitting = false;
@@ -102,11 +105,11 @@ export class RegisterComponent {
     this.authService.resendVerificationEmail(email).subscribe({
       next: () => {
         this.isResending = false;
-        this.infoMessage = 'Si la cuenta existe y no esta activa, hemos reenviado el enlace de verificacion.';
+        this.infoMessage = this.translate.instant('REGISTER.ACCOUNT_EXISTS');
       },
       error: () => {
         this.isResending = false;
-        this.infoMessage = 'No se pudo procesar la solicitud en este momento.';
+        this.infoMessage = this.translate.instant('REGISTER.ERROR_GENERIC');
       }
     });
   }

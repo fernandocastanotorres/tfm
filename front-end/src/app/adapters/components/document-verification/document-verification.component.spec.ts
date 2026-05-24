@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { DocumentVerificationComponent } from './document-verification.component';
 import { SignatureApiService } from '../../../application/services/signature-api.service';
@@ -14,7 +15,10 @@ describe('DocumentVerificationComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [DocumentVerificationComponent],
       imports: [FormsModule],
-      providers: [{ provide: SignatureApiService, useValue: signatureSpy }]
+      providers: [
+        { provide: SignatureApiService, useValue: signatureSpy },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: { get: () => null } } } }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(DocumentVerificationComponent);

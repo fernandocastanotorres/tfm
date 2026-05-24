@@ -51,7 +51,7 @@
       <div class="card p-6">
         <h2 class="text-lg font-semibold text-surface-900">{{ 'CASE_DETAIL.ATTACHMENTS' | translate }}</h2>
         <ul class="mt-4 space-y-3">
-          <li *ngFor="let attachment of caseDetail.attachments" class="flex items-center justify-between">
+          <li *ngFor="let attachment of caseDetail.attachments; trackBy: trackByIndex" class="flex items-center justify-between">
             <div>
               <div class="flex items-center gap-2">
                 <p class="font-semibold">{{ attachment.name | translate }}</p>
@@ -80,7 +80,7 @@
       <div class="card p-6">
         <h2 class="text-lg font-semibold text-surface-900">{{ 'CASE_DETAIL.TIMELINE' | translate }}</h2>
         <ol class="mt-4 space-y-4">
-          <li *ngFor="let event of caseDetail.timeline" class="border-l-2 border-brand-200 pl-4">
+          <li *ngFor="let event of caseDetail.timeline; trackBy: trackByIndex" class="border-l-2 border-brand-200 pl-4">
             <p class="text-sm text-surface-500">{{ event.date | date:'dd/MM/yyyy' }}</p>
             <p class="font-semibold">{{ event.title | translate }}</p>
             <p class="text-surface-600">{{ event.description | translate }}</p>
@@ -97,7 +97,7 @@
         </div>
 
         <div *ngIf="!isLoadingMessages" class="mt-4 space-y-4">
-          <div *ngFor="let msg of messages" class="message-bubble" [class.message-bubble--admin]="msg.senderRole === 'ADMIN'" [class.message-bubble--citizen]="msg.senderRole === 'CITIZEN'">
+          <div *ngFor="let msg of messages; trackBy: trackByIndex" class="message-bubble" [class.message-bubble--admin]="msg.senderRole === 'ADMIN'" [class.message-bubble--citizen]="msg.senderRole === 'CITIZEN'">
             <div class="message-bubble__header">
               <span class="message-bubble__sender">
                 <svg *ngIf="msg.senderRole === 'ADMIN'" class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,7 +112,7 @@
             </div>
             <p class="message-bubble__content">{{ msg.content }}</p>
             <div *ngIf="msg.attachments.length > 0" class="message-bubble__attachments">
-              <button *ngFor="let att of msg.attachments" (click)="downloadMessageAttachment(att.id, att.name)" class="message-bubble__attachment">
+              <button *ngFor="let att of msg.attachments; trackBy: trackByIndex" (click)="downloadMessageAttachment(att.id, att.name)" class="message-bubble__attachment">
                 <svg class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
                 </svg>

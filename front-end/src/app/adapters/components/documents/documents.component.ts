@@ -12,6 +12,8 @@ import { CaseItem } from '../../../application/models/case.models';
 import { changePage, updatePageSize, getPaginationState, PaginationState } from '../../../application/utils/pagination';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
 
+import { trackByIndex } from '../../../application/utils/track-by.utils';
+
 @Component({
     selector: 'app-documents',
     templateUrl: './documents.component.html',
@@ -60,6 +62,8 @@ export class DocumentsComponent implements OnInit, OnDestroy {
     sort: ['updated'],
     pageSize: [10]
   });
+
+  protected readonly trackByIndex = trackByIndex;
 
   constructor(
     private readonly documentsApiService: DocumentsApiService,

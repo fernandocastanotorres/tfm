@@ -3,6 +3,8 @@ import { FormBuilder } from '@angular/forms';
 import { AppointmentsService, AppointmentItem } from '../../../application/services/appointments.service';
 import { changePage, updatePageSize, getPaginationState, PaginationState } from '../../../application/utils/pagination';
 
+import { trackByIndex } from '../../../application/utils/track-by.utils';
+
 @Component({
     selector: 'app-appointments',
     templateUrl: './appointments.component.html',
@@ -24,6 +26,8 @@ export class AppointmentsComponent implements OnInit {
     sort: ['date'],
     pageSize: [10]
   });
+
+  protected readonly trackByIndex = trackByIndex;
 
   constructor(
     private readonly appointmentsService: AppointmentsService,

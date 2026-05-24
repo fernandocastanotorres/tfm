@@ -4,6 +4,8 @@ import { FaqService } from '../../../application/services/faq.service';
 import { I18nService } from '../../../application/services/i18n.service';
 import { FaqCategory, FaqItem } from '../../../application/models/sede.models';
 
+import { trackByIndex } from '../../../application/utils/track-by.utils';
+
 @Component({
     selector: 'app-faq',
     templateUrl: './faq.component.html',
@@ -18,6 +20,8 @@ export class FaqComponent implements OnInit, OnDestroy {
   expandedFaq: string | null = null;
   isLoading = true;
   private localeSub?: Subscription;
+
+  protected readonly trackByIndex = trackByIndex;
 
   constructor(
     private readonly faqService: FaqService,

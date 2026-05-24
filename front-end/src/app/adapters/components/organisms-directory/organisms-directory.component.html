@@ -30,7 +30,7 @@
           [value]="selectedCategory"
           (change)="onCategoryChange($any($event.target).value)"
         >
-          <option *ngFor="let cat of categories" [value]="cat">{{ getCategoryLabel(cat) }}</option>
+          <option *ngFor="let cat of categories; trackBy: trackByIndex" [value]="cat">{{ getCategoryLabel(cat) }}</option>
         </select>
       </div>
     </div>
@@ -40,7 +40,7 @@
     </div>
 
     <div class="organisms__grid" *ngIf="!isLoading">
-      <article class="card p-6 organisms__item" *ngFor="let org of organisms">
+      <article class="card p-6 organisms__item" *ngFor="let org of organisms; trackBy: trackByIndex">
         <h2 class="organisms__item-name">{{ org.name }}</h2>
         <span class="organisms__item-category">{{ org.category }}</span>
         <p class="organisms__item-desc">{{ org.description }}</p>

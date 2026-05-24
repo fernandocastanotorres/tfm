@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProfileService } from '../../../application/services/profile.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
 import { ToastService } from '../../../application/services/toast.service';
+
+import { trackByIndex } from '../../../application/utils/track-by.utils';
 
 @Component({
     selector: 'app-profile',
@@ -31,6 +33,8 @@ export class ProfileComponent implements OnInit {
   showNewPassword = false;
   showConfirmPassword = false;
   isChangingPassword = false;
+
+  protected readonly trackByIndex = trackByIndex;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -120,6 +124,13 @@ export class ProfileComponent implements OnInit {
     this.showPasswordModal = false;
   }
 
+  @HostListener('keydown.escape')
+  onEscape(): void {
+    if (this.showPasswordModal) {
+      this.closePasswordModal();
+    }
+  }
+
   get passwordStrength(): number {
     const pwd = this.passwordForm.get('newPassword')?.value || '';
     let score = 0;
@@ -134,10 +145,10 @@ export class ProfileComponent implements OnInit {
   get passwordStrengthLabel(): string {
     const s = this.passwordStrength;
     if (s === 0) return '';
-    if (s <= 2) return 'Debil';
-    if (s <= 3) return 'Media';
-    if (s <= 4) return 'Fuerte';
-    return 'Muy fuerte';
+    if (s <= 2) return this.translate.instant('PROFILE.PASSWORD_STRENGTH_WEAK');
+    if (s <= 3) return this.translate.instant('PROFILE.PASSWORD_STRENGTH_MEDIUM');
+    if (s <= 4) return this.translate.instant('PROFILE.PASSWORD_STRENGTH_STRONG');
+    return this.translate.instant('PROFILE.PASSWORD_STRENGTH_VERY_STRONG');
   }
 
   get passwordStrengthColor(): string {
@@ -151,11 +162,11 @@ export class ProfileComponent implements OnInit {
   get passwordRequirements(): { label: string; met: boolean }[] {
     const pwd = this.passwordForm.get('newPassword')?.value || '';
     return [
-      { label: 'Al menos 8 caracteres', met: pwd.length >= 8 },
-      { label: 'Una minuscula', met: /[a-z]/.test(pwd) },
-      { label: 'Una mayuscula', met: /[A-Z]/.test(pwd) },
-      { label: 'Un numero', met: /\d/.test(pwd) },
-      { label: 'Un caracter especial (!@#$%^&*)', met: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]/.test(pwd) }
+      { label: this.translate.instant('PROFILE.PASSWORD_REQUIREMENT_LENGTH'), met: pwd.length >= 8 },
+      { label: this.translate.instant('PROFILE.PASSWORD_REQUIREMENT_LOWER'), met: /[a-z]/.test(pwd) },
+      { label: this.translate.instant('PROFILE.PASSWORD_REQUIREMENT_UPPER'), met: /[A-Z]/.test(pwd) },
+      { label: this.translate.instant('PROFILE.PASSWORD_REQUIREMENT_NUMBER'), met: /\d/.test(pwd) },
+      { label: this.translate.instant('PROFILE.PASSWORD_REQUIREMENT_SPECIAL'), met: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]/.test(pwd) }
     ];
   }
 

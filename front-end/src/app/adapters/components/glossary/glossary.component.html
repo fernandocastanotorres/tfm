@@ -26,7 +26,7 @@
         <button
           type="button"
           class="glossary__letter"
-          *ngFor="let letter of letters"
+          *ngFor="let letter of letters; trackBy: trackByIndex"
           [class.glossary__letter--active]="selectedLetter === letter"
           (click)="onLetterSelect(letter)"
           [attr.aria-pressed]="selectedLetter === letter"
@@ -41,7 +41,7 @@
     </div>
 
     <dl class="glossary__list" *ngIf="!isLoading">
-      <div class="glossary__item card p-5" *ngFor="let term of terms">
+      <div class="glossary__item card p-5" *ngFor="let term of terms; trackBy: trackByIndex">
         <dt class="glossary__term">{{ term.term }}</dt>
         <dd class="glossary__definition">{{ term.definition }}</dd>
         <div class="glossary__related" *ngIf="term.relatedTerms && term.relatedTerms.length > 0">

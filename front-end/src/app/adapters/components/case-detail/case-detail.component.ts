@@ -7,6 +7,7 @@ import { MessageDto } from '../../../application/models/message.models';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
 import { ToastService } from '../../../application/services/toast.service';
 import { Subscription, interval } from 'rxjs';
+import { trackByIndex } from '../../../application/utils/track-by.utils';
 
 @Component({
     selector: 'app-case-detail',
@@ -32,6 +33,8 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
   messagePage = 0;
   messagePageSize = 20;
   messageTotalPages = 1;
+
+  protected readonly trackByIndex = trackByIndex;
 
   constructor(
     private readonly casesApiService: CasesApiService,

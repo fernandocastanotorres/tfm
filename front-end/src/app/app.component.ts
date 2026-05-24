@@ -9,7 +9,7 @@ import { interval, Subscription } from 'rxjs';
     styleUrls: ['./app.component.css'],
     standalone: false
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   private readonly subscriptions = new Subscription();
 
   constructor(

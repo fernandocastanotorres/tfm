@@ -63,7 +63,7 @@
     <button
       type="button"
       class="card p-5 w-full text-left border border-transparent hover:border-brand-200 focus-visible:outline-brand-300 transition-colors"
-      *ngFor="let msg of filteredMessages"
+      *ngFor="let msg of filteredMessages; trackBy: trackByIndex"
       appInboxItem
       (click)="selectMessage(msg)"
       [class.bg-blue-50]="!msg.read"

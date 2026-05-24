@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ServiceStatusService } from '../../../application/services/service-status.service';
 import { ServiceStatusItem } from '../../../application/models/sede.models';
 
+import { trackByIndex } from '../../../application/utils/track-by.utils';
+
 @Component({
     selector: 'app-service-status',
     templateUrl: './service-status.component.html',
@@ -12,6 +14,8 @@ export class ServiceStatusComponent implements OnInit {
   services: ServiceStatusItem[] = [];
   isLoading = true;
   operationalCount = 0;
+
+  protected readonly trackByIndex = trackByIndex;
 
   constructor(private readonly serviceStatusService: ServiceStatusService) {}
 

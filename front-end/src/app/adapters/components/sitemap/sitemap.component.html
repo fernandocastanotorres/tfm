@@ -11,10 +11,10 @@
     </header>
 
     <div class="sitemap__grid">
-      <div class="sitemap__section" *ngFor="let section of sections">
+      <div class="sitemap__section" *ngFor="let section of sections; trackBy: trackByIndex">
         <h2 class="sitemap__section-title">{{ section.titleKey | translate }}</h2>
         <ul class="sitemap__links">
-          <li *ngFor="let link of section.links">
+          <li *ngFor="let link of section.links; trackBy: trackByIndex">
             <a [routerLink]="link.route" class="sitemap__link">{{ link.labelKey | translate }}</a>
           </li>
         </ul>

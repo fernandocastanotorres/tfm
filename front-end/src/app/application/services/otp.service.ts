@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 
+/** @todo Replace client-side localStorage mock with real server-side OTP verification */
 @Injectable({
   providedIn: 'root'
 })

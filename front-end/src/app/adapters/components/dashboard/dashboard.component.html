@@ -3,7 +3,7 @@
     <h1 id="dashboard-title" class="text-2xl font-semibold text-surface-900">{{ 'DASHBOARD.TITLE' | translate }}</h1>
     <p class="text-surface-600">{{ 'DASHBOARD.SUBTITLE' | translate }}</p>
     <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <div class="card p-4" *ngFor="let stat of summaryStats">
+      <div class="card p-4" *ngFor="let stat of summaryStats; trackBy: trackByIndex">
         <p class="text-sm text-surface-500">{{ stat.labelKey | translate }}</p>
         <p class="text-2xl font-semibold text-surface-900">{{ stat.value }}</p>
       </div>
@@ -28,7 +28,7 @@
         </select>
         <label class="sr-only" for="case-page-size">{{ 'DASHBOARD.PAGE_SIZE_LABEL' | translate }}</label>
         <select id="case-page-size" formControlName="pageSize" class="field-input w-24" (change)="updatePageSize($any($event.target).value)">
-          <option *ngFor="let size of paginationOptions" [value]="size">{{ size }}</option>
+          <option *ngFor="let size of paginationOptions; trackBy: trackByIndex" [value]="size">{{ size }}</option>
         </select>
         <button type="button" class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" (click)="clearFilters()">
           {{ 'DASHBOARD.CLEAR' | translate }}
@@ -47,7 +47,7 @@
         <button
           type="button"
           class="card p-5 text-left border border-transparent hover:border-brand-200 focus-visible:outline-brand-300"
-          *ngFor="let caseItem of pagedCases"
+          *ngFor="let caseItem of pagedCases; trackBy: trackByIndex"
           (click)="selectCase(caseItem)"
           [attr.aria-pressed]="selectedCase?.id === caseItem.id"
           [ngClass]="selectedCase?.id === caseItem.id ? 'ring-2 ring-brand-300' : ''"
@@ -102,7 +102,7 @@
   <section class="mb-10" aria-labelledby="notificaciones-title">
     <h2 id="notificaciones-title" class="text-xl font-semibold text-surface-900">{{ 'DASHBOARD.NOTIFICATIONS' | translate }}</h2>
     <ul class="mt-6 grid gap-4">
-      <li class="card p-5" *ngFor="let notification of notifications">
+      <li class="card p-5" *ngFor="let notification of notifications; trackBy: trackByIndex">
         <p>{{ notification.messageKey | translate }}</p>
         <span class="text-surface-500 text-sm">{{ notification.date }}</span>
       </li>
@@ -112,7 +112,7 @@
   <section aria-labelledby="accesos-title">
     <h2 id="accesos-title" class="text-xl font-semibold text-surface-900">{{ 'DASHBOARD.QUICK_ACCESS' | translate }}</h2>
     <div class="mt-6 grid gap-6 md:grid-cols-2">
-      <a class="card p-6 transition hover:-translate-y-0.5 hover:shadow-xl" *ngFor="let quickLink of quickAccess" [routerLink]="quickLink.route">
+      <a class="card p-6 transition hover:-translate-y-0.5 hover:shadow-xl" *ngFor="let quickLink of quickAccess; trackBy: trackByIndex" [routerLink]="quickLink.route">
         <div class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-700" [ngSwitch]="quickLink.id" aria-hidden="true">
           <svg *ngSwitchCase="'ACC-1'" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M4 6h16M4 12h16M4 18h10" stroke-linecap="round"/>

@@ -31,7 +31,7 @@
 
     <!-- Services List -->
     <ul class="service-status__list" *ngIf="!isLoading">
-      <li class="card p-6 service-status__item" *ngFor="let service of services">
+      <li class="card p-6 service-status__item" *ngFor="let service of services; trackBy: trackByIndex">
         <div class="service-status__item-header">
           <h2 class="service-status__item-name">{{ service.nameKey | translate }}</h2>
           <span class="service-status__indicator" [ngClass]="getStatusClass(service.status)">

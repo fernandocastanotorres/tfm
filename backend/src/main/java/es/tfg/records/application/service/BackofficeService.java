@@ -29,6 +29,8 @@ import es.tfg.records.infrastructure.persistence.entity.ProcedureTypeEntity;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTaskFieldI18nEntity;
 import es.tfg.records.infrastructure.persistence.entity.UserEntity;
 import es.tfg.records.infrastructure.persistence.entity.CaseTimelineEventEntity;
+import es.tfg.records.infrastructure.persistence.entity.DocumentEntity;
+import es.tfg.records.infrastructure.persistence.entity.DocumentVerificationEntity;
 import es.tfg.records.infrastructure.persistence.repository.CaseTimelineEventJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.DocumentJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.DocumentVerificationJpaRepository;
@@ -68,6 +70,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -618,10 +621,17 @@ public class BackofficeService {
     }
 
     private BackofficeDtos.AdminCaseItem toAdminCaseItem(ProcedureEntity procedure, ProcedureTypeEntity type) {
+        List<String> csvCodes = documentRepository.findByProcedureId(procedure.getId()).stream()
+                .map(DocumentEntity::getId)
+                .map(documentVerificationRepository::findByDocumentId)
+                .flatMap(Optional::stream)
+                .map(DocumentVerificationEntity::getCsvCode)
+                .toList();
+
         return new BackofficeDtos.AdminCaseItem(
                 procedure.getId(), typeTitle(type), procedure.getStatus().name(), procedure.getCreatedAt(), procedure.getUpdatedAt(),
                 procedure.getTitle(), type == null ? "" : type.getDescription(), procedure.getAssignedUnit() != null ? procedure.getAssignedUnit() : typeUnit(type),
-                null, userRepository.findById(procedure.getOwnerId()).map(UserEntity::getEmail).orElse("Ciudadano"), currentTask(procedure, type), priority(procedure));
+                null, userRepository.findById(procedure.getOwnerId()).map(UserEntity::getEmail).orElse("Ciudadano"), currentTask(procedure, type), priority(procedure), csvCodes);
     }
 
     private String currentTask(ProcedureEntity procedure, ProcedureTypeEntity type) {

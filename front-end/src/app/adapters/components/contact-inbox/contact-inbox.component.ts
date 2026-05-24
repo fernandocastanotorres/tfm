@@ -14,6 +14,8 @@ import { ToastService } from '../../../application/services/toast.service';
 import { Subject } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
 
+import { trackByIndex } from '../../../application/utils/track-by.utils';
+
 @Directive({
   selector: '[appInboxItem]',
   standalone: false
@@ -42,6 +44,8 @@ export class ContactInboxComponent implements OnInit, AfterViewInit, OnDestroy {
   private activeMessageId: string | null = null;
 
   @ViewChildren(InboxItemDirective) inboxItems!: QueryList<InboxItemDirective>;
+
+  protected readonly trackByIndex = trackByIndex;
 
   constructor(
     private readonly contactInboxService: ContactInboxService,

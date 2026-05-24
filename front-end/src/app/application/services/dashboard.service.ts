@@ -1,16 +1,5 @@
 import { Injectable } from '@angular/core';
 
-export interface CaseItem {
-  id: string;
-  titleKey: string;
-  statusKey: 'CASE_STATUS.REVIEW' | 'CASE_STATUS.PENDING' | 'CASE_STATUS.APPROVED';
-  lastUpdated: string;
-  submittedAt: string;
-  categoryKey: string;
-  descriptionKey: string;
-  assignedUnitKey: string;
-}
-
 export interface NotificationItem {
   id: string;
   messageKey: string;
@@ -28,42 +17,8 @@ export interface QuickAccessItem {
   providedIn: 'root'
 })
 export class DashboardService {
-  getCases(): CaseItem[] {
-    return [
-      {
-        id: 'EXP-2026-001',
-        titleKey: 'DASHBOARD.MOCK_LICENSE_TITLE',
-        statusKey: 'CASE_STATUS.REVIEW',
-        lastUpdated: '14/05/2026',
-        submittedAt: '01/05/2026',
-        categoryKey: 'DASHBOARD.MOCK_CATEGORY_URBANISM',
-        descriptionKey: 'DASHBOARD.MOCK_LICENSE_DESC',
-        assignedUnitKey: 'CASE_DETAIL.MOCK_UNIT_LICENSES'
-      },
-      {
-        id: 'EXP-2026-002',
-        titleKey: 'DASHBOARD.MOCK_REGISTRY_TITLE',
-        statusKey: 'CASE_STATUS.PENDING',
-        lastUpdated: '10/05/2026',
-        submittedAt: '05/05/2026',
-        categoryKey: 'DASHBOARD.MOCK_CATEGORY_CADASTRE',
-        descriptionKey: 'DASHBOARD.MOCK_REGISTRY_DESC',
-        assignedUnitKey: 'PROCEDURES.UNIT_REGISTRY'
-      },
-      {
-        id: 'EXP-2026-003',
-        titleKey: 'DASHBOARD.MOCK_APPLICATION_TITLE',
-        statusKey: 'CASE_STATUS.APPROVED',
-        lastUpdated: '08/05/2026',
-        submittedAt: '29/04/2026',
-        categoryKey: 'DASHBOARD.MOCK_CATEGORY_REGISTRY',
-        descriptionKey: 'DASHBOARD.MOCK_APPLICATION_DESC',
-        assignedUnitKey: 'PROCEDURES.UNIT_REGISTRY'
-      }
-    ];
-  }
-
   getNotifications(): NotificationItem[] {
+    // @todo Replace mock data with real backend endpoint
     return [
       {
         id: 'NOT-1',
@@ -79,6 +34,7 @@ export class DashboardService {
   }
 
   getQuickAccess(): QuickAccessItem[] {
+    // @todo Replace mock data with real backend endpoint
     return [
       {
         id: 'ACC-1',

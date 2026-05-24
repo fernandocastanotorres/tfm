@@ -15,6 +15,8 @@ import { changePage, updatePageSize, getPaginationState, PaginationState } from 
 import { Subject } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
 
+import { trackByIndex } from '../../../application/utils/track-by.utils';
+
 @Directive({
   selector: '[appNotificationCard]',
   standalone: false
@@ -53,6 +55,8 @@ export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy 
     sort: ['date'],
     pageSize: [10]
   });
+
+  protected readonly trackByIndex = trackByIndex;
 
   constructor(
     private readonly notificationsService: NotificationsService,

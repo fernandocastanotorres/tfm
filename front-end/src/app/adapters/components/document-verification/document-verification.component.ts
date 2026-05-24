@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { SignatureApiService, PublicCsvVerificationInfo, SignatureInfo } from '../../../application/services/signature-api.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-document-verification',
@@ -15,7 +16,16 @@ export class DocumentVerificationComponent {
   isVerifyingFile = false;
   isVerifyingCsv = false;
 
-  constructor(private readonly signatureApiService: SignatureApiService) {}
+  constructor(
+    private readonly signatureApiService: SignatureApiService,
+    private readonly route: ActivatedRoute
+  ) {
+    const csv = this.route.snapshot.queryParamMap.get('csv');
+    if (csv) {
+      this.csvCode = csv;
+      this.verifyCsv();
+    }
+  }
 
   verifyFile(files: FileList | null): void {
     const file = files?.item(0);

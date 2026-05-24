@@ -14,7 +14,7 @@
     <div class="contact__channels">
       <h2 class="contact__section-title">{{ 'CONTACT.CHANNELS_TITLE' | translate }}</h2>
       <div class="contact__channels-grid">
-        <div class="card p-6 contact__channel" *ngFor="let channel of channels">
+        <div class="card p-6 contact__channel" *ngFor="let channel of channels; trackBy: trackByIndex">
           <div class="contact__channel-icon" aria-hidden="true" [ngSwitch]="channel.icon">
             <svg *ngSwitchCase="'phone'" class="contact__channel-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
               <path d="M6.5 3.5h3L11 7.8 8.8 10a14.5 14.5 0 0 0 5.2 5.2l2.2-2.2 4.3 1.5v3c0 .8-.6 1.5-1.4 1.5C10.6 19 5 13.4 5 6.9 5 6 5.6 5.4 6.5 5.4z" stroke-linejoin="round"/>
@@ -46,7 +46,7 @@
     <div class="contact__offices">
       <h2 class="contact__section-title">{{ 'CONTACT.OFFICES_TITLE' | translate }}</h2>
       <div class="contact__offices-grid">
-        <div class="card p-6 contact__office" *ngFor="let office of offices">
+        <div class="card p-6 contact__office" *ngFor="let office of offices; trackBy: trackByIndex">
           <h3 class="contact__office-name">{{ office.nameKey | translate }}</h3>
           <address class="contact__office-address">
             <p>{{ office.addressKey | translate }}</p>

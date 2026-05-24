@@ -74,7 +74,7 @@
       <p class="text-success font-semibold" role="status" *ngIf="successMessageKey">{{ successMessageKey | translate }}</p>
       <p class="text-sm text-surface-700" role="status" *ngIf="infoMessage">{{ infoMessage }}</p>
       <button type="button" class="text-brand-600 hover:underline text-sm" (click)="resendVerificationEmail()" [disabled]="isResending" *ngIf="successMessageKey">
-        {{ isResending ? 'Reenviando enlace...' : 'Reenviar enlace de verificacion' }}
+        {{ isResending ? ('LOGIN.SENDING_VERIFICATION' | translate) : ('LOGIN.RESEND_VERIFICATION' | translate) }}
       </button>
       <p class="error-text text-center" role="alert" *ngIf="errorMessageKey">{{ errorMessageKey | translate }}</p>
 

@@ -7,6 +7,8 @@ import { AuthService } from '../../../application/services/auth.service';
 import { ProcedureItem } from '../../../application/models/procedure.models';
 import { CalendarEvent } from '../../../application/models/sede.models';
 
+import { trackByIndex } from '../../../application/utils/track-by.utils';
+
 @Component({
     selector: 'app-public-home',
     templateUrl: './public-home.component.html',
@@ -19,6 +21,8 @@ export class PublicHomeComponent implements OnInit, OnDestroy {
   isLoading = true;
   isAuthenticated = false;
   private localeSub?: Subscription;
+
+  protected readonly trackByIndex = trackByIndex;
 
   constructor(
     private readonly proceduresApi: ProceduresApiService,
@@ -59,6 +63,6 @@ export class PublicHomeComponent implements OnInit, OnDestroy {
   }
 
   formatDate(date: string): string {
-    return new Date(date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+    return new Date(date).toLocaleDateString(this.i18nService.getCurrentLocale(), { day: 'numeric', month: 'long', year: 'numeric' });
   }
 }

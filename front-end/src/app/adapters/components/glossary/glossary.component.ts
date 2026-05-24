@@ -4,6 +4,8 @@ import { GlossaryService } from '../../../application/services/glossary.service'
 import { I18nService } from '../../../application/services/i18n.service';
 import { GlossaryTerm } from '../../../application/models/sede.models';
 
+import { trackByIndex } from '../../../application/utils/track-by.utils';
+
 @Component({
     selector: 'app-glossary',
     templateUrl: './glossary.component.html',
@@ -17,6 +19,8 @@ export class GlossaryComponent implements OnInit, OnDestroy {
   searchQuery = '';
   isLoading = true;
   private localeSub?: Subscription;
+
+  protected readonly trackByIndex = trackByIndex;
 
   constructor(
     private readonly glossaryService: GlossaryService,

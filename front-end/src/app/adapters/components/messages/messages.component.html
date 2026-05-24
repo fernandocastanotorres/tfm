@@ -25,7 +25,7 @@
       <label class="sr-only" for="messages-case">{{ 'MESSAGES.FILTER_CASE' | translate }}</label>
       <select id="messages-case" formControlName="caseId" class="field-input w-44">
         <option value="all">{{ 'MESSAGES.FILTER_CASE_ALL' | translate }}</option>
-        <option *ngFor="let caseOption of caseOptions" [value]="caseOption.id">
+        <option *ngFor="let caseOption of caseOptions; trackBy: trackByIndex" [value]="caseOption.id">
           {{ caseOption.label }}
         </option>
       </select>
@@ -52,7 +52,7 @@
         <p class="messages__empty-desc">Cuando recibas mensajes de la administracion, apareceran aqui.</p>
       </div>
 
-      <div *ngFor="let thread of pagedThreads" class="message-thread" [class.message-thread--expanded]="expandedThreadId === thread.procedureId" [class.message-thread--unread]="thread.unreadCount > 0">
+      <div *ngFor="let thread of pagedThreads; trackBy: trackByIndex" class="message-thread" [class.message-thread--expanded]="expandedThreadId === thread.procedureId" [class.message-thread--unread]="thread.unreadCount > 0">
         <button type="button" class="message-thread__header" (click)="toggleThread(thread.procedureId)" (keydown)="onThreadKeydown($event)" [attr.aria-expanded]="expandedThreadId === thread.procedureId">
           <div class="message-thread__avatar" [class.message-thread__avatar--unread]="thread.unreadCount > 0">
             <svg class="w-6 h-6" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -85,7 +85,7 @@
               <span>Cargando mensajes...</span>
             </div>
 
-            <div *ngFor="let msg of messages" class="message-bubble" [class.message-bubble--admin]="msg.senderRole === 'ADMIN'" [class.message-bubble--citizen]="msg.senderRole === 'CITIZEN'">
+            <div *ngFor="let msg of messages; trackBy: trackByIndex" class="message-bubble" [class.message-bubble--admin]="msg.senderRole === 'ADMIN'" [class.message-bubble--citizen]="msg.senderRole === 'CITIZEN'">
               <div class="message-bubble__header">
                 <span class="message-bubble__sender">
                   <svg *ngIf="msg.senderRole === 'ADMIN'" class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,7 +100,7 @@
               </div>
               <p class="message-bubble__content">{{ msg.content }}</p>
               <div *ngIf="msg.attachments.length > 0" class="message-bubble__attachments">
-                <button *ngFor="let att of msg.attachments" (click)="downloadAttachment(att.id, att.name)" class="message-bubble__attachment">
+                <button *ngFor="let att of msg.attachments; trackBy: trackByIndex" (click)="downloadAttachment(att.id, att.name)" class="message-bubble__attachment">
                   <svg class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
                   </svg>

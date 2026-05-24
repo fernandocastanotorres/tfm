@@ -56,7 +56,7 @@
         <a [routerLink]="['/sede/registro']" [queryParams]="{ returnUrl: returnUrl }" class="text-brand-600 hover:underline">{{ 'LOGIN.CREATE_ACCOUNT' | translate }}</a>
         <a [routerLink]="['/sede/recuperacion']" class="text-brand-600 hover:underline">{{ 'LOGIN.FORGOT' | translate }}</a>
         <button type="button" class="text-left text-brand-600 hover:underline" (click)="resendVerificationEmail()" [disabled]="isResending">
-          {{ isResending ? 'Reenviando enlace...' : 'Reenviar enlace de verificacion' }}
+          {{ isResending ? ('LOGIN.SENDING_VERIFICATION' | translate) : ('LOGIN.RESEND_VERIFICATION' | translate) }}
         </button>
       </div>
     </form>

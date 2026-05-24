@@ -6,6 +6,8 @@ import { changePage, updatePageSize, getPaginationState, PaginationState } from 
 import { ToastService } from '../../../application/services/toast.service';
 import { Subscription } from 'rxjs';
 
+import { trackByIndex } from '../../../application/utils/track-by.utils';
+
 @Component({
     selector: 'app-messages',
     templateUrl: './messages.component.html',
@@ -35,6 +37,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
     sort: ['updated'],
     pageSize: [10]
   });
+
+  protected readonly trackByIndex = trackByIndex;
 
   constructor(
     private readonly messagesService: MessagesService,
