@@ -296,11 +296,40 @@ export class CaseDetailComponent implements OnInit {
     if (!this.caseDetail?.formData) {
       return [];
     }
-    return Object.entries(this.caseDetail.formData).map(([key, value]) => ({ key, value }));
+    const entries: Array<{ key: string; value: unknown }> = [];
+    for (const [key, value] of Object.entries(this.caseDetail.formData)) {
+      this.collectLeafEntries(key, value, entries);
+    }
+    return entries;
+  }
+
+  private collectLeafEntries(path: string, value: unknown, entries: Array<{ key: string; value: unknown }>): void {
+    if (Array.isArray(value)) {
+      if (value.length === 0) {
+        entries.push({ key: path, value: null });
+        return;
+      }
+      value.forEach((item, index) => this.collectLeafEntries(`${path}[${index}]`, item, entries));
+      return;
+    }
+
+    if (value !== null && typeof value === 'object') {
+      const objectEntries = Object.entries(value as Record<string, unknown>);
+      if (objectEntries.length === 0) {
+        entries.push({ key: path, value: null });
+        return;
+      }
+      objectEntries.forEach(([childKey, childValue]) => this.collectLeafEntries(`${path}.${childKey}`, childValue, entries));
+      return;
+    }
+
+    entries.push({ key: path, value });
   }
 
   formatFieldLabel(fieldKey: string): string {
     return fieldKey
+      .replace(/\./g, ' ')
+      .replace(/\[(\d+)\]/g, ' $1 ')
       .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
       .replace(/[_-]+/g, ' ')
       .trim()
@@ -308,7 +337,13 @@ export class CaseDetailComponent implements OnInit {
   }
 
   getFieldLabel(fieldKey: string): string {
-    return this.formFieldLabels[fieldKey] ?? this.formatFieldLabel(fieldKey);
+    const rootKey = fieldKey.split(/[.[]/)[0];
+    const rootLabel = this.formFieldLabels[rootKey];
+    if (!rootLabel || rootKey === fieldKey) {
+      return this.formFieldLabels[fieldKey] ?? this.formatFieldLabel(fieldKey);
+    }
+    const suffix = fieldKey.slice(rootKey.length);
+    return `${rootLabel}${this.formatFieldLabel(suffix) ? ` · ${this.formatFieldLabel(suffix)}` : ''}`;
   }
 
   isBooleanValue(value: unknown): value is boolean {
@@ -316,7 +351,7 @@ export class CaseDetailComponent implements OnInit {
   }
 
   isSimpleValue(value: unknown): boolean {
-    return value === null || ['string', 'number'].includes(typeof value);
+    return value === null || value === undefined || ['string', 'number'].includes(typeof value);
   }
 
   formatSimpleValue(value: unknown): string {
@@ -324,10 +359,6 @@ export class CaseDetailComponent implements OnInit {
       return '-';
     }
     return String(value);
-  }
-
-  formatComplexValue(value: unknown): string {
-    return JSON.stringify(value, null, 2);
   }
 
   private loadFormFieldLabels(procedureTypeId: string): void {

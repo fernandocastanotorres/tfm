@@ -153,13 +153,13 @@
             <span class="text-sm text-gray-700">{{ entry.value ? 'Si' : 'No' }}</span>
           </div>
 
-          <textarea
+          <input
             *ngIf="!isSimpleValue(entry.value) && !isBooleanValue(entry.value)"
-            [value]="formatComplexValue(entry.value)"
+            type="text"
+            [value]="formatSimpleValue(entry.value)"
             readonly
-            rows="6"
-            class="w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-700 font-mono"
-          ></textarea>
+            class="w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-700"
+          />
         </div>
       </div>
     </div>
