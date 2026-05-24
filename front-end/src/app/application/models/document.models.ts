@@ -11,6 +11,8 @@ export interface DocumentItem {
   size: number;
   status: string;
   uploadedAt: string;
+  hasOriginal?: boolean;
+  hasSigned?: boolean;
   isSigned?: boolean;
 }
 
@@ -22,6 +24,8 @@ export interface DocumentDetail {
   size: number;
   status: string;
   uploadedAt: string;
+  hasOriginal: boolean;
+  hasSigned: boolean;
   checksum: string;
   version: number;
 }

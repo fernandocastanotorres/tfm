@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AdminCasesService } from '../../../application/services/admin-cases.service';
 import { MessagingAdminService, MessageDto, PagedMessages } from '../../../application/services/messaging-admin.service';
 import { CaseDetail, CaseWorkflowGraph, CaseWorkflowNode } from '../../../application/models/backoffice.models';
+import { ProcedureManagementService } from '../../../application/services/procedure-management.service';
 
 @Component({
     selector: 'bo-case-detail',
@@ -13,6 +14,7 @@ import { CaseDetail, CaseWorkflowGraph, CaseWorkflowNode } from '../../../applic
 export class CaseDetailComponent implements OnInit {
   private readonly adminCasesService = inject(AdminCasesService);
   private readonly messagingService = inject(MessagingAdminService);
+  private readonly procedureManagementService = inject(ProcedureManagementService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
@@ -24,6 +26,7 @@ export class CaseDetailComponent implements OnInit {
   tabs: ('timeline' | 'documents' | 'data' | 'tasks' | 'messages' | 'workflow' | 'actions')[] = ['timeline', 'documents', 'tasks', 'workflow', 'messages', 'data', 'actions'];
   workflowGraph: CaseWorkflowGraph | null = null;
   selectedWorkflowNodeKey: string | null = null;
+  formFieldLabels: Record<string, string> = {};
 
   pendingTasks: { id: string; name: string; description: string; type: string; assignedRole: string }[] = [];
 
@@ -73,6 +76,7 @@ export class CaseDetailComponent implements OnInit {
     this.adminCasesService.getDetail(id).subscribe({
       next: (detail) => {
         this.caseDetail = detail;
+        this.loadFormFieldLabels(detail.procedureTypeId);
         this.loadPendingTasks(id);
         this.loadWorkflowGraph(id);
         this.loadMessages(id);
@@ -286,6 +290,66 @@ export class CaseDetailComponent implements OnInit {
     if (bytes < 1024) return bytes + ' B';
     if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
     return (bytes / 1048576).toFixed(1) + ' MB';
+  }
+
+  getFormDataEntries(): Array<{ key: string; value: unknown }> {
+    if (!this.caseDetail?.formData) {
+      return [];
+    }
+    return Object.entries(this.caseDetail.formData).map(([key, value]) => ({ key, value }));
+  }
+
+  formatFieldLabel(fieldKey: string): string {
+    return fieldKey
+      .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+      .replace(/[_-]+/g, ' ')
+      .trim()
+      .replace(/^./, (char) => char.toUpperCase());
+  }
+
+  getFieldLabel(fieldKey: string): string {
+    return this.formFieldLabels[fieldKey] ?? this.formatFieldLabel(fieldKey);
+  }
+
+  isBooleanValue(value: unknown): value is boolean {
+    return typeof value === 'boolean';
+  }
+
+  isSimpleValue(value: unknown): boolean {
+    return value === null || ['string', 'number'].includes(typeof value);
+  }
+
+  formatSimpleValue(value: unknown): string {
+    if (value === null || value === undefined || value === '') {
+      return '-';
+    }
+    return String(value);
+  }
+
+  formatComplexValue(value: unknown): string {
+    return JSON.stringify(value, null, 2);
+  }
+
+  private loadFormFieldLabels(procedureTypeId: string): void {
+    this.formFieldLabels = {};
+    this.procedureManagementService.list().subscribe({
+      next: (procedures) => {
+        const matchedProcedure = procedures.find((procedure) => procedure.id === procedureTypeId);
+        if (!matchedProcedure) {
+          return;
+        }
+
+        this.formFieldLabels = matchedProcedure.formSchema.reduce<Record<string, string>>((acc, field) => {
+          if (field.id && field.label) {
+            acc[field.id] = field.label;
+          }
+          return acc;
+        }, {});
+      },
+      error: () => {
+        this.formFieldLabels = {};
+      }
+    });
   }
 
   downloadDocument(documentId: string, filename: string): void {

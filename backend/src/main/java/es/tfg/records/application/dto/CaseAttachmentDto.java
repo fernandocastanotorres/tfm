@@ -23,5 +23,11 @@ public record CaseAttachmentDto(
         @Schema(description = "Upload timestamp")
         Instant uploadedAt,
         @Schema(description = "Whether this document has been electronically signed", example = "true")
-        boolean signed
+        boolean signed,
+        @Schema(description = "Whether original upload artifact is available", example = "true")
+        boolean hasOriginal,
+        @Schema(description = "Whether signed artifact is available", example = "true")
+        boolean hasSigned,
+        @Schema(description = "CSV verification code for signed documents", example = "AB12CD34EF56")
+        String csvCode
 ) {}

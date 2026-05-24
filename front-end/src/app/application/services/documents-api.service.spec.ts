@@ -97,8 +97,9 @@ describe('DocumentsApiService', () => {
         }
       });
 
-      const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures/documents/d-1/download`);
+      const req = httpMock.expectOne((request) => request.url === `${environment.apiBaseUrl}/citizen/procedures/documents/d-1/download`);
       expect(req.request.method).toBe('GET');
+      expect(req.request.params.get('variant')).toBe('CURRENT');
       expect(req.request.responseType).toBe('blob');
       req.flush(blob);
     });

@@ -44,6 +44,7 @@ import { GlossaryComponent } from './adapters/components/glossary/glossary.compo
 import { AccessibilityStatementComponent } from './adapters/components/accessibility-statement/accessibility-statement.component';
 import { SitemapComponent } from './adapters/components/sitemap/sitemap.component';
 import { ContactInboxComponent, InboxItemDirective } from './adapters/components/contact-inbox/contact-inbox.component';
+import { DocumentVerificationComponent } from './adapters/components/document-verification/document-verification.component';
 import { NotificationCardDirective } from './adapters/components/notifications/notifications.component';
 import { PaymentCardDirective } from './adapters/components/payments/payments.component';
 
@@ -99,6 +100,7 @@ export function HttpLoaderFactory(http: HttpClient): CustomLoader {
         GlossaryComponent,
         AccessibilityStatementComponent,
         SitemapComponent,
+        DocumentVerificationComponent,
         ContactInboxComponent,
         InboxItemDirective
     ],

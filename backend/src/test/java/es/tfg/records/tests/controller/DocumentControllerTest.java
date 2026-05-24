@@ -4,6 +4,7 @@ import es.tfg.records.application.dto.DocumentDetail;
 import es.tfg.records.application.dto.DocumentItem;
 import es.tfg.records.application.dto.DocumentVersionDto;
 import es.tfg.records.application.service.DocumentService;
+import es.tfg.records.application.service.DocumentDownloadVariant;
 import es.tfg.records.entrypoints.advice.GlobalExceptionHandler;
 import es.tfg.records.entrypoints.controller.DocumentController;
 import org.junit.jupiter.api.Test;
@@ -48,7 +49,7 @@ class DocumentControllerTest {
     void uploadDocument_shouldReturn201() throws Exception {
         UUID ownerId = UUID.randomUUID();
         UUID caseId = UUID.randomUUID();
-        DocumentItem item = new DocumentItem(UUID.randomUUID(), "test.pdf", "application/pdf", 100, 1, Instant.now(), "PENDING", caseId);
+        DocumentItem item = new DocumentItem(UUID.randomUUID(), "test.pdf", "application/pdf", 100, 1, Instant.now(), "PENDING", true, false, caseId);
         when(documentService.uploadDocument(eq(caseId), eq(ownerId), any(MultipartFile.class))).thenReturn(item);
 
         mockMvc.perform(MockMvcRequestBuilders.multipart("/citizen/procedures/{caseId}/documents", caseId)
@@ -63,7 +64,7 @@ class DocumentControllerTest {
         UUID ownerId = UUID.randomUUID();
         UUID caseId = UUID.randomUUID();
         when(documentService.listDocumentsByCase(eq(caseId), eq(ownerId)))
-                .thenReturn(List.of(new DocumentItem(UUID.randomUUID(), "a.pdf", "application/pdf", 1, 1, Instant.now(), "PENDING", caseId)));
+                .thenReturn(List.of(new DocumentItem(UUID.randomUUID(), "a.pdf", "application/pdf", 1, 1, Instant.now(), "PENDING", true, false, caseId)));
 
         mockMvc.perform(get("/citizen/procedures/{caseId}/documents", caseId)
                         .principal(new TestingAuthenticationToken(ownerId.toString(), null)))
@@ -76,7 +77,7 @@ class DocumentControllerTest {
         UUID ownerId = UUID.randomUUID();
         UUID caseId = UUID.randomUUID();
         UUID docId = UUID.randomUUID();
-        DocumentDetail detail = new DocumentDetail(docId, "a.pdf", "application/pdf", 1, 1, Instant.now(), "PENDING", caseId, List.<DocumentVersionDto>of());
+        DocumentDetail detail = new DocumentDetail(docId, "a.pdf", "application/pdf", 1, 1, Instant.now(), "PENDING", true, false, caseId, List.<DocumentVersionDto>of());
         when(documentService.getDocumentDetail(caseId, docId, ownerId)).thenReturn(detail);
 
         mockMvc.perform(get("/citizen/procedures/{procedureUuid}/documents/{docUuid}", caseId, docId)
@@ -106,7 +107,7 @@ class DocumentControllerTest {
                 return "a.pdf";
             }
         };
-        when(documentService.downloadDocument(docId, ownerId)).thenReturn(resource);
+        when(documentService.downloadDocument(docId, ownerId, DocumentDownloadVariant.CURRENT)).thenReturn(resource);
 
         mockMvc.perform(get("/citizen/procedures/documents/{id}/download", docId)
                         .principal(new TestingAuthenticationToken(ownerId.toString(), null)))

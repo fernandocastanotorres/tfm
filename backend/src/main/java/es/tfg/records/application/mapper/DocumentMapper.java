@@ -23,6 +23,8 @@ public final class DocumentMapper {
                 document.getVersion(),
                 document.getUploadedAt(),
                 document.getStatus().name(),
+                document.getOriginalStoragePath() != null,
+                document.getSignedStoragePath() != null,
                 document.getProcedureId()
         );
     }
@@ -36,6 +38,8 @@ public final class DocumentMapper {
                 document.getVersion(),
                 document.getUploadedAt(),
                 document.getStatus().name(),
+                document.getOriginalStoragePath() != null,
+                document.getSignedStoragePath() != null,
                 document.getProcedureId(),
                 Collections.emptyList()
         );

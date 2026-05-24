@@ -62,8 +62,13 @@
               </div>
               <p class="text-sm text-surface-500">{{ attachment.type }} · {{ formatFileSize(attachment.size) }} · {{ attachment.uploadedAt | date:'dd/MM/yyyy' }}</p>
               <p *ngIf="attachment.signed" class="text-xs text-green-600 mt-0.5">Firma CMS/PAdES · SHA256withRSA · Verificable con cualquier lector PDF</p>
+              <p *ngIf="attachment.csvCode" class="text-xs text-surface-700 mt-0.5">CSV: {{ attachment.csvCode }}</p>
             </div>
-             <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="downloadDocument(attachment.id, attachment.name)">{{ 'CASE_DETAIL.DOWNLOAD' | translate }}</button>
+             <div class="flex gap-2">
+               <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="downloadDocument(attachment.id, attachment.name, 'CURRENT')">{{ 'CASE_DETAIL.DOWNLOAD' | translate }}</button>
+               <button *ngIf="attachment.hasOriginal" class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="downloadDocument(attachment.id, attachment.name, 'ORIGINAL')">Original</button>
+               <button *ngIf="attachment.hasSigned" class="btn-primary bg-green-100 text-green-700 hover:bg-green-200" type="button" (click)="downloadDocument(attachment.id, attachment.name, 'SIGNED')">Firmado</button>
+             </div>
            </li>
          </ul>
         <p *ngIf="caseDetail.attachments.length === 0" class="text-sm text-surface-600">No hay documentos adjuntos por el momento.</p>

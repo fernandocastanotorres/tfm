@@ -65,17 +65,20 @@ public class DocumentServiceImpl implements DocumentService {
     private final FileStorageService fileStorageService;
     private final EniMetadataService eniMetadataService;
     private final SignatureService signatureService;
+    private final PublicSignatureVerificationService publicSignatureVerificationService;
 
     public DocumentServiceImpl(DocumentRepository documentRepository,
                                ProcedureRepository procedureRepository,
                                FileStorageService fileStorageService,
                                EniMetadataService eniMetadataService,
-                               SignatureService signatureService) {
+                               SignatureService signatureService,
+                               PublicSignatureVerificationService publicSignatureVerificationService) {
         this.documentRepository = documentRepository;
         this.procedureRepository = procedureRepository;
         this.fileStorageService = fileStorageService;
         this.eniMetadataService = eniMetadataService;
         this.signatureService = signatureService;
+        this.publicSignatureVerificationService = publicSignatureVerificationService;
     }
 
     @Override
@@ -99,6 +102,9 @@ public class DocumentServiceImpl implements DocumentService {
         document.setVersion(1);
         document.setStatus(DocumentStatus.PENDING);
         document.setStoragePath(storedFilename);
+        document.setOriginalStoragePath(storedFilename);
+        document.setOriginalMimeType(file.getContentType());
+        document.setOriginalSize(file.getSize());
         document.setUploadedAt(Instant.now());
 
         Document saved = documentRepository.save(document);
@@ -156,55 +162,55 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public Resource downloadDocument(UUID documentId, UUID ownerId) {
+    public Resource downloadDocument(UUID documentId, UUID ownerId, DocumentDownloadVariant variant) {
         Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new ResourceNotFoundException("DOC", documentId.toString()));
 
         // Verify the document belongs to a case owned by this user
         Procedure procedure = findAndVerifyOwnership(document.getProcedureId(), ownerId);
 
-        if (document.getStoragePath() == null) {
-            throw new ResourceNotFoundException("DOC", "Document has no associated file");
-        }
+        String storagePath = resolveStoragePath(document, variant);
+        String filename = resolveFilename(document, variant);
+        long size = resolveSize(document, variant);
 
         // Open streaming input — file is NOT loaded entirely into memory
         InputStream inputStream = fileStorageService.openStream(
-                document.getProcedureId(), document.getStoragePath());
+                document.getProcedureId(), storagePath);
 
         return new InputStreamResource(inputStream) {
             @Override
             public String getFilename() {
-                return document.getName();
+                return filename;
             }
 
             @Override
             public long contentLength() {
-                return document.getSize();
+                return size;
             }
         };
     }
 
     @Override
-    public Resource downloadDocumentForAdmin(UUID documentId) {
+    public Resource downloadDocumentForAdmin(UUID documentId, DocumentDownloadVariant variant) {
         Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new ResourceNotFoundException("DOC", documentId.toString()));
 
-        if (document.getStoragePath() == null) {
-            throw new ResourceNotFoundException("DOC", "Document has no associated file");
-        }
+        String storagePath = resolveStoragePath(document, variant);
+        String filename = resolveFilename(document, variant);
+        long size = resolveSize(document, variant);
 
         InputStream inputStream = fileStorageService.openStream(
-                document.getProcedureId(), document.getStoragePath());
+                document.getProcedureId(), storagePath);
 
         return new InputStreamResource(inputStream) {
             @Override
             public String getFilename() {
-                return document.getName();
+                return filename;
             }
 
             @Override
             public long contentLength() {
-                return document.getSize();
+                return size;
             }
         };
     }
@@ -250,28 +256,89 @@ public class DocumentServiceImpl implements DocumentService {
 
     private void signDocumentImmediately(UUID caseId, Document document) {
         try {
+            if (document.getSignedStoragePath() != null) {
+                return;
+            }
+
+            if (document.getOriginalStoragePath() == null) {
+                document.setOriginalStoragePath(document.getStoragePath());
+            }
+            if (document.getOriginalMimeType() == null) {
+                document.setOriginalMimeType(document.getMimeType());
+            }
+            if (document.getOriginalSize() == null) {
+                document.setOriginalSize(document.getSize());
+            }
+
             byte[] originalContent;
-            try (InputStream is = fileStorageService.openStream(caseId, document.getStoragePath())) {
+            String sourcePath = document.getOriginalStoragePath() != null ? document.getOriginalStoragePath() : document.getStoragePath();
+            try (InputStream is = fileStorageService.openStream(caseId, sourcePath)) {
                 originalContent = is.readAllBytes();
             }
 
-            byte[] signedContent = signatureService.signDocument(originalContent, document.getMimeType());
+            byte[] signedContent = signatureService.signDocument(originalContent, document.getOriginalMimeType() != null ? document.getOriginalMimeType() : document.getMimeType());
+            String signedStoragePath = fileStorageService.storeBytes(caseId, "pdf", signedContent);
 
             String newName = document.getName().endsWith(".pdf") ? document.getName() : document.getName() + ".pdf";
-            if (!newName.equals(document.getName())) {
-                document.setName(newName);
-                document.setMimeType("application/pdf");
-            }
-
-            fileStorageService.writeBytes(caseId, document.getStoragePath(), signedContent);
+            document.setName(newName);
+            document.setSignedStoragePath(signedStoragePath);
+            document.setSignedMimeType("application/pdf");
+            document.setSignedSize((long) signedContent.length);
+            document.setSignedAt(Instant.now());
+            document.setMimeType("application/pdf");
+            document.setStoragePath(signedStoragePath);
 
             document.setStatus(DocumentStatus.SIGNED);
             document.setSize((long) signedContent.length);
             documentRepository.save(document);
+            publicSignatureVerificationService.registerSignedDocument(document, signedContent);
 
             log.info("Document {} signed immediately on upload for case: {}", document.getId(), caseId);
         } catch (Exception e) {
             log.error("Failed to sign document {} on upload for case {}: {}", document.getId(), caseId, e.getMessage());
         }
+    }
+
+    private String resolveStoragePath(Document document, DocumentDownloadVariant variant) {
+        if (variant == DocumentDownloadVariant.ORIGINAL) {
+            if (document.getOriginalStoragePath() == null) {
+                throw new ResourceNotFoundException("DOC", "Original document artifact is not available");
+            }
+            return document.getOriginalStoragePath();
+        }
+
+        if (variant == DocumentDownloadVariant.SIGNED) {
+            if (document.getSignedStoragePath() == null) {
+                throw new ResourceNotFoundException("DOC", "Signed document artifact is not available");
+            }
+            return document.getSignedStoragePath();
+        }
+
+        if (document.getStoragePath() == null) {
+            throw new ResourceNotFoundException("DOC", "Document has no associated file");
+        }
+        return document.getStoragePath();
+    }
+
+    private String resolveFilename(Document document, DocumentDownloadVariant variant) {
+        if (variant == DocumentDownloadVariant.ORIGINAL) {
+            return document.getName();
+        }
+
+        if (variant == DocumentDownloadVariant.SIGNED && !document.getName().startsWith("signed-")) {
+            return "signed-" + document.getName();
+        }
+
+        return document.getName();
+    }
+
+    private long resolveSize(Document document, DocumentDownloadVariant variant) {
+        if (variant == DocumentDownloadVariant.ORIGINAL && document.getOriginalSize() != null) {
+            return document.getOriginalSize();
+        }
+        if (variant == DocumentDownloadVariant.SIGNED && document.getSignedSize() != null) {
+            return document.getSignedSize();
+        }
+        return document.getSize();
     }
 }

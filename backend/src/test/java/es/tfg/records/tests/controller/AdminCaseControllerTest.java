@@ -98,7 +98,7 @@ class AdminCaseControllerTest {
     void getCaseDetail_shouldReturn200() throws Exception {
         UUID caseId = UUID.randomUUID();
         var detail = new BackofficeDtos.AdminCaseDetail(
-                caseId, "Licencia", "IN_REVIEW", Instant.now(), Instant.now(),
+                caseId, UUID.randomUUID(), "Licencia", "IN_REVIEW", Instant.now(), Instant.now(),
                 "Mi solicitud", "Descripcion", "Resolucion administrativa",
                 "Unidad1", null, "user@test.com", "user@test.com",
                 List.of(), List.of(), null);

@@ -16,7 +16,14 @@ public class Document {
     private int version;
     private DocumentStatus status;
     private String storagePath;
+    private String originalStoragePath;
+    private String signedStoragePath;
+    private String originalMimeType;
+    private String signedMimeType;
+    private Long originalSize;
+    private Long signedSize;
     private Instant uploadedAt;
+    private Instant signedAt;
     private Instant createdAt;
     private Instant updatedAt;
 
@@ -99,12 +106,68 @@ public class Document {
         this.storagePath = storagePath;
     }
 
+    public String getOriginalStoragePath() {
+        return originalStoragePath;
+    }
+
+    public void setOriginalStoragePath(String originalStoragePath) {
+        this.originalStoragePath = originalStoragePath;
+    }
+
+    public String getSignedStoragePath() {
+        return signedStoragePath;
+    }
+
+    public void setSignedStoragePath(String signedStoragePath) {
+        this.signedStoragePath = signedStoragePath;
+    }
+
+    public String getOriginalMimeType() {
+        return originalMimeType;
+    }
+
+    public void setOriginalMimeType(String originalMimeType) {
+        this.originalMimeType = originalMimeType;
+    }
+
+    public String getSignedMimeType() {
+        return signedMimeType;
+    }
+
+    public void setSignedMimeType(String signedMimeType) {
+        this.signedMimeType = signedMimeType;
+    }
+
+    public Long getOriginalSize() {
+        return originalSize;
+    }
+
+    public void setOriginalSize(Long originalSize) {
+        this.originalSize = originalSize;
+    }
+
+    public Long getSignedSize() {
+        return signedSize;
+    }
+
+    public void setSignedSize(Long signedSize) {
+        this.signedSize = signedSize;
+    }
+
     public Instant getUploadedAt() {
         return uploadedAt;
     }
 
     public void setUploadedAt(Instant uploadedAt) {
         this.uploadedAt = uploadedAt;
+    }
+
+    public Instant getSignedAt() {
+        return signedAt;
+    }
+
+    public void setSignedAt(Instant signedAt) {
+        this.signedAt = signedAt;
     }
 
     public Instant getCreatedAt() {

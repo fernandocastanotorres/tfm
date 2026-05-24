@@ -22,12 +22,23 @@ export interface CertificateInfo {
   algorithm: string;
 }
 
+export interface PublicCsvVerificationInfo {
+  valid: boolean;
+  message: string;
+  csvCode: string;
+  documentId: string;
+  caseId: string;
+  signedAt: string;
+  digest: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class SignatureApiService {
   private readonly http = inject(HttpClient);
   private readonly base = `${environment.apiBaseUrl}/citizen/signatures`;
+  private readonly publicBase = `${environment.apiBaseUrl}/public/signatures`;
 
   signDocument(file: File): Observable<Blob> {
     const formData = new FormData();
@@ -72,5 +83,22 @@ export class SignatureApiService {
         algorithm: response.algorithm
       }))
     );
+  }
+
+  verifyPublicFile(file: File): Observable<SignatureInfo> {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+
+    return this.http.post<any>(`${this.publicBase}/verify-file`, formData).pipe(
+      map((response) => ({
+        valid: response.valid,
+        filename: response.filename,
+        message: response.message
+      }))
+    );
+  }
+
+  verifyByCsv(csvCode: string): Observable<PublicCsvVerificationInfo> {
+    return this.http.get<PublicCsvVerificationInfo>(`${this.publicBase}/verify-csv/${encodeURIComponent(csvCode)}`);
   }
 }

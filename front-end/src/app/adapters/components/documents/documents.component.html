@@ -130,10 +130,26 @@
             <button
               class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300 flex items-center gap-2"
               type="button"
-              (click)="downloadDocument(doc.id, doc.name)"
+              (click)="downloadDocument(doc.id, doc.name, 'CURRENT')"
             >
               <svg class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m0 0v8"/></svg>
               {{ 'DOCUMENTS.DOWNLOAD' | translate }}
+            </button>
+            <button
+              *ngIf="doc.hasOriginal"
+              class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300 flex items-center gap-2"
+              type="button"
+              (click)="downloadDocument(doc.id, doc.name, 'ORIGINAL')"
+            >
+              Original
+            </button>
+            <button
+              *ngIf="doc.hasSigned"
+              class="btn-primary bg-green-100 text-green-700 hover:bg-green-200 flex items-center gap-2"
+              type="button"
+              (click)="downloadDocument(doc.id, doc.name, 'SIGNED')"
+            >
+              Firmado
             </button>
             <button
               class="btn-primary bg-brand-500 text-white hover:bg-brand-600 flex items-center gap-2"

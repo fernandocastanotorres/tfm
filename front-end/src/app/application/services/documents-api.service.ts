@@ -5,6 +5,8 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { DocumentItem, DocumentDetail } from '../models/document.models';
 
+export type DocumentVariant = 'CURRENT' | 'ORIGINAL' | 'SIGNED';
+
 /**
  * Metadata sent alongside a document upload.
  */
@@ -36,7 +38,10 @@ export class DocumentsApiService {
       type: raw.type ?? raw.mimeType,
       size: raw.size,
       status: raw.status,
-      uploadedAt: raw.uploadedAt
+      uploadedAt: raw.uploadedAt,
+      hasOriginal: raw.hasOriginal ?? true,
+      hasSigned: raw.hasSigned ?? (raw.status === 'SIGNED'),
+      isSigned: raw.status === 'SIGNED'
     };
   }
 
@@ -49,6 +54,8 @@ export class DocumentsApiService {
       size: raw.size,
       status: raw.status,
       uploadedAt: raw.uploadedAt,
+      hasOriginal: raw.hasOriginal ?? true,
+      hasSigned: raw.hasSigned ?? (raw.status === 'SIGNED'),
       checksum: raw.checksum ?? '',
       version: raw.version ?? 1
     };
@@ -114,8 +121,9 @@ export class DocumentsApiService {
   /**
    * GET /api/v1/citizen/procedures/documents/{id}/download — Download a document as Blob.
    */
-  download(docId: string): Observable<Blob> {
+  download(docId: string, variant: DocumentVariant = 'CURRENT'): Observable<Blob> {
     return this.http.get(`${this.documentsBase}/${docId}/download`, {
+      params: { variant },
       responseType: 'blob'
     });
   }

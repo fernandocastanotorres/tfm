@@ -418,7 +418,7 @@ describe('DocumentsComponent', () => {
 
       component.downloadDocument('doc-1', 'test.pdf');
 
-      expect(documentsSpy.download).toHaveBeenCalledWith('doc-1');
+      expect(documentsSpy.download).toHaveBeenCalledWith('doc-1', 'CURRENT');
       expect(createObjectURLSpy).toHaveBeenCalled();
       expect(revokeObjectURLSpy).toHaveBeenCalled();
     });

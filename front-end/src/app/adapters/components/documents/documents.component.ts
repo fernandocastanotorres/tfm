@@ -333,14 +333,14 @@ export class DocumentsComponent implements OnInit, OnDestroy {
   }
 
   // Download handling
-  downloadDocument(docId: string, fileName: string): void {
+  downloadDocument(docId: string, fileName: string, variant: 'CURRENT' | 'ORIGINAL' | 'SIGNED' = 'CURRENT'): void {
     this.subscriptions.add(
-      this.documentsApiService.download(docId).subscribe({
+      this.documentsApiService.download(docId, variant).subscribe({
         next: (blob) => {
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = fileName;
+          a.download = variant === 'SIGNED' ? `signed-${fileName}` : fileName;
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
@@ -358,7 +358,7 @@ export class DocumentsComponent implements OnInit, OnDestroy {
     this.isSigning = true;
 
     this.subscriptions.add(
-      this.documentsApiService.download(docId).subscribe({
+      this.documentsApiService.download(docId, 'ORIGINAL').subscribe({
         next: (blob) => {
           const file = new File([blob], fileName, { type: blob.type });
           this.subscriptions.add(
@@ -399,7 +399,7 @@ export class DocumentsComponent implements OnInit, OnDestroy {
     this.isVerifying = true;
 
     this.subscriptions.add(
-      this.documentsApiService.download(docId).subscribe({
+      this.documentsApiService.download(docId, 'SIGNED').subscribe({
         next: (blob) => {
           const file = new File([blob], fileName, { type: blob.type });
           this.subscriptions.add(

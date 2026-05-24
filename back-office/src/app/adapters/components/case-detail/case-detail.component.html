@@ -129,7 +129,39 @@
 
     <!-- Data tab -->
     <div *ngIf="activeTab === 'data'" class="p-6">
-      <pre class="bg-gray-50 p-4 rounded text-sm overflow-auto max-h-96">{{ caseDetail!.formData | json }}</pre>
+      <div *ngIf="getFormDataEntries().length === 0" class="text-sm text-gray-500">
+        No hay datos del formulario para este expediente.
+      </div>
+
+      <div *ngIf="getFormDataEntries().length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div *ngFor="let entry of getFormDataEntries()" class="space-y-2">
+          <label class="block text-sm font-medium text-gray-700">{{ getFieldLabel(entry.key) }}</label>
+
+          <input
+            *ngIf="isSimpleValue(entry.value)"
+            type="text"
+            [value]="formatSimpleValue(entry.value)"
+            readonly
+            class="w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-700"
+          />
+
+          <div
+            *ngIf="isBooleanValue(entry.value)"
+            class="flex items-center gap-2 rounded-md border border-gray-300 bg-gray-50 px-3 py-2"
+          >
+            <input type="checkbox" [checked]="entry.value" disabled class="h-4 w-4" />
+            <span class="text-sm text-gray-700">{{ entry.value ? 'Si' : 'No' }}</span>
+          </div>
+
+          <textarea
+            *ngIf="!isSimpleValue(entry.value) && !isBooleanValue(entry.value)"
+            [value]="formatComplexValue(entry.value)"
+            readonly
+            rows="6"
+            class="w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-700 font-mono"
+          ></textarea>
+        </div>
+      </div>
     </div>
 
     <!-- Tasks tab -->

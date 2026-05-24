@@ -12,6 +12,8 @@ import {
   PagedResponse
 } from '../models/case.models';
 
+export type DocumentVariant = 'CURRENT' | 'ORIGINAL' | 'SIGNED';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -61,7 +63,10 @@ export class CasesApiService {
         type: attachment.type ?? attachment.mimeType,
         size: attachment.size,
         uploadedAt: attachment.uploadedAt,
-        signed: attachment.signed ?? false
+        signed: attachment.signed ?? false,
+        hasOriginal: attachment.hasOriginal ?? true,
+        hasSigned: attachment.hasSigned ?? (attachment.signed ?? false),
+        csvCode: attachment.csvCode ?? null
       })),
       procedureTypeId: raw.procedureTypeId ?? '',
       formData: raw.formData ?? null
@@ -127,7 +132,10 @@ export class CasesApiService {
         type: doc.mimeType ?? doc.type ?? 'application/octet-stream',
         size: doc.size ?? 0,
         uploadedAt: doc.uploadedAt ?? doc.createdAt ?? new Date().toISOString(),
-        signed: doc.signed ?? false
+        signed: doc.signed ?? false,
+        hasOriginal: doc.hasOriginal ?? true,
+        hasSigned: doc.hasSigned ?? (doc.signed ?? false),
+        csvCode: doc.csvCode ?? null
       })))
     );
   }
@@ -138,8 +146,11 @@ export class CasesApiService {
     return this.http.post<void>(`${this.baseUrl}/${caseId}/documents`, formData);
   }
 
-  downloadDocument(documentId: string): Observable<Blob> {
-    return this.http.get(`${this.baseUrl}/documents/${documentId}/download`, { responseType: 'blob' });
+  downloadDocument(documentId: string, variant: DocumentVariant = 'CURRENT'): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/documents/${documentId}/download`, {
+      params: { variant },
+      responseType: 'blob'
+    });
   }
 
   downloadReceipt(caseId: string): Observable<Blob> {

@@ -4,6 +4,7 @@ import es.tfg.records.application.dto.BackofficeDtos;
 import es.tfg.records.application.dto.PublicContentDtos;
 import es.tfg.records.application.dto.TransparencyDtos;
 import es.tfg.records.application.service.BackofficeService;
+import es.tfg.records.application.service.DocumentDownloadVariant;
 import es.tfg.records.application.service.DocumentService;
 import es.tfg.records.application.service.EniMetadataService;
 import es.tfg.records.application.service.PublicContentService;
@@ -445,8 +446,10 @@ public class BackofficeController {
 
     @GetMapping("/procedures/documents/{id}/download")
     @Operation(summary = "Download case document (admin)", description = "Download a document attached to any case, accessible by backoffice users")
-    public ResponseEntity<Resource> downloadDocument(@PathVariable UUID id) {
-        Resource resource = documentService.downloadDocumentForAdmin(id);
+    public ResponseEntity<Resource> downloadDocument(
+            @PathVariable UUID id,
+            @RequestParam(name = "variant", defaultValue = "CURRENT") DocumentDownloadVariant variant) {
+        Resource resource = documentService.downloadDocumentForAdmin(id, variant);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .header(HttpHeaders.CONTENT_TYPE, "application/octet-stream")

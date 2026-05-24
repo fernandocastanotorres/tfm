@@ -32,6 +32,7 @@ public final class BackofficeDtos {
 
     public record AdminCaseDetail(
             UUID id,
+            UUID procedureTypeId,
             String procedureType,
             String status,
             Instant createdAt,

@@ -30,6 +30,7 @@ export interface CaseItem {
 
 export interface CaseDetail {
   id: string;
+  procedureTypeId: string;
   procedureType: string;
   status: string;
   createdAt: string;

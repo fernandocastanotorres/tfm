@@ -30,6 +30,7 @@ import { GlossaryComponent } from './adapters/components/glossary/glossary.compo
 import { AccessibilityStatementComponent } from './adapters/components/accessibility-statement/accessibility-statement.component';
 import { SitemapComponent } from './adapters/components/sitemap/sitemap.component';
 import { ContactInboxComponent } from './adapters/components/contact-inbox/contact-inbox.component';
+import { DocumentVerificationComponent } from './adapters/components/document-verification/document-verification.component';
 import { authGuard } from './application/guards/auth.guard';
 
 const routes: Routes = [
@@ -50,6 +51,7 @@ const routes: Routes = [
       { path: 'glosario', component: GlossaryComponent, title: 'Glosario de Terminos' },
       { path: 'accesibilidad', component: AccessibilityStatementComponent, title: 'Declaracion de Accesibilidad' },
       { path: 'mapa', component: SitemapComponent, title: 'Mapa Web' },
+      { path: 'validar-documento', component: DocumentVerificationComponent, title: 'Validar documento' },
       { path: 'procedimientos', component: ProceduresComponent, title: 'Procedimientos' },
       { path: 'procedimientos/:procedureId/flujo', component: ProcedureFlowComponent, title: 'Flujo del Procedimiento' },
       { path: 'citas', component: AppointmentsComponent, title: 'Citas' },

@@ -3,6 +3,7 @@ package es.tfg.records.entrypoints.controller;
 import es.tfg.records.application.dto.DocumentDetail;
 import es.tfg.records.application.dto.DocumentItem;
 import es.tfg.records.application.dto.ErrorResponse;
+import es.tfg.records.application.service.DocumentDownloadVariant;
 import es.tfg.records.application.service.DocumentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -135,10 +136,11 @@ public class DocumentController {
     public ResponseEntity<Resource> downloadDocument(
             Authentication authentication,
             @Parameter(description = "Document UUID", required = true)
-            @PathVariable("id") UUID id) {
+            @PathVariable("id") UUID id,
+            @RequestParam(name = "variant", defaultValue = "CURRENT") DocumentDownloadVariant variant) {
 
         UUID ownerId = extractUserId(authentication);
-        Resource resource = documentService.downloadDocument(id, ownerId);
+        Resource resource = documentService.downloadDocument(id, ownerId, variant);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)

@@ -50,6 +50,8 @@ public class SecurityConfig {
             "/auth/refresh",
             "/auth/logout",
             "/citizen/contact",
+            "/public/signatures/verify-file",
+            "/public/signatures/verify-csv/**",
             "/health/live",
             "/health/ready",
             "/actuator/health"

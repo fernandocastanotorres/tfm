@@ -53,6 +53,7 @@ public class CaseServiceImpl implements CaseService {
     private final CaseTimelineEventJpaRepository timelineRepository;
     private final EniMetadataService eniMetadataService;
     private final SignatureService signatureService;
+    private final PublicSignatureVerificationService publicSignatureVerificationService;
     private final FileStorageService fileStorageService;
     private final WorkflowService workflowService;
 
@@ -62,6 +63,7 @@ public class CaseServiceImpl implements CaseService {
                            CaseTimelineEventJpaRepository timelineRepository,
                            EniMetadataService eniMetadataService,
                            SignatureService signatureService,
+                           PublicSignatureVerificationService publicSignatureVerificationService,
                            FileStorageService fileStorageService,
                            WorkflowService workflowService) {
         this.procedureRepository = procedureRepository;
@@ -70,6 +72,7 @@ public class CaseServiceImpl implements CaseService {
         this.timelineRepository = timelineRepository;
         this.eniMetadataService = eniMetadataService;
         this.signatureService = signatureService;
+        this.publicSignatureVerificationService = publicSignatureVerificationService;
         this.fileStorageService = fileStorageService;
         this.workflowService = workflowService;
     }
@@ -107,7 +110,10 @@ public class CaseServiceImpl implements CaseService {
                         document.getSize(),
                         "Ciudadano",
                         document.getUploadedAt(),
-                        document.getStatus() == DocumentStatus.SIGNED))
+                        document.getStatus() == DocumentStatus.SIGNED,
+                        document.getOriginalStoragePath() != null,
+                        document.getSignedStoragePath() != null,
+                        publicSignatureVerificationService.findCsvCodeByDocumentId(document.getId())))
                 .toList();
 
         List<CaseTimelineEventDto> timeline = buildTimeline(procedure);
@@ -215,24 +221,43 @@ public class CaseServiceImpl implements CaseService {
 
         for (Document doc : pendingDocs) {
             try {
+                if (doc.getSignedStoragePath() != null) {
+                    continue;
+                }
+
+                if (doc.getOriginalStoragePath() == null) {
+                    doc.setOriginalStoragePath(doc.getStoragePath());
+                }
+                if (doc.getOriginalMimeType() == null) {
+                    doc.setOriginalMimeType(doc.getMimeType());
+                }
+                if (doc.getOriginalSize() == null) {
+                    doc.setOriginalSize(doc.getSize());
+                }
+
                 byte[] originalContent;
-                try (InputStream is = fileStorageService.openStream(caseId, doc.getStoragePath())) {
+                String sourcePath = doc.getOriginalStoragePath() != null ? doc.getOriginalStoragePath() : doc.getStoragePath();
+                try (InputStream is = fileStorageService.openStream(caseId, sourcePath)) {
                     originalContent = is.readAllBytes();
                 }
 
-                byte[] signedContent = signatureService.signDocument(originalContent, doc.getMimeType());
+                byte[] signedContent = signatureService.signDocument(originalContent,
+                        doc.getOriginalMimeType() != null ? doc.getOriginalMimeType() : doc.getMimeType());
+                String signedStoragePath = fileStorageService.storeBytes(caseId, "pdf", signedContent);
 
                 String newName = doc.getName().endsWith(".pdf") ? doc.getName() : doc.getName() + ".pdf";
-                if (!newName.equals(doc.getName())) {
-                    doc.setName(newName);
-                    doc.setMimeType("application/pdf");
-                }
-
-                fileStorageService.writeBytes(caseId, doc.getStoragePath(), signedContent);
+                doc.setName(newName);
+                doc.setStoragePath(signedStoragePath);
+                doc.setMimeType("application/pdf");
+                doc.setSignedStoragePath(signedStoragePath);
+                doc.setSignedMimeType("application/pdf");
+                doc.setSignedSize((long) signedContent.length);
+                doc.setSignedAt(Instant.now());
 
                 doc.setStatus(DocumentStatus.SIGNED);
                 doc.setSize((long) signedContent.length);
                 documentRepository.save(doc);
+                publicSignatureVerificationService.registerSignedDocument(doc, signedContent);
 
                 log.info("Document {} signed successfully for case: {}", doc.getId(), caseId);
             } catch (Exception e) {

@@ -26,7 +26,14 @@ public final class DocumentEntityMapper {
         document.setVersion(entity.getVersion());
         document.setStatus(entity.getStatus());
         document.setStoragePath(entity.getStoragePath());
+        document.setOriginalStoragePath(entity.getOriginalStoragePath());
+        document.setSignedStoragePath(entity.getSignedStoragePath());
+        document.setOriginalMimeType(entity.getOriginalMimeType());
+        document.setSignedMimeType(entity.getSignedMimeType());
+        document.setOriginalSize(entity.getOriginalSize());
+        document.setSignedSize(entity.getSignedSize());
         document.setUploadedAt(entity.getUploadedAt());
+        document.setSignedAt(entity.getSignedAt());
         document.setCreatedAt(entity.getCreatedAt());
         document.setUpdatedAt(entity.getUpdatedAt());
         return document;
@@ -43,7 +50,14 @@ public final class DocumentEntityMapper {
         entity.setVersion(domain.getVersion());
         entity.setStatus(domain.getStatus() != null ? domain.getStatus() : DocumentStatus.PENDING);
         entity.setStoragePath(domain.getStoragePath());
+        entity.setOriginalStoragePath(domain.getOriginalStoragePath());
+        entity.setSignedStoragePath(domain.getSignedStoragePath());
+        entity.setOriginalMimeType(domain.getOriginalMimeType());
+        entity.setSignedMimeType(domain.getSignedMimeType());
+        entity.setOriginalSize(domain.getOriginalSize());
+        entity.setSignedSize(domain.getSignedSize());
         entity.setUploadedAt(domain.getUploadedAt());
+        entity.setSignedAt(domain.getSignedAt());
         return entity;
     }
 

@@ -44,8 +44,29 @@ public class DocumentEntity {
     @Column(name = "storage_path", nullable = false, length = 500)
     private String storagePath;
 
+    @Column(name = "original_storage_path", length = 500)
+    private String originalStoragePath;
+
+    @Column(name = "signed_storage_path", length = 500)
+    private String signedStoragePath;
+
+    @Column(name = "original_mime_type", length = 100)
+    private String originalMimeType;
+
+    @Column(name = "signed_mime_type", length = 100)
+    private String signedMimeType;
+
+    @Column(name = "original_size")
+    private Long originalSize;
+
+    @Column(name = "signed_size")
+    private Long signedSize;
+
     @Column(name = "uploaded_at", nullable = false)
     private Instant uploadedAt;
+
+    @Column(name = "signed_at")
+    private Instant signedAt;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -122,12 +143,68 @@ public class DocumentEntity {
         this.storagePath = storagePath;
     }
 
+    public String getOriginalStoragePath() {
+        return originalStoragePath;
+    }
+
+    public void setOriginalStoragePath(String originalStoragePath) {
+        this.originalStoragePath = originalStoragePath;
+    }
+
+    public String getSignedStoragePath() {
+        return signedStoragePath;
+    }
+
+    public void setSignedStoragePath(String signedStoragePath) {
+        this.signedStoragePath = signedStoragePath;
+    }
+
+    public String getOriginalMimeType() {
+        return originalMimeType;
+    }
+
+    public void setOriginalMimeType(String originalMimeType) {
+        this.originalMimeType = originalMimeType;
+    }
+
+    public String getSignedMimeType() {
+        return signedMimeType;
+    }
+
+    public void setSignedMimeType(String signedMimeType) {
+        this.signedMimeType = signedMimeType;
+    }
+
+    public Long getOriginalSize() {
+        return originalSize;
+    }
+
+    public void setOriginalSize(Long originalSize) {
+        this.originalSize = originalSize;
+    }
+
+    public Long getSignedSize() {
+        return signedSize;
+    }
+
+    public void setSignedSize(Long signedSize) {
+        this.signedSize = signedSize;
+    }
+
     public Instant getUploadedAt() {
         return uploadedAt;
     }
 
     public void setUploadedAt(Instant uploadedAt) {
         this.uploadedAt = uploadedAt;
+    }
+
+    public Instant getSignedAt() {
+        return signedAt;
+    }
+
+    public void setSignedAt(Instant signedAt) {
+        this.signedAt = signedAt;
     }
 
     public Instant getCreatedAt() {

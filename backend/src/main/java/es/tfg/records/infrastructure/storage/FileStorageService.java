@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -138,6 +139,37 @@ public class FileStorageService {
         } catch (IOException e) {
             throw new ConflictException("STORAGE", "Could not write file: " + storedFilename);
         }
+    }
+
+    public String storeBytes(UUID caseId, String extension, byte[] content) {
+        Path caseDirectory = baseDirectory.resolve(caseId.toString()).normalize();
+
+        if (!caseDirectory.startsWith(baseDirectory)) {
+            throw new ConflictException("STORAGE", "Invalid case directory path");
+        }
+
+        try {
+            Files.createDirectories(caseDirectory);
+        } catch (IOException e) {
+            throw new ConflictException("STORAGE", "Could not create case directory: " + caseDirectory);
+        }
+
+        String safeExtension = extension == null || extension.isBlank() ? "" : (extension.startsWith(".") ? extension : "." + extension);
+        String storedFilename = UUID.randomUUID() + safeExtension;
+        Path targetPath = caseDirectory.resolve(storedFilename).normalize();
+
+        if (!targetPath.startsWith(baseDirectory)) {
+            throw new ConflictException("STORAGE", "Invalid file storage path");
+        }
+
+        try {
+            Files.write(targetPath, content, StandardOpenOption.CREATE_NEW);
+            log.debug("Stored raw bytes file: {} in case: {} ({} bytes)", storedFilename, caseId, content.length);
+        } catch (IOException e) {
+            throw new ConflictException("STORAGE", "Could not store file: " + storedFilename);
+        }
+
+        return storedFilename;
     }
 
     /**

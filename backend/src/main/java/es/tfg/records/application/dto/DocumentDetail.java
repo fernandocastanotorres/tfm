@@ -25,6 +25,10 @@ public record DocumentDetail(
         Instant uploadedAt,
         @Schema(description = "Document status", example = "VALIDATED")
         String status,
+        @Schema(description = "Whether original upload artifact is available", example = "true")
+        boolean hasOriginal,
+        @Schema(description = "Whether signed artifact is available", example = "true")
+        boolean hasSigned,
         @Schema(description = "Associated case ID")
         UUID caseId,
         @Schema(description = "Version history")

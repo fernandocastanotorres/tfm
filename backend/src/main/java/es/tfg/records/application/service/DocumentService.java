@@ -26,10 +26,10 @@ public interface DocumentService {
      * The Resource is backed by an InputStream that reads the file in chunks,
      * avoiding loading the entire file into memory.
      */
-    Resource downloadDocument(UUID documentId, UUID ownerId);
+    Resource downloadDocument(UUID documentId, UUID ownerId, DocumentDownloadVariant variant);
 
     /**
      * Returns a streaming Resource for downloading a document (admin access, no ownership check).
      */
-    Resource downloadDocumentForAdmin(UUID documentId);
+    Resource downloadDocumentForAdmin(UUID documentId, DocumentDownloadVariant variant);
 }

@@ -104,13 +104,13 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  downloadDocument(documentId: string, filename: string): void {
-    this.casesApiService.downloadDocument(documentId).subscribe({
+  downloadDocument(documentId: string, filename: string, variant: 'CURRENT' | 'ORIGINAL' | 'SIGNED' = 'CURRENT'): void {
+    this.casesApiService.downloadDocument(documentId, variant).subscribe({
       next: (blob) => {
         const objectUrl = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = objectUrl;
-        link.download = filename || 'documento';
+        link.download = variant === 'SIGNED' ? `signed-${filename || 'documento'}` : (filename || 'documento');
         link.click();
         URL.revokeObjectURL(objectUrl);
       },

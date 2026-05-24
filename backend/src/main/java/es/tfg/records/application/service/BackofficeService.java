@@ -31,6 +31,7 @@ import es.tfg.records.infrastructure.persistence.entity.UserEntity;
 import es.tfg.records.infrastructure.persistence.entity.CaseTimelineEventEntity;
 import es.tfg.records.infrastructure.persistence.repository.CaseTimelineEventJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.DocumentJpaRepository;
+import es.tfg.records.infrastructure.persistence.repository.DocumentVerificationJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureTypeI18nJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureTaskFieldI18nJpaRepository;
@@ -108,6 +109,7 @@ public class BackofficeService {
     private final ProcedureTaskFieldI18nJpaRepository fieldI18nRepository;
     private final ProcedureTaskJpaRepository taskRepository;
     private final DocumentJpaRepository documentRepository;
+    private final DocumentVerificationJpaRepository documentVerificationRepository;
     private final CaseTimelineEventJpaRepository timelineRepository;
     private final UserJpaRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -121,9 +123,10 @@ public class BackofficeService {
                               ProcedureTypeJpaRepository procedureTypeRepository,
                                ProcedureTypeI18nJpaRepository procedureTypeI18nRepository,
                                ProcedureTaskFieldI18nJpaRepository fieldI18nRepository,
-                               ProcedureTaskJpaRepository taskRepository,
-                               DocumentJpaRepository documentRepository,
-                               CaseTimelineEventJpaRepository timelineRepository,
+                                ProcedureTaskJpaRepository taskRepository,
+                                DocumentJpaRepository documentRepository,
+                                DocumentVerificationJpaRepository documentVerificationRepository,
+                                CaseTimelineEventJpaRepository timelineRepository,
                                 UserJpaRepository userRepository,
                                 PasswordEncoder passwordEncoder,
                                 ObjectMapper objectMapper,
@@ -137,6 +140,7 @@ public class BackofficeService {
         this.fieldI18nRepository = fieldI18nRepository;
         this.taskRepository = taskRepository;
         this.documentRepository = documentRepository;
+        this.documentVerificationRepository = documentVerificationRepository;
         this.timelineRepository = timelineRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -176,10 +180,14 @@ public class BackofficeService {
                         doc.getSize(),
                         uploader,
                         doc.getUploadedAt(),
-                        "SIGNED".equals(doc.getStatus())))
+                        "SIGNED".equals(doc.getStatus()),
+                        doc.getOriginalStoragePath() != null,
+                        doc.getSignedStoragePath() != null,
+                        documentVerificationRepository.findByDocumentId(doc.getId()).map(v -> v.getCsvCode()).orElse(null)))
                 .toList();
         return new BackofficeDtos.AdminCaseDetail(
                 procedure.getId(),
+                procedure.getProcedureTypeId(),
                 typeTitle(type),
                 procedure.getStatus().name(),
                 procedure.getCreatedAt(),

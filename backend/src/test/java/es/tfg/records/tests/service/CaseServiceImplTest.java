@@ -5,6 +5,7 @@ import es.tfg.records.application.dto.CaseItem;
 import es.tfg.records.application.dto.CaseStatusResponse;
 import es.tfg.records.application.dto.CreateCaseRequest;
 import es.tfg.records.application.dto.PagedResponse;
+import es.tfg.records.application.dto.WorkflowDtos;
 import es.tfg.records.application.exception.AccessDeniedException;
 import es.tfg.records.application.exception.ConflictException;
 import es.tfg.records.application.exception.InvalidProcedureException;
@@ -12,6 +13,9 @@ import es.tfg.records.application.exception.ResourceNotFoundException;
 import es.tfg.records.application.exception.ValidationException;
 import es.tfg.records.application.service.CaseServiceImpl;
 import es.tfg.records.application.service.EniMetadataService;
+import es.tfg.records.application.service.PublicSignatureVerificationService;
+import es.tfg.records.application.service.SignatureService;
+import es.tfg.records.application.service.WorkflowService;
 import es.tfg.records.domain.model.CaseStatus;
 import es.tfg.records.domain.model.Procedure;
 import es.tfg.records.domain.model.ProcedureType;
@@ -52,6 +56,15 @@ class CaseServiceImplTest {
 
     @Mock
     private CaseTimelineEventJpaRepository timelineRepository;
+
+    @Mock
+    private SignatureService signatureService;
+
+    @Mock
+    private PublicSignatureVerificationService publicSignatureVerificationService;
+
+    @Mock
+    private WorkflowService workflowService;
 
     @InjectMocks
     private CaseServiceImpl caseService;
@@ -184,6 +197,18 @@ class CaseServiceImplTest {
 
         when(procedureRepository.findById(caseId)).thenReturn(Optional.of(procedure));
         when(procedureRepository.save(any(Procedure.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        ProcedureType procedureType = new ProcedureType();
+        procedureType.setId(procedureTypeId);
+        procedureType.setProcessKey("simpleCitizenProcedure");
+        when(procedureTypeRepository.findById(procedureTypeId)).thenReturn(Optional.of(procedureType));
+        when(workflowService.startProcess(any())).thenReturn(new WorkflowDtos.ProcessInstanceResponse(
+                "proc-1",
+                "def-1",
+                "simpleCitizenProcedure",
+                caseId.toString(),
+                ownerId.toString(),
+                java.time.Instant.now(),
+                false));
 
         // When
         var result = caseService.submitCase(caseId, ownerId);

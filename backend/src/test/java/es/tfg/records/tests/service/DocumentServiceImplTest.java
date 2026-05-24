@@ -3,6 +3,8 @@ package es.tfg.records.tests.service;
 import es.tfg.records.application.dto.DocumentItem;
 import es.tfg.records.application.service.EniMetadataService;
 import es.tfg.records.application.service.DocumentServiceImpl;
+import es.tfg.records.application.service.PublicSignatureVerificationService;
+import es.tfg.records.application.service.SignatureService;
 import es.tfg.records.domain.model.CaseStatus;
 import es.tfg.records.domain.model.Document;
 import es.tfg.records.domain.model.DocumentStatus;
@@ -41,6 +43,12 @@ class DocumentServiceImplTest {
 
     @Mock
     private EniMetadataService eniMetadataService;
+
+    @Mock
+    private SignatureService signatureService;
+
+    @Mock
+    private PublicSignatureVerificationService publicSignatureVerificationService;
 
     @InjectMocks
     private DocumentServiceImpl documentService;

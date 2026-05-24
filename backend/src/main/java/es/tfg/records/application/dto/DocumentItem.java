@@ -24,6 +24,10 @@ public record DocumentItem(
         Instant uploadedAt,
         @Schema(description = "Document status", example = "PENDING", allowableValues = {"PENDING", "SIGNED", "VALIDATED", "REJECTED"})
         String status,
+        @Schema(description = "Whether original upload artifact is available", example = "true")
+        boolean hasOriginal,
+        @Schema(description = "Whether signed artifact is available", example = "true")
+        boolean hasSigned,
         @Schema(description = "Associated case ID")
         UUID caseId
 ) {}

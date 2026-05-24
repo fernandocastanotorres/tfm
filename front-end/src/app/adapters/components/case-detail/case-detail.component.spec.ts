@@ -391,7 +391,7 @@ describe('CaseDetailComponent', () => {
       casesApiService.downloadDocument.and.returnValue(of(mockBlob));
       component.downloadDocument('doc-1', 'test.pdf');
       tick();
-      expect(casesApiService.downloadDocument).toHaveBeenCalledWith('doc-1');
+      expect(casesApiService.downloadDocument).toHaveBeenCalledWith('doc-1', 'CURRENT');
       discardPeriodicTasks();
     }));
   });

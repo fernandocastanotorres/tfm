@@ -1,0 +1,36 @@
+<main class="min-h-screen bg-surface-50 px-6 py-10">
+  <section class="mx-auto max-w-4xl space-y-6">
+    <header class="card p-6">
+      <h1 class="text-2xl font-semibold text-surface-900">Validacion de documentos firmados</h1>
+      <p class="mt-2 text-surface-600">Puede validar por fichero firmado o por CSV.</p>
+    </header>
+
+    <article class="card p-6 space-y-4">
+      <h2 class="text-lg font-semibold text-surface-900">Validar por fichero</h2>
+      <input type="file" accept="application/pdf" (change)="verifyFile($any($event.target).files)" />
+      <p *ngIf="isVerifyingFile" class="text-surface-600">Validando fichero...</p>
+      <div *ngIf="fileVerificationResult" class="rounded border p-3" [ngClass]="fileVerificationResult.valid ? 'border-green-300 bg-green-50' : 'border-red-300 bg-red-50'">
+        <p class="font-semibold">{{ fileVerificationResult.valid ? 'Firma valida' : 'Firma no valida' }}</p>
+        <p class="text-sm">{{ fileVerificationResult.message }}</p>
+      </div>
+    </article>
+
+    <article class="card p-6 space-y-4">
+      <h2 class="text-lg font-semibold text-surface-900">Validar por CSV</h2>
+      <div class="flex flex-wrap gap-3">
+        <input class="field-input w-80" type="text" [(ngModel)]="csvCode" placeholder="Introduzca codigo CSV" />
+        <button class="btn-primary bg-brand-500 text-white hover:bg-brand-600" type="button" (click)="verifyCsv()" [disabled]="isVerifyingCsv">Validar CSV</button>
+      </div>
+      <p *ngIf="isVerifyingCsv" class="text-surface-600">Consultando CSV...</p>
+      <div *ngIf="csvVerificationResult" class="rounded border border-green-300 bg-green-50 p-3">
+        <p class="font-semibold">{{ csvVerificationResult.message }}</p>
+        <p class="text-sm">CSV: {{ csvVerificationResult.csvCode }}</p>
+        <p class="text-sm">Expediente: {{ csvVerificationResult.caseId }}</p>
+        <p class="text-sm">Documento: {{ csvVerificationResult.documentId }}</p>
+        <p class="text-sm">Firma: {{ csvVerificationResult.signedAt | date:'dd/MM/yyyy HH:mm:ss' }}</p>
+      </div>
+    </article>
+
+    <p *ngIf="errorMessage" class="text-sm text-red-600">{{ errorMessage }}</p>
+  </section>
+</main>

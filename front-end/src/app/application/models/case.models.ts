@@ -28,6 +28,9 @@ export interface CaseAttachment {
   size: number;
   uploadedAt: string;
   signed: boolean;
+  hasOriginal?: boolean;
+  hasSigned?: boolean;
+  csvCode?: string | null;
 }
 
 export interface CaseDetail {
