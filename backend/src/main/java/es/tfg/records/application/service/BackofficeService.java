@@ -72,6 +72,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -701,8 +703,25 @@ public class BackofficeService {
         try {
             return objectMapper.readValue(formData, new TypeReference<>() {});
         } catch (Exception ignored) {
+            Map<String, Object> legacy = parseHashMapFormat(formData);
+            if (!legacy.isEmpty()) {
+                return legacy;
+            }
             return Map.of("raw", formData);
         }
+    }
+
+    private Map<String, Object> parseHashMapFormat(String raw) {
+        Map<String, Object> result = new LinkedHashMap<>();
+        String content = raw.trim();
+        if (!content.startsWith("{") || !content.endsWith("}")) return result;
+        content = content.substring(1, content.length() - 1);
+        Pattern pattern = Pattern.compile("([^=]+)=(\\[.*?\\]|[^,]+)(?:,\\s*|$)");
+        Matcher matcher = pattern.matcher(content);
+        while (matcher.find()) {
+            result.put(matcher.group(1).trim(), matcher.group(2).trim());
+        }
+        return result;
     }
 
     private List<CaseTimelineEventDto> defaultTimeline(ProcedureEntity procedure) {

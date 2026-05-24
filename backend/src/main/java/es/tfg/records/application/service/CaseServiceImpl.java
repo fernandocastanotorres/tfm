@@ -17,6 +17,8 @@ import es.tfg.records.domain.port.DocumentRepository;
 import es.tfg.records.infrastructure.persistence.entity.CaseTimelineEventEntity;
 import es.tfg.records.infrastructure.persistence.repository.CaseTimelineEventJpaRepository;
 import es.tfg.records.infrastructure.storage.FileStorageService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.Paragraph;
@@ -61,6 +63,7 @@ public class CaseServiceImpl implements CaseService {
     private final PublicSignatureVerificationService publicSignatureVerificationService;
     private final FileStorageService fileStorageService;
     private final WorkflowService workflowService;
+    private final ObjectMapper objectMapper;
     private final String publicSedeBaseUrl;
 
     public CaseServiceImpl(ProcedureRepository procedureRepository,
@@ -72,6 +75,7 @@ public class CaseServiceImpl implements CaseService {
                            PublicSignatureVerificationService publicSignatureVerificationService,
                            FileStorageService fileStorageService,
                            WorkflowService workflowService,
+                           ObjectMapper objectMapper,
                            @Value("${app.public-sede-base-url:http://localhost:4200/sede}") String publicSedeBaseUrl) {
         this.procedureRepository = procedureRepository;
         this.procedureTypeRepository = procedureTypeRepository;
@@ -82,6 +86,7 @@ public class CaseServiceImpl implements CaseService {
         this.publicSignatureVerificationService = publicSignatureVerificationService;
         this.fileStorageService = fileStorageService;
         this.workflowService = workflowService;
+        this.objectMapper = objectMapper;
         this.publicSedeBaseUrl = publicSedeBaseUrl;
     }
 
@@ -427,34 +432,37 @@ public class CaseServiceImpl implements CaseService {
     }
 
     private String serializeFormData(Map<String, Object> formData) {
-        // Simple JSON serialization — in production, use Jackson ObjectMapper
-        return formData.toString();
+        try {
+            return objectMapper.writeValueAsString(formData);
+        } catch (Exception e) {
+            log.warn("Failed to serialize formData as JSON, falling back to toString: {}", e.getMessage());
+            return formData.toString();
+        }
     }
 
-    @SuppressWarnings("unchecked")
     private Map<String, Object> deserializeFormData(String raw) {
-        // Inverse of serializeFormData: converts "{key1=value1, key2=value2}" back to a Map
-        Map<String, Object> result = new LinkedHashMap<>();
         if (raw == null || raw.isBlank()) {
-            return result;
+            return new LinkedHashMap<>();
         }
+        // Try proper JSON first (new data)
+        try {
+            return objectMapper.readValue(raw, new TypeReference<>() {});
+        } catch (Exception ignored) {
+            // Fallback: parse legacy HashMap.toString() format
+        }
+        return parseHashMapFormat(raw);
+    }
 
-        // Remove surrounding braces
+    private Map<String, Object> parseHashMapFormat(String raw) {
+        Map<String, Object> result = new LinkedHashMap<>();
         String content = raw.trim();
-        if (content.startsWith("{")) {
-            content = content.substring(1);
-        }
-        if (content.endsWith("}")) {
-            content = content.substring(0, content.length() - 1);
-        }
-
-        // Simple split by ", " — works for flat string values without commas
+        if (content.startsWith("{")) content = content.substring(1);
+        if (content.endsWith("}")) content = content.substring(0, content.length() - 1);
         Pattern pattern = Pattern.compile("([^=]+)=([^,]+)(?:,\\s*|$)");
         Matcher matcher = pattern.matcher(content);
         while (matcher.find()) {
             result.put(matcher.group(1).trim(), matcher.group(2).trim());
         }
-
         return result;
     }
 
