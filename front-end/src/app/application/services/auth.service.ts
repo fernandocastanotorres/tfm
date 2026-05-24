@@ -52,6 +52,14 @@ export class AuthService {
     return this.http.get<void>(`${this.apiUrl}/auth/verify-email`, { params: { token } });
   }
 
+  forgotPassword(email: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/auth/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/auth/reset-password`, { token, newPassword });
+  }
+
   resendVerificationEmail(email: string): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/auth/resend-verification`, { email });
   }
@@ -81,11 +89,11 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
+    return sessionStorage.getItem(this.tokenKey);
   }
 
   getRefreshToken(): string | null {
-    return localStorage.getItem(this.refreshKey);
+    return sessionStorage.getItem(this.refreshKey);
   }
 
   getAuthenticatedUserLabel(): string | null {
@@ -129,15 +137,15 @@ export class AuthService {
   }
 
   private storeTokens(accessToken: string, refreshToken: string): void {
-    localStorage.setItem(this.tokenKey, accessToken);
-    localStorage.setItem(this.refreshKey, refreshToken);
-    localStorage.setItem(this.storageKey, 'true');
+    sessionStorage.setItem(this.tokenKey, accessToken);
+    sessionStorage.setItem(this.refreshKey, refreshToken);
+    sessionStorage.setItem(this.storageKey, 'true');
   }
 
   private clearTokens(): void {
-    localStorage.removeItem(this.tokenKey);
-    localStorage.removeItem(this.refreshKey);
-    localStorage.removeItem(this.storageKey);
+    sessionStorage.removeItem(this.tokenKey);
+    sessionStorage.removeItem(this.refreshKey);
+    sessionStorage.removeItem(this.storageKey);
   }
 
   private isTokenExpired(token: string): boolean {

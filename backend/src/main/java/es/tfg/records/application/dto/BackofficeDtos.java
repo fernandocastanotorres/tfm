@@ -1,5 +1,7 @@
 package es.tfg.records.application.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Instant;
@@ -150,14 +152,14 @@ public final class BackofficeDtos {
     ) {}
 
     public record CreateUserRequest(
-            String email,
-            String password,
+            @NotBlank String email,
+            @NotBlank String password,
             List<String> roles,
             boolean isActive
     ) {}
 
     public record UpdateUserRequest(
-            String email,
+            @NotBlank String email,
             List<String> roles,
             boolean isActive
     ) {}
@@ -181,12 +183,12 @@ public final class BackofficeDtos {
     ) {}
 
     public record ProcedureRequest(
-            String title,
+            @NotBlank String title,
             String description,
-            String category,
-            String status,
+            @NotNull String category,
+            @NotNull String status,
             String processKey,
-            String assignedUnit,
+            @NotNull String assignedUnit,
             int deadlineDays,
             BigDecimal feeAmount,
             List<ProcedureTaskConfig> tasks,

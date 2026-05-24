@@ -58,10 +58,8 @@ export class FieldI18nManagementComponent implements OnInit {
     if (!this.procedure) return;
     this.isLoading = true;
     this.editMap.clear();
-    console.log('[FieldI18n] Loading for procedure:', this.procedure.id);
     this.procedureService.listFieldTranslations(this.procedure.id).subscribe({
       next: (groups) => {
-        console.log('[FieldI18n] Received groups:', groups.length, JSON.stringify(groups).substring(0, 200));
         this.groups = groups;
         this.indexEntries(groups);
         this.applyLocaleFilter();

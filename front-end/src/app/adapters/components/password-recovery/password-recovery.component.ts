@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { OtpService } from '../../../application/services/otp.service';
-import { Router } from '@angular/router';
+import { AuthService } from '../../../application/services/auth.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -9,14 +9,9 @@ import { TranslateService } from '@ngx-translate/core';
     templateUrl: './password-recovery.component.html',
     standalone: false
 })
-export class PasswordRecoveryComponent {
+export class PasswordRecoveryComponent implements OnInit {
   readonly requestForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    nationalId: ['', [Validators.required, Validators.pattern('^[0-9]{8}[A-Za-z]$|^[XYZ][0-9]{7}[A-Za-z]$')]]
-  });
-
-  readonly otpForm = this.fb.group({
-    otp: ['', [Validators.required, Validators.pattern('^[0-9]{6}$')]]
+    email: ['', [Validators.required, Validators.email]]
   });
 
   readonly resetForm = this.fb.group({
@@ -24,57 +19,71 @@ export class PasswordRecoveryComponent {
     confirmPassword: ['', [Validators.required]]
   }, { validators: [PasswordRecoveryComponent.passwordsMatch] });
 
-  step: 'request' | 'verify' | 'reset' | 'done' = 'request';
+  step: 'request' | 'reset' | 'done' = 'request';
+  isSubmitting = false;
   helperMessageKey = '';
   errorMessageKey = '';
+  private resetToken: string | null = null;
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly otpService: OtpService,
+    private readonly authService: AuthService,
+    private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly translate: TranslateService
   ) {}
 
-  requestOtp(): void {
+  ngOnInit(): void {
+    const token = this.route.snapshot.queryParamMap.get('token');
+    if (token) {
+      this.resetToken = token;
+      this.step = 'reset';
+    }
+  }
+
+  requestReset(): void {
     this.errorMessageKey = '';
     if (this.requestForm.invalid) {
       this.requestForm.markAllAsTouched();
       return;
     }
 
+    this.isSubmitting = true;
     const { email } = this.requestForm.value;
-    const code = this.otpService.generateOtp(email as string);
-    this.helperMessageKey = 'RECOVERY.OTP_SENT';
-    this.step = 'verify';
-  }
-
-  verifyOtp(): void {
-    this.errorMessageKey = '';
-    if (this.otpForm.invalid) {
-      this.otpForm.markAllAsTouched();
-      return;
-    }
-
-    const { otp } = this.otpForm.value;
-    const valid = this.otpService.verifyOtp(otp as string);
-    if (valid) {
-      this.step = 'reset';
-    } else {
-      this.errorMessageKey = 'RECOVERY.OTP_ERROR';
-    }
+    this.authService.forgotPassword(email as string).subscribe({
+      next: () => {
+        this.isSubmitting = false;
+        this.helperMessageKey = 'RECOVERY.EMAIL_SENT';
+        this.step = 'done';
+      },
+      error: () => {
+        this.isSubmitting = false;
+        this.helperMessageKey = 'RECOVERY.EMAIL_SENT';
+        this.step = 'done';
+      }
+    });
   }
 
   resetPassword(): void {
     this.errorMessageKey = '';
-    if (this.resetForm.invalid) {
+    if (this.resetForm.invalid || !this.resetToken) {
       this.resetForm.markAllAsTouched();
       return;
     }
 
-    this.step = 'done';
-    setTimeout(() => {
-      this.router.navigate(['/sede/login']);
-    }, 1200);
+    this.isSubmitting = true;
+    const { newPassword } = this.resetForm.value;
+    this.authService.resetPassword(this.resetToken, newPassword as string).subscribe({
+      next: () => {
+        this.isSubmitting = false;
+        this.step = 'done';
+        this.helperMessageKey = 'RECOVERY.RESET_SUCCESS';
+      },
+      error: () => {
+        this.isSubmitting = false;
+        this.errorMessageKey = 'RECOVERY.RESET_ERROR';
+      }
+    });
   }
 
   static passwordsMatch(group: { get: (key: string) => any }): null | { mismatch: true } {

@@ -11,6 +11,7 @@ import es.tfg.records.application.service.PublicContentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -54,7 +55,7 @@ public class BackofficeController {
 
     @PostMapping("/public-content/legislation")
     @Operation(summary = "Create legislation entry")
-    public ResponseEntity<PublicContentDtos.LegislationEntry> createLegislationAdmin(@RequestBody PublicContentDtos.LegislationUpsertRequest request) {
+    public ResponseEntity<PublicContentDtos.LegislationEntry> createLegislationAdmin(@Valid @RequestBody PublicContentDtos.LegislationUpsertRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(publicContentService.createLegislation(request));
     }
 
@@ -62,7 +63,7 @@ public class BackofficeController {
     @Operation(summary = "Update legislation entry")
     public ResponseEntity<PublicContentDtos.LegislationEntry> updateLegislationAdmin(
             @PathVariable UUID id,
-            @RequestBody PublicContentDtos.LegislationUpsertRequest request) {
+            @Valid @RequestBody PublicContentDtos.LegislationUpsertRequest request) {
         return ResponseEntity.ok(publicContentService.updateLegislation(id, request));
     }
 
@@ -87,7 +88,7 @@ public class BackofficeController {
 
     @PostMapping("/public-content/faq/categories")
     @Operation(summary = "Create FAQ category")
-    public ResponseEntity<PublicContentDtos.FaqCategoryEntry> createFaqCategoryAdmin(@RequestBody PublicContentDtos.FaqCategoryUpsertRequest request) {
+    public ResponseEntity<PublicContentDtos.FaqCategoryEntry> createFaqCategoryAdmin(@Valid @RequestBody PublicContentDtos.FaqCategoryUpsertRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(publicContentService.createFaqCategory(request));
     }
 
@@ -95,7 +96,7 @@ public class BackofficeController {
     @Operation(summary = "Update FAQ category")
     public ResponseEntity<PublicContentDtos.FaqCategoryEntry> updateFaqCategoryAdmin(
             @PathVariable UUID id,
-            @RequestBody PublicContentDtos.FaqCategoryUpsertRequest request) {
+            @Valid @RequestBody PublicContentDtos.FaqCategoryUpsertRequest request) {
         return ResponseEntity.ok(publicContentService.updateFaqCategory(id, request));
     }
 
@@ -120,7 +121,7 @@ public class BackofficeController {
 
     @PostMapping("/public-content/faq")
     @Operation(summary = "Create FAQ entry")
-    public ResponseEntity<PublicContentDtos.FaqEntry> createFaqAdmin(@RequestBody PublicContentDtos.FaqUpsertRequest request) {
+    public ResponseEntity<PublicContentDtos.FaqEntry> createFaqAdmin(@Valid @RequestBody PublicContentDtos.FaqUpsertRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(publicContentService.createFaq(request));
     }
 
@@ -128,7 +129,7 @@ public class BackofficeController {
     @Operation(summary = "Update FAQ entry")
     public ResponseEntity<PublicContentDtos.FaqEntry> updateFaqAdmin(
             @PathVariable UUID id,
-            @RequestBody PublicContentDtos.FaqUpsertRequest request) {
+            @Valid @RequestBody PublicContentDtos.FaqUpsertRequest request) {
         return ResponseEntity.ok(publicContentService.updateFaq(id, request));
     }
 
@@ -153,7 +154,7 @@ public class BackofficeController {
 
     @PostMapping("/public-content/calendar")
     @Operation(summary = "Create calendar entry")
-    public ResponseEntity<PublicContentDtos.CalendarEntry> createCalendarAdmin(@RequestBody PublicContentDtos.CalendarUpsertRequest request) {
+    public ResponseEntity<PublicContentDtos.CalendarEntry> createCalendarAdmin(@Valid @RequestBody PublicContentDtos.CalendarUpsertRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(publicContentService.createCalendar(request));
     }
 
@@ -161,7 +162,7 @@ public class BackofficeController {
     @Operation(summary = "Update calendar entry")
     public ResponseEntity<PublicContentDtos.CalendarEntry> updateCalendarAdmin(
             @PathVariable UUID id,
-            @RequestBody PublicContentDtos.CalendarUpsertRequest request) {
+            @Valid @RequestBody PublicContentDtos.CalendarUpsertRequest request) {
         return ResponseEntity.ok(publicContentService.updateCalendar(id, request));
     }
 
@@ -186,7 +187,7 @@ public class BackofficeController {
 
     @PostMapping("/public-content/institutional")
     @Operation(summary = "Create institutional info entry")
-    public ResponseEntity<PublicContentDtos.InstitutionalEntry> createInstitutionalAdmin(@RequestBody PublicContentDtos.InstitutionalUpsertRequest request) {
+    public ResponseEntity<PublicContentDtos.InstitutionalEntry> createInstitutionalAdmin(@Valid @RequestBody PublicContentDtos.InstitutionalUpsertRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(publicContentService.createInstitutional(request));
     }
 
@@ -194,7 +195,7 @@ public class BackofficeController {
     @Operation(summary = "Update institutional info entry")
     public ResponseEntity<PublicContentDtos.InstitutionalEntry> updateInstitutionalAdmin(
             @PathVariable UUID id,
-            @RequestBody PublicContentDtos.InstitutionalUpsertRequest request) {
+            @Valid @RequestBody PublicContentDtos.InstitutionalUpsertRequest request) {
         return ResponseEntity.ok(publicContentService.updateInstitutional(id, request));
     }
 
@@ -225,7 +226,7 @@ public class BackofficeController {
 
     @PostMapping("/public-content/organisms")
     @Operation(summary = "Create organism entry")
-    public ResponseEntity<PublicContentDtos.OrganismEntry> createOrganismAdmin(@RequestBody PublicContentDtos.OrganismUpsertRequest request) {
+    public ResponseEntity<PublicContentDtos.OrganismEntry> createOrganismAdmin(@Valid @RequestBody PublicContentDtos.OrganismUpsertRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(publicContentService.createOrganism(request));
     }
 
@@ -233,7 +234,7 @@ public class BackofficeController {
     @Operation(summary = "Update organism entry")
     public ResponseEntity<PublicContentDtos.OrganismEntry> updateOrganismAdmin(
             @PathVariable UUID id,
-            @RequestBody PublicContentDtos.OrganismUpsertRequest request) {
+            @Valid @RequestBody PublicContentDtos.OrganismUpsertRequest request) {
         return ResponseEntity.ok(publicContentService.updateOrganism(id, request));
     }
 
@@ -258,7 +259,7 @@ public class BackofficeController {
 
     @PostMapping("/public-content/resources")
     @Operation(summary = "Create resource entry")
-    public ResponseEntity<PublicContentDtos.ResourceEntry> createResourceAdmin(@RequestBody PublicContentDtos.ResourceUpsertRequest request) {
+    public ResponseEntity<PublicContentDtos.ResourceEntry> createResourceAdmin(@Valid @RequestBody PublicContentDtos.ResourceUpsertRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(publicContentService.createResource(request));
     }
 
@@ -266,7 +267,7 @@ public class BackofficeController {
     @Operation(summary = "Update resource entry")
     public ResponseEntity<PublicContentDtos.ResourceEntry> updateResourceAdmin(
             @PathVariable UUID id,
-            @RequestBody PublicContentDtos.ResourceUpsertRequest request) {
+            @Valid @RequestBody PublicContentDtos.ResourceUpsertRequest request) {
         return ResponseEntity.ok(publicContentService.updateResource(id, request));
     }
 
@@ -291,7 +292,7 @@ public class BackofficeController {
 
     @PutMapping("/public-content/theme")
     @Operation(summary = "Save configurable sede theme palette")
-    public ResponseEntity<PublicContentDtos.ThemeCatalog> saveThemePaletteAdmin(@RequestBody PublicContentDtos.ThemePaletteUpsertRequest request) {
+    public ResponseEntity<PublicContentDtos.ThemeCatalog> saveThemePaletteAdmin(@Valid @RequestBody PublicContentDtos.ThemePaletteUpsertRequest request) {
         return ResponseEntity.ok(publicContentService.saveThemePalette(request));
     }
 
@@ -358,7 +359,7 @@ public class BackofficeController {
 
     @PostMapping("/users")
     @Operation(summary = "Create backoffice user")
-    public ResponseEntity<BackofficeDtos.BackofficeUser> createUser(@RequestBody BackofficeDtos.CreateUserRequest request) {
+    public ResponseEntity<BackofficeDtos.BackofficeUser> createUser(@Valid @RequestBody BackofficeDtos.CreateUserRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(backofficeService.createUser(request));
     }
 
@@ -366,7 +367,7 @@ public class BackofficeController {
     @Operation(summary = "Update backoffice user")
     public ResponseEntity<BackofficeDtos.BackofficeUser> updateUser(
             @PathVariable UUID id,
-            @RequestBody BackofficeDtos.UpdateUserRequest request) {
+            @Valid @RequestBody BackofficeDtos.UpdateUserRequest request) {
         return ResponseEntity.ok(backofficeService.updateUser(id, request));
     }
 
@@ -374,7 +375,7 @@ public class BackofficeController {
     @Operation(summary = "Activate or deactivate backoffice user")
     public ResponseEntity<BackofficeDtos.BackofficeUser> updateUserStatus(
             @PathVariable UUID id,
-            @RequestBody BackofficeDtos.UserStatusRequest request) {
+            @Valid @RequestBody BackofficeDtos.UserStatusRequest request) {
         return ResponseEntity.ok(backofficeService.toggleUserStatus(id, request.isActive()));
     }
 
@@ -386,7 +387,7 @@ public class BackofficeController {
 
     @PostMapping("/procedure-types")
     @Operation(summary = "Create managed procedure type")
-    public ResponseEntity<BackofficeDtos.ManagedProcedure> createProcedureType(@RequestBody BackofficeDtos.ProcedureRequest request) {
+    public ResponseEntity<BackofficeDtos.ManagedProcedure> createProcedureType(@Valid @RequestBody BackofficeDtos.ProcedureRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(backofficeService.createProcedure(request));
     }
 
@@ -394,7 +395,7 @@ public class BackofficeController {
     @Operation(summary = "Update managed procedure type")
     public ResponseEntity<BackofficeDtos.ManagedProcedure> updateProcedureType(
             @PathVariable UUID id,
-            @RequestBody BackofficeDtos.ProcedureRequest request) {
+            @Valid @RequestBody BackofficeDtos.ProcedureRequest request) {
         return ResponseEntity.ok(backofficeService.updateProcedure(id, request));
     }
 
@@ -402,7 +403,7 @@ public class BackofficeController {
     @Operation(summary = "Update managed procedure type status")
     public ResponseEntity<BackofficeDtos.ManagedProcedure> updateProcedureTypeStatus(
             @PathVariable UUID id,
-            @RequestBody Map<String, String> request) {
+            @Valid @RequestBody Map<String, String> request) {
         return ResponseEntity.ok(backofficeService.toggleProcedureStatus(id, request.getOrDefault("status", "DRAFT")));
     }
 
@@ -416,7 +417,7 @@ public class BackofficeController {
     @Operation(summary = "Create or update managed procedure translation")
     public ResponseEntity<BackofficeDtos.ProcedureTranslation> upsertProcedureTypeTranslation(
             @PathVariable UUID id,
-            @RequestBody BackofficeDtos.ProcedureTranslationRequest request) {
+            @Valid @RequestBody BackofficeDtos.ProcedureTranslationRequest request) {
         return ResponseEntity.ok(backofficeService.upsertProcedureTranslation(id, request));
     }
 
@@ -430,7 +431,7 @@ public class BackofficeController {
     @Operation(summary = "Create or update a form field translation")
     public ResponseEntity<BackofficeDtos.FieldI18nEntry> upsertFieldTranslation(
             @PathVariable UUID id,
-            @RequestBody BackofficeDtos.FieldI18nUpsertRequest request) {
+            @Valid @RequestBody BackofficeDtos.FieldI18nUpsertRequest request) {
         return ResponseEntity.ok(backofficeService.upsertFieldTranslation(id, request));
     }
 

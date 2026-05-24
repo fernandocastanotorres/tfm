@@ -36,9 +36,9 @@ export class TransparencyComponent implements OnInit {
 
   getTrendIcon(trend?: string): string {
     switch (trend) {
-      case 'up': return '&#8593;';
-      case 'down': return '&#8595;';
-      default: return '&#8594;';
+      case 'up': return '\u2191';
+      case 'down': return '\u2193';
+      default: return '\u2192';
     }
   }
 
