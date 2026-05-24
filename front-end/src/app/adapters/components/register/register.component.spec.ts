@@ -183,7 +183,8 @@ describe('RegisterComponent', () => {
         email: 'juan@example.com',
         nationalId: '12345678A',
         phone: '600123456',
-        password: 'Password1!'
+        password: 'Password1!',
+        termsAccepted: true
       });
       tick();
     }));
@@ -196,7 +197,7 @@ describe('RegisterComponent', () => {
       tick();
 
       expect(component.successMessageKey).toBe('REGISTER.SUCCESS');
-      expect(component.infoMessage).toContain('verificacion');
+      expect(component.infoMessage).toBe('REGISTER.VERIFICATION_EMAIL_SENT');
       expect(component.isSubmitting).toBeFalse();
     }));
   });
@@ -326,7 +327,7 @@ describe('RegisterComponent', () => {
       component.resendVerificationEmail();
       tick();
 
-      expect(component.infoMessage).toContain('reenviado');
+      expect(component.infoMessage).toBe('REGISTER.ACCOUNT_EXISTS');
     }));
   });
 

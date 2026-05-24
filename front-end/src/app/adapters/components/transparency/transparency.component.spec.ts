@@ -76,19 +76,19 @@ describe('TransparencyComponent', () => {
   });
 
   it('should return up arrow for up trend', () => {
-    expect(component.getTrendIcon('up')).toBe('&#8593;');
+    expect(component.getTrendIcon('up')).toBe('↑');
   });
 
   it('should return down arrow for down trend', () => {
-    expect(component.getTrendIcon('down')).toBe('&#8595;');
+    expect(component.getTrendIcon('down')).toBe('↓');
   });
 
   it('should return right arrow for stable trend', () => {
-    expect(component.getTrendIcon('stable')).toBe('&#8594;');
+    expect(component.getTrendIcon('stable')).toBe('→');
   });
 
   it('should return right arrow for undefined trend', () => {
-    expect(component.getTrendIcon()).toBe('&#8594;');
+    expect(component.getTrendIcon()).toBe('→');
   });
 
   it('should return TREND_UP label for up trend', () => {

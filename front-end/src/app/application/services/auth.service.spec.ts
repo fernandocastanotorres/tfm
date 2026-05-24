@@ -15,7 +15,7 @@ describe('AuthService', () => {
 });
     service = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
-    localStorage.clear();
+    sessionStorage.clear();
   });
 
   afterEach(() => {
@@ -38,8 +38,8 @@ describe('AuthService', () => {
       service.login(credentials).subscribe({
         next: (response) => {
           expect(response.accessToken).toBe('fake.access.token');
-          expect(localStorage.getItem('tfg.access_token')).toBe('fake.access.token');
-          expect(localStorage.getItem('tfg.refresh_token')).toBe('fake.refresh.token');
+          expect(sessionStorage.getItem('tfg.access_token')).toBe('fake.access.token');
+          expect(sessionStorage.getItem('tfg.refresh_token')).toBe('fake.refresh.token');
           done();
         }
       });
@@ -57,7 +57,8 @@ describe('AuthService', () => {
         password: 'pass123',
         fullName: 'John Doe',
         nationalId: '12345678A',
-        phone: '+34600000000'
+        phone: '+34600000000',
+        termsAccepted: true
       };
 
       service.register(registerRequest).subscribe({
@@ -112,7 +113,7 @@ describe('AuthService', () => {
       const payload = btoa(JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 3600, sub: 'user-1' }));
       const fakeToken = `${header}.${payload}.fakesig`;
 
-      localStorage.setItem('tfg.access_token', fakeToken);
+      sessionStorage.setItem('tfg.access_token', fakeToken);
       expect(service.isAuthenticated()).toBeTrue();
     });
 
@@ -121,25 +122,25 @@ describe('AuthService', () => {
       const payload = btoa(JSON.stringify({ exp: Math.floor(Date.now() / 1000) - 3600, sub: 'user-1' }));
       const fakeToken = `${header}.${payload}.fakesig`;
 
-      localStorage.setItem('tfg.access_token', fakeToken);
+      sessionStorage.setItem('tfg.access_token', fakeToken);
       expect(service.isAuthenticated()).toBeFalse();
     });
 
     it('should return false when token is malformed (catches in isTokenExpired)', () => {
-      localStorage.setItem('tfg.access_token', 'not-a-valid-jwt');
+      sessionStorage.setItem('tfg.access_token', 'not-a-valid-jwt');
       expect(service.isAuthenticated()).toBeFalse();
     });
   });
 
   describe('logout', () => {
     it('should send POST to /auth/logout and clear tokens', (done) => {
-      localStorage.setItem('tfg.access_token', 'some-token');
-      localStorage.setItem('tfg.refresh_token', 'some-refresh');
+      sessionStorage.setItem('tfg.access_token', 'some-token');
+      sessionStorage.setItem('tfg.refresh_token', 'some-refresh');
 
       service.logout().subscribe({
         next: () => {
-          expect(localStorage.getItem('tfg.access_token')).toBeNull();
-          expect(localStorage.getItem('tfg.refresh_token')).toBeNull();
+          expect(sessionStorage.getItem('tfg.access_token')).toBeNull();
+          expect(sessionStorage.getItem('tfg.refresh_token')).toBeNull();
           done();
         }
       });
@@ -150,13 +151,13 @@ describe('AuthService', () => {
     });
 
     it('should clear tokens even if logout request fails', (done) => {
-      localStorage.setItem('tfg.access_token', 'some-token');
-      localStorage.setItem('tfg.refresh_token', 'some-refresh');
+      sessionStorage.setItem('tfg.access_token', 'some-token');
+      sessionStorage.setItem('tfg.refresh_token', 'some-refresh');
 
       service.logout().subscribe({
         next: () => {
-          expect(localStorage.getItem('tfg.access_token')).toBeNull();
-          expect(localStorage.getItem('tfg.refresh_token')).toBeNull();
+          expect(sessionStorage.getItem('tfg.access_token')).toBeNull();
+          expect(sessionStorage.getItem('tfg.refresh_token')).toBeNull();
           done();
         }
       });
@@ -168,8 +169,8 @@ describe('AuthService', () => {
 
   describe('getToken / getRefreshToken', () => {
     it('should return stored tokens', () => {
-      localStorage.setItem('tfg.access_token', 'access-123');
-      localStorage.setItem('tfg.refresh_token', 'refresh-456');
+      sessionStorage.setItem('tfg.access_token', 'access-123');
+      sessionStorage.setItem('tfg.refresh_token', 'refresh-456');
 
       expect(service.getToken()).toBe('access-123');
       expect(service.getRefreshToken()).toBe('refresh-456');
@@ -183,13 +184,13 @@ describe('AuthService', () => {
 
   describe('refreshToken', () => {
     it('should refresh token successfully and store new tokens', (done) => {
-      localStorage.setItem('tfg.refresh_token', 'old-refresh');
+      sessionStorage.setItem('tfg.refresh_token', 'old-refresh');
 
       service.refreshToken().subscribe({
         next: (newToken) => {
           expect(newToken).toBe('new-access-token');
-          expect(localStorage.getItem('tfg.access_token')).toBe('new-access-token');
-          expect(localStorage.getItem('tfg.refresh_token')).toBe('new-refresh-token');
+          expect(sessionStorage.getItem('tfg.access_token')).toBe('new-access-token');
+          expect(sessionStorage.getItem('tfg.refresh_token')).toBe('new-refresh-token');
           done();
         }
       });
@@ -211,14 +212,14 @@ describe('AuthService', () => {
     });
 
     it('should clear tokens and return empty string on refresh failure', (done) => {
-      localStorage.setItem('tfg.access_token', 'old-access');
-      localStorage.setItem('tfg.refresh_token', 'old-refresh');
+      sessionStorage.setItem('tfg.access_token', 'old-access');
+      sessionStorage.setItem('tfg.refresh_token', 'old-refresh');
 
       service.refreshToken().subscribe({
         next: (result) => {
           expect(result).toBe('');
-          expect(localStorage.getItem('tfg.access_token')).toBeNull();
-          expect(localStorage.getItem('tfg.refresh_token')).toBeNull();
+          expect(sessionStorage.getItem('tfg.access_token')).toBeNull();
+          expect(sessionStorage.getItem('tfg.refresh_token')).toBeNull();
           done();
         }
       });
@@ -238,7 +239,7 @@ describe('AuthService', () => {
       const payload = btoa(JSON.stringify({ email: 'user@example.com', exp: Math.floor(Date.now() / 1000) + 3600 }));
       const fakeToken = `${header}.${payload}.sig`;
 
-      localStorage.setItem('tfg.access_token', fakeToken);
+      sessionStorage.setItem('tfg.access_token', fakeToken);
       expect(service.getAuthenticatedUserLabel()).toBe('user@example.com');
     });
 
@@ -251,7 +252,7 @@ describe('AuthService', () => {
       }));
       const fakeToken = `${header}.${payload}.sig`;
 
-      localStorage.setItem('tfg.access_token', fakeToken);
+      sessionStorage.setItem('tfg.access_token', fakeToken);
       expect(service.getAuthenticatedUserLabel()).toBe('johndoe');
     });
 
@@ -263,7 +264,7 @@ describe('AuthService', () => {
       }));
       const fakeToken = `${header}.${payload}.sig`;
 
-      localStorage.setItem('tfg.access_token', fakeToken);
+      sessionStorage.setItem('tfg.access_token', fakeToken);
       expect(service.getAuthenticatedUserLabel()).toBe('spaced@example.com');
     });
 
@@ -272,7 +273,7 @@ describe('AuthService', () => {
       const payload = btoa(JSON.stringify({ sub: 'user-123', exp: Math.floor(Date.now() / 1000) + 3600 }));
       const fakeToken = `${header}.${payload}.sig`;
 
-      localStorage.setItem('tfg.access_token', fakeToken);
+      sessionStorage.setItem('tfg.access_token', fakeToken);
       expect(service.getAuthenticatedUserLabel()).toBeNull();
     });
 
@@ -281,7 +282,7 @@ describe('AuthService', () => {
       const payload = btoa('not-valid-json');
       const fakeToken = `${header}.${payload}.sig`;
 
-      localStorage.setItem('tfg.access_token', fakeToken);
+      sessionStorage.setItem('tfg.access_token', fakeToken);
       expect(service.getAuthenticatedUserLabel()).toBeNull();
     });
 
@@ -293,7 +294,7 @@ describe('AuthService', () => {
       }));
       const fakeToken = `${header}.${payload}.sig`;
 
-      localStorage.setItem('tfg.access_token', fakeToken);
+      sessionStorage.setItem('tfg.access_token', fakeToken);
       expect(service.getAuthenticatedUserLabel()).toBeNull();
     });
 
@@ -305,7 +306,7 @@ describe('AuthService', () => {
       }));
       const fakeToken = `${header}.${payload}.sig`;
 
-      localStorage.setItem('tfg.access_token', fakeToken);
+      sessionStorage.setItem('tfg.access_token', fakeToken);
       expect(service.getAuthenticatedUserLabel()).toBeNull();
     });
   });
