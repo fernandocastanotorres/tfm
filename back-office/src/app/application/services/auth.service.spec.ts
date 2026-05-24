@@ -18,7 +18,7 @@ describe('AuthService', () => {
   }
 
   beforeEach(() => {
-    localStorage.clear();
+    sessionStorage.clear();
   });
 
   afterEach(() => {
@@ -38,7 +38,7 @@ describe('AuthService', () => {
       const payload = btoa(JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 3600, sub: 'user-1' }));
       const fakeToken = `${header}.${payload}.fakesig`;
 
-      localStorage.setItem('bo_access_token', fakeToken);
+      sessionStorage.setItem('bo_access_token', fakeToken);
       expect(service.isAuthenticated()).toBeTrue();
     });
 
@@ -47,12 +47,12 @@ describe('AuthService', () => {
       const payload = btoa(JSON.stringify({ exp: Math.floor(Date.now() / 1000) - 3600, sub: 'user-1' }));
       const fakeToken = `${header}.${payload}.fakesig`;
 
-      localStorage.setItem('bo_access_token', fakeToken);
+      sessionStorage.setItem('bo_access_token', fakeToken);
       expect(service.isAuthenticated()).toBeFalse();
     });
 
     it('should return false when token is malformed', () => {
-      localStorage.setItem('bo_access_token', 'not-a-valid-token');
+      sessionStorage.setItem('bo_access_token', 'not-a-valid-token');
       expect(service.isAuthenticated()).toBeFalse();
     });
   });
@@ -68,8 +68,8 @@ describe('AuthService', () => {
       const payload = btoa(JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 3600, sub: 'user-1' }));
       const fakeToken = `${header}.${payload}.fakesig`;
 
-      localStorage.setItem('bo_access_token', fakeToken);
-      localStorage.setItem('bo_user', JSON.stringify({
+      sessionStorage.setItem('bo_access_token', fakeToken);
+      sessionStorage.setItem('bo_user_profile', JSON.stringify({
         id: 'user-1',
         email: 'admin@tfg.es',
         roles: ['ROLE_ADMIN', 'ROLE_CITIZEN']
@@ -85,8 +85,8 @@ describe('AuthService', () => {
       const payload = btoa(JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 3600, sub: 'user-1' }));
       const fakeToken = `${header}.${payload}.fakesig`;
 
-      localStorage.setItem('bo_access_token', fakeToken);
-      localStorage.setItem('bo_user', JSON.stringify({
+      sessionStorage.setItem('bo_access_token', fakeToken);
+      sessionStorage.setItem('bo_user_profile', JSON.stringify({
         id: 'user-1',
         email: 'tramitador@tfg.es',
         roles: ['ROLE_TRAMITADOR']
@@ -102,8 +102,8 @@ describe('AuthService', () => {
       const payload = btoa(JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 3600, sub: 'user-1' }));
       const fakeToken = `${header}.${payload}.fakesig`;
 
-      localStorage.setItem('bo_access_token', fakeToken);
-      localStorage.setItem('bo_user', JSON.stringify({
+      sessionStorage.setItem('bo_access_token', fakeToken);
+      sessionStorage.setItem('bo_user_profile', JSON.stringify({
         id: 'user-1',
         email: 'tramitador@tfg.es',
         roles: ['ROLE_TRAMITADOR']
@@ -121,8 +121,8 @@ describe('AuthService', () => {
       const payload = btoa(JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 3600, sub: 'user-1' }));
       const fakeToken = `${header}.${payload}.fakesig`;
 
-      localStorage.setItem('bo_access_token', fakeToken);
-      localStorage.setItem('bo_user', JSON.stringify({
+      sessionStorage.setItem('bo_access_token', fakeToken);
+      sessionStorage.setItem('bo_user_profile', JSON.stringify({
         id: 'user-1',
         email: 'tramitador@tfg.es',
         roles: ['ROLE_TRAMITADOR']
@@ -138,8 +138,8 @@ describe('AuthService', () => {
       const payload = btoa(JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 3600, sub: 'user-1' }));
       const fakeToken = `${header}.${payload}.fakesig`;
 
-      localStorage.setItem('bo_access_token', fakeToken);
-      localStorage.setItem('bo_user', JSON.stringify({
+      sessionStorage.setItem('bo_access_token', fakeToken);
+      sessionStorage.setItem('bo_user_profile', JSON.stringify({
         id: 'user-1',
         email: 'admin@tfg.es',
         roles: ['ROLE_ADMIN']
@@ -157,8 +157,8 @@ describe('AuthService', () => {
       const payload = btoa(JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 3600, sub: 'user-1' }));
       const fakeToken = `${header}.${payload}.fakesig`;
 
-      localStorage.setItem('bo_access_token', fakeToken);
-      localStorage.setItem('bo_user', JSON.stringify({
+      sessionStorage.setItem('bo_access_token', fakeToken);
+      sessionStorage.setItem('bo_user_profile', JSON.stringify({
         id: 'user-1',
         email: 'admin@tfg.es',
         roles: ['ROLE_ADMIN']
@@ -174,8 +174,8 @@ describe('AuthService', () => {
       const payload = btoa(JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 3600, sub: 'user-1' }));
       const fakeToken = `${header}.${payload}.fakesig`;
 
-      localStorage.setItem('bo_access_token', fakeToken);
-      localStorage.setItem('bo_user', JSON.stringify({
+      sessionStorage.setItem('bo_access_token', fakeToken);
+      sessionStorage.setItem('bo_user_profile', JSON.stringify({
         id: 'user-1',
         email: 'tramitador@tfg.es',
         roles: ['ROLE_TRAMITADOR']
@@ -191,12 +191,12 @@ describe('AuthService', () => {
     beforeEach(() => setupService());
 
     it('should return stored access token', () => {
-      localStorage.setItem('bo_access_token', 'access-123');
+      sessionStorage.setItem('bo_access_token', 'access-123');
       expect(service.getAccessToken()).toBe('access-123');
     });
 
     it('should return stored refresh token', () => {
-      localStorage.setItem('bo_refresh_token', 'refresh-456');
+      sessionStorage.setItem('bo_refresh_token', 'refresh-456');
       expect(service.getRefreshToken()).toBe('refresh-456');
     });
 
@@ -219,13 +219,13 @@ describe('AuthService', () => {
     });
 
     it('should send POST to /auth/refresh and store new tokens', (done) => {
-      localStorage.setItem('bo_refresh_token', 'old-refresh');
+      sessionStorage.setItem('bo_refresh_token', 'old-refresh');
 
       service.refreshToken().subscribe({
         next: (token) => {
           expect(token).toBe('new-access-token');
-          expect(localStorage.getItem('bo_access_token')).toBe('new-access-token');
-          expect(localStorage.getItem('bo_refresh_token')).toBe('new-refresh');
+          expect(sessionStorage.getItem('bo_access_token')).toBe('new-access-token');
+          expect(sessionStorage.getItem('bo_refresh_token')).toBe('new-refresh');
           done();
         }
       });
@@ -250,8 +250,8 @@ describe('AuthService', () => {
       service.login(loginRequest).subscribe({
         next: (response) => {
           expect(response.accessToken).toBe('fake.access.token');
-          expect(localStorage.getItem('bo_access_token')).toBe('fake.access.token');
-          expect(localStorage.getItem('bo_refresh_token')).toBe('fake.refresh.token');
+          expect(sessionStorage.getItem('bo_access_token')).toBe('fake.access.token');
+          expect(sessionStorage.getItem('bo_refresh_token')).toBe('fake.refresh.token');
           expect(service.currentUser).toBeTruthy();
           expect(service.currentUser?.email).toBe('admin@tfg.es');
           done();
@@ -268,21 +268,21 @@ describe('AuthService', () => {
     beforeEach(() => setupService());
 
     it('should clear all stored tokens and user without calling server when no refresh token', () => {
-      localStorage.setItem('bo_access_token', 'some-token');
-      localStorage.setItem('bo_user', JSON.stringify({ id: 'user-1', email: 'admin@tfg.es', roles: ['ROLE_ADMIN'] }));
+      sessionStorage.setItem('bo_access_token', 'some-token');
+      sessionStorage.setItem('bo_user_profile', JSON.stringify({ id: 'user-1', email: 'admin@tfg.es', roles: ['ROLE_ADMIN'] }));
 
       service.logout();
 
-      expect(localStorage.getItem('bo_access_token')).toBeNull();
-      expect(localStorage.getItem('bo_refresh_token')).toBeNull();
-      expect(localStorage.getItem('bo_user')).toBeNull();
+      expect(sessionStorage.getItem('bo_access_token')).toBeNull();
+      expect(sessionStorage.getItem('bo_refresh_token')).toBeNull();
+      expect(sessionStorage.getItem('bo_user_profile')).toBeNull();
       expect(service.currentUser).toBeNull();
     });
 
     it('should call server logout when refresh token exists', () => {
-      localStorage.setItem('bo_access_token', 'some-token');
-      localStorage.setItem('bo_refresh_token', 'some-refresh');
-      localStorage.setItem('bo_user', JSON.stringify({ id: 'user-1', email: 'admin@tfg.es', roles: ['ROLE_ADMIN'] }));
+      sessionStorage.setItem('bo_access_token', 'some-token');
+      sessionStorage.setItem('bo_refresh_token', 'some-refresh');
+      sessionStorage.setItem('bo_user_profile', JSON.stringify({ id: 'user-1', email: 'admin@tfg.es', roles: ['ROLE_ADMIN'] }));
 
       service.logout();
 
@@ -290,9 +290,9 @@ describe('AuthService', () => {
       expect(req.request.method).toBe('POST');
       req.flush(null);
 
-      expect(localStorage.getItem('bo_access_token')).toBeNull();
-      expect(localStorage.getItem('bo_refresh_token')).toBeNull();
-      expect(localStorage.getItem('bo_user')).toBeNull();
+      expect(sessionStorage.getItem('bo_access_token')).toBeNull();
+      expect(sessionStorage.getItem('bo_refresh_token')).toBeNull();
+      expect(sessionStorage.getItem('bo_user_profile')).toBeNull();
       expect(service.currentUser).toBeNull();
     });
   });

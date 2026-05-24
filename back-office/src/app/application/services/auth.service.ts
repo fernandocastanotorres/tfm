@@ -7,6 +7,7 @@ import { LoginRequest, LoginResponse, BackofficeUserProfile } from '../models/ba
 
 const TOKEN_KEY = 'bo_access_token';
 const REFRESH_TOKEN_KEY = 'bo_refresh_token';
+const USER_KEY = 'bo_user_profile';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,14 @@ export class AuthService {
   private readonly currentUserSubject = new BehaviorSubject<BackofficeUserProfile | null>(null);
 
   constructor() {
+    const stored = sessionStorage.getItem(USER_KEY);
+    if (stored) {
+      try {
+        this.currentUserSubject.next(JSON.parse(stored));
+      } catch {
+        sessionStorage.removeItem(USER_KEY);
+      }
+    }
   }
 
   get currentUser$() {
@@ -32,6 +41,7 @@ export class AuthService {
       tap((response: LoginResponse) => {
         sessionStorage.setItem(TOKEN_KEY, response.accessToken);
         sessionStorage.setItem(REFRESH_TOKEN_KEY, response.refreshToken);
+        sessionStorage.setItem(USER_KEY, JSON.stringify(response.user));
         this.currentUserSubject.next(response.user);
       })
     );
@@ -46,6 +56,7 @@ export class AuthService {
     }
     sessionStorage.removeItem(TOKEN_KEY);
     sessionStorage.removeItem(REFRESH_TOKEN_KEY);
+    sessionStorage.removeItem(USER_KEY);
     this.currentUserSubject.next(null);
   }
 
