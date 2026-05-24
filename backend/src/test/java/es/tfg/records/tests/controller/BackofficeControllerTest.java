@@ -189,7 +189,7 @@ class BackofficeControllerTest {
     void createProcedureType_shouldReturnCreated() throws Exception {
         UUID procId = UUID.randomUUID();
         BackofficeDtos.ProcedureRequest request = new BackofficeDtos.ProcedureRequest(
-                "New Procedure", "Description", null, "active", "simpleCitizenProcedure", "Unit", 10, null, List.of(), List.of());
+                "New Procedure", "Description", "category", "active", "simpleCitizenProcedure", "Unit", 10, null, List.of(), List.of());
         when(backofficeService.createProcedure(any())).thenReturn(
                 new BackofficeDtos.ManagedProcedure(procId, "New Procedure", "Description", null, "active", "simpleCitizenProcedure", "Unit", 10, null, null, null, List.of(), List.of()));
 
@@ -204,7 +204,7 @@ class BackofficeControllerTest {
     void updateProcedureType_shouldReturnUpdated() throws Exception {
         UUID procId = UUID.randomUUID();
         BackofficeDtos.ProcedureRequest request = new BackofficeDtos.ProcedureRequest(
-                "Updated", "New Desc", null, "active", "simpleCitizenProcedure", "Unit", 15, null, List.of(), List.of());
+                "Updated", "New Desc", "category", "active", "simpleCitizenProcedure", "Unit", 15, null, List.of(), List.of());
         when(backofficeService.updateProcedure(eq(procId), any())).thenReturn(
                 new BackofficeDtos.ManagedProcedure(procId, "Updated", "New Desc", null, "active", "simpleCitizenProcedure", "Unit", 15, null, null, null, List.of(), List.of()));
 
