@@ -70,7 +70,8 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
       items: [
         { labelKey: 'PUBLIC.NAV_CONTACT', route: '/sede/contacto' },
         { labelKey: 'PUBLIC.NAV_STATUS', route: '/sede/estado' },
-        { labelKey: 'PUBLIC.NAV_GLOSSARY', route: '/sede/glosario' }
+        { labelKey: 'PUBLIC.NAV_GLOSSARY', route: '/sede/glosario' },
+        { labelKey: 'PUBLIC.NAV_DOCUMENT_VERIFICATION', route: '/sede/validar-documento' }
       ]
     }
   ];
