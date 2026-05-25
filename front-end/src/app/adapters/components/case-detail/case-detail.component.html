@@ -1,13 +1,12 @@
 <main class="min-h-screen bg-surface-50 px-6 py-10" aria-labelledby="case-title">
   <!-- Loading state -->
-  <div *ngIf="isLoading" class="max-w-5xl mx-auto card p-6 text-center text-surface-600">
+  <div *ngIf="isLoading" class="max-w-5xl mx-auto px-8 card p-6 text-center text-surface-600">
     {{ 'CASE_DETAIL.LOADING' | translate }}
   </div>
 
   <!-- Case detail -->
-  <div class="max-w-5xl mx-auto" *ngIf="caseDetail && !isLoading">
+  <div class="max-w-5xl mx-auto px-8" *ngIf="caseDetail && !isLoading">
     <header class="space-y-2">
-      <a class="text-sm text-brand-600 hover:underline" routerLink="/dashboard">{{ 'CASE_DETAIL.BACK' | translate }}</a>
       <p class="text-sm font-semibold text-brand-600">{{ 'CASE_DETAIL.EYEBROW' | translate }}</p>
       <h1 id="case-title" class="text-2xl font-semibold text-surface-900">{{ caseDetail.title | translate }}</h1>
       <p class="text-surface-600">{{ caseDetail.id }} · {{ caseDetail.procedureType | translate }}</p>
