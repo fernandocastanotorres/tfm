@@ -26,6 +26,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.time.Instant;
@@ -33,6 +34,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -101,7 +103,7 @@ public class EniPackagerService {
             String caseRef = "EXP-" + caseId.toString().substring(0, 8).toUpperCase();
 
             for (Document doc : documents) {
-                byte[] content = readAllBytes(fileStorageService.openStreamByPath(doc.getStoragePath()));
+                byte[] content = readDocumentContent(caseId, doc);
                 zos.putNextEntry(new ZipEntry("documents/" + sanitizeFileName(doc.getName())));
                 zos.write(content);
                 zos.closeEntry();
@@ -133,6 +135,67 @@ public class EniPackagerService {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException("Failed to generate ENI package for case " + caseId, e);
+        }
+    }
+
+    private byte[] readDocumentContent(UUID caseId, Document doc) {
+        List<String> candidates = Stream.of(
+                        doc.getStoragePath(),
+                        doc.getSignedStoragePath(),
+                        doc.getOriginalStoragePath())
+                .filter(path -> path != null && !path.isBlank())
+                .toList();
+
+        if (candidates.isEmpty()) {
+            throw new ConflictException(
+                    "PROC",
+                    "Cannot generate ENI package because one or more documents have no storage path",
+                    "MISSING_DOCUMENT_FILE"
+            );
+        }
+
+        for (String candidate : candidates) {
+            byte[] fromCaseFolder = tryRead(() -> fileStorageService.openStream(caseId, candidate));
+            if (fromCaseFolder != null) {
+                return fromCaseFolder;
+            }
+
+            byte[] fromRelativePath = tryRead(() -> fileStorageService.openStreamByPath(candidate));
+            if (fromRelativePath != null) {
+                return fromRelativePath;
+            }
+
+            byte[] fromCasePrefixedPath = tryRead(() -> fileStorageService.openStreamByPath(caseId + "/" + candidate));
+            if (fromCasePrefixedPath != null) {
+                return fromCasePrefixedPath;
+            }
+
+            byte[] fromAnyCase = tryRead(() -> fileStorageService.openStreamAnyCase(candidate));
+            if (fromAnyCase != null) {
+                return fromAnyCase;
+            }
+        }
+
+        log.warn("ENIDOC generation could not resolve storage artifact for document {} in case {}. Candidates: {}",
+                doc.getId(), caseId, candidates);
+
+        throw new ConflictException(
+                "PROC",
+                "Cannot generate ENI package because one or more document files are missing in storage",
+                "MISSING_DOCUMENT_FILE"
+        );
+    }
+
+    @FunctionalInterface
+    private interface StreamSupplier {
+        InputStream open();
+    }
+
+    private byte[] tryRead(StreamSupplier supplier) {
+        try (InputStream is = supplier.open()) {
+            return readAllBytes(is);
+        } catch (ResourceNotFoundException | IOException ex) {
+            return null;
         }
     }
 

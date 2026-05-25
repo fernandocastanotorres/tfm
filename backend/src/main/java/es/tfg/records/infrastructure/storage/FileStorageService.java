@@ -17,7 +17,10 @@ import java.nio.file.StandardOpenOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 /**
  * Service for managing local file storage of uploaded documents.
@@ -277,6 +280,37 @@ public class FileStorageService {
     }
 
     /**
+     * Opens a stream by filename searching across all case directories.
+     * Intended as compatibility fallback for legacy/migrated storage layouts.
+     */
+    public InputStream openStreamAnyCase(String storedFilename) {
+        if (storedFilename == null || storedFilename.isBlank()) {
+            throw new ResourceNotFoundException("DOC", "empty filename");
+        }
+
+        try (Stream<Path> stream = Files.find(
+                baseDirectory,
+                2,
+                (path, attrs) -> attrs.isRegularFile() && path.getFileName().toString().equals(storedFilename))) {
+
+            List<Path> matches = stream
+                    .filter(path -> path.startsWith(baseDirectory))
+                    .sorted(Comparator.comparingLong(this::safeLastModified).reversed())
+                    .toList();
+
+            if (matches.isEmpty()) {
+                throw new ResourceNotFoundException("DOC", storedFilename);
+            }
+
+            Path selected = matches.get(0);
+            log.warn("Resolved legacy storage path for {} using {}", storedFilename, selected);
+            return Files.newInputStream(selected);
+        } catch (IOException e) {
+            throw new ResourceNotFoundException("DOC", storedFilename);
+        }
+    }
+
+    /**
      * Returns the file size in bytes by relative path.
      */
     public long getFileSizeByPath(String relativePath) {
@@ -337,5 +371,13 @@ public class FileStorageService {
             throw new ConflictException("STORAGE", "Invalid file path: path traversal detected");
         }
         return filePath;
+    }
+
+    private long safeLastModified(Path path) {
+        try {
+            return Files.getLastModifiedTime(path).toMillis();
+        } catch (IOException e) {
+            return Long.MIN_VALUE;
+        }
     }
 }

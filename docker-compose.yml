@@ -61,6 +61,8 @@ services:
       STORAGE_DOCUMENTS_PATH: ${STORAGE_DOCUMENTS_PATH:-/app/data/documents}
     ports:
       - "8080:8080"
+    volumes:
+      - ./backend/data/documents:/app/data/documents
     networks:
       - tfg-network
     depends_on:
