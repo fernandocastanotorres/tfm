@@ -33,5 +33,7 @@ public record CaseDetail(
         @Schema(description = "Procedure type identifier for resuming wizard")
         UUID procedureTypeId,
         @Schema(description = "Stored form data (only populated for DRAFT/AMENDMENT_REQUIRED)")
-        Map<String, Object> formData
+        Map<String, Object> formData,
+        @Schema(description = "Business record number", example = "EXP/URB/2026/000123")
+        String recordNumber
 ) {}

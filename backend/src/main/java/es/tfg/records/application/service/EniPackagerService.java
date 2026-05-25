@@ -100,7 +100,9 @@ public class EniPackagerService {
              ZipOutputStream zos = new ZipOutputStream(baos)) {
 
             String timestamp = ENI_DATE_FMT.format(Instant.now().atOffset(ZoneOffset.UTC));
-            String caseRef = "EXP-" + caseId.toString().substring(0, 8).toUpperCase();
+            String caseRef = (procedure.getRecordNumber() != null && !procedure.getRecordNumber().isBlank())
+                    ? procedure.getRecordNumber()
+                    : "EXP-" + caseId.toString().substring(0, 8).toUpperCase();
 
             for (Document doc : documents) {
                 byte[] content = readDocumentContent(caseId, doc);

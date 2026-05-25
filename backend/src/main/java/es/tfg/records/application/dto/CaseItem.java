@@ -23,5 +23,7 @@ public record CaseItem(
         @Schema(description = "Procedure category", example = "Civil Registry")
         String category,
         @Schema(description = "Assigned administrative unit", example = "Unit A1")
-        String assignedUnit
+        String assignedUnit,
+        @Schema(description = "Business record number", example = "EXP/URB/2026/000123")
+        String recordNumber
 ) {}

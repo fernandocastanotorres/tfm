@@ -160,7 +160,10 @@ public class BackofficeService {
     public PagedResponse<BackofficeDtos.AdminCaseItem> listCases(int page, int size, String status) {
         int clampedPage = Math.max(0, page);
         int clampedSize = Math.min(Math.max(1, size), 100);
-        Page<ProcedureEntity> result = procedureRepository.findAll(PageRequest.of(clampedPage, clampedSize));
+        Page<ProcedureEntity> result = procedureRepository.findAll(PageRequest.of(
+                clampedPage,
+                clampedSize,
+                org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "updatedAt")));
         Map<UUID, ProcedureTypeEntity> types = procedureTypeRepository.findAll().stream()
                 .collect(Collectors.toMap(ProcedureTypeEntity::getId, Function.identity()));
         List<BackofficeDtos.AdminCaseItem> items = result.getContent().stream()
@@ -374,7 +377,7 @@ public class BackofficeService {
         procedure.setStatus(parseStatus(status));
         ProcedureEntity saved = procedureRepository.save(procedure);
         addTimelineEvent(saved.getId(), "Cambio de estado", "Backoffice actualizo estado a: " + saved.getStatus().name());
-        return new CaseStatusResponse(saved.getId(), saved.getStatus().name(), saved.getUpdatedAt(), currentTask(saved, null));
+        return new CaseStatusResponse(saved.getId(), saved.getStatus().name(), saved.getUpdatedAt(), currentTask(saved, null), saved.getRecordNumber());
     }
 
     @Transactional(readOnly = true)
@@ -770,7 +773,7 @@ public class BackofficeService {
                 .map(this::parseFormSchema)
                 .orElse(List.of());
         return new BackofficeDtos.ManagedProcedure(
-                entity.getId(), entity.getTitle(), entity.getDescription(), entity.getTitle(), entity.getStatus(), entity.getProcessKey(), entity.getUnit(),
+                entity.getId(), entity.getTitle(), entity.getDescription(), entity.getTitle(), entity.getStatus(), entity.getProcessKey(), entity.getUnit(), entity.getUnitCode(),
                 entity.getDeadlineDays(), entity.getFeeAmount(), entity.getCreatedAt(), entity.getUpdatedAt(), tasks.stream().map(this::toTaskConfig).toList(), formSchema);
     }
 
@@ -784,8 +787,25 @@ public class BackofficeService {
         entity.setStatus(request.status());
         entity.setProcessKey((request.processKey() == null || request.processKey().isBlank()) ? "simpleCitizenProcedure" : request.processKey().trim());
         entity.setUnit(request.assignedUnit());
+        entity.setUnitCode(normalizeUnitCode(request.unitCode(), request.assignedUnit()));
         entity.setDeadlineDays(request.deadlineDays());
         entity.setFeeAmount(request.feeAmount());
+    }
+
+    private String normalizeUnitCode(String requestedUnitCode, String fallbackUnitName) {
+        String base = requestedUnitCode;
+        if (base == null || base.isBlank()) {
+            base = fallbackUnitName;
+        }
+        if (base == null || base.isBlank()) {
+            return "GEN";
+        }
+
+        String normalized = base.toUpperCase(java.util.Locale.ROOT).replaceAll("[^A-Z0-9]", "");
+        if (normalized.isBlank()) {
+            return "GEN";
+        }
+        return normalized.length() > 8 ? normalized.substring(0, 8) : normalized;
     }
 
     private void replaceTasks(UUID procedureTypeId,

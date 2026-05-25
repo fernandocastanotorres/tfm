@@ -17,6 +17,7 @@ public class ProcedureType {
     private int deadlineDays;
     private String status;
     private String unit;
+    private String unitCode;
     private String processKey;
     private List<ProcedureTask> tasks;
     private Instant createdAt;
@@ -99,6 +100,14 @@ public class ProcedureType {
 
     public void setTasks(List<ProcedureTask> tasks) {
         this.tasks = tasks;
+    }
+
+    public String getUnitCode() {
+        return unitCode;
+    }
+
+    public void setUnitCode(String unitCode) {
+        this.unitCode = unitCode;
     }
 
     public String getProcessKey() {

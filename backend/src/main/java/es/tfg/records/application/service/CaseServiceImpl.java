@@ -31,14 +31,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.security.MessageDigest;
 import java.util.*;
@@ -64,6 +67,7 @@ public class CaseServiceImpl implements CaseService {
     private final FileStorageService fileStorageService;
     private final WorkflowService workflowService;
     private final ObjectMapper objectMapper;
+    private final JdbcTemplate jdbcTemplate;
     private final String publicSedeBaseUrl;
 
     public CaseServiceImpl(ProcedureRepository procedureRepository,
@@ -76,6 +80,7 @@ public class CaseServiceImpl implements CaseService {
                            FileStorageService fileStorageService,
                            WorkflowService workflowService,
                            ObjectMapper objectMapper,
+                           JdbcTemplate jdbcTemplate,
                            @Value("${app.public-sede-base-url:http://localhost:4200/sede}") String publicSedeBaseUrl) {
         this.procedureRepository = procedureRepository;
         this.procedureTypeRepository = procedureTypeRepository;
@@ -87,6 +92,7 @@ public class CaseServiceImpl implements CaseService {
         this.fileStorageService = fileStorageService;
         this.workflowService = workflowService;
         this.objectMapper = objectMapper;
+        this.jdbcTemplate = jdbcTemplate;
         this.publicSedeBaseUrl = publicSedeBaseUrl;
     }
 
@@ -163,6 +169,7 @@ public class CaseServiceImpl implements CaseService {
         procedure.setOwnerId(ownerId);
         procedure.setTitle(procedureType.getTitle());
         procedure.setAssignedUnit(procedureType.getUnit());
+        procedure.setUnitCode(normalizeUnitCode(procedureType.getUnitCode(), procedureType.getUnit()));
         procedure.setStatus(CaseStatus.DRAFT);
         procedure.setFormData(request.formData() != null ? serializeFormData(request.formData()) : null);
         procedure.setSubmittedAt(null);
@@ -176,6 +183,7 @@ public class CaseServiceImpl implements CaseService {
     }
 
     @Override
+    @Transactional
     public CaseStatusResponse submitCase(UUID caseId, UUID ownerId) {
         Procedure procedure = findAndVerifyOwnership(caseId, ownerId);
 
@@ -187,6 +195,9 @@ public class CaseServiceImpl implements CaseService {
 
         procedure.setStatus(CaseStatus.SUBMITTED);
         procedure.setSubmittedAt(Instant.now());
+        String unitCode = normalizeUnitCode(procedure.getUnitCode(), procedure.getAssignedUnit());
+        procedure.setUnitCode(unitCode);
+        procedure.setRecordNumber(generateRecordNumber(unitCode, procedure.getSubmittedAt()));
         Procedure saved = procedureRepository.save(procedure);
         addTimelineEvent(saved.getId(), "Expediente enviado", "El ciudadano ha presentado el expediente.");
         startWorkflowForSubmittedCase(saved);
@@ -279,6 +290,41 @@ public class CaseServiceImpl implements CaseService {
         }
     }
 
+    private String generateRecordNumber(String unitCode, Instant submittedAt) {
+        int year = submittedAt.atZone(ZoneOffset.UTC).getYear();
+        Long nextValue = jdbcTemplate.queryForObject(
+                """
+                INSERT INTO procedure_record_counters (unit_code, year, last_value)
+                VALUES (?, ?, 1)
+                ON CONFLICT (unit_code, year)
+                DO UPDATE SET last_value = procedure_record_counters.last_value + 1
+                RETURNING last_value
+                """,
+                Long.class,
+                unitCode,
+                year
+        );
+
+        long counter = nextValue == null ? 1L : nextValue;
+        return String.format("EXP/%s/%d/%06d", unitCode, year, counter);
+    }
+
+    private String normalizeUnitCode(String requestedUnitCode, String fallbackUnitName) {
+        String base = requestedUnitCode;
+        if (base == null || base.isBlank()) {
+            base = fallbackUnitName;
+        }
+        if (base == null || base.isBlank()) {
+            return "GEN";
+        }
+
+        String normalized = base.toUpperCase(Locale.ROOT).replaceAll("[^A-Z0-9]", "");
+        if (normalized.isBlank()) {
+            return "GEN";
+        }
+        return normalized.length() > 8 ? normalized.substring(0, 8) : normalized;
+    }
+
     @Override
     public CaseStatusResponse requestAmendment(UUID caseId, UUID ownerId, CreateCaseRequest request) {
         Procedure procedure = findAndVerifyOwnership(caseId, ownerId);
@@ -336,6 +382,9 @@ public class CaseServiceImpl implements CaseService {
         pdfDocument.add(new Paragraph("Justificante de presentacion de expediente", titleFont));
         pdfDocument.add(new Paragraph(" "));
         pdfDocument.add(new Paragraph("Identificador: " + procedure.getId(), bodyFont));
+        if (procedure.getRecordNumber() != null && !procedure.getRecordNumber().isBlank()) {
+            pdfDocument.add(new Paragraph("Numero de expediente: " + procedure.getRecordNumber(), bodyFont));
+        }
         pdfDocument.add(new Paragraph("Titulo: " + procedure.getTitle(), bodyFont));
         pdfDocument.add(new Paragraph("Estado: " + procedure.getStatus().name(), bodyFont));
         String submittedAt = procedure.getSubmittedAt() == null
@@ -354,6 +403,7 @@ public class CaseServiceImpl implements CaseService {
         String digest = sha256Hex(String.join("|",
                 procedure.getId().toString(),
                 procedure.getTitle(),
+                String.valueOf(procedure.getRecordNumber()),
                 procedure.getStatus().name(),
                 String.valueOf(procedure.getSubmittedAt()),
                 String.valueOf(procedure.getAssignedUnit()),

@@ -44,7 +44,7 @@ class AdminCaseControllerTest {
     void updateCaseStatus_shouldReturn200() throws Exception {
         UUID caseId = UUID.randomUUID();
         when(backofficeService.updateCaseStatus(eq(caseId), eq("APPROVED")))
-                .thenReturn(new CaseStatusResponse(caseId, "APPROVED", Instant.now(), null));
+                .thenReturn(new CaseStatusResponse(caseId, "APPROVED", Instant.now(), null, null));
 
         mockMvc.perform(patch("/admin/procedures/{id}/status", caseId)
                         .queryParam("status", "APPROVED"))
@@ -159,7 +159,7 @@ class AdminCaseControllerTest {
                   "notes": "All documents verified"
                 }
                 """;
-        var response = new CaseStatusResponse(caseId, "APPROVED", Instant.now(), null);
+        var response = new CaseStatusResponse(caseId, "APPROVED", Instant.now(), null, null);
         when(backofficeService.resolveTask(eq(caseId), any(BackofficeDtos.TaskResolutionRequest.class)))
                 .thenReturn(response);
 

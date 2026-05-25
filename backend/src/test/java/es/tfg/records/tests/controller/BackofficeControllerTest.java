@@ -177,7 +177,7 @@ class BackofficeControllerTest {
     void listProcedureTypes_shouldReturnProcedures() throws Exception {
         UUID procId = UUID.randomUUID();
         when(backofficeService.listProcedures()).thenReturn(List.of(
-                new BackofficeDtos.ManagedProcedure(procId, "Licencias", "Desc", null, "active", "simpleCitizenProcedure", "Unit A", 10, null, null, null, List.of(), List.of())
+                new BackofficeDtos.ManagedProcedure(procId, "Licencias", "Desc", null, "active", "simpleCitizenProcedure", "Unit A", null, 10, null, null, null, List.of(), List.of())
         ));
 
         mockMvc.perform(get("/admin/procedure-types"))
@@ -189,9 +189,9 @@ class BackofficeControllerTest {
     void createProcedureType_shouldReturnCreated() throws Exception {
         UUID procId = UUID.randomUUID();
         BackofficeDtos.ProcedureRequest request = new BackofficeDtos.ProcedureRequest(
-                "New Procedure", "Description", "category", "active", "simpleCitizenProcedure", "Unit", 10, null, List.of(), List.of());
+                "New Procedure", "Description", "category", "active", "simpleCitizenProcedure", "Unit", null, 10, null, List.of(), List.of());
         when(backofficeService.createProcedure(any())).thenReturn(
-                new BackofficeDtos.ManagedProcedure(procId, "New Procedure", "Description", null, "active", "simpleCitizenProcedure", "Unit", 10, null, null, null, List.of(), List.of()));
+                new BackofficeDtos.ManagedProcedure(procId, "New Procedure", "Description", null, "active", "simpleCitizenProcedure", "Unit", null, 10, null, null, null, List.of(), List.of()));
 
         mockMvc.perform(post("/admin/procedure-types")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -204,9 +204,9 @@ class BackofficeControllerTest {
     void updateProcedureType_shouldReturnUpdated() throws Exception {
         UUID procId = UUID.randomUUID();
         BackofficeDtos.ProcedureRequest request = new BackofficeDtos.ProcedureRequest(
-                "Updated", "New Desc", "category", "active", "simpleCitizenProcedure", "Unit", 15, null, List.of(), List.of());
+                "Updated", "New Desc", "category", "active", "simpleCitizenProcedure", "Unit", null, 15, null, List.of(), List.of());
         when(backofficeService.updateProcedure(eq(procId), any())).thenReturn(
-                new BackofficeDtos.ManagedProcedure(procId, "Updated", "New Desc", null, "active", "simpleCitizenProcedure", "Unit", 15, null, null, null, List.of(), List.of()));
+                new BackofficeDtos.ManagedProcedure(procId, "Updated", "New Desc", null, "active", "simpleCitizenProcedure", "Unit", null, 15, null, null, null, List.of(), List.of()));
 
         mockMvc.perform(put("/admin/procedure-types/{id}", procId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -219,7 +219,7 @@ class BackofficeControllerTest {
     void updateProcedureTypeStatus_shouldToggleStatus() throws Exception {
         UUID procId = UUID.randomUUID();
         when(backofficeService.toggleProcedureStatus(eq(procId), anyString())).thenReturn(
-                new BackofficeDtos.ManagedProcedure(procId, "Test", "Desc", null, "inactive", "simpleCitizenProcedure", "Unit", 10, null, null, null, List.of(), List.of()));
+                new BackofficeDtos.ManagedProcedure(procId, "Test", "Desc", null, "inactive", "simpleCitizenProcedure", "Unit", null, 10, null, null, null, List.of(), List.of()));
 
         mockMvc.perform(patch("/admin/procedure-types/{id}/status", procId)
                         .contentType(MediaType.APPLICATION_JSON)

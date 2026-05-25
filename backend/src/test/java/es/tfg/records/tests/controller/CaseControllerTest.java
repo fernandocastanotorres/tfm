@@ -50,7 +50,7 @@ class CaseControllerTest {
     @Test
     void listCases_shouldReturn200() throws Exception {
         UUID ownerId = UUID.randomUUID();
-        CaseItem item = new CaseItem(UUID.randomUUID(), "Test", "DRAFT", Instant.now(), null, "Cat", "Unit");
+        CaseItem item = new CaseItem(UUID.randomUUID(), "Test", "DRAFT", Instant.now(), null, "Cat", "Unit", null);
         PagedResponse<CaseItem> response = new PagedResponse<>(List.of(item), 0, 10, 1, 1);
         when(caseService.listCases(eq(ownerId), eq(0), eq(10), eq(null))).thenReturn(response);
 
@@ -64,7 +64,7 @@ class CaseControllerTest {
     void createCase_shouldReturn201() throws Exception {
         UUID ownerId = UUID.randomUUID();
         UUID procedureTypeId = UUID.randomUUID();
-        CaseItem created = new CaseItem(UUID.randomUUID(), "New Case", "DRAFT", Instant.now(), null, "Cat", "Unit");
+        CaseItem created = new CaseItem(UUID.randomUUID(), "New Case", "DRAFT", Instant.now(), null, "Cat", "Unit", null);
         when(caseService.createCase(eq(ownerId), any(CreateCaseRequest.class))).thenReturn(created);
 
         CreateCaseRequest req = new CreateCaseRequest(procedureTypeId.toString(), Map.of("field", "value"), null);
@@ -88,7 +88,7 @@ class CaseControllerTest {
         CaseDetail detail = new CaseDetail(
                 caseId, "Test Case", "SUBMITTED", "Civil Registry", "Unit A1",
                 Instant.now(), "Description", List.of(), List.of(),
-                UUID.randomUUID(), Map.of("field", "value"));
+                UUID.randomUUID(), Map.of("field", "value"), null);
         when(caseService.getCaseDetail(eq(caseId), eq(ownerId))).thenReturn(detail);
 
         mockMvc.perform(get("/citizen/procedures/{id}", caseId)
@@ -133,7 +133,7 @@ class CaseControllerTest {
     void getCaseStatus_shouldReturn200() throws Exception {
         UUID ownerId = UUID.randomUUID();
         UUID caseId = UUID.randomUUID();
-        CaseStatusResponse response = new CaseStatusResponse(caseId, "SUBMITTED", Instant.now(), "Document Review");
+        CaseStatusResponse response = new CaseStatusResponse(caseId, "SUBMITTED", Instant.now(), "Document Review", null);
         when(caseService.getCaseStatus(eq(caseId), eq(ownerId))).thenReturn(response);
 
         mockMvc.perform(get("/citizen/procedures/{id}/status", caseId)
@@ -178,7 +178,7 @@ class CaseControllerTest {
     void requestAmendment_shouldReturn200() throws Exception {
         UUID ownerId = UUID.randomUUID();
         UUID caseId = UUID.randomUUID();
-        CaseStatusResponse response = new CaseStatusResponse(caseId, "AMENDMENT_REQUIRED", Instant.now(), "Amend Documents");
+        CaseStatusResponse response = new CaseStatusResponse(caseId, "AMENDMENT_REQUIRED", Instant.now(), "Amend Documents", null);
         when(caseService.requestAmendment(eq(caseId), eq(ownerId), any())).thenReturn(response);
 
         mockMvc.perform(post("/citizen/procedures/{id}/amend", caseId)
@@ -194,7 +194,7 @@ class CaseControllerTest {
     void requestAmendment_shouldReturn200_withEmptyBody() throws Exception {
         UUID ownerId = UUID.randomUUID();
         UUID caseId = UUID.randomUUID();
-        CaseStatusResponse response = new CaseStatusResponse(caseId, "AMENDMENT_REQUIRED", Instant.now(), null);
+        CaseStatusResponse response = new CaseStatusResponse(caseId, "AMENDMENT_REQUIRED", Instant.now(), null, null);
         when(caseService.requestAmendment(eq(caseId), eq(ownerId), any())).thenReturn(response);
 
         mockMvc.perform(post("/citizen/procedures/{id}/amend", caseId)
@@ -242,7 +242,7 @@ class CaseControllerTest {
     void submitCase_shouldReturn200() throws Exception {
         UUID ownerId = UUID.randomUUID();
         UUID caseId = UUID.randomUUID();
-        CaseStatusResponse response = new CaseStatusResponse(caseId, "SUBMITTED", Instant.now(), "Document Review");
+        CaseStatusResponse response = new CaseStatusResponse(caseId, "SUBMITTED", Instant.now(), "Document Review", null);
         when(caseService.submitCase(eq(caseId), eq(ownerId))).thenReturn(response);
 
         mockMvc.perform(post("/citizen/procedures/{id}/submit", caseId)
@@ -300,7 +300,7 @@ class CaseControllerTest {
         UUID ownerId = UUID.randomUUID();
         UUID caseId = UUID.randomUUID();
         UUID procedureTypeId = UUID.randomUUID();
-        CaseStatusResponse response = new CaseStatusResponse(caseId, "DRAFT", Instant.now(), null);
+        CaseStatusResponse response = new CaseStatusResponse(caseId, "DRAFT", Instant.now(), null, null);
         when(caseService.updateDraft(eq(caseId), eq(ownerId), any(CreateCaseRequest.class))).thenReturn(response);
 
         CreateCaseRequest req = new CreateCaseRequest(procedureTypeId.toString(), Map.of("field", "updated"), null);

@@ -46,11 +46,17 @@ public class ProcedureEntity {
     @Column(name = "assigned_unit", length = 100)
     private String assignedUnit;
 
+    @Column(name = "unit_code", length = 20)
+    private String unitCode;
+
     @Column(name = "process_instance_id", length = 100)
     private String processInstanceId;
 
     @Column(name = "submitted_at")
     private Instant submittedAt;
+
+    @Column(name = "record_number", length = 40)
+    private String recordNumber;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -127,12 +133,28 @@ public class ProcedureEntity {
         this.processInstanceId = processInstanceId;
     }
 
+    public String getUnitCode() {
+        return unitCode;
+    }
+
+    public void setUnitCode(String unitCode) {
+        this.unitCode = unitCode;
+    }
+
     public Instant getSubmittedAt() {
         return submittedAt;
     }
 
     public void setSubmittedAt(Instant submittedAt) {
         this.submittedAt = submittedAt;
+    }
+
+    public String getRecordNumber() {
+        return recordNumber;
+    }
+
+    public void setRecordNumber(String recordNumber) {
+        this.recordNumber = recordNumber;
     }
 
     public Instant getCreatedAt() {

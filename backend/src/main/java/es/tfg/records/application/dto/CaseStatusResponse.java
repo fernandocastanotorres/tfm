@@ -17,5 +17,7 @@ public record CaseStatusResponse(
         @Schema(description = "Timestamp of last status change")
         Instant statusUpdatedAt,
         @Schema(description = "Current workflow task name", example = "Document Review")
-        String currentTask
+        String currentTask,
+        @Schema(description = "Business record number", example = "EXP/URB/2026/000123")
+        String recordNumber
 ) {}

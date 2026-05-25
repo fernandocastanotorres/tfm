@@ -389,7 +389,7 @@ class BackofficeServiceTest {
         when(procedureTypeRepository.save(any())).thenReturn(saved);
 
         var result = service.createProcedure(new BackofficeDtos.ProcedureRequest(
-                "New Procedure", "Description", null, "active", "simpleCitizenProcedure", "Unit A", 10, null, List.of(), List.of()));
+                "New Procedure", "Description", null, "active", "simpleCitizenProcedure", "Unit A", null, 10, null, List.of(), List.of()));
 
         assertThat(result.title()).isEqualTo("New Procedure");
         verify(procedureTypeRepository).save(any());
@@ -403,7 +403,7 @@ class BackofficeServiceTest {
         when(procedureTypeRepository.save(any())).thenReturn(existing);
 
         var result = service.updateProcedure(procId, new BackofficeDtos.ProcedureRequest(
-                "New Title", "New Desc", null, "active", "simpleCitizenProcedure", "Unit B", 15, null, List.of(), List.of()));
+                "New Title", "New Desc", null, "active", "simpleCitizenProcedure", "Unit B", null, 15, null, List.of(), List.of()));
 
         assertThat(result.title()).isEqualTo("New Title");
     }
@@ -413,7 +413,7 @@ class BackofficeServiceTest {
         when(procedureTypeRepository.findById(any())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.updateProcedure(UUID.randomUUID(), new BackofficeDtos.ProcedureRequest(
-                "Title", "Desc", null, "active", "simpleCitizenProcedure", "Unit", 10, null, List.of(), List.of())))
+                "Title", "Desc", null, "active", "simpleCitizenProcedure", "Unit", null, 10, null, List.of(), List.of())))
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 

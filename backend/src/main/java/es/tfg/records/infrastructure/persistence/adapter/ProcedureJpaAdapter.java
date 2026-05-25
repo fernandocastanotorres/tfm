@@ -5,6 +5,7 @@ import es.tfg.records.domain.port.ProcedureRepository;
 import es.tfg.records.infrastructure.persistence.mapper.ProcedureEntityMapper;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureJpaRepository;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class ProcedureJpaAdapter implements ProcedureRepository {
 
     @Override
     public List<Procedure> findByOwnerId(UUID ownerId, int page, int size) {
-        var pageable = PageRequest.of(page, size);
+        var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt"));
         var pageResult = jpaRepository.findByOwnerId(ownerId, pageable);
         return ProcedureEntityMapper.toDomainList(pageResult.getContent());
     }

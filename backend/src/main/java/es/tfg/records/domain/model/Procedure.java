@@ -15,8 +15,10 @@ public class Procedure {
     private CaseStatus status;
     private String formData;
     private String assignedUnit;
+    private String unitCode;
     private String processInstanceId;
     private Instant submittedAt;
+    private String recordNumber;
     private Instant createdAt;
     private Instant updatedAt;
 
@@ -100,12 +102,28 @@ public class Procedure {
         this.processInstanceId = processInstanceId;
     }
 
+    public String getUnitCode() {
+        return unitCode;
+    }
+
+    public void setUnitCode(String unitCode) {
+        this.unitCode = unitCode;
+    }
+
     public Instant getSubmittedAt() {
         return submittedAt;
     }
 
     public void setSubmittedAt(Instant submittedAt) {
         this.submittedAt = submittedAt;
+    }
+
+    public String getRecordNumber() {
+        return recordNumber;
+    }
+
+    public void setRecordNumber(String recordNumber) {
+        this.recordNumber = recordNumber;
     }
 
     public Instant getCreatedAt() {

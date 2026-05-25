@@ -27,7 +27,8 @@ public final class ProcedureMapper {
                 procedure.getUpdatedAt(),
                 procedure.getSubmittedAt(),
                 category,
-                procedure.getAssignedUnit()
+                procedure.getAssignedUnit(),
+                procedure.getRecordNumber()
         );
     }
 
@@ -48,7 +49,8 @@ public final class ProcedureMapper {
                 timeline == null ? Collections.emptyList() : timeline,
                 attachments == null ? Collections.emptyList() : attachments,
                 procedure.getProcedureTypeId(),
-                formData
+                formData,
+                procedure.getRecordNumber()
         );
     }
 
@@ -57,7 +59,8 @@ public final class ProcedureMapper {
                 procedure.getId(),
                 procedure.getStatus().name(),
                 procedure.getUpdatedAt(),
-                currentTask
+                currentTask,
+                procedure.getRecordNumber()
         );
     }
 }
