@@ -56,6 +56,7 @@
             <div>
               <h3 class="text-lg font-semibold">{{ caseItem.title | translate }}</h3>
               <p class="text-surface-500 text-sm">{{ caseItem.id }} · {{ caseItem.procedureType | translate }}</p>
+              <p class="text-surface-500 text-sm" *ngIf="caseItem.recordNumber">{{ caseItem.recordNumber }}</p>
             </div>
             <span class="px-3 py-1 rounded-full text-xs font-semibold" [ngClass]="statusClass(caseItem.status)">
               {{ 'CASE_STATUS.' + toCaseStatusKey(caseItem.status) | translate }}
@@ -81,6 +82,7 @@
         <h3 class="text-lg font-semibold">{{ 'DASHBOARD.DETAIL_TITLE' | translate }}</h3>
         <div class="mt-4 space-y-2 text-surface-700">
           <p><strong>{{ 'DASHBOARD.DETAIL_ID' | translate }}:</strong> {{ selectedCase.id }}</p>
+          <p *ngIf="selectedCase.recordNumber"><strong>{{ 'CASE_DETAIL.RECORD_NUMBER' | translate }}:</strong> {{ selectedCase.recordNumber }}</p>
           <p><strong>{{ 'DASHBOARD.DETAIL_TYPE' | translate }}:</strong> {{ selectedCase.procedureType | translate }}</p>
           <p><strong>{{ 'DASHBOARD.DETAIL_STATUS' | translate }}:</strong> {{ 'CASE_STATUS.' + toCaseStatusKey(selectedCase.status) | translate }}</p>
           <p><strong>{{ 'DASHBOARD.DETAIL_SUBMITTED' | translate }}:</strong> {{ selectedCase.createdAt | date:'dd/MM/yyyy' }}</p>
@@ -103,8 +105,12 @@
     <h2 id="notificaciones-title" class="text-xl font-semibold text-surface-900">{{ 'DASHBOARD.NOTIFICATIONS' | translate }}</h2>
     <ul class="mt-6 grid gap-4">
       <li class="card p-5" *ngFor="let notification of notifications; trackBy: trackByIndex">
-        <p>{{ notification.messageKey | translate }}</p>
-        <span class="text-surface-500 text-sm">{{ notification.date }}</span>
+        <p>{{ notification.message }}</p>
+        <p class="text-surface-500 text-sm">{{ (notification.recordNumber || notification.caseId) }} · {{ notification.caseTitle }}</p>
+        <span class="text-surface-500 text-sm">{{ notification.date | date:'dd/MM/yyyy HH:mm' }}</span>
+      </li>
+      <li *ngIf="notifications.length === 0" class="card p-5 text-surface-600">
+        {{ 'NOTIFICATIONS.EMPTY' | translate }}
       </li>
     </ul>
   </section>

@@ -1,0 +1,103 @@
+apiVersion: 1
+
+groups:
+  - orgId: 1
+    name: tfg-observability
+    folder: TFG Observability
+    interval: 1m
+    rules:
+      - uid: backend-error-burst
+        title: Backend error burst
+        condition: C
+        for: 5m
+        noDataState: NoData
+        execErrState: Error
+        annotations:
+          summary: "High backend ERROR rate"
+          description: "Backend emits more than 10 ERROR events in 5 minutes."
+        labels:
+          severity: warning
+          service: backend
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: loki
+            model:
+              editorMode: code
+              expr: sum(count_over_time({compose_service="backend",level="ERROR"}[5m]))
+              instant: true
+              maxLines: 0
+              queryType: instant
+              refId: A
+          - refId: C
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              expression: A
+              type: threshold
+              refId: C
+              conditions:
+                - evaluator:
+                    params:
+                      - 10
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    type: last
+                  type: query
+
+      - uid: backend-log-silence
+        title: Backend logging silence
+        condition: C
+        for: 10m
+        noDataState: Alerting
+        execErrState: Error
+        annotations:
+          summary: "No backend logs detected"
+          description: "No backend logs were ingested in the last 10 minutes."
+        labels:
+          severity: critical
+          service: backend
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: loki
+            model:
+              editorMode: code
+              expr: sum(count_over_time({compose_service="backend"}[10m]))
+              instant: true
+              maxLines: 0
+              queryType: instant
+              refId: A
+          - refId: C
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              expression: A
+              type: threshold
+              refId: C
+              conditions:
+                - evaluator:
+                    params:
+                      - 1
+                    type: lt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    type: last
+                  type: query

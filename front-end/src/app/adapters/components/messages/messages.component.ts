@@ -193,7 +193,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
       const matchesSearch =
         thread.caseTitle.toLowerCase().includes(search) ||
         thread.lastMessagePreview.toLowerCase().includes(search) ||
-        thread.procedureId.toLowerCase().includes(search);
+        thread.procedureId.toLowerCase().includes(search) ||
+        (thread.recordNumber ?? '').toLowerCase().includes(search);
       const matchesStatus = status === 'all' || (status === 'unread' ? thread.unreadCount > 0 : thread.unreadCount === 0);
       const matchesCase = caseId === 'all' || thread.procedureId === caseId;
       return matchesSearch && matchesStatus && matchesCase;
@@ -218,7 +219,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
     const uniqueCases = new Map<string, string>();
     this.threads.forEach((thread) => {
       if (!uniqueCases.has(thread.procedureId)) {
-        uniqueCases.set(thread.procedureId, thread.caseTitle);
+        const caseLabel = thread.recordNumber ? `${thread.caseTitle} (${thread.recordNumber})` : thread.caseTitle;
+        uniqueCases.set(thread.procedureId, caseLabel);
       }
     });
     return Array.from(uniqueCases.entries()).map(([id, label]) => ({ id, label }));

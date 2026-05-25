@@ -5,6 +5,7 @@
 
 export interface CaseItem {
   id: string;
+  recordNumber?: string | null;
   procedureType: string;
   status: string;
   createdAt: string;
@@ -35,6 +36,7 @@ export interface CaseAttachment {
 
 export interface CaseDetail {
   id: string;
+  recordNumber?: string | null;
   procedureType: string;
   status: string;
   createdAt: string;
@@ -51,6 +53,7 @@ export interface CaseDetail {
 
 export interface CaseStatusResponse {
   id: string;
+  recordNumber?: string | null;
   status: string;
   currentTask: string;
   lastUpdated: string;

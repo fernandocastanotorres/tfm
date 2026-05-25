@@ -1,10 +1,8 @@
-import { Injectable } from '@angular/core';
-
-export interface NotificationItem {
-  id: string;
-  messageKey: string;
-  date: string;
-}
+import { Injectable, inject } from '@angular/core';
+import { map, Observable } from 'rxjs';
+import { MessagesService } from './messages.service';
+import { DashboardNotificationItem } from '../models/notification.models';
+import { mapThreadsToDashboardNotifications } from '../utils/thread-notification.mapper';
 
 export interface QuickAccessItem {
   id: string;
@@ -17,20 +15,12 @@ export interface QuickAccessItem {
   providedIn: 'root'
 })
 export class DashboardService {
-  getNotifications(): NotificationItem[] {
-    // @todo Replace mock data with real backend endpoint
-    return [
-      {
-        id: 'NOT-1',
-        messageKey: 'DASHBOARD.MOCK_NOTIFICATION_REVIEW',
-        date: '14/05/2026'
-      },
-      {
-        id: 'NOT-2',
-        messageKey: 'DASHBOARD.MOCK_NOTIFICATION_DOCUMENTS',
-        date: '12/05/2026'
-      }
-    ];
+  private readonly messagesService = inject(MessagesService);
+
+  getNotifications(): Observable<DashboardNotificationItem[]> {
+    return this.messagesService.getThreads().pipe(
+      map((threads) => mapThreadsToDashboardNotifications(threads))
+    );
   }
 
   getQuickAccess(): QuickAccessItem[] {

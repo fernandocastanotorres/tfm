@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty scope="context" name="appName" source="spring.application.name" defaultValue="records-api"/>
+    <springProperty scope="context" name="activeProfile" source="spring.profiles.active" defaultValue="default"/>
+
+    <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp>
+                    <fieldName>@timestamp</fieldName>
+                    <timeZone>UTC</timeZone>
+                </timestamp>
+                <version/>
+                <pattern>
+                    <pattern>
+                        {
+                          "service":"${appName}",
+                          "environment":"${activeProfile}",
+                          "correlationId":"%mdc{correlationId:-}",
+                          "traceId":"%mdc{traceId:-}",
+                          "spanId":"%mdc{spanId:-}"
+                        }
+                    </pattern>
+                </pattern>
+                <logLevel fieldName="level"/>
+                <threadName fieldName="thread"/>
+                <loggerName fieldName="logger_name"/>
+                <message fieldName="message"/>
+                <mdc/>
+                <stackTrace fieldName="stack_trace"/>
+            </providers>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="JSON_CONSOLE"/>
+    </root>
+
+    <logger name="es.tfg.records" level="DEBUG"/>
+    <logger name="org.springframework.security" level="WARN"/>
+</configuration>

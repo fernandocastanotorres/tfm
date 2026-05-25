@@ -65,7 +65,9 @@
               <span class="message-thread__time">{{ thread.lastMessageAt | date: 'dd/MM/yyyy HH:mm' }}</span>
             </div>
             <p class="message-thread__preview">{{ thread.lastMessagePreview || 'Sin mensajes' }}</p>
-            <p class="message-thread__case-id">Expediente: {{ thread.procedureId }}</p>
+            <p class="message-thread__case-id">
+              {{ 'CASE_DETAIL.RECORD_NUMBER' | translate }}: {{ thread.recordNumber || thread.procedureId }}
+            </p>
           </div>
           <div class="message-thread__meta">
             <span *ngIf="thread.unreadCount > 0" class="message-thread__badge">

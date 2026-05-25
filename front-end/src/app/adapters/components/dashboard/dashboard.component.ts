@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { DashboardService, NotificationItem, QuickAccessItem } from '../../../application/services/dashboard.service';
+import { DashboardService, QuickAccessItem } from '../../../application/services/dashboard.service';
 import { CasesApiService } from '../../../application/services/cases-api.service';
 import { CaseItem } from '../../../application/models/case.models';
+import { DashboardNotificationItem } from '../../../application/models/notification.models';
 import { ToastService } from '../../../application/services/toast.service';
 import { changePage, updatePageSize, getPaginationState, PaginationState } from '../../../application/utils/pagination';
 
@@ -15,7 +16,7 @@ import { trackByIndex } from '../../../application/utils/track-by.utils';
 })
 export class DashboardComponent implements OnInit {
   cases: CaseItem[] = [];
-  notifications: NotificationItem[] = [];
+  notifications: DashboardNotificationItem[] = [];
   quickAccess: QuickAccessItem[] = [];
   selectedCase: CaseItem | null = null;
   readonly paginationOptions = [10, 20, 50];
@@ -38,8 +39,16 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Load notifications and quick access from mock service (no backend endpoint yet)
-    this.notifications = this.dashboardService.getNotifications();
+    this.dashboardService.getNotifications().subscribe({
+      next: (items) => {
+        this.notifications = items;
+      },
+      error: (err) => {
+        this.notifications = [];
+        this.toast.error('Error al cargar', err?.error?.message ?? 'No se pudieron cargar las notificaciones.');
+      }
+    });
+
     this.quickAccess = this.dashboardService.getQuickAccess();
 
     // Load cases from backend API

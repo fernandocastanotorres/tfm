@@ -31,7 +31,7 @@
         <select id="notifications-case" formControlName="caseId" class="field-input w-44">
           <option value="all">{{ 'NOTIFICATIONS.FILTER_CASE_ALL' | translate }}</option>
           <option *ngFor="let caseOption of caseOptions; trackBy: trackByIndex" [value]="caseOption.id">
-            {{ caseOption.id }} · {{ caseOption.labelKey | translate }}
+            {{ caseOption.recordNumber || caseOption.id }} · {{ caseOption.label }}
           </option>
         </select>
         <label class="sr-only" for="notifications-sort">{{ 'NOTIFICATIONS.SORT_LABEL' | translate }}</label>
@@ -60,10 +60,10 @@
       >
         <div class="flex items-start justify-between gap-4">
           <div>
-            <h2 class="text-lg font-semibold text-surface-900">{{ item.titleKey | translate }}</h2>
-            <p class="text-surface-600 mt-2">{{ item.messageKey | translate }}</p>
-            <p class="text-surface-500 text-sm mt-2">{{ item.caseId }} · {{ item.caseTitleKey | translate }}</p>
-            <p class="text-surface-500 text-sm mt-2">{{ item.date }}</p>
+            <h2 class="text-lg font-semibold text-surface-900">{{ item.title }}</h2>
+            <p class="text-surface-600 mt-2">{{ item.message }}</p>
+            <p class="text-surface-500 text-sm mt-2">{{ (item.recordNumber || item.caseId) }} · {{ item.caseTitle }}</p>
+            <p class="text-surface-500 text-sm mt-2">{{ item.date | date:'dd/MM/yyyy HH:mm' }}</p>
           </div>
           <span class="text-xs font-semibold px-3 py-1 rounded-full" [ngClass]="item.read ? 'bg-surface-100 text-surface-600' : 'bg-brand-100 text-brand-700'">
             {{ item.read ? ('NOTIFICATIONS.READ' | translate) : ('NOTIFICATIONS.NEW' | translate) }}
@@ -93,10 +93,10 @@
       <h2 class="text-lg font-semibold text-surface-900">{{ 'NOTIFICATIONS.DETAIL_TITLE' | translate }}</h2>
       <div class="mt-4 space-y-2">
         <p class="text-sm text-surface-500">{{ selectedItem.typeKey | translate }}</p>
-        <p class="text-base font-semibold text-surface-900">{{ selectedItem.titleKey | translate }}</p>
-        <p class="text-surface-600">{{ selectedItem.messageKey | translate }}</p>
-        <p class="text-sm text-surface-500">{{ selectedItem.caseId }} · {{ selectedItem.caseTitleKey | translate }}</p>
-        <p class="text-sm text-surface-500">{{ selectedItem.date }}</p>
+        <p class="text-base font-semibold text-surface-900">{{ selectedItem.title }}</p>
+        <p class="text-surface-600">{{ selectedItem.message }}</p>
+        <p class="text-sm text-surface-500">{{ (selectedItem.recordNumber || selectedItem.caseId) }} · {{ selectedItem.caseTitle }}</p>
+        <p class="text-sm text-surface-500">{{ selectedItem.date | date:'dd/MM/yyyy HH:mm' }}</p>
       </div>
     </section>
   </div>

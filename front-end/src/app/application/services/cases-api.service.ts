@@ -25,6 +25,7 @@ export class CasesApiService {
   private mapCaseItem(raw: any): CaseItem {
     return {
       id: raw.id,
+      recordNumber: raw.recordNumber ?? null,
       procedureType: raw.category ?? raw.procedureType ?? 'Procedimiento',
       status: raw.status,
       createdAt: raw.submittedAt ?? raw.lastUpdated,
@@ -48,6 +49,7 @@ export class CasesApiService {
 
     return {
       id: raw.id,
+      recordNumber: raw.recordNumber ?? null,
       procedureType: raw.category ?? raw.procedureType ?? 'Procedimiento',
       status: raw.status,
       createdAt: submittedAt,
@@ -76,6 +78,7 @@ export class CasesApiService {
   private mapStatus(raw: any): CaseStatusResponse {
     return {
       id: raw.id,
+      recordNumber: raw.recordNumber ?? null,
       status: raw.status,
       currentTask: raw.currentTask ?? '',
       lastUpdated: raw.lastUpdated ?? raw.statusUpdatedAt

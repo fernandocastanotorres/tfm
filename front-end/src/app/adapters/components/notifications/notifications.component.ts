@@ -10,10 +10,12 @@ import {
 } from '@angular/core';
 import { FocusKeyManager } from '@angular/cdk/a11y';
 import { FormBuilder } from '@angular/forms';
-import { NotificationsService, NotificationInboxItem } from '../../../application/services/notifications.service';
+import { NotificationsService } from '../../../application/services/notifications.service';
+import { NotificationInboxItem } from '../../../application/models/notification.models';
 import { changePage, updatePageSize, getPaginationState, PaginationState } from '../../../application/utils/pagination';
 import { Subject } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
+import { ToastService } from '../../../application/services/toast.service';
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
 
@@ -60,14 +62,26 @@ export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   constructor(
     private readonly notificationsService: NotificationsService,
-    private readonly fb: FormBuilder
+    private readonly fb: FormBuilder,
+    private readonly toast: ToastService
   ) {}
 
   ngOnInit(): void {
-    this.inbox = this.notificationsService.getInbox();
-    this.selectedItem = this.inbox[0] ?? null;
-    this.activeItemId = this.selectedItem?.id ?? null;
-    this.updatePaginationState();
+    this.notificationsService.getInbox().subscribe({
+      next: (items) => {
+        this.inbox = items;
+        this.selectedItem = this.inbox[0] ?? null;
+        this.activeItemId = this.selectedItem?.id ?? null;
+        this.updatePaginationState();
+      },
+      error: () => {
+        this.inbox = [];
+        this.selectedItem = null;
+        this.activeItemId = null;
+        this.updatePaginationState();
+        this.toast.error('Error al cargar', 'No se pudieron cargar las notificaciones.');
+      }
+    });
   }
 
   ngAfterViewInit(): void {
@@ -90,10 +104,11 @@ export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy 
 
     let items = this.inbox.filter((item) => {
       const matchesSearch =
-        item.titleKey.toLowerCase().includes(search) ||
-        item.messageKey.toLowerCase().includes(search) ||
+        item.title.toLowerCase().includes(search) ||
+        item.message.toLowerCase().includes(search) ||
         item.caseId.toLowerCase().includes(search) ||
-        item.caseTitleKey.toLowerCase().includes(search) ||
+        (item.recordNumber ?? '').toLowerCase().includes(search) ||
+        item.caseTitle.toLowerCase().includes(search) ||
         item.typeKey.toLowerCase().includes(search);
       const matchesStatus = status === 'all' || (status === 'unread' ? !item.read : item.read);
       const matchesType = type === 'all' || item.typeKey === type;
@@ -103,9 +118,9 @@ export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy 
 
     items = items.sort((a, b) => {
       if (sort === 'title') {
-        return a.titleKey.localeCompare(b.titleKey);
+        return a.title.localeCompare(b.title);
       }
-      return b.date.localeCompare(a.date);
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
 
     return items;
@@ -116,14 +131,18 @@ export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy 
     return this.filteredInbox.slice(start, start + this.paginationState.pageSize);
   }
 
-  get caseOptions(): { id: string; labelKey: string }[] {
-    const uniqueCases = new Map<string, string>();
+  get caseOptions(): { id: string; label: string; recordNumber?: string | null }[] {
+    const uniqueCases = new Map<string, { label: string; recordNumber?: string | null }>();
     this.inbox.forEach((item) => {
       if (!uniqueCases.has(item.caseId)) {
-        uniqueCases.set(item.caseId, item.caseTitleKey);
+        uniqueCases.set(item.caseId, { label: item.caseTitle, recordNumber: item.recordNumber ?? null });
       }
     });
-    return Array.from(uniqueCases.entries()).map(([id, labelKey]) => ({ id, labelKey }));
+    return Array.from(uniqueCases.entries()).map(([id, data]) => ({
+      id,
+      label: data.label,
+      recordNumber: data.recordNumber ?? null
+    }));
   }
 
   get typeOptions(): string[] {

@@ -10,6 +10,7 @@
       <p class="text-sm font-semibold text-brand-600">{{ 'CASE_DETAIL.EYEBROW' | translate }}</p>
       <h1 id="case-title" class="text-2xl font-semibold text-surface-900">{{ caseDetail.title | translate }}</h1>
       <p class="text-surface-600">{{ caseDetail.id }} · {{ caseDetail.procedureType | translate }}</p>
+      <p class="text-surface-600" *ngIf="caseDetail.recordNumber"><strong>{{ 'CASE_DETAIL.RECORD_NUMBER' | translate }}:</strong> {{ caseDetail.recordNumber }}</p>
       <span class="inline-flex w-fit px-3 py-1 rounded-full text-xs font-semibold" [ngClass]="statusClass(caseDetail.status)">
         {{ 'CASE_STATUS.' + toCaseStatusKey(caseDetail.status) | translate }}
       </span>
@@ -21,6 +22,7 @@
         <p class="text-surface-600 mt-2">{{ caseDetail.description | translate }}</p>
         <div class="mt-4 grid gap-3 sm:grid-cols-2">
           <p><strong>{{ 'CASE_DETAIL.STATUS' | translate }}:</strong> {{ 'CASE_STATUS.' + toCaseStatusKey(caseDetail.status) | translate }}</p>
+          <p *ngIf="caseDetail.recordNumber"><strong>{{ 'CASE_DETAIL.RECORD_NUMBER' | translate }}:</strong> {{ caseDetail.recordNumber }}</p>
           <p><strong>{{ 'CASE_DETAIL.UNIT' | translate }}:</strong> {{ caseDetail.assignedUnit | translate }}</p>
           <p><strong>{{ 'CASE_DETAIL.SUBMITTED' | translate }}:</strong> {{ caseDetail.createdAt | date:'dd/MM/yyyy' }}</p>
         </div>

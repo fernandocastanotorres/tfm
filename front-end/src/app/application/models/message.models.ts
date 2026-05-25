@@ -1,6 +1,7 @@
 export interface MessageThreadSummary {
   id: string;
   procedureId: string;
+  recordNumber?: string | null;
   caseTitle: string;
   lastMessagePreview: string;
   lastMessageAt: string;
