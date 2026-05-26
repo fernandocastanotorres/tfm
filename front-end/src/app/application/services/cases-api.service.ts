@@ -26,6 +26,7 @@ export class CasesApiService {
     return {
       id: raw.id,
       recordNumber: raw.recordNumber ?? null,
+      entryNumber: raw.entryNumber ?? null,
       procedureType: raw.category ?? raw.procedureType ?? 'Procedimiento',
       status: raw.status,
       createdAt: raw.submittedAt ?? raw.lastUpdated,
@@ -50,6 +51,7 @@ export class CasesApiService {
     return {
       id: raw.id,
       recordNumber: raw.recordNumber ?? null,
+      entryNumber: raw.entryNumber ?? null,
       procedureType: raw.category ?? raw.procedureType ?? 'Procedimiento',
       status: raw.status,
       createdAt: submittedAt,
@@ -66,9 +68,11 @@ export class CasesApiService {
         size: attachment.size,
         uploadedAt: attachment.uploadedAt,
         signed: attachment.signed ?? false,
-        hasOriginal: attachment.hasOriginal ?? true,
+        hasOriginal: attachment.hasOriginal ?? false,
         hasSigned: attachment.hasSigned ?? (attachment.signed ?? false),
-        csvCode: attachment.csvCode ?? null
+        csvCode: attachment.csvCode ?? null,
+        exitNumber: attachment.exitNumber ?? null,
+        generated: attachment.generated ?? false
       })),
       procedureTypeId: raw.procedureTypeId ?? '',
       formData: raw.formData ?? null
@@ -79,6 +83,7 @@ export class CasesApiService {
     return {
       id: raw.id,
       recordNumber: raw.recordNumber ?? null,
+      entryNumber: raw.entryNumber ?? null,
       status: raw.status,
       currentTask: raw.currentTask ?? '',
       lastUpdated: raw.lastUpdated ?? raw.statusUpdatedAt
@@ -136,9 +141,11 @@ export class CasesApiService {
         size: doc.size ?? 0,
         uploadedAt: doc.uploadedAt ?? doc.createdAt ?? new Date().toISOString(),
         signed: doc.signed ?? false,
-        hasOriginal: doc.hasOriginal ?? true,
+        hasOriginal: doc.hasOriginal ?? false,
         hasSigned: doc.hasSigned ?? (doc.signed ?? false),
-        csvCode: doc.csvCode ?? null
+        csvCode: doc.csvCode ?? null,
+        exitNumber: doc.exitNumber ?? null,
+        generated: doc.generated ?? false
       })))
     );
   }
