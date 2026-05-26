@@ -8,6 +8,8 @@ import { DashboardService } from '../../../application/services/dashboard.servic
 import { ToastService } from '../../../application/services/toast.service';
 import { environment } from '../../../../environments/environment';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
+import { CommonModule } from '@angular/common';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -27,12 +29,17 @@ describe('DashboardComponent', () => {
     totalPages: 1
   };
 
+  const flushNotifications = (items: any[] = []) => {
+    const notificationsReq = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/messages/threads`);
+    notificationsReq.flush(items);
+  };
+
   beforeEach(async () => {
     toastSpy = jasmine.createSpyObj('ToastService', ['error', 'success', 'warning']);
 
     await TestBed.configureTestingModule({
-    declarations: [DashboardComponent],
-    imports: [ReactiveFormsModule, TranslateModule.forRoot(), RouterTestingModule],
+    declarations: [DashboardComponent, LoadingSkeletonComponent],
+    imports: [CommonModule, ReactiveFormsModule, TranslateModule.forRoot(), RouterTestingModule],
     providers: [
       DashboardService,
       { provide: ToastService, useValue: toastSpy },
@@ -52,6 +59,7 @@ describe('DashboardComponent', () => {
 
   it('should load cases', fakeAsync(() => {
     fixture.detectChanges();
+    flushNotifications();
 
     const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures?page=0&size=10`);
     req.flush(mockPagedResponse);
@@ -63,6 +71,7 @@ describe('DashboardComponent', () => {
 
   it('should filter cases by status', fakeAsync(() => {
     fixture.detectChanges();
+    flushNotifications();
 
     const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures?page=0&size=10`);
     req.flush(mockPagedResponse);
@@ -74,6 +83,7 @@ describe('DashboardComponent', () => {
 
   it('should load mock data', fakeAsync(() => {
     fixture.detectChanges();
+    flushNotifications([{ id: 'thread-1', subject: 'Test' }]);
 
     const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures?page=0&size=10`);
     req.flush(mockPagedResponse);
@@ -86,6 +96,7 @@ describe('DashboardComponent', () => {
 
   it('should show toast error when API returns err.error.message', fakeAsync(() => {
     fixture.detectChanges();
+    flushNotifications();
     const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures?page=0&size=10`);
     req.flush({ message: 'Custom API error' }, { status: 500, statusText: 'Server Error' });
     tick();
@@ -95,6 +106,7 @@ describe('DashboardComponent', () => {
 
   it('should handle empty case list from API', fakeAsync(() => {
     fixture.detectChanges();
+    flushNotifications();
     const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures?page=0&size=10`);
     req.flush({ items: [], page: 0, size: 10, totalItems: 0, totalPages: 0 });
     tick();
@@ -105,6 +117,7 @@ describe('DashboardComponent', () => {
 
   it('should filter cases by search text matching title', fakeAsync(() => {
     fixture.detectChanges();
+    flushNotifications();
     const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures?page=0&size=10`);
     req.flush(mockPagedResponse);
     tick();
@@ -115,6 +128,7 @@ describe('DashboardComponent', () => {
 
   it('should filter cases by search text matching id', fakeAsync(() => {
     fixture.detectChanges();
+    flushNotifications();
     const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures?page=0&size=10`);
     req.flush(mockPagedResponse);
     tick();
@@ -125,6 +139,7 @@ describe('DashboardComponent', () => {
 
   it('should filter cases by search text matching procedureType', fakeAsync(() => {
     fixture.detectChanges();
+    flushNotifications();
     const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures?page=0&size=10`);
     req.flush(mockPagedResponse);
     tick();
@@ -147,6 +162,7 @@ describe('DashboardComponent', () => {
 
   it('should reject changePage with page less than 1', fakeAsync(() => {
     fixture.detectChanges();
+    flushNotifications();
     const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures?page=0&size=10`);
     req.flush(mockPagedResponse);
     tick();
@@ -157,6 +173,7 @@ describe('DashboardComponent', () => {
 
   it('should reject changePage with page greater than totalPages', fakeAsync(() => {
     fixture.detectChanges();
+    flushNotifications();
     const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures?page=0&size=10`);
     req.flush(mockPagedResponse);
     tick();
@@ -167,6 +184,7 @@ describe('DashboardComponent', () => {
 
   it('should accept changePage with valid page number', fakeAsync(() => {
     fixture.detectChanges();
+    flushNotifications();
     const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures?page=0&size=10`);
     req.flush(mockPagedResponse);
     tick();
@@ -180,6 +198,7 @@ describe('DashboardComponent', () => {
 
   it('should update page size to 20 and reset to page 1', fakeAsync(() => {
     fixture.detectChanges();
+    flushNotifications();
     const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures?page=0&size=10`);
     req.flush(mockPagedResponse);
     tick();
@@ -194,6 +213,7 @@ describe('DashboardComponent', () => {
 
   it('should clear filters and reload cases', fakeAsync(() => {
     fixture.detectChanges();
+    flushNotifications();
     const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures?page=0&size=10`);
     req.flush(mockPagedResponse);
     tick();
@@ -209,6 +229,7 @@ describe('DashboardComponent', () => {
 
   it('selectCase should set selectedCase', fakeAsync(() => {
     fixture.detectChanges();
+    flushNotifications();
     const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures?page=0&size=10`);
     req.flush(mockPagedResponse);
     tick();
@@ -219,6 +240,7 @@ describe('DashboardComponent', () => {
 
   it('summaryStats should compute correct counts', fakeAsync(() => {
     fixture.detectChanges();
+    flushNotifications();
     const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures?page=0&size=10`);
     req.flush(mockPagedResponse);
     tick();
@@ -229,6 +251,7 @@ describe('DashboardComponent', () => {
 
   it('loadCases should set isLoading to false on error without message', fakeAsync(() => {
     fixture.detectChanges();
+    flushNotifications();
     const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures?page=0&size=10`);
     req.flush(null, { status: 500, statusText: 'Server Error' });
     tick();

@@ -3,16 +3,47 @@ import { NotificationsComponent } from './notifications.component';
 import { NotificationsService } from '../../../application/services/notifications.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { of } from 'rxjs';
 
 describe('NotificationsComponent', () => {
   let component: NotificationsComponent;
   let fixture: ComponentFixture<NotificationsComponent>;
+  let notificationsServiceSpy: jasmine.SpyObj<NotificationsService>;
+
+  const mockInbox = [
+    {
+      id: 'n-1',
+      title: 'Review required',
+      message: 'Your case needs review',
+      caseId: 'EXP-2026-001',
+      caseTitle: 'License case',
+      recordNumber: 'REC-001',
+      typeKey: 'NOTIFICATIONS.TYPE_STATUS',
+      read: false,
+      date: '2026-05-01T10:00:00Z'
+    },
+    {
+      id: 'n-2',
+      title: 'Case updated',
+      message: 'There is a new update',
+      caseId: 'EXP-2026-002',
+      caseTitle: 'Permit case',
+      recordNumber: 'REC-002',
+      typeKey: 'NOTIFICATIONS.TYPE_MESSAGE',
+      read: true,
+      date: '2026-05-02T10:00:00Z'
+    }
+  ];
 
   beforeEach(async () => {
+    notificationsServiceSpy = jasmine.createSpyObj('NotificationsService', ['getInbox']);
+    notificationsServiceSpy.getInbox.and.returnValue(of(mockInbox as any));
+
     await TestBed.configureTestingModule({
       declarations: [NotificationsComponent],
-      imports: [TranslateModule.forRoot(), ReactiveFormsModule],
-      providers: [NotificationsService]
+      imports: [TranslateModule.forRoot(), ReactiveFormsModule, HttpClientTestingModule],
+      providers: [{ provide: NotificationsService, useValue: notificationsServiceSpy }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(NotificationsComponent);
@@ -30,8 +61,7 @@ describe('NotificationsComponent', () => {
   });
 
   it('should set selectedItem to null when inbox array is empty', () => {
-    const mockService = TestBed.inject(NotificationsService);
-    spyOn(mockService, 'getInbox').and.returnValue([]);
+    notificationsServiceSpy.getInbox.and.returnValue(of([]));
     component.ngOnInit();
     expect(component.selectedItem).toBeNull();
   });
@@ -58,7 +88,7 @@ describe('NotificationsComponent', () => {
     component.filterForm.patchValue({ sort: 'title' });
     const sorted = component.filteredInbox;
     for (let i = 1; i < sorted.length; i++) {
-      expect(sorted[i - 1].titleKey <= sorted[i].titleKey).toBeTrue();
+      expect(sorted[i - 1].title <= sorted[i].title).toBeTrue();
     }
   });
 

@@ -6,6 +6,8 @@ import { ProceduresComponent } from './procedures.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { ToastService } from '../../../application/services/toast.service';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
+import { CommonModule } from '@angular/common';
 
 describe('ProceduresComponent', () => {
   let component: ProceduresComponent;
@@ -19,8 +21,8 @@ describe('ProceduresComponent', () => {
     toastSpy = jasmine.createSpyObj('ToastService', ['error', 'success', 'warning']);
 
     await TestBed.configureTestingModule({
-      declarations: [ProceduresComponent],
-      imports: [RouterTestingModule, TranslateModule.forRoot(), HttpClientTestingModule],
+      declarations: [ProceduresComponent, LoadingSkeletonComponent],
+      imports: [CommonModule, RouterTestingModule, TranslateModule.forRoot(), HttpClientTestingModule],
       providers: [
         { provide: ToastService, useValue: toastSpy },
         provideHttpClient(withInterceptorsFromDi()),
