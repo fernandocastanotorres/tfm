@@ -71,6 +71,57 @@ services:
     logging: *default-logging
     restart: unless-stopped
 
+  prometheus:
+    image: prom/prometheus:v2.53.0
+    container_name: tfg-prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
+      - --web.enable-lifecycle
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infrastructure/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    networks:
+      - tfg-network
+    labels:
+      observability.environment: ${OBS_ENVIRONMENT:-dev}
+    depends_on:
+      backend:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:9090/-/ready || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    logging: *default-logging
+    restart: unless-stopped
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    container_name: tfg-cadvisor
+    privileged: true
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    ports:
+      - "8088:8080"
+    networks:
+      - tfg-network
+    labels:
+      observability.environment: ${OBS_ENVIRONMENT:-dev}
+    logging: *default-logging
+    restart: unless-stopped
+
   postgres:
     image: postgres:16.2-alpine
     container_name: tfg-postgres
@@ -111,7 +162,7 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-3600000}
       FLOWABLE_ASYNC_EXECUTOR_ACTIVATE: ${FLOWABLE_ASYNC_EXECUTOR_ACTIVATE:-true}
-      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE: ${MANAGEMENT_ENDPOINTS_WEB_EXPOSURE:-health,info,metrics}
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE: ${MANAGEMENT_ENDPOINTS_WEB_EXPOSURE:-health,info,metrics,prometheus}
       MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS: ${MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS:-when_authorized}
       CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:4200,http://localhost:4300}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
@@ -226,4 +277,6 @@ volumes:
   loki-data:
     driver: local
   grafana-data:
+    driver: local
+  prometheus-data:
     driver: local

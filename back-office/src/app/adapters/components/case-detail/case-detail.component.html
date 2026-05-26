@@ -40,6 +40,10 @@
         <span class="text-gray-500">Tarea Actual:</span>
         <span class="ml-2 font-medium">{{ caseDetail!.currentTask || '-' }}</span>
       </div>
+      <div *ngIf="caseDetail!.entryNumber">
+        <span class="text-gray-500">NRE:</span>
+        <span class="ml-2 font-medium">{{ caseDetail!.entryNumber }}</span>
+      </div>
     </div>
   </div>
 
@@ -90,6 +94,7 @@
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tamano</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Subido por</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">NRS</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
           </tr>
@@ -102,10 +107,17 @@
             <td class="px-4 py-3 text-sm text-gray-500">{{ doc.uploadedBy }}</td>
             <td class="px-4 py-3 text-sm text-gray-500">{{ doc.uploadedAt | date: 'dd/MM/yyyy' }}</td>
             <td class="px-4 py-3 text-sm">
-              <span *ngIf="doc.signed" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+              <span *ngIf="doc.exitNumber" class="text-xs text-gray-600">{{ doc.exitNumber }}</span>
+              <span *ngIf="!doc.exitNumber" class="text-xs text-gray-400">-</span>
+            </td>
+            <td class="px-4 py-3 text-sm">
+              <span *ngIf="doc.generated" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
+                Generado
+              </span>
+              <span *ngIf="doc.signed && !doc.generated" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700">
                 Firmado
               </span>
-              <span *ngIf="!doc.signed" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">
+              <span *ngIf="!doc.signed && !doc.generated" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">
                 Pendiente
               </span>
             </td>
@@ -119,7 +131,7 @@
             </td>
           </tr>
           <tr *ngIf="caseDetail!.attachments.length === 0">
-            <td colspan="7" class="px-4 py-6 text-center text-gray-500 text-sm">
+            <td colspan="8" class="px-4 py-6 text-center text-gray-500 text-sm">
               No hay documentos adjuntos
             </td>
           </tr>
@@ -354,7 +366,7 @@
 </div>
 
 <!-- Status modal -->
-<div *ngIf="showStatusModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" role="dialog" aria-modal="true" aria-labelledby="status-modal-title">
+<div *ngIf="showStatusModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" role="dialog" aria-modal="true" aria-labelledby="status-modal-title" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
   <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
     <h3 id="status-modal-title" class="text-lg font-semibold text-gray-900 mb-4">Cambiar Estado del Expediente</h3>
     <select

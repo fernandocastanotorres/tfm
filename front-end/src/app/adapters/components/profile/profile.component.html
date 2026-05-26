@@ -52,7 +52,7 @@
 </section>
 
 <!-- Password change modal -->
-<div *ngIf="showPasswordModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50" (click)="closePasswordModal()" role="dialog" aria-modal="true" aria-labelledby="password-modal-title">
+<div *ngIf="showPasswordModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50" (click)="closePasswordModal()" role="dialog" aria-modal="true" aria-labelledby="password-modal-title" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
   <div class="card w-full max-w-md p-6 mx-4" (click)="$event.stopPropagation()">
     <h2 id="password-modal-title" class="text-xl font-semibold text-surface-900 mb-4">{{ 'PROFILE.CHANGE_PASSWORD' | translate }}</h2>
 
@@ -62,7 +62,7 @@
         <label class="field-label" for="current-password">{{ 'PROFILE.CURRENT_PASSWORD' | translate }}</label>
         <div class="relative">
           <input id="current-password" class="field-input pr-10" [type]="showCurrentPassword ? 'text' : 'password'" formControlName="currentPassword" autocomplete="current-password" [placeholder]="'PROFILE.CURRENT_PASSWORD_PLACEHOLDER' | translate" />
-          <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-surface-400 hover:text-surface-600" (click)="showCurrentPassword = !showCurrentPassword" aria-label="Mostrar u ocultar contraseña">
+          <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-surface-400 hover:text-surface-600" (click)="showCurrentPassword = !showCurrentPassword" [attr.aria-label]="'PROFILE.TOGGLE_PASSWORD_VISIBILITY' | translate">
             <svg *ngIf="!showCurrentPassword" class="w-5 h-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
             <svg *ngIf="showCurrentPassword" class="w-5 h-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
           </button>
@@ -75,7 +75,7 @@
         <label class="field-label" for="new-password">{{ 'PROFILE.NEW_PASSWORD' | translate }}</label>
         <div class="relative">
           <input id="new-password" class="field-input pr-10" [type]="showNewPassword ? 'text' : 'password'" formControlName="newPassword" autocomplete="new-password" [placeholder]="'PROFILE.NEW_PASSWORD_PLACEHOLDER' | translate" />
-          <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-surface-400 hover:text-surface-600" (click)="showNewPassword = !showNewPassword" aria-label="Mostrar u ocultar contraseña">
+          <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-surface-400 hover:text-surface-600" (click)="showNewPassword = !showNewPassword" [attr.aria-label]="'PROFILE.TOGGLE_PASSWORD_VISIBILITY' | translate">
             <svg *ngIf="!showNewPassword" class="w-5 h-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
             <svg *ngIf="showNewPassword" class="w-5 h-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
           </button>
@@ -107,7 +107,7 @@
         <label class="field-label" for="confirm-password">{{ 'PROFILE.CONFIRM_PASSWORD' | translate }}</label>
         <div class="relative">
           <input id="confirm-password" class="field-input pr-10" [class.border-red-500]="passwordsMismatch()" [class.border-green-500]="passwordsMatch()" [type]="showConfirmPassword ? 'text' : 'password'" formControlName="confirmPassword" autocomplete="new-password" [placeholder]="'PROFILE.CONFIRM_PASSWORD_PLACEHOLDER' | translate" />
-          <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-surface-400 hover:text-surface-600" (click)="showConfirmPassword = !showConfirmPassword" aria-label="Mostrar u ocultar contraseña">
+          <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-surface-400 hover:text-surface-600" (click)="showConfirmPassword = !showConfirmPassword" [attr.aria-label]="'PROFILE.TOGGLE_PASSWORD_VISIBILITY' | translate">
             <svg *ngIf="!showConfirmPassword" class="w-5 h-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
             <svg *ngIf="showConfirmPassword" class="w-5 h-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
           </button>

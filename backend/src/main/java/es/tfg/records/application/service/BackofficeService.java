@@ -191,7 +191,10 @@ public class BackofficeService {
                         "SIGNED".equals(doc.getStatus()),
                         doc.getOriginalStoragePath() != null,
                         doc.getSignedStoragePath() != null,
-                        documentVerificationRepository.findByDocumentId(doc.getId()).map(v -> v.getCsvCode()).orElse(null)))
+                        documentVerificationRepository.findByDocumentId(doc.getId()).map(v -> v.getCsvCode()).orElse(null),
+                        doc.getExitNumber(),
+                        doc.getEntryNumber(),
+                        doc.isGenerated()))
                 .toList();
         return new BackofficeDtos.AdminCaseDetail(
                 procedure.getId(),
@@ -209,7 +212,8 @@ public class BackofficeService {
                 citizen == null ? "" : citizen.getEmail(),
                 caseTimeline(procedure),
                 attachments,
-                parseFormData(procedure.getFormData())
+                parseFormData(procedure.getFormData()),
+                procedure.getEntryNumber()
         );
     }
 
@@ -377,7 +381,7 @@ public class BackofficeService {
         procedure.setStatus(parseStatus(status));
         ProcedureEntity saved = procedureRepository.save(procedure);
         addTimelineEvent(saved.getId(), "Cambio de estado", "Backoffice actualizo estado a: " + saved.getStatus().name());
-        return new CaseStatusResponse(saved.getId(), saved.getStatus().name(), saved.getUpdatedAt(), currentTask(saved, null), saved.getRecordNumber());
+        return new CaseStatusResponse(saved.getId(), saved.getStatus().name(), saved.getUpdatedAt(), currentTask(saved, null), saved.getRecordNumber(), saved.getEntryNumber());
     }
 
     @Transactional(readOnly = true)

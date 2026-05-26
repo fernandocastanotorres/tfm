@@ -9,6 +9,8 @@ import {
 } from '../../../application/models/backoffice.models';
 import { ProcedureManagementService } from '../../../application/services/procedure-management.service';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
+import { ToastService } from '../../../application/services/toast.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'bo-procedure-management',
@@ -19,6 +21,8 @@ import { ConfirmDialogService } from '../../../application/services/confirm-dial
 export class ProcedureManagementComponent implements OnInit {
   private readonly procedureManagementService = inject(ProcedureManagementService);
   private readonly confirmDialogService = inject(ConfirmDialogService);
+  private readonly toastService = inject(ToastService);
+  private readonly translateService = inject(TranslateService);
   readonly supportedLocales = ['es-ES', 'ca-ES', 'eu-ES', 'gl-ES', 'va-ES'];
 
   procedures: ManagedProcedure[] = [];
@@ -28,6 +32,7 @@ export class ProcedureManagementComponent implements OnInit {
   isLoading = true;
   isSaving = false;
   showForm = false;
+  private lastFocusedElement: HTMLElement | null = null;
 
   form: ProcedureRequest = this.createEmptyForm();
   translationForm = this.createTranslationMap();
@@ -61,6 +66,7 @@ export class ProcedureManagementComponent implements OnInit {
   }
 
   openCreate(): void {
+    this.lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     this.selectedProcedure = null;
     this.form = this.createEmptyForm();
     this.translationForm = this.createTranslationMap();
@@ -70,6 +76,7 @@ export class ProcedureManagementComponent implements OnInit {
   }
 
   openEdit(procedure: ManagedProcedure): void {
+    this.lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     this.selectedProcedure = procedure;
     this.form = {
       title: procedure.title,
@@ -95,6 +102,7 @@ export class ProcedureManagementComponent implements OnInit {
   closeForm(): void {
     this.showForm = false;
     this.selectedProcedure = null;
+    this.restoreFocus();
   }
 
   addTask(): void {
@@ -142,7 +150,10 @@ export class ProcedureManagementComponent implements OnInit {
         switchMap((saved) => this.persistTranslations(saved.id))
       ).subscribe({
         next: () => this.afterSave(),
-        error: () => this.isSaving = false
+        error: () => {
+          this.isSaving = false;
+          this.toastService.error(this.translateService.instant('BO.COMMON.ERROR_PROCEDURE_UPDATE'));
+        }
       });
       return;
     }
@@ -151,7 +162,10 @@ export class ProcedureManagementComponent implements OnInit {
       switchMap((saved) => this.persistTranslations(saved.id))
     ).subscribe({
       next: () => this.afterSave(),
-      error: () => this.isSaving = false
+      error: () => {
+        this.isSaving = false;
+        this.toastService.error(this.translateService.instant('BO.COMMON.ERROR_PROCEDURE_CREATE'));
+      }
     });
   }
 
@@ -178,10 +192,18 @@ export class ProcedureManagementComponent implements OnInit {
     });
   }
 
+  hasPendingChanges(): boolean {
+    if (!this.showForm || this.isSaving) {
+      return false;
+    }
+    return Boolean(this.form.title.trim()) || this.form.tasks.length > 0 || this.form.formSchema.length > 0;
+  }
+
   private afterSave(): void {
     this.isSaving = false;
     this.closeForm();
     this.loadProcedures();
+    this.toastService.success(this.translateService.instant('BO.COMMON.SUCCESS_SAVED'));
   }
 
   private createEmptyForm(): ProcedureRequest {
@@ -252,5 +274,14 @@ export class ProcedureManagementComponent implements OnInit {
       description: this.form.description,
       unit: this.form.assignedUnit
     };
+  }
+
+  private restoreFocus(): void {
+    if (!this.lastFocusedElement) {
+      return;
+    }
+    const target = this.lastFocusedElement;
+    this.lastFocusedElement = null;
+    setTimeout(() => target.focus(), 0);
   }
 }

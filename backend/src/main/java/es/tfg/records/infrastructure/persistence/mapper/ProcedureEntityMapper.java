@@ -29,6 +29,7 @@ public final class ProcedureEntityMapper {
         procedure.setProcessInstanceId(entity.getProcessInstanceId());
         procedure.setSubmittedAt(entity.getSubmittedAt());
         procedure.setRecordNumber(entity.getRecordNumber());
+        procedure.setEntryNumber(entity.getEntryNumber());
         procedure.setCreatedAt(entity.getCreatedAt());
         procedure.setUpdatedAt(entity.getUpdatedAt());
         return procedure;
@@ -48,6 +49,7 @@ public final class ProcedureEntityMapper {
         entity.setProcessInstanceId(domain.getProcessInstanceId());
         entity.setSubmittedAt(domain.getSubmittedAt());
         entity.setRecordNumber(domain.getRecordNumber());
+        entity.setEntryNumber(domain.getEntryNumber());
         return entity;
     }
 

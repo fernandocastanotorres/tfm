@@ -1,4 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import {
   PublicCalendarEntry,
   PublicCalendarUpsertRequest,
@@ -27,7 +29,8 @@ type ContentTab = 'legislation' | 'faq' | 'calendar' | 'institutional' | 'organi
     selector: 'bo-public-content-management',
     templateUrl: './public-content-management.component.html',
     styleUrls: ['./public-content-management.component.css'],
-    standalone: false
+    standalone: true,
+    imports: [CommonModule, FormsModule]
 })
 export class PublicContentManagementComponent implements OnInit {
   private readonly service = inject(PublicContentManagementService);

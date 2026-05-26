@@ -96,7 +96,8 @@ class BackofficeServiceTest {
 
     @Test
     void listCases_shouldClampPageSize() {
-        PageRequest expectedPage = PageRequest.of(0, 100);
+        PageRequest expectedPage = PageRequest.of(0, 100,
+                org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "updatedAt"));
         when(procedureRepository.findAll(expectedPage)).thenReturn(Page.empty());
         when(procedureTypeRepository.findAll()).thenReturn(List.of());
 

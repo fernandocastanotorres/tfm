@@ -28,7 +28,8 @@ public final class ProcedureMapper {
                 procedure.getSubmittedAt(),
                 category,
                 procedure.getAssignedUnit(),
-                procedure.getRecordNumber()
+                procedure.getRecordNumber(),
+                procedure.getEntryNumber()
         );
     }
 
@@ -50,7 +51,8 @@ public final class ProcedureMapper {
                 attachments == null ? Collections.emptyList() : attachments,
                 procedure.getProcedureTypeId(),
                 formData,
-                procedure.getRecordNumber()
+                procedure.getRecordNumber(),
+                procedure.getEntryNumber()
         );
     }
 
@@ -60,7 +62,8 @@ public final class ProcedureMapper {
                 procedure.getStatus().name(),
                 procedure.getUpdatedAt(),
                 currentTask,
-                procedure.getRecordNumber()
+                procedure.getRecordNumber(),
+                procedure.getEntryNumber()
         );
     }
 }

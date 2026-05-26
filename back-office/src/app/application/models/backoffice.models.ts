@@ -26,6 +26,7 @@ export interface CaseItem {
   citizenName: string;
   currentTask: string;
   priority: 'normal' | 'urgent';
+  entryNumber?: string | null;
 }
 
 export interface CaseDetail {
@@ -45,6 +46,7 @@ export interface CaseDetail {
   timeline: CaseTimelineEvent[];
   attachments: CaseAttachment[];
   formData: Record<string, unknown>;
+  entryNumber?: string | null;
 }
 
 export interface CaseTimelineEvent {
@@ -63,6 +65,8 @@ export interface CaseAttachment {
   uploadedAt: string;
   uploadedBy: string;
   signed: boolean;
+  exitNumber?: string | null;
+  generated?: boolean;
 }
 
 export interface CaseStatusResponse {

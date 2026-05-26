@@ -36,7 +36,7 @@ export class TransparencyService {
         { id: 'total-procedures', labelKey: 'TRANSPARENCY.METRIC_TOTAL_PROCEDURES', value: m.totalProcedures, unit: '', trend: 'up' as const },
         { id: 'resolved', labelKey: 'TRANSPARENCY.METRIC_RESOLVED', value: m.resolvedProcedures, unit: '', trend: 'up' as const },
         { id: 'pending', labelKey: 'TRANSPARENCY.METRIC_PENDING', value: m.pendingProcedures, unit: '', trend: 'down' as const },
-        { id: 'avg-days', labelKey: 'TRANSPARENCY.METRIC_AVG_DAYS', value: Math.round(m.avgResolutionDays), unit: 'days', trend: m.avgResolutionDays < 15 ? 'down' as const : 'up' as const },
+        { id: 'avg-days', labelKey: 'TRANSPARENCY.METRIC_AVG_DAYS', value: m.avgResolutionDays < 1 ? Math.round(m.avgResolutionDays * 24) : Math.round(m.avgResolutionDays), unit: m.avgResolutionDays < 1 ? 'horas' : 'días', trend: m.avgResolutionDays < 15 ? 'down' as const : 'up' as const },
         { id: 'sla-compliance', labelKey: 'TRANSPARENCY.METRIC_SLA_COMPLIANCE', value: Math.round(m.slaComplianceRate), unit: '%', trend: m.slaComplianceRate >= 80 ? 'up' as const : 'down' as const },
         { id: 'digital-procedures', labelKey: 'TRANSPARENCY.METRIC_DIGITAL', value: Math.round(m.digitalProceduresPct), unit: '%', trend: 'up' as const }
       ])

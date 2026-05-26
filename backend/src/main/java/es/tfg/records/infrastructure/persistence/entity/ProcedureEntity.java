@@ -58,6 +58,9 @@ public class ProcedureEntity {
     @Column(name = "record_number", length = 40)
     private String recordNumber;
 
+    @Column(name = "entry_number", length = 50)
+    private String entryNumber;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
@@ -155,6 +158,14 @@ public class ProcedureEntity {
 
     public void setRecordNumber(String recordNumber) {
         this.recordNumber = recordNumber;
+    }
+
+    public String getEntryNumber() {
+        return entryNumber;
+    }
+
+    public void setEntryNumber(String entryNumber) {
+        this.entryNumber = entryNumber;
     }
 
     public Instant getCreatedAt() {

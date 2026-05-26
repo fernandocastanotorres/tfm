@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { A11yModule } from '@angular/cdk/a11y';
 import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, TitleStrategy } from '@angular/router';
 import { TranslateModule, TranslateLoader, TranslationObject } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
@@ -45,6 +46,8 @@ import { AccessibilityStatementComponent } from './adapters/components/accessibi
 import { SitemapComponent } from './adapters/components/sitemap/sitemap.component';
 import { ContactInboxComponent, InboxItemDirective } from './adapters/components/contact-inbox/contact-inbox.component';
 import { DocumentVerificationComponent } from './adapters/components/document-verification/document-verification.component';
+import { ErrorPageComponent } from './adapters/components/error-page/error-page.component';
+import { LoadingSkeletonComponent } from './adapters/components/loading-skeleton/loading-skeleton.component';
 import { NotificationCardDirective } from './adapters/components/notifications/notifications.component';
 import { PaymentCardDirective } from './adapters/components/payments/payments.component';
 
@@ -54,6 +57,7 @@ import { JwtAuthInterceptor } from './application/interceptors/jwt-auth.intercep
 import { CorrelationIdInterceptor } from './application/interceptors/correlation-id.interceptor';
 import { AcceptLanguageInterceptor } from './application/interceptors/accept-language.interceptor';
 import { AcceptHeaderInterceptor } from './application/interceptors/accept-header.interceptor';
+import { I18nTitleStrategy } from './application/routing/i18n-title.strategy';
 
 export class CustomLoader implements TranslateLoader {
   constructor(private http: HttpClient) {}
@@ -101,10 +105,13 @@ export function HttpLoaderFactory(http: HttpClient): CustomLoader {
         AccessibilityStatementComponent,
         SitemapComponent,
         DocumentVerificationComponent,
+        ErrorPageComponent,
+        LoadingSkeletonComponent,
         ContactInboxComponent,
         InboxItemDirective
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
+        A11yModule,
         FormsModule,
         ReactiveFormsModule,
         AppRoutingModule,
@@ -121,6 +128,7 @@ export function HttpLoaderFactory(http: HttpClient): CustomLoader {
         { provide: HTTP_INTERCEPTORS, useClass: AcceptLanguageInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: JwtAuthInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: CorrelationIdInterceptor, multi: true },
+        { provide: TitleStrategy, useClass: I18nTitleStrategy },
         provideHttpClient(withInterceptorsFromDi())
     ] })
 export class AppModule { }

@@ -22,6 +22,9 @@ public class Document {
     private String signedMimeType;
     private Long originalSize;
     private Long signedSize;
+    private String entryNumber;
+    private String exitNumber;
+    private boolean generated;
     private Instant uploadedAt;
     private Instant signedAt;
     private Instant createdAt;
@@ -152,6 +155,30 @@ public class Document {
 
     public void setSignedSize(Long signedSize) {
         this.signedSize = signedSize;
+    }
+
+    public String getEntryNumber() {
+        return entryNumber;
+    }
+
+    public void setEntryNumber(String entryNumber) {
+        this.entryNumber = entryNumber;
+    }
+
+    public String getExitNumber() {
+        return exitNumber;
+    }
+
+    public void setExitNumber(String exitNumber) {
+        this.exitNumber = exitNumber;
+    }
+
+    public boolean isGenerated() {
+        return generated;
+    }
+
+    public void setGenerated(boolean generated) {
+        this.generated = generated;
     }
 
     public Instant getUploadedAt() {

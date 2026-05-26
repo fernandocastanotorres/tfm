@@ -213,6 +213,55 @@ Se implementó firma PAdES-BES usando Bouncy Castle:
 
 Inicialmente se intentó usar SD-DSS (la biblioteca oficial de la UE para firma electrónica), pero las versiones 5.11.1-5.13 no estaban disponibles en Maven Central incluso añadiendo el repositorio EC eSignature DSS. Bouncy Castle proporciona funcionalidad equivalente para firma CMS/PKCS#7 sin problemas de resolución de dependencias.
 
+### 4.6. Numeración Registral (NRE/NRS)
+
+El sistema implementa un sistema de numeración registral conforme al artículo 16 de la Ley 39/2015, que exige un número de registro de entrada y salida para cada expediente y documento oficial.
+
+#### 4.6.1. Formato de Numeración
+
+| Tipo | Prefijo | Formato | Ejemplo | Asignado a |
+|------|---------|---------|---------|------------|
+| Número de Expediente | `EXP/` | `EXP/{unidad}/{año}/{seq6}` | `EXP/URB/2026/000123` | Procedimiento al presentarse |
+| NRE (Entrada) | `RE/` | `RE/{unidad}/{año}/{seq6}` | `RE/URB/2026/000001` | Procedimiento al presentarse |
+| NRS (Salida) | `RS/` | `RS/{unidad}/{año}/{seq6}` | `RS/URB/2026/000001` | Documentos generados automáticamente |
+| Número de Documento | `DOC/` | `DOC/{unidad}/{año}/{seq6}` | `DOC/URB/2026/000001` | Documentos subidos por el ciudadano |
+
+#### 4.6.2. Concurrencia y Atomicidad
+
+Los contadores se gestionan mediante la tabla `document_registry_counters` con la estrategia `INSERT ... ON CONFLICT DO UPDATE ... RETURNING last_value`, lo que garantiza:
+
+- **Atomicidad:** Cada llamada incrementa el contador en una transacción independiente (`REQUIRES_NEW`).
+- **Consistencia:** No hay huecos ni duplicados incluso bajo concurrencia.
+- **Escalabilidad:** Funciona correctamente con múltiples instancias del backend.
+
+#### 4.6.3. Unidad Administrativa (`unitCode`)
+
+Cada tipo de procedimiento tiene un `unitCode` (código de unidad administrativa) configurable desde el panel de administración, que se utiliza como parte del número registral. Los códigos predefinidos son:
+
+`LIC` (Licencias), `REG` (Registro Civil), `URB` (Urbanismo), `PAT` (Patrimonio), `ENV` (Medio Ambiente), `SOC` (Servicios Sociales), `ECO` (Economía), `GEN` (Genérico).
+
+### 4.7. Documento Resumen Automático
+
+Al presentar un expediente, el sistema genera automáticamente un documento resumen firmado por el servidor, que sirve como justificante formal de la presentación.
+
+#### 4.7.1. Contenido del Documento Resumen
+
+1. **Cabecera:** Título, NRE, fecha de presentación, unidad tramitadora.
+2. **Datos del formulario:** Campos del formulario JSON con etiquetas legibles (resueltas desde `ProcedureTask.formSchema`).
+3. **Relación de adjuntos:** Lista con nombre y tamaño de cada documento subido.
+4. **Bloque de registro de entrada:** NRE, fecha.
+5. **Firma electrónica del servidor:** CMS/PKCS#7 mediante `SignatureService`.
+6. **NRS:** Número de registro de salida asignado al documento.
+
+#### 4.7.2. Flujo de Generación
+
+1. `CaseServiceImpl.submitCase()` llama a `SummaryDocumentService.generateAndStoreSummary()`.
+2. Se genera el PDF con OpenPDF (`com.lowagie`).
+3. Se firma con el certificado del servidor.
+4. Se almacena en el sistema de archivos.
+5. Se registra en el repositorio de verificación pública (CSV).
+6. Aparece como un documento más en la interfaz del ciudadano, distinguible por el badge "Generado".
+
 ---
 
 ## 5. Implementación
@@ -251,6 +300,8 @@ backend/src/main/java/es/tfg/records/
 | Strategy | Diferentes tipos de tareas BPMN | `domain/model/TaskType` |
 | Builder | Construcción de eventos de auditoría | `infrastructure/audit/AuditEvent` |
 | Factory | Generación de certificados | `application/service/SignatureService` |
+| Registry | Numeración registral (NRE/NRS) | `application/service/RegistryService` |
+| Template Method | Generación de PDF resumen | `application/service/SummaryDocumentService` |
 
 ### 5.3. Decisiones de Diseño
 

@@ -35,6 +35,7 @@ export class AdminCasesService {
     return this.http.get<any>(`${this.baseUrl}/procedures/${id}`).pipe(
       map((response: any) => ({
         ...response,
+        entryNumber: response.entryNumber ?? null,
         timeline: (response.timeline ?? []).map((event: any) => ({
           id: event.id,
           title: event.title,
@@ -49,7 +50,9 @@ export class AdminCasesService {
           size: attachment.size ?? 0,
           uploadedAt: attachment.uploadedAt,
           uploadedBy: attachment.uploadedBy ?? 'Sistema',
-          signed: attachment.signed ?? false
+          signed: attachment.signed ?? false,
+          exitNumber: attachment.exitNumber ?? null,
+          generated: attachment.generated ?? false
         }))
       }))
     );

@@ -46,7 +46,7 @@ export class GuidedTourService {
       nextLabel: 'Siguiente',
       prevLabel: 'Anterior',
       doneLabel: 'Finalizar',
-      skipLabel: 'Cerrar'
+      skipLabel: '✕'
     }).start();
   }
 

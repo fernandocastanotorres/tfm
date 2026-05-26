@@ -51,7 +51,7 @@
     </table>
   </div>
 
-  <div *ngIf="showForm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" role="dialog" aria-modal="true" aria-labelledby="user-modal-title">
+  <div *ngIf="showForm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" role="dialog" aria-modal="true" aria-labelledby="user-modal-title" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
     <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
       <h3 id="user-modal-title" class="text-lg font-semibold text-gray-900 mb-4">{{ selectedUser ? ('BO.USERS.EDIT_TITLE' | translate) : ('BO.USERS.CREATE_TITLE' | translate) }}</h3>
       <div class="space-y-4">

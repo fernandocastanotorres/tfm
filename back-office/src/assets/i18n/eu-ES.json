@@ -315,7 +315,16 @@
       "EDIT": "Editatu",
       "SEARCH": "Buscar",
       "LOADING": "Kargatzen...",
-      "NO_DATA": "Ez dago daturik"
+      "NO_DATA": "Ez dago daturik",
+      "SUCCESS_SAVED": "Aldaketak gorde dira",
+      "ERROR_ACCESS_DENIED": "Ez duzu ekintza hau egiteko baimenik.",
+      "ERROR_INTERNAL": "Ustekabeko errore bat gertatu da zerbitzarian.",
+      "ERROR_CONFLICT": "Ezin da eragiketa osatu uneko egoeran.",
+      "ERROR_GENERIC": "Ustekabeko errore bat gertatu da.",
+      "ERROR_USER_SAVE": "Ezin izan da erabiltzailea gorde",
+      "ERROR_USER_CREATE": "Ezin izan da erabiltzailea sortu",
+      "ERROR_PROCEDURE_UPDATE": "Ezin izan da prozedura eguneratu",
+      "ERROR_PROCEDURE_CREATE": "Ezin izan da prozedura sortu"
     }
   }
 }

@@ -2,7 +2,7 @@ apiVersion: 1
 
 groups:
   - orgId: 1
-    name: tfg-observability
+    name: tfg-logs
     folder: TFG Observability
     interval: 1m
     rules:
@@ -92,6 +92,107 @@ groups:
                 - evaluator:
                     params:
                       - 1
+                    type: lt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    type: last
+                  type: query
+
+  - orgId: 1
+    name: tfg-prometheus
+    folder: TFG Observability
+    interval: 1m
+    rules:
+      - uid: backend-5xx-rate
+        title: Backend high 5xx rate
+        condition: C
+        for: 5m
+        noDataState: NoData
+        execErrState: Error
+        annotations:
+          summary: "High 5xx HTTP error rate"
+          description: "Backend 5xx rate is above 1 req/s for 5 minutes."
+        labels:
+          severity: warning
+          service: backend
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              editorMode: code
+              expr: sum(rate(http_server_requests_seconds_count{application="records-api",status=~"5.."}[5m]))
+              instant: true
+              maxLines: 0
+              queryType: instant
+              refId: A
+          - refId: C
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              expression: A
+              type: threshold
+              refId: C
+              conditions:
+                - evaluator:
+                    params:
+                      - 1
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    type: last
+                  type: query
+
+      - uid: container-down
+        title: Container down
+        condition: C
+        for: 1m
+        noDataState: Alerting
+        execErrState: Error
+        annotations:
+          summary: "Container is down or unreachable"
+          description: "A tfg container has been down for 1 minute."
+        labels:
+          severity: critical
+          service: infrastructure
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 60
+              to: 0
+            datasourceUid: prometheus
+            model:
+              editorMode: code
+              expr: count(count by (container_label_com_docker_compose_service) (container_start_time_seconds{container_label_com_docker_compose_project="tfg"}))
+              instant: true
+              maxLines: 0
+              queryType: instant
+              refId: A
+          - refId: C
+            relativeTimeRange:
+              from: 60
+              to: 0
+            datasourceUid: __expr__
+            model:
+              expression: A
+              type: threshold
+              refId: C
+              conditions:
+                - evaluator:
+                    params:
+                      - 6
                     type: lt
                   operator:
                     type: and

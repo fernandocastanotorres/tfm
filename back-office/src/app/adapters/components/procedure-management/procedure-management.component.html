@@ -44,7 +44,7 @@
   <div *ngIf="isLoading" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">Cargando procedimientos...</div>
   <div *ngIf="!isLoading && filteredProcedures.length === 0" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">No hay procedimientos</div>
 
-  <div *ngIf="showForm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-6" role="dialog" aria-modal="true" aria-labelledby="procedure-modal-title">
+  <div *ngIf="showForm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-6" role="dialog" aria-modal="true" aria-labelledby="procedure-modal-title" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
     <div class="bg-white rounded-lg shadow-lg w-full max-w-5xl max-h-[90vh] overflow-y-auto p-6">
       <h3 id="procedure-modal-title" class="text-lg font-semibold text-gray-900 mb-4">{{ selectedProcedure ? 'Editar procedimiento' : 'Nuevo procedimiento' }}</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">

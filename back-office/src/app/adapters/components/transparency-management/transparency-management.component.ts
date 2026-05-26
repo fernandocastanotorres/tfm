@@ -1,4 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { TransparencyManagementService, TransparencyReport, CreateReportRequest } from '../../../application/services/transparency-management.service';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
 
@@ -6,7 +8,8 @@ import { ConfirmDialogService } from '../../../application/services/confirm-dial
     selector: 'bo-transparency-management',
     templateUrl: './transparency-management.component.html',
     styleUrls: ['./transparency-management.component.css'],
-    standalone: false
+    standalone: true,
+    imports: [CommonModule, FormsModule]
 })
 export class TransparencyManagementComponent implements OnInit {
   private readonly service = inject(TransparencyManagementService);
@@ -28,6 +31,7 @@ export class TransparencyManagementComponent implements OnInit {
   formPublished = true;
   formFile: File | null = null;
   formError = '';
+  private lastFocusedElement: HTMLElement | null = null;
 
   ngOnInit(): void {
     this.loadReports();
@@ -45,6 +49,7 @@ export class TransparencyManagementComponent implements OnInit {
   }
 
   openCreateForm(): void {
+    this.lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     this.formMode = 'create';
     this.selectedReport = null;
     this.formTitle = '';
@@ -58,6 +63,7 @@ export class TransparencyManagementComponent implements OnInit {
   }
 
   openEditForm(report: TransparencyReport): void {
+    this.lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     this.formMode = 'edit';
     this.selectedReport = report;
     this.formTitle = report.title;
@@ -75,6 +81,7 @@ export class TransparencyManagementComponent implements OnInit {
     this.selectedReport = null;
     this.formFile = null;
     this.formError = '';
+    this.restoreFocus();
   }
 
   onFileSelected(event: Event): void {
@@ -175,5 +182,14 @@ export class TransparencyManagementComponent implements OnInit {
     if (bytes < 1024) return bytes + ' B';
     if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
     return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
+  private restoreFocus(): void {
+    if (!this.lastFocusedElement) {
+      return;
+    }
+    const target = this.lastFocusedElement;
+    this.lastFocusedElement = null;
+    setTimeout(() => target.focus(), 0);
   }
 }

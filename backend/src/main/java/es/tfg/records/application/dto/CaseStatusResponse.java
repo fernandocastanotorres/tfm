@@ -19,5 +19,7 @@ public record CaseStatusResponse(
         @Schema(description = "Current workflow task name", example = "Document Review")
         String currentTask,
         @Schema(description = "Business record number", example = "EXP/URB/2026/000123")
-        String recordNumber
+        String recordNumber,
+        @Schema(description = "Entry registry number (NRE)", example = "RE/URB/2026/000001")
+        String entryNumber
 ) {}

@@ -31,7 +31,9 @@ import { AccessibilityStatementComponent } from './adapters/components/accessibi
 import { SitemapComponent } from './adapters/components/sitemap/sitemap.component';
 import { ContactInboxComponent } from './adapters/components/contact-inbox/contact-inbox.component';
 import { DocumentVerificationComponent } from './adapters/components/document-verification/document-verification.component';
+import { ErrorPageComponent } from './adapters/components/error-page/error-page.component';
 import { authGuard } from './application/guards/auth.guard';
+import { pendingChangesGuard } from './application/guards/pending-changes.guard';
 
 const routes: Routes = [
   // Public routes with shared header/footer (no auth required)
@@ -39,40 +41,43 @@ const routes: Routes = [
     path: 'sede',
     component: PublicLayoutComponent,
     children: [
-      { path: '', component: PublicHomeComponent, title: 'Sede Electronica' },
-      { path: 'institucional', component: InstitutionalInfoComponent, title: 'Informacion Institucional' },
-      { path: 'normativa', component: LegislationComponent, title: 'Normativa y Legislacion' },
-      { path: 'faq', component: FaqComponent, title: 'Preguntas Frecuentes' },
-      { path: 'contacto', component: ContactComponent, title: 'Contacto y Atencion al Ciudadano' },
-      { path: 'estado', component: ServiceStatusComponent, title: 'Estado del Servicio' },
-      { path: 'organismo', component: OrganismsDirectoryComponent, title: 'Directorio de Organismos' },
-      { path: 'transparencia', component: TransparencyComponent, title: 'Transparencia y Estadisticas' },
-      { path: 'calendario', component: CalendarComponent, title: 'Calendario de Plazos' },
-      { path: 'glosario', component: GlossaryComponent, title: 'Glosario de Terminos' },
-      { path: 'accesibilidad', component: AccessibilityStatementComponent, title: 'Declaracion de Accesibilidad' },
-      { path: 'mapa', component: SitemapComponent, title: 'Mapa Web' },
-      { path: 'validar-documento', component: DocumentVerificationComponent, title: 'Validar documento' },
-      { path: 'procedimientos', component: ProceduresComponent, title: 'Procedimientos' },
-      { path: 'procedimientos/:procedureId/flujo', component: ProcedureFlowComponent, title: 'Flujo del Procedimiento' },
-      { path: 'citas', component: AppointmentsComponent, title: 'Citas' },
-      { path: 'expedientes/nuevo', canActivate: [authGuard], component: CaseWizardComponent, title: 'Nuevo expediente' },
-      { path: 'expedientes/nuevo/:procedureId', canActivate: [authGuard], component: CaseWizardComponent, title: 'Nuevo expediente' },
-      { path: 'expedientes/buscar', canActivate: [authGuard], component: CaseSearchComponent, title: 'Buscar expedientes' },
-      { path: 'expedientes/:id/detalle', canActivate: [authGuard], component: CaseDetailComponent, title: 'Detalle del Expediente' },
-      { path: 'expedientes/detalle', canActivate: [authGuard], component: CaseDetailComponent, title: 'Detalle del Expediente' },
-      { path: 'mensajes', canActivate: [authGuard], component: MessagesComponent, title: 'Mensajeria segura' },
-      { path: 'perfil', canActivate: [authGuard], component: ProfileComponent, title: 'Datos personales' },
-      { path: 'dashboard', canActivate: [authGuard], component: DashboardComponent, title: 'Panel principal' },
-      { path: 'notificaciones', canActivate: [authGuard], component: NotificationsComponent, title: 'Notificaciones' },
-      { path: 'documentos', canActivate: [authGuard], component: DocumentsComponent, title: 'Documentos' },
-      { path: 'pagos', canActivate: [authGuard], component: PaymentsComponent, title: 'Pagos y tasas' },
+      { path: '', component: PublicHomeComponent, title: 'PUBLIC.NAV_HOME' },
+      { path: 'institucional', component: InstitutionalInfoComponent, title: 'PUBLIC.NAV_INSTITUTIONAL' },
+      { path: 'normativa', component: LegislationComponent, title: 'PUBLIC.NAV_LEGISLATION' },
+      { path: 'faq', component: FaqComponent, title: 'PUBLIC.NAV_FAQ' },
+      { path: 'contacto', component: ContactComponent, title: 'PUBLIC.NAV_CONTACT' },
+      { path: 'estado', component: ServiceStatusComponent, title: 'PUBLIC.NAV_STATUS' },
+      { path: 'organismo', component: OrganismsDirectoryComponent, title: 'PUBLIC.NAV_ORGANISMS' },
+      { path: 'transparencia', component: TransparencyComponent, title: 'PUBLIC.NAV_TRANSPARENCY' },
+      { path: 'calendario', component: CalendarComponent, title: 'PUBLIC.NAV_CALENDAR' },
+      { path: 'glosario', component: GlossaryComponent, title: 'PUBLIC.NAV_GLOSSARY' },
+      { path: 'accesibilidad', component: AccessibilityStatementComponent, title: 'PUBLIC.NAV_ACCESSIBILITY' },
+      { path: 'mapa', component: SitemapComponent, title: 'PUBLIC.NAV_SITEMAP' },
+      { path: 'validar-documento', component: DocumentVerificationComponent, title: 'PUBLIC.VALIDATE_DOCUMENT' },
+      { path: 'procedimientos', component: ProceduresComponent, title: 'PROCEDURES.TITLE' },
+      { path: 'procedimientos/:procedureId/flujo', component: ProcedureFlowComponent, title: 'PROCEDURE_FLOW.TITLE' },
+      { path: 'citas', component: AppointmentsComponent, title: 'APPOINTMENTS.TITLE' },
+      { path: 'expedientes/nuevo', canActivate: [authGuard], canDeactivate: [pendingChangesGuard], component: CaseWizardComponent, title: 'CASE_WIZARD.TITLE' },
+      { path: 'expedientes/nuevo/:procedureId', canActivate: [authGuard], canDeactivate: [pendingChangesGuard], component: CaseWizardComponent, title: 'CASE_WIZARD.TITLE' },
+      { path: 'expedientes/buscar', canActivate: [authGuard], component: CaseSearchComponent, title: 'CASE_SEARCH.TITLE' },
+      { path: 'expedientes/:id/detalle', canActivate: [authGuard], component: CaseDetailComponent, title: 'CASE_DETAIL.TITLE' },
+      { path: 'expedientes/detalle', canActivate: [authGuard], component: CaseDetailComponent, title: 'CASE_DETAIL.TITLE' },
+      { path: 'mensajes', canActivate: [authGuard], component: MessagesComponent, title: 'MESSAGES.TITLE' },
+      { path: 'perfil', canActivate: [authGuard], component: ProfileComponent, title: 'PROFILE.TITLE' },
+      { path: 'dashboard', canActivate: [authGuard], component: DashboardComponent, title: 'DASHBOARD.TITLE' },
+      { path: 'notificaciones', canActivate: [authGuard], component: NotificationsComponent, title: 'NOTIFICATIONS.TITLE' },
+      { path: 'documentos', canActivate: [authGuard], component: DocumentsComponent, title: 'DOCUMENTS.TITLE' },
+      { path: 'pagos', canActivate: [authGuard], component: PaymentsComponent, title: 'PAYMENTS.TITLE' },
       // Auth pages inside public layout so they share header/footer
-      { path: 'login', component: LoginComponent, title: 'Iniciar sesion' },
-      { path: 'registro', component: RegisterComponent, title: 'Crear cuenta' },
-      { path: 'verificar-email', component: EmailVerificationComponent, title: 'Verificacion de cuenta' },
-      { path: 'recuperacion', component: PasswordRecoveryComponent, title: 'Recuperar contrasena' }
+      { path: 'login', component: LoginComponent, title: 'LOGIN.TITLE' },
+      { path: 'registro', component: RegisterComponent, title: 'REGISTER.TITLE' },
+      { path: 'verificar-email', component: EmailVerificationComponent, title: 'EMAIL_VERIFICATION.TITLE' },
+      { path: 'recuperacion', component: PasswordRecoveryComponent, title: 'PASSWORD_RECOVERY.TITLE' }
     ]
   },
+  { path: 'sede/error/403', component: ErrorPageComponent, data: { variant: '403' }, title: 'PUBLIC.ERROR_403_TITLE' },
+  { path: 'sede/error/404', component: ErrorPageComponent, data: { variant: '404' }, title: 'PUBLIC.ERROR_404_TITLE' },
+  { path: 'sede/error/500', component: ErrorPageComponent, data: { variant: '500' }, title: 'PUBLIC.ERROR_500_TITLE' },
   // Legacy redirects for auth routes
   { path: 'login', redirectTo: 'sede/login', pathMatch: 'full' },
   { path: 'registro', redirectTo: 'sede/registro', pathMatch: 'full' },
@@ -94,7 +99,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'sede'
+    redirectTo: 'sede/error/404'
   }
 ];
 

@@ -37,8 +37,9 @@
     </div>
 
     <!-- Loading state -->
-    <div *ngIf="isLoading" class="mt-6 card p-6 text-center text-surface-600">
-      {{ 'DASHBOARD.LOADING' | translate }}
+    <div *ngIf="isLoading" class="mt-6 space-y-4">
+      <p class="text-sm text-surface-600">{{ 'DASHBOARD.LOADING' | translate }}</p>
+      <app-loading-skeleton [cards]="3" [lines]="3"></app-loading-skeleton>
     </div>
 
     <!-- Case list -->

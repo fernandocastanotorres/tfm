@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,7 +66,8 @@ public class CaseServiceImpl implements CaseService {
     private final FileStorageService fileStorageService;
     private final WorkflowService workflowService;
     private final ObjectMapper objectMapper;
-    private final JdbcTemplate jdbcTemplate;
+    private final RegistryService registryService;
+    private final SummaryDocumentService summaryDocumentService;
     private final String publicSedeBaseUrl;
 
     public CaseServiceImpl(ProcedureRepository procedureRepository,
@@ -80,7 +80,8 @@ public class CaseServiceImpl implements CaseService {
                            FileStorageService fileStorageService,
                            WorkflowService workflowService,
                            ObjectMapper objectMapper,
-                           JdbcTemplate jdbcTemplate,
+                           RegistryService registryService,
+                           SummaryDocumentService summaryDocumentService,
                            @Value("${app.public-sede-base-url:http://localhost:4200/sede}") String publicSedeBaseUrl) {
         this.procedureRepository = procedureRepository;
         this.procedureTypeRepository = procedureTypeRepository;
@@ -92,7 +93,8 @@ public class CaseServiceImpl implements CaseService {
         this.fileStorageService = fileStorageService;
         this.workflowService = workflowService;
         this.objectMapper = objectMapper;
-        this.jdbcTemplate = jdbcTemplate;
+        this.registryService = registryService;
+        this.summaryDocumentService = summaryDocumentService;
         this.publicSedeBaseUrl = publicSedeBaseUrl;
     }
 
@@ -132,7 +134,10 @@ public class CaseServiceImpl implements CaseService {
                         document.getStatus() == DocumentStatus.SIGNED,
                         document.getOriginalStoragePath() != null,
                         document.getSignedStoragePath() != null,
-                        publicSignatureVerificationService.findCsvCodeByDocumentId(document.getId())))
+                        publicSignatureVerificationService.findCsvCodeByDocumentId(document.getId()),
+                        document.getExitNumber(),
+                        document.getEntryNumber(),
+                        document.isGenerated()))
                 .toList();
 
         List<CaseTimelineEventDto> timeline = buildTimeline(procedure);
@@ -193,12 +198,27 @@ public class CaseServiceImpl implements CaseService {
 
         signPendingDocuments(caseId);
 
-        procedure.setStatus(CaseStatus.SUBMITTED);
-        procedure.setSubmittedAt(Instant.now());
         String unitCode = normalizeUnitCode(procedure.getUnitCode(), procedure.getAssignedUnit());
         procedure.setUnitCode(unitCode);
-        procedure.setRecordNumber(generateRecordNumber(unitCode, procedure.getSubmittedAt()));
+
+        String entryNumber = registryService.generateEntryNumber(unitCode, Instant.now());
+        procedure.setEntryNumber(entryNumber);
+
+        List<Document> caseDocs = documentRepository.findByProcedureId(caseId);
+        for (Document doc : caseDocs) {
+            if (doc.getEntryNumber() == null) {
+                doc.setEntryNumber(entryNumber);
+                documentRepository.save(doc);
+            }
+        }
+
+        procedure.setStatus(CaseStatus.SUBMITTED);
+        procedure.setSubmittedAt(Instant.now());
+        procedure.setRecordNumber(registryService.generateRecordNumber(unitCode, procedure.getSubmittedAt()));
         Procedure saved = procedureRepository.save(procedure);
+
+        summaryDocumentService.generateAndStoreSummary(saved);
+
         addTimelineEvent(saved.getId(), "Expediente enviado", "El ciudadano ha presentado el expediente.");
         startWorkflowForSubmittedCase(saved);
         eniMetadataService.upsertProcedureMetadata(saved);
@@ -290,25 +310,6 @@ public class CaseServiceImpl implements CaseService {
         }
     }
 
-    private String generateRecordNumber(String unitCode, Instant submittedAt) {
-        int year = submittedAt.atZone(ZoneOffset.UTC).getYear();
-        Long nextValue = jdbcTemplate.queryForObject(
-                """
-                INSERT INTO procedure_record_counters (unit_code, year, last_value)
-                VALUES (?, ?, 1)
-                ON CONFLICT (unit_code, year)
-                DO UPDATE SET last_value = procedure_record_counters.last_value + 1
-                RETURNING last_value
-                """,
-                Long.class,
-                unitCode,
-                year
-        );
-
-        long counter = nextValue == null ? 1L : nextValue;
-        return String.format("EXP/%s/%d/%06d", unitCode, year, counter);
-    }
-
     private String normalizeUnitCode(String requestedUnitCode, String fallbackUnitName) {
         String base = requestedUnitCode;
         if (base == null || base.isBlank()) {
@@ -372,19 +373,36 @@ public class CaseServiceImpl implements CaseService {
         Procedure procedure = findAndVerifyOwnership(caseId, ownerId);
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-        com.lowagie.text.Document pdfDocument = new com.lowagie.text.Document();
+        com.lowagie.text.Document pdfDocument = new com.lowagie.text.Document(
+                com.lowagie.text.PageSize.A4, 50, 50, 50, 50);
         PdfWriter.getInstance(pdfDocument, output);
+        pdfDocument.addTitle("Justificante de presentacion - " + procedure.getId());
+        pdfDocument.addSubject("Justificante de presentacion de expediente");
+        pdfDocument.addKeywords("Sede Electronica, Justificante, Expediente");
         pdfDocument.open();
 
         Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16);
+        Font sectionFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12);
         Font bodyFont = FontFactory.getFont(FontFactory.HELVETICA, 11);
+        Font smallFont = FontFactory.getFont(FontFactory.HELVETICA, 9);
 
-        pdfDocument.add(new Paragraph("Justificante de presentacion de expediente", titleFont));
+        pdfDocument.add(new Paragraph("SEDE ELECTRONICA", smallFont));
         pdfDocument.add(new Paragraph(" "));
+        Paragraph title = new Paragraph("Justificante de presentacion de expediente", titleFont);
+        title.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+        pdfDocument.add(title);
+        pdfDocument.add(new Paragraph(" "));
+
         pdfDocument.add(new Paragraph("Identificador: " + procedure.getId(), bodyFont));
         if (procedure.getRecordNumber() != null && !procedure.getRecordNumber().isBlank()) {
             pdfDocument.add(new Paragraph("Numero de expediente: " + procedure.getRecordNumber(), bodyFont));
         }
+        if (procedure.getEntryNumber() != null) {
+            pdfDocument.add(new Paragraph("Numero de registro de entrada: " + procedure.getEntryNumber(), bodyFont));
+        }
+        pdfDocument.add(new Paragraph(" "));
+
+        pdfDocument.add(new Paragraph("DATOS DEL EXPEDIENTE", sectionFont));
         pdfDocument.add(new Paragraph("Titulo: " + procedure.getTitle(), bodyFont));
         pdfDocument.add(new Paragraph("Estado: " + procedure.getStatus().name(), bodyFont));
         String submittedAt = procedure.getSubmittedAt() == null
@@ -393,11 +411,10 @@ public class CaseServiceImpl implements CaseService {
                 .withZone(ZoneId.of("Europe/Madrid"))
                 .format(procedure.getSubmittedAt());
         pdfDocument.add(new Paragraph("Fecha de envio: " + submittedAt + " (Europe/Madrid)", bodyFont));
-        pdfDocument.add(new Paragraph("Unidad asignada: " + (procedure.getAssignedUnit() == null ? "No asignada" : procedure.getAssignedUnit()), bodyFont));
+        pdfDocument.add(new Paragraph("Unidad tramitadora: " + (procedure.getAssignedUnit() == null ? "No asignada" : procedure.getAssignedUnit()), bodyFont));
         String issuedAt = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
                 .withZone(ZoneId.of("Europe/Madrid"))
                 .format(Instant.now());
-        pdfDocument.add(new Paragraph("Emitido: " + issuedAt + " (Europe/Madrid)", bodyFont));
         pdfDocument.add(new Paragraph(" "));
 
         String digest = sha256Hex(String.join("|",
@@ -408,7 +425,8 @@ public class CaseServiceImpl implements CaseService {
                 String.valueOf(procedure.getSubmittedAt()),
                 String.valueOf(procedure.getAssignedUnit()),
                 issuedAt));
-        pdfDocument.add(new Paragraph("Codigo de verificacion (SHA-256): " + digest, bodyFont));
+        pdfDocument.add(new Paragraph("CODIGO DE VERIFICACION", sectionFont));
+        pdfDocument.add(new Paragraph("SHA-256: " + digest, bodyFont));
 
         String csvCode = documentRepository.findByProcedureId(caseId).stream()
                 .map(Document::getId)
@@ -420,7 +438,7 @@ public class CaseServiceImpl implements CaseService {
         if (csvCode != null) {
             String verifyUrl = publicSedeBaseUrl + "/validar-documento?csv=" + csvCode;
             pdfDocument.add(new Paragraph("CSV: " + csvCode, bodyFont));
-            pdfDocument.add(new Paragraph("Validacion online: " + verifyUrl, bodyFont));
+            pdfDocument.add(new Paragraph("Validacion online: " + verifyUrl, smallFont));
             try {
                 QRCodeWriter qrCodeWriter = new QRCodeWriter();
                 BitMatrix bitMatrix = qrCodeWriter.encode(verifyUrl, BarcodeFormat.QR_CODE, 140, 140);
@@ -428,13 +446,16 @@ public class CaseServiceImpl implements CaseService {
                 MatrixToImageWriter.writeToStream(bitMatrix, "PNG", qrOutput);
                 com.lowagie.text.Image qrImage = com.lowagie.text.Image.getInstance(qrOutput.toByteArray());
                 qrImage.setAlignment(com.lowagie.text.Image.ALIGN_LEFT);
+                qrImage.scaleToFit(100, 100);
                 pdfDocument.add(qrImage);
             } catch (Exception qrEx) {
                 log.warn("Could not embed QR in receipt for case {}: {}", caseId, qrEx.getMessage());
             }
         }
 
-        pdfDocument.add(new Paragraph("Documento emitido por la Sede Electronica a efectos informativos.", bodyFont));
+        pdfDocument.add(new Paragraph(" "));
+        pdfDocument.add(new Paragraph("Documento emitido por la Sede Electronica a efectos informativos.", smallFont));
+        pdfDocument.add(new Paragraph("Emitido: " + issuedAt + " (Europe/Madrid)", smallFont));
 
         pdfDocument.close();
         return new ByteArrayResource(output.toByteArray());

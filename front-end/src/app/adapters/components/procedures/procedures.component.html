@@ -10,8 +10,9 @@
       <p class="text-lg text-surface-600 mt-2">{{ 'PROCEDURES.SUBTITLE' | translate }}</p>
     </header>
 
-    <div *ngIf="isLoading" class="card p-6 text-center text-surface-600">
-      {{ 'PROCEDURES.LOADING' | translate }}
+    <div *ngIf="isLoading" class="space-y-4">
+      <p class="text-sm text-surface-600">{{ 'PROCEDURES.LOADING' | translate }}</p>
+      <app-loading-skeleton [cards]="4" [lines]="2"></app-loading-skeleton>
     </div>
 
     <div class="mt-8 grid gap-6 md:grid-cols-2" *ngIf="!isLoading">

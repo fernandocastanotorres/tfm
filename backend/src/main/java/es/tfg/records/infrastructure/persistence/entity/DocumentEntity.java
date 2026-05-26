@@ -50,6 +50,15 @@ public class DocumentEntity {
     @Column(name = "signed_storage_path", length = 500)
     private String signedStoragePath;
 
+    @Column(name = "entry_number", length = 50)
+    private String entryNumber;
+
+    @Column(name = "exit_number", length = 50)
+    private String exitNumber;
+
+    @Column(nullable = false)
+    private boolean generated = false;
+
     @Column(name = "original_mime_type", length = 100)
     private String originalMimeType;
 
@@ -157,6 +166,30 @@ public class DocumentEntity {
 
     public void setSignedStoragePath(String signedStoragePath) {
         this.signedStoragePath = signedStoragePath;
+    }
+
+    public String getEntryNumber() {
+        return entryNumber;
+    }
+
+    public void setEntryNumber(String entryNumber) {
+        this.entryNumber = entryNumber;
+    }
+
+    public String getExitNumber() {
+        return exitNumber;
+    }
+
+    public void setExitNumber(String exitNumber) {
+        this.exitNumber = exitNumber;
+    }
+
+    public boolean isGenerated() {
+        return generated;
+    }
+
+    public void setGenerated(boolean generated) {
+        this.generated = generated;
     }
 
     public String getOriginalMimeType() {

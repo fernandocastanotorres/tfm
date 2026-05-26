@@ -25,5 +25,7 @@ public record CaseItem(
         @Schema(description = "Assigned administrative unit", example = "Unit A1")
         String assignedUnit,
         @Schema(description = "Business record number", example = "EXP/URB/2026/000123")
-        String recordNumber
+        String recordNumber,
+        @Schema(description = "Entry registry number (NRE)", example = "RE/URB/2026/000001")
+        String entryNumber
 ) {}

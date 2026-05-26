@@ -2,6 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { BackofficeUser, CreateUserRequest, UpdateUserRequest } from '../../../application/models/backoffice.models';
 import { UserManagementService } from '../../../application/services/user-management.service';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
+import { ToastService } from '../../../application/services/toast.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'bo-user-management',
@@ -12,6 +14,8 @@ import { ConfirmDialogService } from '../../../application/services/confirm-dial
 export class UserManagementComponent implements OnInit {
   private readonly userManagementService = inject(UserManagementService);
   private readonly confirmDialogService = inject(ConfirmDialogService);
+  private readonly toastService = inject(ToastService);
+  private readonly translateService = inject(TranslateService);
 
   users: BackofficeUser[] = [];
   selectedUser: BackofficeUser | null = null;
@@ -19,6 +23,7 @@ export class UserManagementComponent implements OnInit {
   isLoading = true;
   isSaving = false;
   showForm = false;
+  private lastFocusedElement: HTMLElement | null = null;
 
   form = {
     email: '',
@@ -57,12 +62,14 @@ export class UserManagementComponent implements OnInit {
   }
 
   openCreate(): void {
+    this.lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     this.selectedUser = null;
     this.form = { email: '', password: '', roles: ['ROLE_TRAMITADOR'], isActive: true };
     this.showForm = true;
   }
 
   openEdit(user: BackofficeUser): void {
+    this.lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     this.selectedUser = user;
     this.form = { email: user.email, password: '', roles: [...user.roles], isActive: user.isActive };
     this.showForm = true;
@@ -71,6 +78,7 @@ export class UserManagementComponent implements OnInit {
   closeForm(): void {
     this.showForm = false;
     this.selectedUser = null;
+    this.restoreFocus();
   }
 
   toggleRole(role: string): void {
@@ -97,7 +105,10 @@ export class UserManagementComponent implements OnInit {
       };
       this.userManagementService.update(this.selectedUser.id, request).subscribe({
         next: () => this.afterSave(),
-        error: () => this.isSaving = false
+        error: () => {
+          this.isSaving = false;
+          this.toastService.error(this.translateService.instant('BO.COMMON.ERROR_USER_SAVE'));
+        }
       });
       return;
     }
@@ -110,7 +121,10 @@ export class UserManagementComponent implements OnInit {
     };
     this.userManagementService.create(request).subscribe({
       next: () => this.afterSave(),
-      error: () => this.isSaving = false
+      error: () => {
+        this.isSaving = false;
+        this.toastService.error(this.translateService.instant('BO.COMMON.ERROR_USER_CREATE'));
+      }
     });
   }
 
@@ -123,9 +137,26 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
+  hasPendingChanges(): boolean {
+    if (!this.showForm || this.isSaving) {
+      return false;
+    }
+    return Boolean(this.form.email.trim()) || Boolean(this.form.password.trim()) || this.selectedUser !== null;
+  }
+
   private afterSave(): void {
     this.isSaving = false;
     this.closeForm();
     this.loadUsers();
+    this.toastService.success(this.translateService.instant('BO.COMMON.SUCCESS_SAVED'));
+  }
+
+  private restoreFocus(): void {
+    if (!this.lastFocusedElement) {
+      return;
+    }
+    const target = this.lastFocusedElement;
+    this.lastFocusedElement = null;
+    setTimeout(() => target.focus(), 0);
   }
 }

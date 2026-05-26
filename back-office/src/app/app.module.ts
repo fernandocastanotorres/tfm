@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { A11yModule } from '@angular/cdk/a11y';
 import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { NgChartsModule } from 'ng2-charts';
+import { TitleStrategy } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -19,11 +20,10 @@ import { TasksComponent } from './adapters/components/tasks/tasks.component';
 import { TaskResolutionComponent } from './adapters/components/task-resolution/task-resolution.component';
 import { UserManagementComponent } from './adapters/components/user-management/user-management.component';
 import { ProcedureManagementComponent } from './adapters/components/procedure-management/procedure-management.component';
-import { PublicContentManagementComponent } from './adapters/components/public-content-management/public-content-management.component';
-import { TransparencyManagementComponent } from './adapters/components/transparency-management/transparency-management.component';
-import { StatisticsDashboardComponent } from './adapters/components/statistics-dashboard/statistics-dashboard.component';
 import { ContactInboxComponent } from './adapters/components/contact-inbox/contact-inbox.component';
 import { FieldI18nManagementComponent } from './adapters/components/field-i18n-management/field-i18n-management.component';
+import { ErrorPageComponent } from './adapters/components/error-page/error-page.component';
+import { I18nTitleStrategy } from './application/routing/i18n-title.strategy';
 
 import { AuthService } from './application/services/auth.service';
 import { AdminCasesService } from './application/services/admin-cases.service';
@@ -50,18 +50,16 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         TaskResolutionComponent,
         UserManagementComponent,
         ProcedureManagementComponent,
-        PublicContentManagementComponent,
-        TransparencyManagementComponent,
-        StatisticsDashboardComponent,
         ContactInboxComponent,
-        FieldI18nManagementComponent
+        FieldI18nManagementComponent,
+        ErrorPageComponent
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
+        A11yModule,
         FormsModule,
         ReactiveFormsModule,
         AppRoutingModule,
         RouterModule,
-        NgChartsModule,
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,
@@ -78,6 +76,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         { provide: HTTP_INTERCEPTORS, useClass: AcceptLanguageInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: JwtAuthInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: CorrelationIdInterceptor, multi: true },
+        { provide: TitleStrategy, useClass: I18nTitleStrategy },
         provideHttpClient(withInterceptorsFromDi())
     ] })
 export class AppModule { }

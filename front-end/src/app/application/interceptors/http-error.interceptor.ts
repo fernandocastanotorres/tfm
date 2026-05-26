@@ -35,6 +35,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
 
           case 403:
             this.toastService.error('Acceso denegado', 'No tienes permisos para realizar esta accion.');
+            this.router.navigate(['/sede/error/403']);
             break;
 
           case 409:
@@ -43,6 +44,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
 
           case 500:
             this.toastService.error('Error del servidor', 'Ha ocurrido un error inesperado. Intentalo de nuevo mas tarde.');
+            this.router.navigate(['/sede/error/500']);
             break;
 
           default:

@@ -19,6 +19,7 @@ public class Procedure {
     private String processInstanceId;
     private Instant submittedAt;
     private String recordNumber;
+    private String entryNumber;
     private Instant createdAt;
     private Instant updatedAt;
 
@@ -124,6 +125,14 @@ public class Procedure {
 
     public void setRecordNumber(String recordNumber) {
         this.recordNumber = recordNumber;
+    }
+
+    public String getEntryNumber() {
+        return entryNumber;
+    }
+
+    public void setEntryNumber(String entryNumber) {
+        this.entryNumber = entryNumber;
     }
 
     public Instant getCreatedAt() {

@@ -315,7 +315,16 @@
       "EDIT": "Editar",
       "SEARCH": "Buscar",
       "LOADING": "Carregant...",
-      "NO_DATA": "No hi ha dades disponibles"
+      "NO_DATA": "No hi ha dades disponibles",
+      "SUCCESS_SAVED": "Canvis guardats",
+      "ERROR_ACCESS_DENIED": "No tens permisos per a fer esta accio.",
+      "ERROR_INTERNAL": "S'ha produït un error inesperat en el servidor.",
+      "ERROR_CONFLICT": "No es pot completar l'operacio en l'estat actual.",
+      "ERROR_GENERIC": "S'ha produït un error inesperat.",
+      "ERROR_USER_SAVE": "No s'ha pogut guardar l'usuari",
+      "ERROR_USER_CREATE": "No s'ha pogut crear l'usuari",
+      "ERROR_PROCEDURE_UPDATE": "No s'ha pogut actualitzar el procediment",
+      "ERROR_PROCEDURE_CREATE": "No s'ha pogut crear el procediment"
     }
   }
 }

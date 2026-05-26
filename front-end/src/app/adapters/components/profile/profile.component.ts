@@ -33,6 +33,7 @@ export class ProfileComponent implements OnInit {
   showNewPassword = false;
   showConfirmPassword = false;
   isChangingPassword = false;
+  private lastFocusedElement: HTMLElement | null = null;
 
   protected readonly trackByIndex = trackByIndex;
 
@@ -113,6 +114,7 @@ export class ProfileComponent implements OnInit {
   }
 
   openPasswordModal(): void {
+    this.lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     this.showPasswordModal = true;
     this.passwordForm.reset();
     this.showCurrentPassword = false;
@@ -122,6 +124,16 @@ export class ProfileComponent implements OnInit {
 
   closePasswordModal(): void {
     this.showPasswordModal = false;
+    this.restoreFocus();
+  }
+
+  private restoreFocus(): void {
+    if (!this.lastFocusedElement) {
+      return;
+    }
+    const target = this.lastFocusedElement;
+    this.lastFocusedElement = null;
+    setTimeout(() => target.focus(), 0);
   }
 
   @HostListener('keydown.escape')

@@ -33,6 +33,9 @@ public final class DocumentEntityMapper {
         document.setOriginalSize(entity.getOriginalSize());
         document.setSignedSize(entity.getSignedSize());
         document.setUploadedAt(entity.getUploadedAt());
+        document.setEntryNumber(entity.getEntryNumber());
+        document.setExitNumber(entity.getExitNumber());
+        document.setGenerated(entity.isGenerated());
         document.setSignedAt(entity.getSignedAt());
         document.setCreatedAt(entity.getCreatedAt());
         document.setUpdatedAt(entity.getUpdatedAt());
@@ -57,6 +60,9 @@ public final class DocumentEntityMapper {
         entity.setOriginalSize(domain.getOriginalSize());
         entity.setSignedSize(domain.getSignedSize());
         entity.setUploadedAt(domain.getUploadedAt());
+        entity.setEntryNumber(domain.getEntryNumber());
+        entity.setExitNumber(domain.getExitNumber());
+        entity.setGenerated(domain.isGenerated());
         entity.setSignedAt(domain.getSignedAt());
         return entity;
     }

@@ -28,9 +28,15 @@ public class SecurityHeadersFilter extends OncePerRequestFilter {
                 "script-src 'self' 'unsafe-inline'; " +
                 "style-src 'self' 'unsafe-inline'; " +
                 "img-src 'self' data:; " +
-                "font-src 'self' data:;");
+                "font-src 'self' data:; " +
+                "object-src 'none'; " +
+                "base-uri 'self'; " +
+                "form-action 'self'; " +
+                "frame-ancestors 'none';");
         response.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
         response.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+        response.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+        response.setHeader("Cross-Origin-Resource-Policy", "same-origin");
 
         filterChain.doFilter(request, response);
     }

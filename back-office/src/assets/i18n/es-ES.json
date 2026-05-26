@@ -315,7 +315,16 @@
       "EDIT": "Editar",
       "SEARCH": "Buscar",
       "LOADING": "Cargando...",
-      "NO_DATA": "No hay datos disponibles"
+      "NO_DATA": "No hay datos disponibles",
+      "SUCCESS_SAVED": "Cambios guardados",
+      "ERROR_ACCESS_DENIED": "No tienes permisos para realizar esta accion.",
+      "ERROR_INTERNAL": "Se ha producido un error inesperado en el servidor.",
+      "ERROR_CONFLICT": "No se puede completar la operacion en el estado actual.",
+      "ERROR_GENERIC": "Ha ocurrido un error inesperado.",
+      "ERROR_USER_SAVE": "No se pudo guardar el usuario",
+      "ERROR_USER_CREATE": "No se pudo crear el usuario",
+      "ERROR_PROCEDURE_UPDATE": "No se pudo actualizar el procedimiento",
+      "ERROR_PROCEDURE_CREATE": "No se pudo crear el procedimiento"
     }
   }
 }

@@ -11,18 +11,23 @@ import es.tfg.records.application.exception.ConflictException;
 import es.tfg.records.application.exception.InvalidProcedureException;
 import es.tfg.records.application.exception.ResourceNotFoundException;
 import es.tfg.records.application.exception.ValidationException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import es.tfg.records.application.service.CaseServiceImpl;
 import es.tfg.records.application.service.EniMetadataService;
 import es.tfg.records.application.service.PublicSignatureVerificationService;
+import es.tfg.records.application.service.RegistryService;
 import es.tfg.records.application.service.SignatureService;
+import es.tfg.records.application.service.SummaryDocumentService;
 import es.tfg.records.application.service.WorkflowService;
 import es.tfg.records.domain.model.CaseStatus;
+import es.tfg.records.domain.model.Document;
 import es.tfg.records.domain.model.Procedure;
 import es.tfg.records.domain.model.ProcedureType;
 import es.tfg.records.domain.port.DocumentRepository;
 import es.tfg.records.domain.port.ProcedureRepository;
 import es.tfg.records.domain.port.ProcedureTypeRepository;
 import es.tfg.records.infrastructure.persistence.repository.CaseTimelineEventJpaRepository;
+import es.tfg.records.infrastructure.storage.FileStorageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -65,6 +70,18 @@ class CaseServiceImplTest {
 
     @Mock
     private WorkflowService workflowService;
+
+    @Mock
+    private FileStorageService fileStorageService;
+
+    @Mock
+    private ObjectMapper objectMapper;
+
+    @Mock
+    private RegistryService registryService;
+
+    @Mock
+    private SummaryDocumentService summaryDocumentService;
 
     @InjectMocks
     private CaseServiceImpl caseService;
@@ -209,6 +226,11 @@ class CaseServiceImplTest {
                 ownerId.toString(),
                 java.time.Instant.now(),
                 false));
+
+        when(documentRepository.findByProcedureId(caseId)).thenReturn(List.of());
+        when(registryService.generateEntryNumber(any(), any())).thenReturn("RE/GEN/2026/000001");
+        when(registryService.generateRecordNumber(any(), any())).thenReturn("EXP/GEN/2026/000001");
+        when(summaryDocumentService.generateAndStoreSummary(any())).thenReturn(new Document());
 
         // When
         var result = caseService.submitCase(caseId, ownerId);

@@ -49,7 +49,8 @@ public final class BackofficeDtos {
             String citizenEmail,
             List<CaseTimelineEventDto> timeline,
             List<CaseAttachmentDto> attachments,
-            Map<String, Object> formData
+            Map<String, Object> formData,
+            String entryNumber
     ) {}
 
     public record CaseWorkflowGraph(

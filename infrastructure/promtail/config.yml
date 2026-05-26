@@ -29,6 +29,7 @@ scrape_configs:
         target_label: container_id
     pipeline_stages:
       - docker: {}
+      # --- Backend (JSON structured logs from Logstash) ---
       - match:
           selector: '{compose_service="backend"}'
           stages:
@@ -38,7 +39,65 @@ scrape_configs:
                   logger: logger_name
                   correlationId: correlationId
                   message: message
+                  thread: thread_name
+                  application: application_name
             - labels:
                 level:
                 logger:
                 correlationId:
+      # --- Frontend (nginx access logs) ---
+      - match:
+          selector: '{compose_service="frontend"}'
+          stages:
+            - regex:
+                expression: '^(?P<remote_addr>\S+)\s+-\s+(?P<remote_user>\S+)\s+\[(?P<time_local>[^\]]+)\]\s+"(?P<method>\S+)\s+(?P<path>\S+)\s+\S+"\s+(?P<status>\d{3})\s+(?P<body_bytes>\d+)\s+"(?P<http_referer>[^"]*)"\s+"(?P<http_user_agent>[^"]*)"\s+(?P<request_time>\d+\.\d+)\s+(?P<upstream_response_time>\S+)'
+            - labels:
+                status:
+                method:
+            - metrics:
+                nginx_http_requests_total:
+                  type: Counter
+                  description: "Total nginx HTTP requests"
+                  source: status
+                  prefix: promtail_custom_
+                  config:
+                    action: inc
+                nginx_http_response_time_seconds:
+                  type: Histogram
+                  description: "Nginx request duration in seconds"
+                  source: request_time
+                  prefix: promtail_custom_
+                  config:
+                    buckets: [0.01, 0.05, 0.1, 0.5, 1, 2, 5, 10]
+      # --- Backoffice (nginx access logs) ---
+      - match:
+          selector: '{compose_service="backoffice"}'
+          stages:
+            - regex:
+                expression: '^(?P<remote_addr>\S+)\s+-\s+(?P<remote_user>\S+)\s+\[(?P<time_local>[^\]]+)\]\s+"(?P<method>\S+)\s+(?P<path>\S+)\s+\S+"\s+(?P<status>\d{3})\s+(?P<body_bytes>\d+)\s+"(?P<http_referer>[^"]*)"\s+"(?P<http_user_agent>[^"]*)"\s+(?P<request_time>\d+\.\d+)\s+(?P<upstream_response_time>\S+)'
+            - labels:
+                status:
+                method:
+            - metrics:
+                nginx_http_requests_total:
+                  type: Counter
+                  description: "Total nginx HTTP requests"
+                  source: status
+                  prefix: promtail_custom_
+                  config:
+                    action: inc
+                nginx_http_response_time_seconds:
+                  type: Histogram
+                  description: "Nginx request duration in seconds"
+                  source: request_time
+                  prefix: promtail_custom_
+                  config:
+                    buckets: [0.01, 0.05, 0.1, 0.5, 1, 2, 5, 10]
+      # --- Default: extract level from any log line ---
+      - match:
+          selector: '{compose_service=~"postgres|mailpit"}'
+          stages:
+            - regex:
+                expression: '(?P<level>(ERROR|WARN|INFO|DEBUG))\b'
+            - labels:
+                level:

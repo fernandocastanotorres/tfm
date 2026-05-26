@@ -87,6 +87,15 @@ export class DashboardComponent implements OnInit {
     return (this.report?.dailyTrend ?? []).slice(-7);
   }
 
+  get formattedResolutionTime(): string {
+    const hours = this.report?.summary?.averageResolutionHours ?? 0;
+    if (hours >= 24) {
+      const days = Math.round(hours / 24);
+      return `${days} d\u00edas`;
+    }
+    return `${hours}h`;
+  }
+
   private getDefaultReport(): DashboardReport {
     return {
       summary: {

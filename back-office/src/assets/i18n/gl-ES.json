@@ -315,7 +315,16 @@
       "EDIT": "Editar",
       "SEARCH": "Buscar",
       "LOADING": "Cargando...",
-      "NO_DATA": "Non hai datos dispoibles"
+      "NO_DATA": "Non hai datos dispoibles",
+      "SUCCESS_SAVED": "Cambios gardados",
+      "ERROR_ACCESS_DENIED": "Non tes permisos para realizar esta accion.",
+      "ERROR_INTERNAL": "Produciuse un erro inesperado no servidor.",
+      "ERROR_CONFLICT": "Non se pode completar a operacion no estado actual.",
+      "ERROR_GENERIC": "Produciuse un erro inesperado.",
+      "ERROR_USER_SAVE": "Non se puido gardar o usuario",
+      "ERROR_USER_CREATE": "Non se puido crear o usuario",
+      "ERROR_PROCEDURE_UPDATE": "Non se puido actualizar o procedemento",
+      "ERROR_PROCEDURE_CREATE": "Non se puido crear o procedemento"
     }
   }
 }

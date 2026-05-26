@@ -67,20 +67,22 @@ Recommended next step:
 ## 7) Data and Persistence Model
 
 - ✅ PostgreSQL + JPA selected (ADR-0003)
-- ❌ Entity model and aggregate boundaries are defined
-- ❌ Database migration strategy is defined (tooling + policy)
-- ❌ UUID/public ID usage rules are codified in model conventions
+- ✅ Entity model and aggregate boundaries are defined (`docs/architecture/SYSTEM_DESIGN.md`, `docs/TFG-MEMORIA-TECNICA.md`)
+- ✅ Database migration strategy is defined (Flyway + V-named migrations in `backend/src/main/resources/db/migration/`)
+- 🟡 UUID/public ID usage rules are codified in model conventions (implicit: UUID v4 for all PKs)
 
 Recommended next step:
-- Create `docs/data/DOMAIN_MODEL.md` + migration policy document.
+- Add dedicated `docs/data/DOMAIN_MODEL.md` for entity relationship diagrams.
 
 ---
 
 ## 8) Document Pipeline and Interoperability
 
 - ✅ Local file storage + LibreOffice + Bouncy Castle selected (ADR-0005)
-- 🟡 ENIDOC package composition is defined at high level
-- ❌ Conversion/signature failure handling and retry policy are defined
+- ✅ ENIDOC package composition is defined (`docs/interoperability/ENIDOC_SPEC.md`)
+- ✅ Server-generated summary document with CMS/PKCS#7 signature on submission
+- ✅ Entry/exit registry numbering (NRE/NRS) with atomic counters
+- 🟡 Conversion/signature failure handling and retry policy are defined (basic try/catch in services)
 - ❌ XML/XSD validation workflow and error reporting contract are defined
 
 Recommended next step:

@@ -21,7 +21,7 @@
         <div class="card p-6 transparency__metric" *ngFor="let metric of metrics; trackBy: trackByIndex">
           <p class="transparency__metric-label">{{ metric.labelKey | translate }}</p>
           <p class="transparency__metric-value">
-            {{ metric.value }}{{ metric.unit }}
+            {{ metric.value }}<ng-container *ngIf="metric.unit">&nbsp;{{ metric.unit }}</ng-container>
             <span class="transparency__metric-trend" [ngClass]="'transparency__trend--' + metric.trend" [attr.aria-label]="getTrendLabel(metric.trend) | translate">{{ getTrendIcon(metric.trend) }}</span>
           </p>
         </div>

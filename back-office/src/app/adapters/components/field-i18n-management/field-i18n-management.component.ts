@@ -42,6 +42,7 @@ export class FieldI18nManagementComponent implements OnInit {
 
   // Editable map: key = `${taskOrderIndex}:${fieldId}:${locale}`, value = entry
   editMap = new Map<string, FieldI18nEntry>();
+  private lastFocusedElement: HTMLElement | null = null;
 
   ngOnInit(): void {
     // No auto-load — data is loaded on-demand when user clicks "Gestionar traducciones"
@@ -165,9 +166,11 @@ export class FieldI18nManagementComponent implements OnInit {
 
   close(): void {
     this.showForm = false;
+    this.restoreFocus();
   }
 
   open(): void {
+    this.lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     this.showForm = true;
     if (this.procedure && !this.loaded) {
       this.loadFieldTranslations();
@@ -185,5 +188,14 @@ export class FieldI18nManagementComponent implements OnInit {
 
   private entryKey(entry: FieldI18nEntry): string {
     return `${entry.taskOrderIndex}:${entry.fieldId}:${entry.locale}`;
+  }
+
+  private restoreFocus(): void {
+    if (!this.lastFocusedElement) {
+      return;
+    }
+    const target = this.lastFocusedElement;
+    this.lastFocusedElement = null;
+    setTimeout(() => target.focus(), 0);
   }
 }

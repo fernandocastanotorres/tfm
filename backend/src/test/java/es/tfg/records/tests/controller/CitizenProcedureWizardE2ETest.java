@@ -2,19 +2,24 @@ package es.tfg.records.tests.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import es.tfg.records.application.service.RegistryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -27,6 +32,9 @@ class CitizenProcedureWizardE2ETest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    private RegistryService registryService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -86,6 +94,14 @@ class CitizenProcedureWizardE2ETest {
                 .andExpect(jsonPath("$.tasks[0].fields[2].id").value("applicationReason"));
 
         UUID ownerId = UUID.randomUUID();
+
+        when(registryService.generateEntryNumber(any(), any(Instant.class)))
+                .thenReturn("RE/TESTUNIT/2026/000001");
+        when(registryService.generateExitNumber(any(), any(Instant.class)))
+                .thenReturn("RS/TESTUNIT/2026/000001");
+        when(registryService.generateRecordNumber(any(), any(Instant.class)))
+                .thenReturn("EXP/TESTU/2026/000001");
+
         String createRequest = """
                 {
                   "procedureId": "%s",

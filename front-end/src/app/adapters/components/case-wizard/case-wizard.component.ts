@@ -426,6 +426,15 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
     return `${this.currentTaskIndex + 1}/${this.tasks.length}`;
   }
 
+  hasPendingChanges(): boolean {
+    if (this.isSubmitting || this.isLoading) {
+      return false;
+    }
+
+    const hasFiles = Object.values(this.attachments.value).some((files) => files.length > 0);
+    return this.wizardForm.dirty || this.uploadForm.dirty || hasFiles;
+  }
+
   get effectiveUploadRequirements(): UploadRequirementDto[] {
     const requirements = this.currentTask?.uploadRequirements ?? [];
     if (requirements.length > 0) {

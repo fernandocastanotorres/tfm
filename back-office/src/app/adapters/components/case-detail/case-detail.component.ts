@@ -27,6 +27,7 @@ export class CaseDetailComponent implements OnInit {
   workflowGraph: CaseWorkflowGraph | null = null;
   selectedWorkflowNodeKey: string | null = null;
   formFieldLabels: Record<string, string> = {};
+  private lastFocusedElement: HTMLElement | null = null;
 
   pendingTasks: { id: string; name: string; description: string; type: string; assignedRole: string }[] = [];
 
@@ -247,12 +248,14 @@ export class CaseDetailComponent implements OnInit {
   }
 
   openStatusModal(): void {
+    this.lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     this.newStatus = this.caseDetail?.status || '';
     this.showStatusModal = true;
   }
 
   closeStatusModal(): void {
     this.showStatusModal = false;
+    this.restoreFocus();
   }
 
   updateStatus(): void {
@@ -426,5 +429,14 @@ export class CaseDetailComponent implements OnInit {
       actions: 'Acciones'
     };
     return labels[tab] || tab;
+  }
+
+  private restoreFocus(): void {
+    if (!this.lastFocusedElement) {
+      return;
+    }
+    const target = this.lastFocusedElement;
+    this.lastFocusedElement = null;
+    setTimeout(() => target.focus(), 0);
   }
 }
