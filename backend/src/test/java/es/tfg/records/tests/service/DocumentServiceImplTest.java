@@ -1,8 +1,10 @@
 package es.tfg.records.tests.service;
 
 import es.tfg.records.application.dto.DocumentItem;
+import es.tfg.records.application.exception.ResourceNotFoundException;
 import es.tfg.records.application.service.EniMetadataService;
 import es.tfg.records.application.service.DocumentServiceImpl;
+import es.tfg.records.application.service.DocumentDownloadVariant;
 import es.tfg.records.application.service.PublicSignatureVerificationService;
 import es.tfg.records.application.service.SignatureService;
 import es.tfg.records.domain.model.CaseStatus;
@@ -18,8 +20,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -232,5 +236,103 @@ class DocumentServiceImplTest {
         // When/Then
         assertThatThrownBy(() -> documentService.uploadDocument(caseId, ownerId, file))
                 .isInstanceOf(Exception.class);
+    }
+
+    @Test
+    void downloadDocument_shouldUseStoragePathForCurrentVariant_whenAvailable() {
+        Procedure procedure = new Procedure();
+        procedure.setId(caseId);
+        procedure.setOwnerId(ownerId);
+
+        Document document = new Document();
+        document.setId(documentId);
+        document.setProcedureId(caseId);
+        document.setName("resumen.pdf");
+        document.setStoragePath("current.pdf");
+        document.setSize(12L);
+
+        when(documentRepository.findById(documentId)).thenReturn(Optional.of(document));
+        when(procedureRepository.findById(caseId)).thenReturn(Optional.of(procedure));
+        when(fileStorageService.openStream(caseId, "current.pdf"))
+                .thenReturn(new ByteArrayInputStream(new byte[] {1, 2, 3}));
+
+        Resource result = documentService.downloadDocument(documentId, ownerId, DocumentDownloadVariant.CURRENT);
+
+        assertThat(result).isNotNull();
+        verify(fileStorageService).openStream(caseId, "current.pdf");
+    }
+
+    @Test
+    void downloadDocument_shouldFallbackToSignedStoragePathForCurrentVariant_whenStoragePathMissing() {
+        Procedure procedure = new Procedure();
+        procedure.setId(caseId);
+        procedure.setOwnerId(ownerId);
+
+        Document document = new Document();
+        document.setId(documentId);
+        document.setProcedureId(caseId);
+        document.setName("Documento Resumen del Expediente.pdf");
+        document.setStoragePath(null);
+        document.setSignedStoragePath("summary-signed.pdf");
+        document.setSize(24L);
+
+        when(documentRepository.findById(documentId)).thenReturn(Optional.of(document));
+        when(procedureRepository.findById(caseId)).thenReturn(Optional.of(procedure));
+        when(fileStorageService.openStream(caseId, "summary-signed.pdf"))
+                .thenReturn(new ByteArrayInputStream(new byte[] {9, 8, 7}));
+
+        Resource result = documentService.downloadDocument(documentId, ownerId, DocumentDownloadVariant.CURRENT);
+
+        assertThat(result).isNotNull();
+        verify(fileStorageService).openStream(caseId, "summary-signed.pdf");
+    }
+
+    @Test
+    void downloadDocument_shouldFallbackToOriginalStoragePathForCurrentVariant_whenCurrentAndSignedMissing() {
+        Procedure procedure = new Procedure();
+        procedure.setId(caseId);
+        procedure.setOwnerId(ownerId);
+
+        Document document = new Document();
+        document.setId(documentId);
+        document.setProcedureId(caseId);
+        document.setName("resumen.pdf");
+        document.setStoragePath(null);
+        document.setSignedStoragePath(null);
+        document.setOriginalStoragePath("summary-original.pdf");
+        document.setSize(36L);
+
+        when(documentRepository.findById(documentId)).thenReturn(Optional.of(document));
+        when(procedureRepository.findById(caseId)).thenReturn(Optional.of(procedure));
+        when(fileStorageService.openStream(caseId, "summary-original.pdf"))
+                .thenReturn(new ByteArrayInputStream(new byte[] {4, 5, 6}));
+
+        Resource result = documentService.downloadDocument(documentId, ownerId, DocumentDownloadVariant.CURRENT);
+
+        assertThat(result).isNotNull();
+        verify(fileStorageService).openStream(caseId, "summary-original.pdf");
+    }
+
+    @Test
+    void downloadDocument_shouldThrowWhenNoStorageArtifactExistsForCurrentVariant() {
+        Procedure procedure = new Procedure();
+        procedure.setId(caseId);
+        procedure.setOwnerId(ownerId);
+
+        Document document = new Document();
+        document.setId(documentId);
+        document.setProcedureId(caseId);
+        document.setName("resumen.pdf");
+        document.setStoragePath(null);
+        document.setSignedStoragePath(null);
+        document.setOriginalStoragePath(null);
+
+        when(documentRepository.findById(documentId)).thenReturn(Optional.of(document));
+        when(procedureRepository.findById(caseId)).thenReturn(Optional.of(procedure));
+
+        assertThatThrownBy(() -> documentService.downloadDocument(documentId, ownerId, DocumentDownloadVariant.CURRENT))
+                .isInstanceOf(ResourceNotFoundException.class);
+
+        verify(fileStorageService, never()).openStream(any(), any());
     }
 }

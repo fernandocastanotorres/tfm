@@ -314,10 +314,19 @@ public class DocumentServiceImpl implements DocumentService {
             return document.getSignedStoragePath();
         }
 
-        if (document.getStoragePath() == null) {
-            throw new ResourceNotFoundException("DOC", "Document has no associated file");
+        if (document.getStoragePath() != null) {
+            return document.getStoragePath();
         }
-        return document.getStoragePath();
+
+        if (document.getSignedStoragePath() != null) {
+            return document.getSignedStoragePath();
+        }
+
+        if (document.getOriginalStoragePath() != null) {
+            return document.getOriginalStoragePath();
+        }
+
+        throw new ResourceNotFoundException("DOC", "Document has no associated file");
     }
 
     private String resolveFilename(Document document, DocumentDownloadVariant variant) {

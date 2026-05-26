@@ -27,6 +27,7 @@ import java.util.UUID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -114,5 +115,30 @@ class DocumentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(header().string("Content-Disposition", "attachment; filename=\"a.pdf\""))
                 .andExpect(header().string("Content-Type", MediaType.APPLICATION_OCTET_STREAM_VALUE));
+    }
+
+    @Test
+    void downloadDocument_shouldUseCurrentVariantFromRequestParam() throws Exception {
+        UUID ownerId = UUID.randomUUID();
+        UUID docId = UUID.randomUUID();
+
+        ByteArrayResource resource = new ByteArrayResource("pdf-content".getBytes()) {
+            @Override
+            public String getFilename() {
+                return "Documento Resumen del Expediente.pdf";
+            }
+        };
+
+        when(documentService.downloadDocument(docId, ownerId, DocumentDownloadVariant.CURRENT)).thenReturn(resource);
+
+        mockMvc.perform(get("/citizen/procedures/documents/{id}/download", docId)
+                        .param("variant", "CURRENT")
+                        .principal(new TestingAuthenticationToken(ownerId.toString(), null)))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Content-Disposition",
+                        "attachment; filename=\"Documento Resumen del Expediente.pdf\""))
+                .andExpect(header().string("Content-Type", MediaType.APPLICATION_OCTET_STREAM_VALUE));
+
+        verify(documentService).downloadDocument(docId, ownerId, DocumentDownloadVariant.CURRENT);
     }
 }
