@@ -46,7 +46,7 @@
       </div>
     </div>
 
-    <section class="mt-6 grid gap-4" (keydown)="onNotificationListKeydown($event)" (focusin)="onNotificationListFocus()">
+    <section class="mt-6 grid gap-4" tabindex="0" (keydown)="onNotificationListKeydown($event)" (focusin)="onNotificationListFocus()">
       <article
         class="card p-6"
         *ngFor="let item of pagedInbox; trackBy: trackByIndex"

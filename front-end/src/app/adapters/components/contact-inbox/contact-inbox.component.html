@@ -57,6 +57,8 @@
   <div
     class="space-y-3"
     *ngIf="filteredMessages.length > 0"
+    tabindex="0"
+    role="listbox"
     (keydown)="onInboxListKeydown($event)"
     (focusin)="onInboxListFocus()"
   >

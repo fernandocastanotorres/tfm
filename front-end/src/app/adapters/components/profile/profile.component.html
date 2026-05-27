@@ -52,8 +52,8 @@
 </section>
 
 <!-- Password change modal -->
-<div *ngIf="showPasswordModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50" (click)="closePasswordModal()" role="dialog" aria-modal="true" aria-labelledby="password-modal-title" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
-  <div class="card w-full max-w-md p-6 mx-4" (click)="$event.stopPropagation()">
+<div *ngIf="showPasswordModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50" (click)="closePasswordModal()" (keydown.escape)="closePasswordModal()" tabindex="0" role="dialog" aria-modal="true" aria-labelledby="password-modal-title" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
+  <div class="card w-full max-w-md p-6 mx-4" (click)="$event.stopPropagation()" (keydown.escape)="$event.stopPropagation()" tabindex="0">
     <h2 id="password-modal-title" class="text-xl font-semibold text-surface-900 mb-4">{{ 'PROFILE.CHANGE_PASSWORD' | translate }}</h2>
 
     <form [formGroup]="passwordForm" class="space-y-4">

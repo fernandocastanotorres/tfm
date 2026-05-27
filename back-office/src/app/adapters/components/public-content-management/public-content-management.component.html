@@ -178,7 +178,7 @@
           <button type="button" class="flex-1 py-1.5 text-xs font-medium rounded-md transition" [class.bg-gray-800]="themeMode === 'dark'" [class.shadow-sm]="themeMode === 'dark'" [class.text-white]="themeMode === 'dark'" [class.text-gray-500]="themeMode !== 'dark'" (click)="setThemeMode('dark')">Oscuro</button>
         </div>
         <div class="space-y-2 max-h-[400px] overflow-y-auto pr-1">
-          <div *ngFor="let theme of themeModeVariantsList" class="group relative border rounded-lg p-3 cursor-pointer transition-all" [class.border-blue-500]="theme.id === currentThemeId" [class.bg-blue-50]="theme.id === currentThemeId" [class.border-gray-200]="theme.id !== currentThemeId" [class.hover:border-gray-300]="theme.id !== currentThemeId" (click)="selectThemeVariant(theme.id)">
+          <div *ngFor="let theme of themeModeVariantsList" class="group relative border rounded-lg p-3 cursor-pointer transition-all" [class.border-blue-500]="theme.id === currentThemeId" [class.bg-blue-50]="theme.id === currentThemeId" [class.border-gray-200]="theme.id !== currentThemeId" [class.hover:border-gray-300]="theme.id !== currentThemeId" (click)="selectThemeVariant(theme.id)" (keydown.enter)="selectThemeVariant(theme.id)" tabindex="0" role="button">
             <div *ngIf="theme.id === activeThemeId" class="absolute -top-1.5 -right-1.5"><span class="inline-flex items-center px-1.5 py-0.5 text-[10px] font-semibold text-green-700 bg-green-100 rounded-full">Activo</span></div>
             <div class="flex items-center gap-3">
               <div class="flex-shrink-0 w-10 h-10 rounded-lg border border-gray-200 overflow-hidden shadow-sm" [style.background]="getThemeSwatchGradient(theme)"></div>
@@ -195,7 +195,7 @@
       <div class="bg-white rounded-lg shadow p-5">
         <h4 class="font-semibold text-gray-900 mb-3">Plantillas rapidas</h4>
         <div class="space-y-2">
-          <div *ngFor="let preset of themePresets" class="flex items-center gap-3 p-2 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition" (click)="selectedThemePreset = preset.name; applyThemePreset()">
+          <div *ngFor="let preset of themePresets" class="flex items-center gap-3 p-2 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition" (click)="selectedThemePreset = preset.name; applyThemePreset()" (keydown.enter)="selectedThemePreset = preset.name; applyThemePreset()" tabindex="0" role="button">
             <div class="flex-shrink-0 w-8 h-8 rounded-md overflow-hidden" [style.background]="getPresetSwatchGradient(preset)"></div>
             <span class="text-sm text-gray-700">{{ preset.name }}</span>
           </div>

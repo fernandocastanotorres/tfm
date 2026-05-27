@@ -49,7 +49,7 @@
     </div>
 
     <section class="mt-8 grid gap-6 lg:grid-cols-[2fr_1fr]">
-      <div class="grid gap-4" (keydown)="onPaymentListKeydown($event)" (focusin)="onPaymentListFocus()">
+      <div class="grid gap-4" tabindex="0" (keydown)="onPaymentListKeydown($event)" (focusin)="onPaymentListFocus()">
         <button
           type="button"
           class="card p-6 text-left"
