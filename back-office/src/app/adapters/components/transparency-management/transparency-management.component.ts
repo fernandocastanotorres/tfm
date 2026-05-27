@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { A11yModule } from '@angular/cdk/a11y';
 import { FormsModule } from '@angular/forms';
 import { TransparencyManagementService, TransparencyReport, CreateReportRequest } from '../../../application/services/transparency-management.service';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
@@ -9,7 +10,7 @@ import { ConfirmDialogService } from '../../../application/services/confirm-dial
     templateUrl: './transparency-management.component.html',
     styleUrls: ['./transparency-management.component.css'],
     standalone: true,
-    imports: [CommonModule, FormsModule]
+    imports: [CommonModule, FormsModule, A11yModule]
 })
 export class TransparencyManagementComponent implements OnInit {
   private readonly service = inject(TransparencyManagementService);

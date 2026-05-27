@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { A11yModule } from '@angular/cdk/a11y';
 import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -111,6 +112,7 @@ export function HttpLoaderFactory(http: HttpClient): CustomLoader {
         InboxItemDirective
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
+        NoopAnimationsModule,
         A11yModule,
         FormsModule,
         ReactiveFormsModule,

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -6,13 +6,25 @@ import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { ToastService } from '../services/toast.service';
 
+/**
+ * Uses Injector to lazily resolve Router and AuthService to avoid circular DI:
+ * Router → HttpClient → HTTP_INTERCEPTORS → HttpErrorInterceptor → Router
+ */
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
-  constructor(
-    private router: Router,
-    private authService: AuthService,
-    private toastService: ToastService
-  ) {}
+  constructor(private injector: Injector) {}
+
+  private get router(): Router {
+    return this.injector.get(Router);
+  }
+
+  private get authService(): AuthService {
+    return this.injector.get(AuthService);
+  }
+
+  private get toastService(): ToastService {
+    return this.injector.get(ToastService);
+  }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(

@@ -6,6 +6,7 @@ type ErrorVariant = '403' | '404' | '500';
 
 @Component({
   selector: 'app-error-page',
+  standalone: false,
   templateUrl: './error-page.component.html'
 })
 export class ErrorPageComponent {

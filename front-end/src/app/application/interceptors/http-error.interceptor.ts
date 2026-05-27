@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -8,19 +8,21 @@ import { ToastService } from '../services/toast.service';
 
 /**
  * Centralized HTTP error handling.
- * - 401 (after refresh fail): redirect to /login
- * - 400: return ValidationErrors for form display
- * - 403: show toast notification and rethrow
- * - 409: show toast notification and rethrow
- * - 500: show toast notification and rethrow
+ * Uses Injector to lazily resolve Router to avoid circular DI:
+ * Router → HttpClient → HTTP_INTERCEPTORS → HttpErrorInterceptor → Router
  */
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
 
-  constructor(
-    private router: Router,
-    private toastService: ToastService
-  ) {}
+  constructor(private injector: Injector) {}
+
+  private get router(): Router {
+    return this.injector.get(Router);
+  }
+
+  private get toastService(): ToastService {
+    return this.injector.get(ToastService);
+  }
 
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(req).pipe(

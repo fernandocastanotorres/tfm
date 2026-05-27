@@ -1,15 +1,23 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, filter, switchMap, take } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 
+/**
+ * Uses Injector to resolve AuthService lazily to avoid circular DI:
+ * HttpClient → JwtAuthInterceptor → AuthService → HttpClient
+ */
 @Injectable()
 export class JwtAuthInterceptor implements HttpInterceptor {
   private isRefreshing = false;
   private refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
-  constructor(private authService: AuthService) {}
+  constructor(private injector: Injector) {}
+
+  private get authService(): AuthService {
+    return this.injector.get(AuthService);
+  }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.authService.getAccessToken();

@@ -3,14 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StatisticsService, AnalyticsReport, MonthlyTrendPoint, ProcedureTypeMetric, UnitSlaBreakdown } from '../../../application/services/statistics.service';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
-import { BaseChartDirective } from 'ng2-charts';
+import { NgChartsModule } from 'ng2-charts';
 
 @Component({
     selector: 'bo-statistics-dashboard',
     templateUrl: './statistics-dashboard.component.html',
     styleUrls: ['./statistics-dashboard.component.css'],
     standalone: true,
-    imports: [CommonModule, FormsModule, BaseChartDirective]
+    imports: [CommonModule, FormsModule, NgChartsModule]
 })
 export class StatisticsDashboardComponent implements OnInit {
   private readonly service = inject(StatisticsService);

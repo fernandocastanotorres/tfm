@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { catchError, filter, switchMap, take } from 'rxjs/operators';
@@ -8,6 +8,9 @@ import { AuthService } from '../services/auth.service';
  * Attaches Authorization: Bearer {token} from localStorage to every request.
  * Handles token refresh on 401 responses using a BehaviorSubject queue pattern
  * to prevent multiple simultaneous refresh attempts.
+ *
+ * Uses Injector to resolve AuthService lazily to avoid circular DI:
+ * HttpClient → JwtAuthInterceptor → AuthService → HttpClient
  */
 @Injectable()
 export class JwtAuthInterceptor implements HttpInterceptor {
@@ -15,7 +18,11 @@ export class JwtAuthInterceptor implements HttpInterceptor {
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
 
-  constructor(private authService: AuthService) {}
+  constructor(private injector: Injector) {}
+
+  private get authService(): AuthService {
+    return this.injector.get(AuthService);
+  }
 
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const token = this.authService.getToken();
@@ -57,13 +64,11 @@ export class JwtAuthInterceptor implements HttpInterceptor {
         catchError((error) => {
           this.isRefreshing = false;
           this.refreshTokenSubject.next(null);
-          // If refresh fails, logout and redirect
-          this.authService.logout();
+          this.authService.logout().subscribe();
           return throwError(() => error);
         })
       );
     } else {
-      // Wait for the refresh to complete, then retry with new token
       return this.refreshTokenSubject.pipe(
         filter(token => token !== null),
         take(1),

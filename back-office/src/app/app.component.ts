@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'bo-root',
@@ -6,4 +7,10 @@ import { Component } from '@angular/core';
     styles: [],
     standalone: false
 })
-export class AppComponent {}
+export class AppComponent implements OnInit {
+  constructor(private readonly translate: TranslateService) {}
+
+  ngOnInit(): void {
+    this.translate.use('es-ES');
+  }
+}
