@@ -25,6 +25,30 @@ import { ConfirmDialogService } from '../../../application/services/confirm-dial
 
 type ContentTab = 'legislation' | 'faq' | 'calendar' | 'institutional' | 'organisms' | 'resources' | 'theme';
 
+const CSS = {
+  PRIMARY: '--sede-color-primary',
+  PRIMARY_HOVER: '--sede-color-primary-hover',
+  PRIMARY_50: '--sede-color-primary-50',
+  PRIMARY_CONTRAST: '--sede-color-primary-contrast',
+  LINK: '--sede-color-link',
+  BG: '--sede-color-bg',
+  SURFACE: '--sede-color-surface',
+  TEXT: '--sede-color-text',
+  MUTED: '--sede-color-muted',
+  BORDER: '--sede-color-border',
+  HERO_BG: '--sede-color-hero-bg',
+  HERO_TEXT: '--sede-color-hero-text',
+  HERO_SUBTITLE: '--sede-color-hero-subtitle',
+  CALENDAR_DATE_BG: '--sede-color-calendar-date-bg',
+  CALENDAR_DATE_TEXT: '--sede-color-calendar-date-text',
+  FOOTER_BG: '--sede-color-footer-bg',
+  FOOTER_TEXT: '--sede-color-footer-text'
+} as const;
+
+const DEFAULT_THEME_ID = 'institucional-azul';
+const FALLBACK_PRIMARY = '#2563eb';
+const FALLBACK_PRIMARY_HOVER = '#1d4ed8';
+
 @Component({
     selector: 'bo-public-content-management',
     templateUrl: './public-content-management.component.html',
@@ -63,9 +87,9 @@ export class PublicContentManagementComponent implements OnInit {
   themeForm: ThemeColor[] = this.createThemeForm();
   themeValidationError = '';
   selectedThemePreset = '';
-  activeThemeId = 'institucional-azul';
+  activeThemeId = DEFAULT_THEME_ID;
   themeVariants: ThemeVariant[] = [];
-  currentThemeId = 'institucional-azul';
+  currentThemeId = DEFAULT_THEME_ID;
   currentThemeName = 'Institucional Azul';
   themeMode: 'light' | 'dark' = 'light';
   themeModeVariantsList: { id: string; name: string }[] = [];
@@ -98,15 +122,15 @@ export class PublicContentManagementComponent implements OnInit {
     const full = this.themeVariants.find(t => t.id === theme.id && t.mode === this.themeMode)
       ?? this.themeVariants.find(t => t.id === theme.id);
     if (!full) return '#e5e7eb';
-    const primary = full.colors.find(c => c.token === '--sede-color-primary')?.value ?? '#2563eb';
-    const primaryHover = full.colors.find(c => c.token === '--sede-color-primary-hover')?.value ?? '#1d4ed8';
+    const primary = full.colors.find(c => c.token === CSS.PRIMARY)?.value ?? FALLBACK_PRIMARY;
+    const primaryHover = full.colors.find(c => c.token === CSS.PRIMARY_HOVER)?.value ?? FALLBACK_PRIMARY_HOVER;
     return `linear-gradient(135deg, ${primary} 50%, ${primaryHover} 50%)`;
   }
 
   getPresetSwatchGradient(preset: { name: string; colors: ThemeColor[]; darkColors: ThemeColor[] }): string {
     const colors = this.themeMode === 'dark' ? preset.darkColors : preset.colors;
-    const primary = colors.find(c => c.token === '--sede-color-primary')?.value ?? '#2563eb';
-    const primaryHover = colors.find(c => c.token === '--sede-color-primary-hover')?.value ?? '#1d4ed8';
+    const primary = colors.find(c => c.token === CSS.PRIMARY)?.value ?? FALLBACK_PRIMARY;
+    const primaryHover = colors.find(c => c.token === CSS.PRIMARY_HOVER)?.value ?? FALLBACK_PRIMARY_HOVER;
     return `linear-gradient(135deg, ${primary} 50%, ${primaryHover} 50%)`;
   }
 
@@ -158,130 +182,19 @@ export class PublicContentManagementComponent implements OnInit {
   private institutionalTranslations: Record<string, PublicInstitutionalUpsertRequest> = {};
   private organismTranslations: Record<string, PublicOrganismUpsertRequest> = {};
   private resourceTranslations: Record<string, PublicResourceUpsertRequest> = {};
-  readonly themePresets: { name: string; colors: ThemeColor[]; darkColors: ThemeColor[] }[] = [
-    {
-      name: 'Institucional Azul',
-      colors: [
-        { token: '--sede-color-primary', value: '#2563eb' },
-        { token: '--sede-color-primary-hover', value: '#1d4ed8' },
-        { token: '--sede-color-primary-50', value: '#eff6ff' },
-        { token: '--sede-color-primary-contrast', value: '#ffffff' },
-        { token: '--sede-color-link', value: '#0ea5e9' },
-        { token: '--sede-color-bg', value: '#f8fafc' },
-        { token: '--sede-color-surface', value: '#ffffff' },
-        { token: '--sede-color-text', value: '#0f172a' },
-        { token: '--sede-color-muted', value: '#475569' },
-        { token: '--sede-color-border', value: '#e2e8f0' },
-        { token: '--sede-color-hero-bg', value: '#0e2a47' },
-        { token: '--sede-color-hero-text', value: '#f8fafc' },
-        { token: '--sede-color-hero-subtitle', value: '#d9e2ec' },
-        { token: '--sede-color-calendar-date-bg', value: 'rgba(14, 116, 144, 0.10)' },
-        { token: '--sede-color-calendar-date-text', value: '#0ea5e9' },
-        { token: '--sede-color-footer-bg', value: '#0f172a' },
-        { token: '--sede-color-footer-text', value: '#cbd5e1' }
-      ],
-      darkColors: [
-        { token: '--sede-color-primary', value: '#3b82f6' },
-        { token: '--sede-color-primary-hover', value: '#60a5fa' },
-        { token: '--sede-color-primary-50', value: '#1e3a5f' },
-        { token: '--sede-color-primary-contrast', value: '#ffffff' },
-        { token: '--sede-color-link', value: '#38bdf8' },
-        { token: '--sede-color-bg', value: '#0f172a' },
-        { token: '--sede-color-surface', value: '#1e293b' },
-        { token: '--sede-color-text', value: '#f1f5f9' },
-        { token: '--sede-color-muted', value: '#94a3b8' },
-        { token: '--sede-color-border', value: '#334155' },
-        { token: '--sede-color-hero-bg', value: '#0c1929' },
-        { token: '--sede-color-hero-text', value: '#f8fafc' },
-        { token: '--sede-color-hero-subtitle', value: '#94a3b8' },
-        { token: '--sede-color-calendar-date-bg', value: 'rgba(59, 130, 246, 0.15)' },
-        { token: '--sede-color-calendar-date-text', value: '#60a5fa' },
-        { token: '--sede-color-footer-bg', value: '#020617' },
-        { token: '--sede-color-footer-text', value: '#64748b' }
-      ]
-    },
-    {
-      name: 'Verde Administrativo',
-      colors: [
-        { token: '--sede-color-primary', value: '#0f766e' },
-        { token: '--sede-color-primary-hover', value: '#115e59' },
-        { token: '--sede-color-primary-50', value: '#f0fdfa' },
-        { token: '--sede-color-primary-contrast', value: '#ffffff' },
-        { token: '--sede-color-link', value: '#0d9488' },
-        { token: '--sede-color-bg', value: '#f5fffa' },
-        { token: '--sede-color-surface', value: '#ffffff' },
-        { token: '--sede-color-text', value: '#0f172a' },
-        { token: '--sede-color-muted', value: '#4b5563' },
-        { token: '--sede-color-border', value: '#e2e8f0' },
-        { token: '--sede-color-hero-bg', value: '#064e3b' },
-        { token: '--sede-color-hero-text', value: '#f0fdf4' },
-        { token: '--sede-color-hero-subtitle', value: '#bbf7d0' },
-        { token: '--sede-color-calendar-date-bg', value: 'rgba(15, 118, 110, 0.10)' },
-        { token: '--sede-color-calendar-date-text', value: '#0d9488' },
-        { token: '--sede-color-footer-bg', value: '#064e3b' },
-        { token: '--sede-color-footer-text', value: '#a7f3d0' }
-      ],
-      darkColors: [
-        { token: '--sede-color-primary', value: '#2dd4bf' },
-        { token: '--sede-color-primary-hover', value: '#5eead4' },
-        { token: '--sede-color-primary-50', value: '#134e4a' },
-        { token: '--sede-color-primary-contrast', value: '#042f2e' },
-        { token: '--sede-color-link', value: '#2dd4bf' },
-        { token: '--sede-color-bg', value: '#042f2e' },
-        { token: '--sede-color-surface', value: '#134e4a' },
-        { token: '--sede-color-text', value: '#f0fdfa' },
-        { token: '--sede-color-muted', value: '#5eead4' },
-        { token: '--sede-color-border', value: '#1a5c56' },
-        { token: '--sede-color-hero-bg', value: '#022c22' },
-        { token: '--sede-color-hero-text', value: '#f0fdf4' },
-        { token: '--sede-color-hero-subtitle', value: '#5eead4' },
-        { token: '--sede-color-calendar-date-bg', value: 'rgba(45, 212, 191, 0.15)' },
-        { token: '--sede-color-calendar-date-text', value: '#2dd4bf' },
-        { token: '--sede-color-footer-bg', value: '#022c22' },
-        { token: '--sede-color-footer-text', value: '#5eead4' }
-      ]
-    },
-    {
-      name: 'Granate Oficial',
-      colors: [
-        { token: '--sede-color-primary', value: '#9f1239' },
-        { token: '--sede-color-primary-hover', value: '#881337' },
-        { token: '--sede-color-primary-50', value: '#fff1f2' },
-        { token: '--sede-color-primary-contrast', value: '#ffffff' },
-        { token: '--sede-color-link', value: '#be123c' },
-        { token: '--sede-color-bg', value: '#fff7f9' },
-        { token: '--sede-color-surface', value: '#ffffff' },
-        { token: '--sede-color-text', value: '#111827' },
-        { token: '--sede-color-muted', value: '#4b5563' },
-        { token: '--sede-color-border', value: '#fce7e7' },
-        { token: '--sede-color-hero-bg', value: '#4c0519' },
-        { token: '--sede-color-hero-text', value: '#fff1f2' },
-        { token: '--sede-color-hero-subtitle', value: '#fecdd3' },
-        { token: '--sede-color-calendar-date-bg', value: 'rgba(159, 18, 57, 0.10)' },
-        { token: '--sede-color-calendar-date-text', value: '#be123c' },
-        { token: '--sede-color-footer-bg', value: '#4c0519' },
-        { token: '--sede-color-footer-text', value: '#fda4af' }
-      ],
-      darkColors: [
-        { token: '--sede-color-primary', value: '#f43f5e' },
-        { token: '--sede-color-primary-hover', value: '#fb7185' },
-        { token: '--sede-color-primary-50', value: '#4c1025' },
-        { token: '--sede-color-primary-contrast', value: '#ffffff' },
-        { token: '--sede-color-link', value: '#fb7185' },
-        { token: '--sede-color-bg', value: '#1a0a10' },
-        { token: '--sede-color-surface', value: '#2d1019' },
-        { token: '--sede-color-text', value: '#fff1f2' },
-        { token: '--sede-color-muted', value: '#fda4af' },
-        { token: '--sede-color-border', value: '#4c1525' },
-        { token: '--sede-color-hero-bg', value: '#120508' },
-        { token: '--sede-color-hero-text', value: '#fff1f2' },
-        { token: '--sede-color-hero-subtitle', value: '#fda4af' },
-        { token: '--sede-color-calendar-date-bg', value: 'rgba(244, 63, 94, 0.15)' },
-        { token: '--sede-color-calendar-date-text', value: '#fb7185' },
-        { token: '--sede-color-footer-bg', value: '#0a0305' },
-        { token: '--sede-color-footer-text', value: '#94a3b8' }
-      ]
-    }
+  readonly themePresets: ReturnType<typeof PublicContentManagementComponent.createPreset>[] = [
+    PublicContentManagementComponent.createPreset('Institucional Azul',
+      { [CSS.PRIMARY]: '#2563eb', [CSS.PRIMARY_HOVER]: '#1d4ed8', [CSS.PRIMARY_50]: '#eff6ff', [CSS.PRIMARY_CONTRAST]: '#ffffff', [CSS.LINK]: '#0ea5e9', [CSS.BG]: '#f8fafc', [CSS.SURFACE]: '#ffffff', [CSS.TEXT]: '#0f172a', [CSS.MUTED]: '#475569', [CSS.BORDER]: '#e2e8f0', [CSS.HERO_BG]: '#0e2a47', [CSS.HERO_TEXT]: '#f8fafc', [CSS.HERO_SUBTITLE]: '#d9e2ec', [CSS.CALENDAR_DATE_BG]: 'rgba(14, 116, 144, 0.10)', [CSS.CALENDAR_DATE_TEXT]: '#0ea5e9', [CSS.FOOTER_BG]: '#0f172a', [CSS.FOOTER_TEXT]: '#cbd5e1' },
+      { [CSS.PRIMARY]: '#3b82f6', [CSS.PRIMARY_HOVER]: '#60a5fa', [CSS.PRIMARY_50]: '#1e3a5f', [CSS.PRIMARY_CONTRAST]: '#ffffff', [CSS.LINK]: '#38bdf8', [CSS.BG]: '#0f172a', [CSS.SURFACE]: '#1e293b', [CSS.TEXT]: '#f1f5f9', [CSS.MUTED]: '#94a3b8', [CSS.BORDER]: '#334155', [CSS.HERO_BG]: '#0c1929', [CSS.HERO_TEXT]: '#f8fafc', [CSS.HERO_SUBTITLE]: '#94a3b8', [CSS.CALENDAR_DATE_BG]: 'rgba(59, 130, 246, 0.15)', [CSS.CALENDAR_DATE_TEXT]: '#60a5fa', [CSS.FOOTER_BG]: '#020617', [CSS.FOOTER_TEXT]: '#64748b' }
+    ),
+    PublicContentManagementComponent.createPreset('Verde Administrativo',
+      { [CSS.PRIMARY]: '#0f766e', [CSS.PRIMARY_HOVER]: '#115e59', [CSS.PRIMARY_50]: '#f0fdfa', [CSS.PRIMARY_CONTRAST]: '#ffffff', [CSS.LINK]: '#0d9488', [CSS.BG]: '#f5fffa', [CSS.SURFACE]: '#ffffff', [CSS.TEXT]: '#0f172a', [CSS.MUTED]: '#4b5563', [CSS.BORDER]: '#e2e8f0', [CSS.HERO_BG]: '#064e3b', [CSS.HERO_TEXT]: '#f0fdf4', [CSS.HERO_SUBTITLE]: '#bbf7d0', [CSS.CALENDAR_DATE_BG]: 'rgba(15, 118, 110, 0.10)', [CSS.CALENDAR_DATE_TEXT]: '#0d9488', [CSS.FOOTER_BG]: '#064e3b', [CSS.FOOTER_TEXT]: '#a7f3d0' },
+      { [CSS.PRIMARY]: '#2dd4bf', [CSS.PRIMARY_HOVER]: '#5eead4', [CSS.PRIMARY_50]: '#134e4a', [CSS.PRIMARY_CONTRAST]: '#042f2e', [CSS.LINK]: '#2dd4bf', [CSS.BG]: '#042f2e', [CSS.SURFACE]: '#134e4a', [CSS.TEXT]: '#f0fdfa', [CSS.MUTED]: '#5eead4', [CSS.BORDER]: '#1a5c56', [CSS.HERO_BG]: '#022c22', [CSS.HERO_TEXT]: '#f0fdf4', [CSS.HERO_SUBTITLE]: '#5eead4', [CSS.CALENDAR_DATE_BG]: 'rgba(45, 212, 191, 0.15)', [CSS.CALENDAR_DATE_TEXT]: '#2dd4bf', [CSS.FOOTER_BG]: '#022c22', [CSS.FOOTER_TEXT]: '#5eead4' }
+    ),
+    PublicContentManagementComponent.createPreset('Granate Oficial',
+      { [CSS.PRIMARY]: '#9f1239', [CSS.PRIMARY_HOVER]: '#881337', [CSS.PRIMARY_50]: '#fff1f2', [CSS.PRIMARY_CONTRAST]: '#ffffff', [CSS.LINK]: '#be123c', [CSS.BG]: '#fff7f9', [CSS.SURFACE]: '#ffffff', [CSS.TEXT]: '#111827', [CSS.MUTED]: '#4b5563', [CSS.BORDER]: '#fce7e7', [CSS.HERO_BG]: '#4c0519', [CSS.HERO_TEXT]: '#fff1f2', [CSS.HERO_SUBTITLE]: '#fecdd3', [CSS.CALENDAR_DATE_BG]: 'rgba(159, 18, 57, 0.10)', [CSS.CALENDAR_DATE_TEXT]: '#be123c', [CSS.FOOTER_BG]: '#4c0519', [CSS.FOOTER_TEXT]: '#fda4af' },
+      { [CSS.PRIMARY]: '#f43f5e', [CSS.PRIMARY_HOVER]: '#fb7185', [CSS.PRIMARY_50]: '#4c1025', [CSS.PRIMARY_CONTRAST]: '#ffffff', [CSS.LINK]: '#fb7185', [CSS.BG]: '#1a0a10', [CSS.SURFACE]: '#2d1019', [CSS.TEXT]: '#fff1f2', [CSS.MUTED]: '#fda4af', [CSS.BORDER]: '#4c1525', [CSS.HERO_BG]: '#120508', [CSS.HERO_TEXT]: '#fff1f2', [CSS.HERO_SUBTITLE]: '#fda4af', [CSS.CALENDAR_DATE_BG]: 'rgba(244, 63, 94, 0.15)', [CSS.CALENDAR_DATE_TEXT]: '#fb7185', [CSS.FOOTER_BG]: '#0a0305', [CSS.FOOTER_TEXT]: '#94a3b8' }
+    )
   ];
 
   ngOnInit(): void {
@@ -336,7 +249,7 @@ export class PublicContentManagementComponent implements OnInit {
       this.themeVariants = this.themePalette.themes.length > 0
         ? this.themePalette.themes.map((theme) => ({ ...theme, colors: theme.colors.map((color) => ({ ...color })) }))
         : this.defaultThemeVariants();
-      this.activeThemeId = this.themePalette.activeThemeId || this.themeVariants[0]?.id || 'institucional-azul';
+      this.activeThemeId = this.themePalette.activeThemeId || this.themeVariants[0]?.id || DEFAULT_THEME_ID;
       this.selectThemeVariant(this.activeThemeId);
       this.refreshThemeLists();
       this.themeValidationError = '';
@@ -837,47 +750,57 @@ export class PublicContentManagementComponent implements OnInit {
   private createInstitutionalForm(): PublicInstitutionalUpsertRequest { return { locale: 'es-ES', sectionCode: '', title: '', content: '', icon: '', sortOrder: 0, published: true }; }
   private createOrganismForm(): PublicOrganismUpsertRequest { return { locale: 'es-ES', categoryCode: '', name: '', description: '', phone: '', email: '', address: '', websiteUrl: '', sortOrder: 0, published: true }; }
   private createResourceForm(): PublicResourceUpsertRequest { return { locale: 'es-ES', resourceType: 'glossary', title: '', description: '', content: '', externalUrl: '', sortOrder: 0, published: true }; }
+  private static createPreset(
+    name: string,
+    colors: Record<string, string>,
+    darkColors: Record<string, string>
+  ): { name: string; colors: ThemeColor[]; darkColors: ThemeColor[] } {
+    const toThemeColors = (map: Record<string, string>): ThemeColor[] =>
+      Object.entries(map).map(([token, value]) => ({ token, value }));
+    return { name, colors: toThemeColors(colors), darkColors: toThemeColors(darkColors) };
+  }
+
   private createThemeForm(): ThemeColor[] {
     return [
-      { token: '--sede-color-primary', value: '#2563eb' },
-      { token: '--sede-color-primary-hover', value: '#1d4ed8' },
-      { token: '--sede-color-primary-50', value: '#eff6ff' },
-      { token: '--sede-color-primary-contrast', value: '#ffffff' },
-      { token: '--sede-color-link', value: '#0ea5e9' },
-      { token: '--sede-color-bg', value: '#f8fafc' },
-      { token: '--sede-color-surface', value: '#ffffff' },
-      { token: '--sede-color-text', value: '#0f172a' },
-      { token: '--sede-color-muted', value: '#475569' },
-      { token: '--sede-color-border', value: '#e2e8f0' },
-      { token: '--sede-color-hero-bg', value: '#0e2a47' },
-      { token: '--sede-color-hero-text', value: '#f8fafc' },
-      { token: '--sede-color-hero-subtitle', value: '#d9e2ec' },
-      { token: '--sede-color-calendar-date-bg', value: 'rgba(14, 116, 144, 0.10)' },
-      { token: '--sede-color-calendar-date-text', value: '#0ea5e9' },
-      { token: '--sede-color-footer-bg', value: '#0f172a' },
-      { token: '--sede-color-footer-text', value: '#cbd5e1' }
+      { token: CSS.PRIMARY, value: FALLBACK_PRIMARY },
+      { token: CSS.PRIMARY_HOVER, value: FALLBACK_PRIMARY_HOVER },
+      { token: CSS.PRIMARY_50, value: '#eff6ff' },
+      { token: CSS.PRIMARY_CONTRAST, value: '#ffffff' },
+      { token: CSS.LINK, value: '#0ea5e9' },
+      { token: CSS.BG, value: '#f8fafc' },
+      { token: CSS.SURFACE, value: '#ffffff' },
+      { token: CSS.TEXT, value: '#0f172a' },
+      { token: CSS.MUTED, value: '#475569' },
+      { token: CSS.BORDER, value: '#e2e8f0' },
+      { token: CSS.HERO_BG, value: '#0e2a47' },
+      { token: CSS.HERO_TEXT, value: '#f8fafc' },
+      { token: CSS.HERO_SUBTITLE, value: '#d9e2ec' },
+      { token: CSS.CALENDAR_DATE_BG, value: 'rgba(14, 116, 144, 0.10)' },
+      { token: CSS.CALENDAR_DATE_TEXT, value: '#0ea5e9' },
+      { token: CSS.FOOTER_BG, value: '#0f172a' },
+      { token: CSS.FOOTER_TEXT, value: '#cbd5e1' }
     ];
   }
 
   private createDarkThemeForm(): ThemeColor[] {
     return [
-      { token: '--sede-color-primary', value: '#3b82f6' },
-      { token: '--sede-color-primary-hover', value: '#60a5fa' },
-      { token: '--sede-color-primary-50', value: '#1e3a5f' },
-      { token: '--sede-color-primary-contrast', value: '#ffffff' },
-      { token: '--sede-color-link', value: '#38bdf8' },
-      { token: '--sede-color-bg', value: '#0f172a' },
-      { token: '--sede-color-surface', value: '#1e293b' },
-      { token: '--sede-color-text', value: '#f1f5f9' },
-      { token: '--sede-color-muted', value: '#94a3b8' },
-      { token: '--sede-color-border', value: '#334155' },
-      { token: '--sede-color-hero-bg', value: '#0c1929' },
-      { token: '--sede-color-hero-text', value: '#f8fafc' },
-      { token: '--sede-color-hero-subtitle', value: '#94a3b8' },
-      { token: '--sede-color-calendar-date-bg', value: 'rgba(59, 130, 246, 0.15)' },
-      { token: '--sede-color-calendar-date-text', value: '#60a5fa' },
-      { token: '--sede-color-footer-bg', value: '#020617' },
-      { token: '--sede-color-footer-text', value: '#64748b' }
+      { token: CSS.PRIMARY, value: '#3b82f6' },
+      { token: CSS.PRIMARY_HOVER, value: '#60a5fa' },
+      { token: CSS.PRIMARY_50, value: '#1e3a5f' },
+      { token: CSS.PRIMARY_CONTRAST, value: '#ffffff' },
+      { token: CSS.LINK, value: '#38bdf8' },
+      { token: CSS.BG, value: '#0f172a' },
+      { token: CSS.SURFACE, value: '#1e293b' },
+      { token: CSS.TEXT, value: '#f1f5f9' },
+      { token: CSS.MUTED, value: '#94a3b8' },
+      { token: CSS.BORDER, value: '#334155' },
+      { token: CSS.HERO_BG, value: '#0c1929' },
+      { token: CSS.HERO_TEXT, value: '#f8fafc' },
+      { token: CSS.HERO_SUBTITLE, value: '#94a3b8' },
+      { token: CSS.CALENDAR_DATE_BG, value: 'rgba(59, 130, 246, 0.15)' },
+      { token: CSS.CALENDAR_DATE_TEXT, value: '#60a5fa' },
+      { token: CSS.FOOTER_BG, value: '#020617' },
+      { token: CSS.FOOTER_TEXT, value: '#64748b' }
     ];
   }
 
@@ -929,17 +852,19 @@ export class PublicContentManagementComponent implements OnInit {
   localeStatusFor(tab: ContentTab, locale: string): 'translated' | 'pending' {
     const form = this.formByTabAndLocale(tab, locale);
     if (!form) return 'pending';
-    switch (tab) {
-      case 'legislation': return this.hasValue(form.title) && this.hasValue(form.description) ? 'translated' : 'pending';
-      case 'faq':
-        if (this.selectedFaqCategory) return this.hasValue(form.categoryName) ? 'translated' : 'pending';
-        return this.hasValue(form.question) && this.hasValue(form.answer) ? 'translated' : 'pending';
-      case 'calendar': return this.hasValue(form.title) && this.hasValue(form.description) ? 'translated' : 'pending';
-      case 'institutional': return this.hasValue(form.title) && this.hasValue(form.content) ? 'translated' : 'pending';
-      case 'organisms': return this.hasValue(form.name) && this.hasValue(form.description) ? 'translated' : 'pending';
-      case 'resources': return this.hasValue(form.title) && this.hasValue(form.description) ? 'translated' : 'pending';
-      default: return 'pending';
-    }
+
+    const validators: Record<string, (f: any) => boolean> = {
+      legislation: (f) => this.hasValue(f.title) && this.hasValue(f.description),
+      faq: (f) => this.selectedFaqCategory
+        ? this.hasValue(f.categoryName)
+        : this.hasValue(f.question) && this.hasValue(f.answer),
+      calendar: (f) => this.hasValue(f.title) && this.hasValue(f.description),
+      institutional: (f) => this.hasValue(f.title) && this.hasValue(f.content),
+      organisms: (f) => this.hasValue(f.name) && this.hasValue(f.description),
+      resources: (f) => this.hasValue(f.title) && this.hasValue(f.description)
+    };
+
+    return validators[tab]?.(form) ? 'translated' : 'pending';
   }
 
   private formByTabAndLocale(tab: ContentTab, locale: string): any {
@@ -976,15 +901,15 @@ export class PublicContentManagementComponent implements OnInit {
     }
 
     const tokenMap = new Map(this.themeForm.map((color) => [color.token, color.value]));
-    const primary = tokenMap.get('--sede-color-primary') ?? '';
-    const primaryHover = tokenMap.get('--sede-color-primary-hover') ?? '';
-    const primary50 = tokenMap.get('--sede-color-primary-50') ?? '';
-    const primaryContrast = tokenMap.get('--sede-color-primary-contrast') ?? '';
-    const surface = tokenMap.get('--sede-color-surface') ?? '';
-    const text = tokenMap.get('--sede-color-text') ?? '';
-    const link = tokenMap.get('--sede-color-link') ?? '';
-    const muted = tokenMap.get('--sede-color-muted') ?? '';
-    const border = tokenMap.get('--sede-color-border') ?? '';
+    const primary = tokenMap.get(CSS.PRIMARY) ?? '';
+    const primaryHover = tokenMap.get(CSS.PRIMARY_HOVER) ?? '';
+    const primary50 = tokenMap.get(CSS.PRIMARY_50) ?? '';
+    const primaryContrast = tokenMap.get(CSS.PRIMARY_CONTRAST) ?? '';
+    const surface = tokenMap.get(CSS.SURFACE) ?? '';
+    const text = tokenMap.get(CSS.TEXT) ?? '';
+    const link = tokenMap.get(CSS.LINK) ?? '';
+    const muted = tokenMap.get(CSS.MUTED) ?? '';
+    const border = tokenMap.get(CSS.BORDER) ?? '';
 
     if (!primary || !primaryContrast || !surface || !text) {
       return 'Faltan colores obligatorios: primary, primary-contrast, surface o text.';

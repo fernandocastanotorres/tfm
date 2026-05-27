@@ -9,7 +9,8 @@
     "test": "ng test",
     "e2e": "npx playwright test",
     "e2e:ui": "npx playwright test --ui",
-    "e2e:headed": "npx playwright test --headed"
+    "e2e:headed": "npx playwright test --headed",
+    "lint": "eslint src/"
   },
   "private": true,
   "dependencies": {
@@ -36,7 +37,11 @@
     "@angular/compiler-cli": "^19.2.22",
     "@playwright/test": "^1.60.0",
     "@types/jasmine": "~4.3.0",
+    "@typescript-eslint/eslint-plugin": "^8.60.0",
+    "@typescript-eslint/parser": "^8.60.0",
     "autoprefixer": "^10.5.0",
+    "eslint": "^10.4.0",
+    "eslint-plugin-sonarjs": "^4.0.3",
     "jasmine-core": "~4.6.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",

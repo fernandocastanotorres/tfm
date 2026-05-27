@@ -160,13 +160,19 @@ export class StatisticsDashboardComponent implements OnInit {
     };
   }
 
+  private slaColor(rate: number): string {
+    if (rate >= 80) return '#10b981';
+    if (rate >= 50) return '#f59e0b';
+    return '#ef4444';
+  }
+
   private updateSlaComplianceChart(metrics: ProcedureTypeMetric[]): void {
     this.slaComplianceChartConfig = {
       ...this.slaComplianceChartConfig,
       data: {
         labels: metrics.map(m => m.procedureType),
         datasets: [
-          { label: 'Cumplimiento SLA (%)', data: metrics.map(m => m.slaComplianceRate), backgroundColor: metrics.map(m => m.slaComplianceRate >= 80 ? '#10b981' : m.slaComplianceRate >= 50 ? '#f59e0b' : '#ef4444') }
+          { label: 'Cumplimiento SLA (%)', data: metrics.map(m => m.slaComplianceRate), backgroundColor: metrics.map(m => this.slaColor(m.slaComplianceRate)) }
         ]
       }
     };
@@ -178,7 +184,7 @@ export class StatisticsDashboardComponent implements OnInit {
       data: {
         labels: breakdown.map(u => u.unit),
         datasets: [
-          { label: 'Cumplimiento SLA (%)', data: breakdown.map(u => u.slaComplianceRate), backgroundColor: breakdown.map(u => u.slaComplianceRate >= 80 ? '#10b981' : u.slaComplianceRate >= 50 ? '#f59e0b' : '#ef4444') }
+          { label: 'Cumplimiento SLA (%)', data: breakdown.map(u => u.slaComplianceRate), backgroundColor: breakdown.map(u => this.slaColor(u.slaComplianceRate)) }
         ]
       }
     };

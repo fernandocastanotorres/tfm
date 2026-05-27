@@ -20,10 +20,22 @@ interface StoredMockCase {
   detail: CaseDetail;
 }
 
+/* eslint-disable sonarjs/no-duplicate-string -- Mock data: i18n keys and task names intentionally repeat across procedures */
+
 @Injectable({ providedIn: 'root' })
 export class MockCitizenFlowService {
   private readonly casesKey = 'tfg.mock.cases';
   private readonly latencyMs = 180;
+
+  private static formField(id: string, name: string, type: string, placeholder: string, required: boolean = true, options?: { value: string; label: string }[]): Record<string, unknown> {
+    const field: Record<string, unknown> = { id, name, type, required, placeholder };
+    if (options) field.options = options;
+    return field;
+  }
+
+  private static uploadReq(id: string, name: string, required: boolean = true): Record<string, unknown> {
+    return { id, name, required };
+  }
 
   private readonly procedures: ProcedureDetail[] = [
     {
@@ -42,10 +54,10 @@ export class MockCitizenFlowService {
           type: 'form',
           description: 'Completa tus datos personales y de contacto.',
           formFields: [
-            { id: 'subject', name: 'CASE_WIZARD.FIELD_SUBJECT', type: 'text', required: true, placeholder: 'CASE_WIZARD.FIELD_SUBJECT_PLACEHOLDER' },
-            { id: 'description', name: 'CASE_WIZARD.FIELD_DESCRIPTION', type: 'textarea', required: true, placeholder: 'CASE_WIZARD.FIELD_DESCRIPTION_PLACEHOLDER' },
-            { id: 'contactEmail', name: 'CASE_WIZARD.FIELD_CONTACT_EMAIL', type: 'email', required: true, placeholder: 'CASE_WIZARD.FIELD_CONTACT_EMAIL_PLACEHOLDER' },
-            { id: 'contactPhone', name: 'CASE_WIZARD.FIELD_CONTACT_PHONE', type: 'phone', required: true, placeholder: 'CASE_WIZARD.FIELD_CONTACT_PHONE_PLACEHOLDER' }
+            MockCitizenFlowService.formField('subject', 'CASE_WIZARD.FIELD_SUBJECT', 'text', 'CASE_WIZARD.FIELD_SUBJECT_PLACEHOLDER'),
+            MockCitizenFlowService.formField('description', 'CASE_WIZARD.FIELD_DESCRIPTION', 'textarea', 'CASE_WIZARD.FIELD_DESCRIPTION_PLACEHOLDER'),
+            MockCitizenFlowService.formField('contactEmail', 'CASE_WIZARD.FIELD_CONTACT_EMAIL', 'email', 'CASE_WIZARD.FIELD_CONTACT_EMAIL_PLACEHOLDER'),
+            MockCitizenFlowService.formField('contactPhone', 'CASE_WIZARD.FIELD_CONTACT_PHONE', 'phone', 'CASE_WIZARD.FIELD_CONTACT_PHONE_PLACEHOLDER')
           ]
         },
         {
@@ -54,8 +66,8 @@ export class MockCitizenFlowService {
           type: 'upload',
           description: 'Adjunta la documentación mínima exigida para iniciar el expediente.',
           uploadRequirements: [
-            { id: 'doc-id', name: 'CASE_WIZARD.UPLOAD_ID', required: true },
-            { id: 'doc-supporting', name: 'CASE_WIZARD.UPLOAD_SUPPORTING', required: true }
+            MockCitizenFlowService.uploadReq('doc-id', 'CASE_WIZARD.UPLOAD_ID'),
+            MockCitizenFlowService.uploadReq('doc-supporting', 'CASE_WIZARD.UPLOAD_SUPPORTING')
           ]
         },
         {
@@ -82,10 +94,10 @@ export class MockCitizenFlowService {
           type: 'form',
           description: 'Indica el domicilio y datos de la unidad convivencial.',
           formFields: [
-            { id: 'subject', name: 'CASE_WIZARD.FIELD_SUBJECT', type: 'text', required: true, placeholder: 'CASE_WIZARD.FIELD_SUBJECT_PLACEHOLDER' },
-            { id: 'description', name: 'CASE_WIZARD.FIELD_DESCRIPTION', type: 'textarea', required: true, placeholder: 'CASE_WIZARD.FIELD_DESCRIPTION_PLACEHOLDER' },
-            { id: 'contactEmail', name: 'CASE_WIZARD.FIELD_CONTACT_EMAIL', type: 'email', required: true, placeholder: 'CASE_WIZARD.FIELD_CONTACT_EMAIL_PLACEHOLDER' },
-            { id: 'contactPhone', name: 'CASE_WIZARD.FIELD_CONTACT_PHONE', type: 'phone', required: false, placeholder: 'CASE_WIZARD.FIELD_CONTACT_PHONE_PLACEHOLDER' }
+            MockCitizenFlowService.formField('subject', 'CASE_WIZARD.FIELD_SUBJECT', 'text', 'CASE_WIZARD.FIELD_SUBJECT_PLACEHOLDER'),
+            MockCitizenFlowService.formField('description', 'CASE_WIZARD.FIELD_DESCRIPTION', 'textarea', 'CASE_WIZARD.FIELD_DESCRIPTION_PLACEHOLDER'),
+            MockCitizenFlowService.formField('contactEmail', 'CASE_WIZARD.FIELD_CONTACT_EMAIL', 'email', 'CASE_WIZARD.FIELD_CONTACT_EMAIL_PLACEHOLDER'),
+            MockCitizenFlowService.formField('contactPhone', 'CASE_WIZARD.FIELD_CONTACT_PHONE', 'phone', 'CASE_WIZARD.FIELD_CONTACT_PHONE_PLACEHOLDER', false)
           ]
         },
         {
@@ -94,8 +106,8 @@ export class MockCitizenFlowService {
           type: 'upload',
           description: 'Adjunta la documentación de identidad y domicilio.',
           uploadRequirements: [
-            { id: 'doc-id', name: 'CASE_WIZARD.UPLOAD_ID', required: true },
-            { id: 'doc-supporting', name: 'CASE_WIZARD.UPLOAD_SUPPORTING', required: true }
+            MockCitizenFlowService.uploadReq('doc-id', 'CASE_WIZARD.UPLOAD_ID'),
+            MockCitizenFlowService.uploadReq('doc-supporting', 'CASE_WIZARD.UPLOAD_SUPPORTING')
           ]
         },
         {
@@ -122,19 +134,12 @@ export class MockCitizenFlowService {
           type: 'form',
           description: 'Indica el motivo y canal preferido de recepción.',
           formFields: [
-            { id: 'subject', name: 'CASE_WIZARD.FIELD_SUBJECT', type: 'text', required: true, placeholder: 'CASE_WIZARD.FIELD_SUBJECT_PLACEHOLDER' },
-            { id: 'description', name: 'CASE_WIZARD.FIELD_DESCRIPTION', type: 'textarea', required: true, placeholder: 'CASE_WIZARD.FIELD_DESCRIPTION_PLACEHOLDER' },
-            {
-              id: 'contactChannel',
-              name: 'CASE_WIZARD.FIELD_CONTACT_CHANNEL',
-              type: 'select',
-              required: true,
-              placeholder: 'CASE_WIZARD.FIELD_CONTACT_CHANNEL_PLACEHOLDER',
-              options: [
-                { value: 'email', label: 'CASE_WIZARD.FIELD_CONTACT_CHANNEL_EMAIL' },
-                { value: 'phone', label: 'CASE_WIZARD.FIELD_CONTACT_CHANNEL_PHONE' }
-              ]
-            }
+            MockCitizenFlowService.formField('subject', 'CASE_WIZARD.FIELD_SUBJECT', 'text', 'CASE_WIZARD.FIELD_SUBJECT_PLACEHOLDER'),
+            MockCitizenFlowService.formField('description', 'CASE_WIZARD.FIELD_DESCRIPTION', 'textarea', 'CASE_WIZARD.FIELD_DESCRIPTION_PLACEHOLDER'),
+            MockCitizenFlowService.formField('contactChannel', 'CASE_WIZARD.FIELD_CONTACT_CHANNEL', 'select', 'CASE_WIZARD.FIELD_CONTACT_CHANNEL_PLACEHOLDER', true, [
+              { value: 'email', label: 'CASE_WIZARD.FIELD_CONTACT_CHANNEL_EMAIL' },
+              { value: 'phone', label: 'CASE_WIZARD.FIELD_CONTACT_CHANNEL_PHONE' }
+            ])
           ]
         },
         {

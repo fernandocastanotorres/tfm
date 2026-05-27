@@ -25,8 +25,14 @@ export class I18nService {
   init(): void {
     const stored = localStorage.getItem('tfg.locale') as SupportedLocale | null;
     const browser = this.translate.getBrowserCultureLang() as SupportedLocale | null;
-    const initial = stored && this.supportedLocales.includes(stored) ? stored :
-      browser && this.supportedLocales.includes(browser) ? browser : 'es-ES';
+
+    let initial: SupportedLocale = 'es-ES';
+    if (stored && this.supportedLocales.includes(stored)) {
+      initial = stored;
+    } else if (browser && this.supportedLocales.includes(browser)) {
+      initial = browser;
+    }
+
     this.translate.onLangChange.subscribe((event) => {
       this.currentLocale$.next(event.lang as SupportedLocale);
     });
