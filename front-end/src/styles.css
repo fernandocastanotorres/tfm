@@ -35,23 +35,31 @@ body.theme-dark {
 }
 
 body.theme-dark {
-  --sede-color-primary: var(--sede-color-primary-dark, #7dd3fc);
-  --sede-color-primary-hover: var(--sede-color-primary-hover-dark, #38bdf8);
-  --sede-color-primary-50: var(--sede-color-primary-50-dark, #1e293b);
-  --sede-color-primary-contrast: var(--sede-color-primary-contrast-dark, #0f172a);
+  --sede-color-primary: var(--sede-color-primary-dark, #38bdf8);
+  --sede-color-primary-hover: var(--sede-color-primary-hover-dark, #0ea5e9);
+  --sede-color-primary-50: var(--sede-color-primary-50-dark, #0c1a2e);
+  --sede-color-primary-contrast: var(--sede-color-primary-contrast-dark, #020617);
   --sede-color-link: var(--sede-color-link-dark, #7dd3fc);
   --sede-color-bg: var(--sede-color-bg-dark, #020617);
   --sede-color-surface: var(--sede-color-surface-dark, #0f172a);
+  --sede-color-surface-elevated: var(--sede-color-surface-elevated-dark, #1e293b);
   --sede-color-text: var(--sede-color-text-dark, #e2e8f0);
+  --sede-color-heading: var(--sede-color-heading-dark, #f1f5f9);
   --sede-color-muted: var(--sede-color-muted-dark, #94a3b8);
-  --sede-color-border: var(--sede-color-border-dark, #334155);
+  --sede-color-border: var(--sede-color-border-dark, #1e293b);
+  --sede-color-border-subtle: var(--sede-color-border-subtle-dark, rgba(148, 163, 184, 0.08));
   --sede-color-hero-bg: var(--sede-color-hero-bg-dark, #0c1222);
-  --sede-color-hero-text: var(--sede-color-hero-text-dark, #e2e8f0);
+  --sede-color-hero-text: var(--sede-color-hero-text-dark, #f1f5f9);
   --sede-color-hero-subtitle: var(--sede-color-hero-subtitle-dark, #94a3b8);
-  --sede-color-calendar-date-bg: var(--sede-color-calendar-date-bg-dark, rgba(100, 116, 139, 0.15));
-  --sede-color-calendar-date-text: var(--sede-color-calendar-date-text-dark, #7dd3fc);
+  --sede-color-calendar-date-bg: var(--sede-color-calendar-date-bg-dark, rgba(56, 189, 248, 0.12));
+  --sede-color-calendar-date-text: var(--sede-color-calendar-date-text-dark, #38bdf8);
   --sede-color-footer-bg: var(--sede-color-footer-bg-dark, #020617);
   --sede-color-footer-text: var(--sede-color-footer-text-dark, #94a3b8);
+  --sede-color-header-bg: var(--sede-color-header-bg-dark, #0c1222);
+  --sede-color-header-border: var(--sede-color-header-border-dark, rgba(148, 163, 184, 0.10));
+  --sede-color-card-hover: var(--sede-color-card-hover-dark, rgba(148, 163, 184, 0.06));
+  --sede-color-icon-bg: var(--sede-color-icon-bg-dark, rgba(56, 189, 248, 0.10));
+  --sede-color-icon-fg: var(--sede-color-icon-fg-dark, #38bdf8);
 }
 
 @layer base {
@@ -231,34 +239,46 @@ body.theme-dark {
 body.theme-dark .card {
   background-color: var(--sede-color-surface);
   border-color: var(--sede-color-border);
-  @apply shadow-none text-slate-100;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  color: var(--sede-color-text);
 }
 
 body.theme-dark .field-input {
   background-color: var(--sede-color-surface);
   border-color: var(--sede-color-border);
-  @apply text-slate-100;
+  color: var(--sede-color-text);
+}
+
+body.theme-dark .field-input:focus {
+  border-color: var(--sede-color-primary);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
 }
 
 body.theme-dark .field-input::placeholder {
-  color: #94a3b8;
+  color: #64748b;
 }
 
 body.theme-dark .helper-text {
-  @apply text-slate-300;
+  color: #94a3b8;
 }
 
 body.theme-dark .btn-secondary {
-  @apply bg-slate-700 text-slate-100 border border-slate-500 hover:bg-slate-600;
+  background-color: var(--sede-color-surface-elevated);
+  color: var(--sede-color-text);
+  border-color: var(--sede-color-border);
+}
+
+body.theme-dark .btn-secondary:hover {
+  background-color: #334155;
 }
 
 body.theme-dark .text-brand-500 {
-  @apply text-sky-400;
+  color: #38bdf8;
 }
 
 body.theme-dark .border-brand-300,
 body.theme-dark .border-brand-200 {
-  @apply border-sky-700;
+  border-color: rgba(56, 189, 248, 0.3);
 }
 
 body.theme-dark a:not(.btn-primary) {
@@ -266,7 +286,7 @@ body.theme-dark a:not(.btn-primary) {
 }
 
 body.theme-dark a:not(.btn-primary):hover {
-  opacity: 0.85;
+  color: #bae6fd;
 }
 
 a {
