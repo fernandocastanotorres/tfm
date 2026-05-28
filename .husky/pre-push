@@ -1,6 +1,4 @@
 #!/usr/bin/env sh
-. "$(dirname "$0")/h"
-
 echo "Running pre-push checks..."
 echo "  Tests..."
 npm run test || exit 1
