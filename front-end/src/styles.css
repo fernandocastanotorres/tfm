@@ -135,6 +135,18 @@ body.theme-dark {
     border: 1px solid var(--sede-color-border);
   }
 
+  .btn-primary--outline {
+    @apply inline-flex items-center justify-center rounded-xl px-4 py-3 font-semibold transition border;
+    background-color: transparent;
+    color: var(--sede-color-primary);
+    border-color: var(--sede-color-primary);
+  }
+
+  .btn-primary--outline:hover {
+    background-color: var(--sede-color-primary);
+    color: var(--sede-color-primary-contrast);
+  }
+
   .btn-secondary {
     @apply inline-flex items-center justify-center rounded-xl px-4 py-3 font-semibold transition;
     @apply disabled:opacity-60 disabled:cursor-not-allowed;

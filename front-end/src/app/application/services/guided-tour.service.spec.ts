@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { TranslateService } from '@ngx-translate/core';
 import { GuidedTourService } from './guided-tour.service';
 
 describe('GuidedTourService', () => {
@@ -7,16 +8,23 @@ describe('GuidedTourService', () => {
   let mockStart: jasmine.Spy;
   let mockSetOptions: jasmine.Spy;
   let mockIntroJs: jasmine.Spy;
+  let translateSpy: jasmine.SpyObj<TranslateService>;
 
   beforeEach(() => {
     mockStart = jasmine.createSpy('start');
     mockSetOptions = jasmine.createSpy('setOptions').and.returnValue({ start: mockStart });
     mockIntroJs = jasmine.createSpy('introJs').and.returnValue({ setOptions: mockSetOptions });
+    translateSpy = jasmine.createSpyObj('TranslateService', ['instant']);
+    translateSpy.instant.and.callFake((key: string) => key);
 
     // Register global introJs mock
     (window as any).introJs = mockIntroJs;
 
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: TranslateService, useValue: translateSpy }
+      ]
+    });
     service = TestBed.inject(GuidedTourService);
   });
 

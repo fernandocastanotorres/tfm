@@ -36,9 +36,14 @@
             <p><strong>{{ 'PROCEDURES.DETAIL_DEADLINE' | translate }}:</strong> {{ procedure.deadline }} {{ 'PROCEDURES.DETAIL_DEADLINE_UNIT' | translate }}</p>
             <p><strong>{{ 'PROCEDURES.DETAIL_UNIT' | translate }}:</strong> {{ procedure.category | translate }}</p>
         </div>
-        <button class="btn-primary mt-4" type="button" (click)="startProcedure(procedure)">
-          {{ 'PROCEDURES.START' | translate }}
-        </button>
+        <div class="mt-4 flex gap-3">
+          <button class="btn-primary" type="button" (click)="startProcedure(procedure)">
+            {{ 'PROCEDURES.START' | translate }}
+          </button>
+          <a [routerLink]="['/sede/procedimientos', procedure.slug, 'flujo']" class="btn-primary btn-primary--outline">
+            {{ 'PROCEDURES.VIEW_DETAILS' | translate }}
+          </a>
+        </div>
       </article>
     </div>
 
