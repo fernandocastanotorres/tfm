@@ -1,8 +1,5 @@
 <main class="min-h-screen bg-surface-50 px-6 py-10" aria-labelledby="case-title">
-  <!-- Loading state -->
-  <div *ngIf="isLoading" class="max-w-5xl mx-auto px-8 card p-6 text-center text-surface-600">
-    {{ 'CASE_DETAIL.LOADING' | translate }}
-  </div>
+  <app-skeleton-screen *ngIf="isLoading" pattern="detail" [count]="3" [columns]="4" ariaLabel="Cargando detalle del expediente..." class="mt-6"></app-skeleton-screen>
 
   <!-- Case detail -->
   <div class="max-w-5xl mx-auto px-8" *ngIf="caseDetail && !isLoading">

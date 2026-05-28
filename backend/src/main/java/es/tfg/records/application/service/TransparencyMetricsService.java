@@ -69,13 +69,17 @@ public class TransparencyMetricsService {
 
     private double resolutionDays(ProcedureEntity p) {
         Instant start = p.getSubmittedAt() != null ? p.getSubmittedAt() : p.getCreatedAt();
-        if (start == null || p.getUpdatedAt() == null) return 0;
+        if (start == null || p.getUpdatedAt() == null) {
+            return 0;
+        }
         return ChronoUnit.HOURS.between(start, p.getUpdatedAt()) / 24.0;
     }
 
     private boolean isWithinSla(ProcedureEntity p, ProcedureTypeEntity type) {
         Instant start = p.getSubmittedAt() != null ? p.getSubmittedAt() : p.getCreatedAt();
-        if (start == null || p.getUpdatedAt() == null) return false;
+        if (start == null || p.getUpdatedAt() == null) {
+            return false;
+        }
         int deadlineDays = type != null ? type.getDeadlineDays() : 10;
         return !p.getUpdatedAt().isAfter(start.plus(deadlineDays, ChronoUnit.DAYS));
     }

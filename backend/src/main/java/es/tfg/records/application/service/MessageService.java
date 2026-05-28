@@ -1,6 +1,5 @@
 package es.tfg.records.application.service;
 
-import es.tfg.records.application.dto.MessagingDtos;
 import es.tfg.records.application.dto.MessagingDtos.*;
 import es.tfg.records.application.exception.ResourceNotFoundException;
 import es.tfg.records.domain.model.MessageSenderRole;
@@ -17,8 +16,6 @@ import es.tfg.records.infrastructure.storage.FileStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,7 +88,9 @@ public class MessageService {
         if (files != null && !files.isEmpty()) {
             int attachmentCount = 0;
             for (MultipartFile file : files) {
-                if (file.isEmpty()) continue;
+                if (file.isEmpty()) {
+                    continue;
+                }
                 String storedFilename = fileStorageService.store(procedureId, file);
 
                 MessageAttachmentEntity attachment = new MessageAttachmentEntity();
@@ -188,12 +187,16 @@ public class MessageService {
         return procedures.stream()
                 .map(p -> {
                     Optional<MessageThreadEntity> optThread = threadRepository.findByProcedureId(p.getId());
-                    if (optThread.isEmpty()) return null;
+                    if (optThread.isEmpty()) {
+                        return null;
+                    }
                     MessageThreadEntity thread = optThread.get();
                     long total = messageRepository.countByThreadId(thread.getId());
                     long unread = thread.getUnreadCountCitizen();
                     String lastPreview = thread.getMessages().isEmpty() ? "" : thread.getMessages().get(thread.getMessages().size() - 1).getContent();
-                    if (lastPreview.length() > 100) lastPreview = lastPreview.substring(0, 100) + "...";
+                    if (lastPreview.length() > 100) {
+                        lastPreview = lastPreview.substring(0, 100) + "...";
+                    }
                     return new ThreadSummary(
                             thread.getId(),
                             p.getId(),
@@ -217,7 +220,9 @@ public class MessageService {
                         .map(thread -> {
                             long total = messageRepository.countByThreadId(thread.getId());
                             String lastPreview = thread.getMessages().isEmpty() ? "" : thread.getMessages().get(thread.getMessages().size() - 1).getContent();
-                            if (lastPreview.length() > 100) lastPreview = lastPreview.substring(0, 100) + "...";
+                            if (lastPreview.length() > 100) {
+                                lastPreview = lastPreview.substring(0, 100) + "...";
+                            }
                             return new ThreadSummary(
                                     thread.getId(),
                                     p.getId(),

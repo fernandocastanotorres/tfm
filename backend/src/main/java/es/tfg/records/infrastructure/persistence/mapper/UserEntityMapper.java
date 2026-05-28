@@ -14,7 +14,9 @@ public final class UserEntityMapper {
     }
 
     public static User toDomain(UserEntity entity) {
-        if (entity == null) return null;
+        if (entity == null) {
+            return null;
+        }
         User user = new User();
         user.setId(entity.getId());
         user.setEmail(entity.getEmail());
@@ -42,7 +44,9 @@ public final class UserEntityMapper {
     }
 
     public static UserEntity toEntity(User domain) {
-        if (domain == null) return null;
+        if (domain == null) {
+            return null;
+        }
         UserEntity entity = new UserEntity();
         entity.setId(domain.getId());
         entity.setEmail(domain.getEmail());

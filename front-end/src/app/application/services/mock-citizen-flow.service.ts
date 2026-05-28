@@ -4,7 +4,9 @@ import { delay } from 'rxjs/operators';
 import {
   ProcedureItem,
   ProcedureDetail,
-  ProcedureTaskDto
+  ProcedureTaskDto,
+  FormFieldDto,
+  UploadRequirementDto
 } from '../models/procedure.models';
 import {
   CaseItem,
@@ -27,13 +29,13 @@ export class MockCitizenFlowService {
   private readonly casesKey = 'tfg.mock.cases';
   private readonly latencyMs = 180;
 
-  private static formField(id: string, name: string, type: string, placeholder: string, required: boolean = true, options?: { value: string; label: string }[]): Record<string, unknown> {
-    const field: Record<string, unknown> = { id, name, type, required, placeholder };
+  private static formField(id: string, name: string, type: string, placeholder: string, required: boolean = true, options?: FormFieldDto['options']): FormFieldDto {
+    const field: FormFieldDto = { id, name, type, required, placeholder };
     if (options) field.options = options;
     return field;
   }
 
-  private static uploadReq(id: string, name: string, required: boolean = true): Record<string, unknown> {
+  private static uploadReq(id: string, name: string, required: boolean = true): UploadRequirementDto {
     return { id, name, required };
   }
 

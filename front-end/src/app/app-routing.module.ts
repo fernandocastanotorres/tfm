@@ -18,19 +18,6 @@ import { CaseWizardComponent } from './adapters/components/case-wizard/case-wiza
 import { ProcedureFlowComponent } from './adapters/components/procedure-flow/procedure-flow.component';
 import { PublicLayoutComponent } from './adapters/components/public-layout/public-layout.component';
 import { PublicHomeComponent } from './adapters/components/public-home/public-home.component';
-import { InstitutionalInfoComponent } from './adapters/components/institutional-info/institutional-info.component';
-import { LegislationComponent } from './adapters/components/legislation/legislation.component';
-import { FaqComponent } from './adapters/components/faq/faq.component';
-import { ContactComponent } from './adapters/components/contact/contact.component';
-import { ServiceStatusComponent } from './adapters/components/service-status/service-status.component';
-import { OrganismsDirectoryComponent } from './adapters/components/organisms-directory/organisms-directory.component';
-import { TransparencyComponent } from './adapters/components/transparency/transparency.component';
-import { CalendarComponent } from './adapters/components/calendar/calendar.component';
-import { GlossaryComponent } from './adapters/components/glossary/glossary.component';
-import { AccessibilityStatementComponent } from './adapters/components/accessibility-statement/accessibility-statement.component';
-import { SitemapComponent } from './adapters/components/sitemap/sitemap.component';
-import { ContactInboxComponent } from './adapters/components/contact-inbox/contact-inbox.component';
-import { DocumentVerificationComponent } from './adapters/components/document-verification/document-verification.component';
 import { ErrorPageComponent } from './adapters/components/error-page/error-page.component';
 import { authGuard } from './application/guards/auth.guard';
 import { pendingChangesGuard } from './application/guards/pending-changes.guard';
@@ -42,18 +29,7 @@ const routes: Routes = [
     component: PublicLayoutComponent,
     children: [
       { path: '', component: PublicHomeComponent, title: 'PUBLIC.NAV_HOME' },
-      { path: 'institucional', component: InstitutionalInfoComponent, title: 'PUBLIC.NAV_INSTITUTIONAL' },
-      { path: 'normativa', component: LegislationComponent, title: 'PUBLIC.NAV_LEGISLATION' },
-      { path: 'faq', component: FaqComponent, title: 'PUBLIC.NAV_FAQ' },
-      { path: 'contacto', component: ContactComponent, title: 'PUBLIC.NAV_CONTACT' },
-      { path: 'estado', component: ServiceStatusComponent, title: 'PUBLIC.NAV_STATUS' },
-      { path: 'organismo', component: OrganismsDirectoryComponent, title: 'PUBLIC.NAV_ORGANISMS' },
-      { path: 'transparencia', component: TransparencyComponent, title: 'PUBLIC.NAV_TRANSPARENCY' },
-      { path: 'calendario', component: CalendarComponent, title: 'PUBLIC.NAV_CALENDAR' },
-      { path: 'glosario', component: GlossaryComponent, title: 'PUBLIC.NAV_GLOSSARY' },
-      { path: 'accesibilidad', component: AccessibilityStatementComponent, title: 'PUBLIC.NAV_ACCESSIBILITY' },
-      { path: 'mapa', component: SitemapComponent, title: 'PUBLIC.NAV_SITEMAP' },
-      { path: 'validar-documento', component: DocumentVerificationComponent, title: 'PUBLIC.VALIDATE_DOCUMENT' },
+      { path: '', loadChildren: () => import('./adapters/modules/public-info.module').then(m => m.PublicInfoModule) },
       { path: 'procedimientos', component: ProceduresComponent, title: 'PROCEDURES.TITLE' },
       { path: 'procedimientos/:procedureId/flujo', component: ProcedureFlowComponent, title: 'PROCEDURE_FLOW.TITLE' },
       { path: 'citas', component: AppointmentsComponent, title: 'APPOINTMENTS.TITLE' },

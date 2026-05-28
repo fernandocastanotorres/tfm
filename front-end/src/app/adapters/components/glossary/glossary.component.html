@@ -22,7 +22,7 @@
           (keyup.enter)="onSearch()"
         />
       </div>
-      <nav class="glossary__letters" aria-label="Filtrar por letra">
+      <nav class="glossary__letters" [attr.aria-label]="'GLOSSARY.FILTER_LETTER' | translate">
         <button
           type="button"
           class="glossary__letter"
@@ -36,9 +36,7 @@
       </nav>
     </div>
 
-    <div *ngIf="isLoading" class="glossary__loading">
-      {{ 'PUBLIC_HOME.LOADING' | translate }}
-    </div>
+    <app-skeleton-screen *ngIf="isLoading" pattern="list" [count]="10" ariaLabel="Cargando glosario..." class="mt-6"></app-skeleton-screen>
 
     <dl class="glossary__list" *ngIf="!isLoading">
       <div class="glossary__item card p-5" *ngFor="let term of terms; trackBy: trackByIndex">

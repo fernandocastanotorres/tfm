@@ -7,7 +7,6 @@ import es.tfg.records.application.exception.ConflictException;
 import es.tfg.records.application.exception.ResourceNotFoundException;
 import es.tfg.records.application.exception.ValidationException;
 import es.tfg.records.application.mapper.DocumentMapper;
-import es.tfg.records.application.service.SignatureService;
 import es.tfg.records.domain.model.CaseStatus;
 import es.tfg.records.domain.model.DocumentStatus;
 import es.tfg.records.domain.model.Procedure;
@@ -22,7 +21,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.time.Instant;
 import java.util.List;

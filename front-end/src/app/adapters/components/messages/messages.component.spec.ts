@@ -6,6 +6,7 @@ import { MessagesService } from '../../../application/services/messages.service'
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastService } from '../../../application/services/toast.service';
+import { SkeletonScreenComponent } from '../../../shared/components/skeleton-screen/skeleton-screen.component';
 
 describe('MessagesComponent', () => {
   let component: MessagesComponent;
@@ -29,7 +30,8 @@ describe('MessagesComponent', () => {
         TranslateModule.forRoot(),
         FormsModule,
         ReactiveFormsModule,
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        SkeletonScreenComponent
       ],
       providers: [
         { provide: ToastService, useValue: toastSpy }

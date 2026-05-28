@@ -34,20 +34,9 @@ import { ProcedureFlowComponent } from './adapters/components/procedure-flow/pro
 // Public sede components
 import { PublicLayoutComponent } from './adapters/components/public-layout/public-layout.component';
 import { PublicHomeComponent } from './adapters/components/public-home/public-home.component';
-import { InstitutionalInfoComponent } from './adapters/components/institutional-info/institutional-info.component';
-import { LegislationComponent } from './adapters/components/legislation/legislation.component';
-import { FaqComponent } from './adapters/components/faq/faq.component';
-import { ContactComponent } from './adapters/components/contact/contact.component';
-import { ServiceStatusComponent } from './adapters/components/service-status/service-status.component';
-import { OrganismsDirectoryComponent } from './adapters/components/organisms-directory/organisms-directory.component';
-import { TransparencyComponent } from './adapters/components/transparency/transparency.component';
-import { CalendarComponent } from './adapters/components/calendar/calendar.component';
-import { GlossaryComponent } from './adapters/components/glossary/glossary.component';
-import { AccessibilityStatementComponent } from './adapters/components/accessibility-statement/accessibility-statement.component';
-import { SitemapComponent } from './adapters/components/sitemap/sitemap.component';
-import { ContactInboxComponent, InboxItemDirective } from './adapters/components/contact-inbox/contact-inbox.component';
-import { DocumentVerificationComponent } from './adapters/components/document-verification/document-verification.component';
 import { ErrorPageComponent } from './adapters/components/error-page/error-page.component';
+import { SkeletonComponent } from './shared/components/skeleton/skeleton.component';
+import { SkeletonScreenComponent } from './shared/components/skeleton-screen/skeleton-screen.component';
 import { LoadingSkeletonComponent } from './adapters/components/loading-skeleton/loading-skeleton.component';
 import { NotificationCardDirective } from './adapters/components/notifications/notifications.component';
 import { PaymentCardDirective } from './adapters/components/payments/payments.component';
@@ -94,24 +83,11 @@ export function HttpLoaderFactory(http: HttpClient): CustomLoader {
         ProcedureFlowComponent,
         PublicLayoutComponent,
         PublicHomeComponent,
-        InstitutionalInfoComponent,
-        LegislationComponent,
-        FaqComponent,
-        ContactComponent,
-        ServiceStatusComponent,
-        OrganismsDirectoryComponent,
-        TransparencyComponent,
-        CalendarComponent,
-        GlossaryComponent,
-        AccessibilityStatementComponent,
-        SitemapComponent,
-        DocumentVerificationComponent,
         ErrorPageComponent,
-        LoadingSkeletonComponent,
-        ContactInboxComponent,
-        InboxItemDirective
+        LoadingSkeletonComponent
     ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
+    bootstrap: [AppComponent], imports: [SkeletonComponent, SkeletonScreenComponent,
+        BrowserModule,
         NoopAnimationsModule,
         A11yModule,
         FormsModule,

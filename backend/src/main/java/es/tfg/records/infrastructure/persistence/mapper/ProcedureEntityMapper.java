@@ -1,10 +1,8 @@
 package es.tfg.records.infrastructure.persistence.mapper;
 
-import es.tfg.records.domain.model.CaseStatus;
 import es.tfg.records.domain.model.Procedure;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,7 +14,9 @@ public final class ProcedureEntityMapper {
     }
 
     public static Procedure toDomain(ProcedureEntity entity) {
-        if (entity == null) return null;
+        if (entity == null) {
+            return null;
+        }
         Procedure procedure = new Procedure();
         procedure.setId(entity.getId());
         procedure.setProcedureTypeId(entity.getProcedureTypeId());
@@ -36,7 +36,9 @@ public final class ProcedureEntityMapper {
     }
 
     public static ProcedureEntity toEntity(Procedure domain) {
-        if (domain == null) return null;
+        if (domain == null) {
+            return null;
+        }
         ProcedureEntity entity = new ProcedureEntity();
         entity.setId(domain.getId());
         entity.setProcedureTypeId(domain.getProcedureTypeId());
@@ -54,7 +56,9 @@ public final class ProcedureEntityMapper {
     }
 
     public static List<Procedure> toDomainList(List<ProcedureEntity> entities) {
-        if (entities == null) return List.of();
+        if (entities == null) {
+            return List.of();
+        }
         return entities.stream()
                 .map(ProcedureEntityMapper::toDomain)
                 .toList();

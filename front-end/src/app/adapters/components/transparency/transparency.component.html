@@ -10,9 +10,7 @@
       <p class="transparency__subtitle">{{ 'TRANSPARENCY.SUBTITLE' | translate }}</p>
     </header>
 
-    <div *ngIf="isLoading" class="transparency__loading">
-      {{ 'PUBLIC_HOME.LOADING' | translate }}
-    </div>
+    <app-skeleton-screen *ngIf="isLoading" pattern="page" [count]="4" ariaLabel="Cargando transparencia..." class="mt-6"></app-skeleton-screen>
 
     <!-- Metrics -->
     <div class="transparency__metrics" *ngIf="!isLoading">

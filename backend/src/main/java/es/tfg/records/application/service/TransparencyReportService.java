@@ -74,11 +74,21 @@ public class TransparencyReportService {
     public TransparencyDtos.TransparencyReportDto updateReport(UUID id, TransparencyDtos.UpdateReportRequest request) {
         TransparencyReportEntity entity = findReport(id);
 
-        if (request.title() != null) entity.setTitle(request.title().trim());
-        if (request.year() != null) entity.setYear(request.year());
-        if (request.description() != null) entity.setDescription(request.description());
-        if (request.sortOrder() != null) entity.setSortOrder(request.sortOrder());
-        if (request.published() != null) entity.setPublished(request.published());
+        if (request.title() != null) {
+            entity.setTitle(request.title().trim());
+        }
+        if (request.year() != null) {
+            entity.setYear(request.year());
+        }
+        if (request.description() != null) {
+            entity.setDescription(request.description());
+        }
+        if (request.sortOrder() != null) {
+            entity.setSortOrder(request.sortOrder());
+        }
+        if (request.published() != null) {
+            entity.setPublished(request.published());
+        }
 
         TransparencyReportEntity saved = repository.save(entity);
         log.info("Updated transparency report: {} (id: {})", saved.getTitle(), saved.getId());

@@ -3,7 +3,6 @@ package es.tfg.records.entrypoints.controller;
 import es.tfg.records.application.dto.*;
 import es.tfg.records.application.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

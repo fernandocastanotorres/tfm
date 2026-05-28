@@ -6,10 +6,7 @@
       <p class="text-surface-600">{{ 'DOCUMENTS.SUBTITLE' | translate }}</p>
     </header>
 
-    <!-- Loading state -->
-    <div *ngIf="isLoading" class="mt-6 card p-6 text-center text-surface-600">
-      {{ 'DOCUMENTS.LOADING' | translate }}
-    </div>
+    <app-skeleton-screen *ngIf="isLoading" pattern="page" [count]="3" ariaLabel="Cargando documentos..." class="mt-6"></app-skeleton-screen>
 
     <!-- No cases available -->
     <div *ngIf="!isLoading && !selectedCaseId && cases.length === 0" class="mt-6 card p-6 text-center text-surface-600">
@@ -104,7 +101,7 @@
 
       <!-- Document list -->
       <section class="mt-6 grid gap-4">
-        <article class="card p-6" *ngFor="let doc of pagedDocuments; trackBy: trackByIndex" (click)="selectDocument(doc)" [ngClass]="selectedDocument?.id === doc.id ? 'ring-2 ring-brand-300' : ''" tabindex="0" (keydown.enter)="selectDocument(doc)" (keydown.space)="$event.preventDefault(); selectDocument(doc)" (keydown)="onDocumentKeydown($event)" role="button" [attr.aria-label]="doc.name + ', ' + doc.type" data-document-card="true">
+        <article class="card p-6" *ngFor="let doc of pagedDocuments; trackBy: trackByIndex" (click)="selectDocument(doc)" [ngClass]="selectedDocument?.id === doc.id ? 'ring-2 ring-brand-300' : ''" tabindex="0" (keydown.enter)="selectDocument(doc)" (keydown.space)="$event.preventDefault(); selectDocument(doc)" (keydown)="onDocumentKeydown($event)" role="button" [attr.aria-label]="'Documento: ' + doc.name + ', ' + doc.type" data-document-card="true">
           <div class="flex items-start justify-between gap-4">
             <div>
               <h2 class="text-lg font-semibold text-surface-900">{{ doc.name }}</h2>

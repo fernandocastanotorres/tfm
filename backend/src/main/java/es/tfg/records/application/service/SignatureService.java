@@ -9,7 +9,6 @@ import org.bouncycastle.cms.CMSTypedData;
 import org.bouncycastle.cms.jcajce.JcaSignerInfoGeneratorBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
-import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.bouncycastle.util.Store;
@@ -20,13 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayInputStream;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.MessageDigest;
 import java.security.Security;
-import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 
@@ -153,12 +150,24 @@ public class SignatureService {
     }
 
     private String getExtension(String mimeType) {
-        if (mimeType == null) return "bin";
-        if (mimeType.contains("jpeg") || mimeType.contains("jpg")) return "jpg";
-        if (mimeType.contains("png")) return "png";
-        if (mimeType.contains("gif")) return "gif";
-        if (mimeType.contains("msword")) return "doc";
-        if (mimeType.contains("openxmlformats") && mimeType.contains("word")) return "docx";
+        if (mimeType == null) {
+            return "bin";
+        }
+        if (mimeType.contains("jpeg") || mimeType.contains("jpg")) {
+            return "jpg";
+        }
+        if (mimeType.contains("png")) {
+            return "png";
+        }
+        if (mimeType.contains("gif")) {
+            return "gif";
+        }
+        if (mimeType.contains("msword")) {
+            return "doc";
+        }
+        if (mimeType.contains("openxmlformats") && mimeType.contains("word")) {
+            return "docx";
+        }
         return "bin";
     }
 
@@ -254,7 +263,9 @@ public class SignatureService {
             int originalStartxref = numMatcher.find() ? Integer.parseInt(numMatcher.group(1)) : 0;
 
             int xrefKeywordPos = pdfStr.lastIndexOf("\nxref\n", eofPos);
-            if (xrefKeywordPos < 0) xrefKeywordPos = pdfStr.lastIndexOf("xref\n", eofPos);
+            if (xrefKeywordPos < 0) {
+                xrefKeywordPos = pdfStr.lastIndexOf("xref\n", eofPos);
+            }
             if (xrefKeywordPos < 0) {
                 log.warn("PDF does not contain xref keyword");
                 java.io.ByteArrayOutputStream fallback = new java.io.ByteArrayOutputStream();
@@ -271,8 +282,12 @@ public class SignatureService {
             }
 
             int trailerKeywordPos = pdfStr.lastIndexOf("\ntrailer\n", eofPos);
-            if (trailerKeywordPos < 0) trailerKeywordPos = pdfStr.lastIndexOf("trailer\n", eofPos);
-            if (trailerKeywordPos < 0) trailerKeywordPos = eofPos;
+            if (trailerKeywordPos < 0) {
+                trailerKeywordPos = pdfStr.lastIndexOf("trailer\n", eofPos);
+            }
+            if (trailerKeywordPos < 0) {
+                trailerKeywordPos = eofPos;
+            }
 
             String xrefBody = pdfStr.substring(xrefContentStart, trailerKeywordPos).trim();
             String[] xrefLines = xrefBody.split("\\r?\\n");
@@ -285,8 +300,12 @@ public class SignatureService {
 
             for (String line : xrefLines) {
                 String trimmed = line.trim();
-                if (trimmed.isEmpty()) continue;
-                if (trimmed.startsWith("trailer")) break;
+                if (trimmed.isEmpty()) {
+                    continue;
+                }
+                if (trimmed.startsWith("trailer")) {
+                    break;
+                }
 
                 String[] parts = trimmed.split("\\s+");
                 if (parts.length == 2) {
@@ -324,7 +343,9 @@ public class SignatureService {
             result.append(pdfStr, 0, eofPos + 5);
 
             boolean hasNewline = pdfStr.charAt(eofPos + 5 - 1) == '\n';
-            if (!hasNewline) result.append('\n');
+            if (!hasNewline) {
+                result.append('\n');
+            }
             result.append('\n');
             result.append(sigDict);
 
@@ -375,11 +396,15 @@ public class SignatureService {
         try {
             String pdfStr = new String(signedPdfContent, java.nio.charset.StandardCharsets.ISO_8859_1);
             int startIdx = pdfStr.indexOf("/Contents <");
-            if (startIdx == -1) return null;
+            if (startIdx == -1) {
+                return null;
+            }
 
             int hexStart = pdfStr.indexOf('<', startIdx) + 1;
             int hexEnd = pdfStr.indexOf('>', hexStart);
-            if (hexStart == 0 || hexEnd == -1) return null;
+            if (hexStart == 0 || hexEnd == -1) {
+                return null;
+            }
 
             String hexSig = pdfStr.substring(hexStart, hexEnd);
             return hexToBytes(hexSig);

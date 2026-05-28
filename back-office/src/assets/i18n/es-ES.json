@@ -4,7 +4,8 @@
     "SUBTITLE": "Gestion de Expedientes Electronicos",
     "SIDEBAR": {
       "TOGGLE": "Alternar barra lateral",
-      "LOGOUT": "Cerrar sesion"
+      "LOGOUT": "Cerrar sesion",
+      "NAV_MAIN": "Menu principal"
     },
     "HEADER": {
       "GUIDE": "Guia",
@@ -13,7 +14,9 @@
       "NO_UNREAD": "No hay mensajes sin leer",
       "NO_CONTENT": "Sin contenido",
       "VIEW_ALL_CASES": "Ver todos los expedientes",
-      "NOTIFICATION_BELL": "Mensajes no leidos"
+      "NOTIFICATION_BELL": "Mensajes no leidos",
+      "NOTIFICATION_BELL_WITH_COUNT": "Mensajes no leidos ({{count}} sin leer)",
+      "NOTIFICATIONS_LABEL": "Notificaciones"
     },
     "NAV": {
       "DASHBOARD": "Panel Principal",
@@ -284,6 +287,7 @@
       "NEW": "Nuevo"
     },
     "CONTACT_INBOX": {
+      "FILTER_LABEL": "Filtro de mensajes",
       "TITLE": "Buzon de Contacto",
       "SUBTITLE": "Mensajes recibidos desde el formulario de contacto de la sede.",
       "LOADING": "Cargando mensajes...",

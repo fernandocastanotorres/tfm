@@ -8,9 +8,7 @@ import es.tfg.records.application.mapper.ProcedureTypeMapper;
 import es.tfg.records.domain.model.ProcedureTask;
 import es.tfg.records.domain.model.ProcedureType;
 import es.tfg.records.domain.port.ProcedureTypeRepository;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -90,7 +88,9 @@ public class ProcedureServiceImpl implements ProcedureService {
     }
 
     private List<ProcedureTaskDto> mapTasks(List<ProcedureTask> tasks) {
-        if (tasks == null) return List.of();
+        if (tasks == null) {
+            return List.of();
+        }
         return tasks.stream()
                 .map(ProcedureTypeMapper::toProcedureTaskDto)
                 .toList();

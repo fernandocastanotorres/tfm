@@ -15,7 +15,7 @@
       <input id="case-search-input" class="field-input w-full" formControlName="term" [placeholder]="'CASE_SEARCH.SEARCH_PLACEHOLDER' | translate" />
     </div>
 
-    <div *ngIf="isLoading" class="mt-6 card p-6 text-center text-surface-600">{{ 'CASE_SEARCH.LOADING' | translate }}</div>
+    <app-skeleton-screen *ngIf="isLoading" pattern="list" [count]="5" ariaLabel="Buscando expedientes..." class="mt-6"></app-skeleton-screen>
 
     <div class="mt-6 space-y-4" *ngIf="!isLoading">
       <a

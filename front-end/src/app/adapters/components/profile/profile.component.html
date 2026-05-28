@@ -10,7 +10,7 @@
       <p class="text-surface-600">{{ 'PROFILE.SUBTITLE' | translate }}</p>
     </header>
 
-    <div *ngIf="isLoading" class="card p-6 text-surface-600 text-center">{{ 'PROFILE.LOADING' | translate }}</div>
+    <app-skeleton-screen *ngIf="isLoading" pattern="form" [count]="6" ariaLabel="Cargando perfil..." class="mt-6"></app-skeleton-screen>
 
     <form class="card p-8 grid gap-6 md:grid-cols-2" [formGroup]="profileForm" *ngIf="!isLoading">
       <div class="space-y-2">

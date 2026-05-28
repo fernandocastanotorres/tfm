@@ -1,15 +1,18 @@
-import { test as base } from '@playwright/test';
+import { test as base, Page } from '@playwright/test';
+import type { Fixtures } from '@playwright/test';
 
 export interface AuthState {
   token: string;
   email: string;
 }
 
-export const test = base.extend<{
+type CustomFixtures = {
   authState: AuthState | null;
-  authenticatedPage: ReturnType<typeof base.extend>['page'];
-}>({
-  authState: null,
+  authenticatedPage: Page;
+};
+
+export const test = base.extend<CustomFixtures>({
+  authState: [null, { option: true }],
 
   authenticatedPage: async ({ page, authState }, use) => {
     if (authState) {
@@ -25,10 +28,13 @@ export const test = base.extend<{
         },
       ]);
 
-      await page.context().addInitScript((state) => {
-        window.localStorage.setItem('auth_token', state.token);
-        window.localStorage.setItem('user_email', state.email);
-      }, authState);
+      await page.context().addInitScript(
+        (state: AuthState) => {
+          window.localStorage.setItem('auth_token', state.token);
+          window.localStorage.setItem('user_email', state.email);
+        },
+        authState,
+      );
     }
 
     await use(page);

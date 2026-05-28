@@ -711,9 +711,13 @@ public class PublicContentService {
     }
 
     private String normalizeMode(String raw) {
-        if (isBlank(raw)) return "light";
+        if (isBlank(raw)) {
+            return "light";
+        }
         String trimmed = raw.trim();
-        if ("light".equalsIgnoreCase(trimmed) || "dark".equalsIgnoreCase(trimmed)) return trimmed.toLowerCase();
+        if ("light".equalsIgnoreCase(trimmed) || "dark".equalsIgnoreCase(trimmed)) {
+            return trimmed.toLowerCase();
+        }
         return "light";
     }
 }

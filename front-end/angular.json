@@ -51,7 +51,9 @@
                   "maximumError": "16kb"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "vendorChunk": true,
+              "commonChunk": true
             },
             "development": {
               "buildOptimizer": false,

@@ -40,7 +40,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.security.MessageDigest;
 import java.util.*;
@@ -527,8 +526,12 @@ public class CaseServiceImpl implements CaseService {
     private Map<String, Object> parseHashMapFormat(String raw) {
         Map<String, Object> result = new LinkedHashMap<>();
         String content = raw.trim();
-        if (content.startsWith("{")) content = content.substring(1);
-        if (content.endsWith("}")) content = content.substring(0, content.length() - 1);
+        if (content.startsWith("{")) {
+            content = content.substring(1);
+        }
+        if (content.endsWith("}")) {
+            content = content.substring(0, content.length() - 1);
+        }
         Pattern pattern = Pattern.compile("([^=]+)=([^,]+)(?:,\\s*|$)");
         Matcher matcher = pattern.matcher(content);
         while (matcher.find()) {

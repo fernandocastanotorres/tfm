@@ -37,10 +37,7 @@
     </div>
 
     <section class="messages__layout">
-      <div *ngIf="isLoadingThreads" class="messages__empty" role="status" aria-live="polite">
-        <div class="messages__empty-icon"></div>
-        <p class="messages__empty-text">{{ 'backoffice.common.loading' | translate }}</p>
-      </div>
+      <app-skeleton-screen *ngIf="isLoadingThreads" pattern="list" [count]="5" ariaLabel="Cargando mensajes..." class="messages__empty"></app-skeleton-screen>
 
       <div *ngIf="!isLoadingThreads && pagedThreads.length === 0" class="messages__empty" role="status" aria-live="polite">
         <div class="messages__empty-icon">

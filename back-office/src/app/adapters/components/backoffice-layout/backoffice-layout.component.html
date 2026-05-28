@@ -18,7 +18,7 @@
       </button>
     </div>
 
-    <nav class="flex-1 py-4" aria-label="Menu principal">
+    <nav class="flex-1 py-4" [attr.aria-label]="'BO.SIDEBAR.NAV_MAIN' | translate">
       <a
         *ngFor="let item of navItems"
         [routerLink]="isVisible(item) ? [item.route] : null"
@@ -69,7 +69,7 @@
               type="button"
               class="relative p-2 rounded hover:bg-gray-100 transition-colors"
               (click)="toggleMessagesDropdown()"
-              [attr.aria-label]="'BO.HEADER.NOTIFICATION_BELL' | translate"
+              [attr.aria-label]="unreadCounts.adminUnread > 0 ? ('BO.HEADER.NOTIFICATION_BELL_WITH_COUNT' | translate: { count: unreadCounts.adminUnread > 9 ? '9+' : unreadCounts.adminUnread }) : ('BO.HEADER.NOTIFICATION_BELL' | translate)"
               [attr.aria-expanded]="messagesDropdownOpen"
               aria-controls="bo-notifications-panel"
             >
@@ -81,7 +81,7 @@
               </span>
             </button>
             <div *ngIf="messagesDropdownOpen" class="fixed inset-0 z-40" (click)="closeMessagesDropdown()" (keydown.escape)="closeMessagesDropdown()" tabindex="0"></div>
-            <div *ngIf="messagesDropdownOpen" id="bo-notifications-panel" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50" role="region" aria-label="Notificaciones">
+            <div *ngIf="messagesDropdownOpen" id="bo-notifications-panel" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50" role="region" [attr.aria-label]="'BO.HEADER.NOTIFICATIONS_LABEL' | translate">
               <div class="px-4 py-3 border-b border-gray-100">
                 <h3 class="text-sm font-semibold text-gray-900">{{ 'BO.HEADER.UNREAD_MESSAGES' | translate }}</h3>
                 <p class="text-xs text-gray-500 mt-0.5">{{ 'BO.HEADER.PENDING_CASES' | translate: { count: unreadCounts.adminUnread } }}</p>

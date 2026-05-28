@@ -3,7 +3,6 @@ package es.tfg.records.application.service;
 import es.tfg.records.application.dto.*;
 import org.springframework.core.io.Resource;
 
-import java.util.Map;
 import java.util.UUID;
 
 /**

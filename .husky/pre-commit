@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+echo "Running pre-commit checks..."
+echo "  Lint..."
+npm run lint || exit 1
+echo "  Typecheck..."
+npm run typecheck || exit 1
+echo "Pre-commit checks passed!"

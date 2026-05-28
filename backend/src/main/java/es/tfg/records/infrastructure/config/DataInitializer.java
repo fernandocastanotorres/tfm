@@ -3,7 +3,6 @@ package es.tfg.records.infrastructure.config;
 import es.tfg.records.domain.model.CaseStatus;
 import es.tfg.records.domain.model.Procedure;
 import es.tfg.records.domain.model.ProcedureTask;
-import es.tfg.records.domain.model.ProcedureType;
 import es.tfg.records.domain.model.TaskType;
 import es.tfg.records.domain.model.User;
 import es.tfg.records.domain.port.ProcedureRepository;
@@ -454,21 +453,21 @@ public class DataInitializer {
                     bodyFor(locale, "Normativa base de tramitacion electronica municipal."), null, "https://www.boe.es/buscar/act.php?id=BOE-A-2015-10565", null, null, sortOrder, true, now));
         }
         sortOrder++;
-        
+
         UUID legislation2GroupId = UUID.randomUUID();
         for (String locale : locales) {
             repository.save(createPublicContentEntry("LEGISLATION", locale, legislation2GroupId, null, "decree", titleFor(locale, "Esquema Nacional de Seguridad"),
                     bodyFor(locale, "Aplicacion del ENS en servicios digitales del ayuntamiento."), null, "https://www.boe.es/buscar/act.php?id=BOE-A-2022-7191", null, null, sortOrder, true, now));
         }
         sortOrder++;
-        
+
         UUID legislation3GroupId = UUID.randomUUID();
         for (String locale : locales) {
             repository.save(createPublicContentEntry("LEGISLATION", locale, legislation3GroupId, null, "order", titleFor(locale, "Orden de gestion documental"),
                     bodyFor(locale, "Criterios internos de archivo y conservacion documental."), null, null, null, null, sortOrder, true, now));
         }
         sortOrder++;
-        
+
         UUID legislation4GroupId = UUID.randomUUID();
         for (String locale : locales) {
             repository.save(createPublicContentEntry("LEGISLATION", locale, legislation4GroupId, null, "resolution", titleFor(locale, "Resolucion de accesibilidad"),
@@ -481,17 +480,17 @@ public class DataInitializer {
         for (String locale : locales) {
             repository.save(createPublicContentEntry("FAQ_CATEGORY", locale, faqCat1GroupId, "general", null, titleFor(locale, "General"), "", null, null, null, null, 0, true, now));
         }
-        
+
         UUID faqCat2GroupId = UUID.randomUUID();
         for (String locale : locales) {
             repository.save(createPublicContentEntry("FAQ_CATEGORY", locale, faqCat2GroupId, "procedures", null, titleFor(locale, "Procedimientos"), "", null, null, null, null, 1, true, now));
         }
-        
+
         UUID faqCat3GroupId = UUID.randomUUID();
         for (String locale : locales) {
             repository.save(createPublicContentEntry("FAQ_CATEGORY", locale, faqCat3GroupId, "certificate", null, titleFor(locale, "Identidad digital"), "", null, null, null, null, 2, true, now));
         }
-        
+
         UUID faqCat4GroupId = UUID.randomUUID();
         for (String locale : locales) {
             repository.save(createPublicContentEntry("FAQ_CATEGORY", locale, faqCat4GroupId, "payments", null, titleFor(locale, "Pagos"), "", null, null, null, null, 3, true, now));
@@ -503,19 +502,19 @@ public class DataInitializer {
             repository.save(createPublicContentEntry("FAQ", locale, faq1GroupId, "general", null, titleFor(locale, "Que es la sede electronica?"),
                     bodyFor(locale, "Es el canal oficial para tramites, consultas y notificaciones digitales."), null, null, null, null, 0, true, now));
         }
-        
+
         UUID faq2GroupId = UUID.randomUUID();
         for (String locale : locales) {
             repository.save(createPublicContentEntry("FAQ", locale, faq2GroupId, "procedures", null, titleFor(locale, "Como inicio un tramite?"),
                     bodyFor(locale, "Seleccione el procedimiento y complete el formulario guiado por pasos."), null, null, null, null, 1, true, now));
         }
-        
+
         UUID faq3GroupId = UUID.randomUUID();
         for (String locale : locales) {
             repository.save(createPublicContentEntry("FAQ", locale, faq3GroupId, "certificate", null, titleFor(locale, "Necesito certificado digital?"),
                     bodyFor(locale, "Algunos tramites requieren certificado o sistema equivalente de identificacion."), null, null, null, null, 2, true, now));
         }
-        
+
         UUID faq4GroupId = UUID.randomUUID();
         for (String locale : locales) {
             repository.save(createPublicContentEntry("FAQ", locale, faq4GroupId, "payments", null, titleFor(locale, "Como obtengo justificante de pago?"),
@@ -528,19 +527,19 @@ public class DataInitializer {
             repository.save(createPublicContentEntry("CALENDAR", locale, cal1GroupId, null, "deadline", titleFor(locale, "Fin de plazo de tasas"),
                     bodyFor(locale, "Fecha limite para tramites con liquidacion de tasas."), java.time.LocalDate.now().plusDays(15), null, null, "tax-payment", 0, true, now));
         }
-        
+
         UUID cal2GroupId = UUID.randomUUID();
         for (String locale : locales) {
             repository.save(createPublicContentEntry("CALENDAR", locale, cal2GroupId, null, "holiday", titleFor(locale, "Festivo local"),
                     bodyFor(locale, "Dia no habil para atencion administrativa presencial."), java.time.LocalDate.now().plusDays(22), null, null, null, 1, true, now));
         }
-        
+
         UUID cal3GroupId = UUID.randomUUID();
         for (String locale : locales) {
             repository.save(createPublicContentEntry("CALENDAR", locale, cal3GroupId, null, "info", titleFor(locale, "Sesion informativa digital"),
                     bodyFor(locale, "Jornada abierta para resolver dudas sobre tramitacion."), java.time.LocalDate.now().plusDays(10), null, null, null, 2, true, now));
         }
-        
+
         UUID cal4GroupId = UUID.randomUUID();
         for (String locale : locales) {
             repository.save(createPublicContentEntry("CALENDAR", locale, cal4GroupId, null, "reminder", titleFor(locale, "Recordatorio de subsanacion"),
@@ -553,7 +552,7 @@ public class DataInitializer {
             repository.save(createPublicContentEntry("INSTITUTIONAL", locale, inst1GroupId, "mission", "target", titleFor(locale, "Mision institucional"),
                     bodyFor(locale, "Garantizar una tramitacion digital segura, accesible y orientada al ciudadano."), null, null, null, null, 0, true, now));
         }
-        
+
         UUID inst2GroupId = UUID.randomUUID();
         for (String locale : locales) {
             repository.save(createPublicContentEntry("INSTITUTIONAL", locale, inst2GroupId, "structure", "building", titleFor(locale, "Estructura organizativa"),
@@ -566,7 +565,7 @@ public class DataInitializer {
             repository.save(createPublicContentEntry("ORGANISM", locale, org1GroupId, "planning", titleFor(locale, "Plaza Mayor 1"), titleFor(locale, "Urbanismo"),
                     bodyFor(locale, "Gestion de licencias urbanisticas y disciplina territorial."), null, "https://sede.local/urbanismo", "urbanismo@ayto.local", "900100100", 0, true, now));
         }
-        
+
         UUID org2GroupId = UUID.randomUUID();
         for (String locale : locales) {
             repository.save(createPublicContentEntry("ORGANISM", locale, org2GroupId, "citizen", titleFor(locale, "Avenida Centro 12"), titleFor(locale, "Registro General"),
@@ -579,13 +578,13 @@ public class DataInitializer {
             repository.save(createPublicContentEntry("RESOURCE", locale, res1GroupId, null, "glossary", titleFor(locale, "Certificado digital"),
                     bodyFor(locale, "Mecanismo de identificacion electronica para firma y autenticacion."), null, null, null, "FNMT, Cl@ve", 0, true, now));
         }
-        
+
         UUID res2GroupId = UUID.randomUUID();
         for (String locale : locales) {
             repository.save(createPublicContentEntry("RESOURCE", locale, res2GroupId, null, "glossary", titleFor(locale, "Expediente"),
                     bodyFor(locale, "Conjunto de documentos y actuaciones asociadas a un procedimiento."), null, null, null, "Procedimiento, Tramite", 1, true, now));
         }
-        
+
         log.info("Seeded public content base in {} locales", locales.size());
     }
 

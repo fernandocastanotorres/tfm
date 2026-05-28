@@ -644,9 +644,15 @@ public class BackofficeService {
     }
 
     private String currentTask(ProcedureEntity procedure, ProcedureTypeEntity type) {
-        if (procedure.getStatus() == CaseStatus.SUBMITTED || procedure.getStatus() == CaseStatus.RESUBMITTED) return "Revision de documentacion";
-        if (procedure.getStatus() == CaseStatus.IN_REVIEW) return "Resolucion administrativa";
-        if (procedure.getStatus() == CaseStatus.AMENDMENT_REQUIRED) return "Subsanacion requerida";
+        if (procedure.getStatus() == CaseStatus.SUBMITTED || procedure.getStatus() == CaseStatus.RESUBMITTED) {
+            return "Revision de documentacion";
+        }
+        if (procedure.getStatus() == CaseStatus.IN_REVIEW) {
+            return "Resolucion administrativa";
+        }
+        if (procedure.getStatus() == CaseStatus.AMENDMENT_REQUIRED) {
+            return "Subsanacion requerida";
+        }
         return "";
     }
 
@@ -706,7 +712,9 @@ public class BackofficeService {
     }
 
     private Map<String, Object> parseFormData(String formData) {
-        if (formData == null || formData.isBlank()) return Map.of();
+        if (formData == null || formData.isBlank()) {
+            return Map.of();
+        }
         try {
             return objectMapper.readValue(formData, new TypeReference<>() {});
         } catch (Exception ignored) {
@@ -721,7 +729,9 @@ public class BackofficeService {
     private Map<String, Object> parseHashMapFormat(String raw) {
         Map<String, Object> result = new LinkedHashMap<>();
         String content = raw.trim();
-        if (!content.startsWith("{") || !content.endsWith("}")) return result;
+        if (!content.startsWith("{") || !content.endsWith("}")) {
+            return result;
+        }
         content = content.substring(1, content.length() - 1);
         Pattern pattern = Pattern.compile("([^=]+)=(\\[.*?\\]|[^,]+)(?:,\\s*|$)");
         Matcher matcher = pattern.matcher(content);
@@ -763,7 +773,9 @@ public class BackofficeService {
     }
 
     private Set<String> toRoleSet(List<String> roles) {
-        if (roles == null || roles.isEmpty()) return Set.of("ROLE_TRAMITADOR");
+        if (roles == null || roles.isEmpty()) {
+            return Set.of("ROLE_TRAMITADOR");
+        }
         return Set.copyOf(roles);
     }
 
@@ -816,7 +828,9 @@ public class BackofficeService {
                               List<BackofficeDtos.ProcedureTaskConfig> tasks,
                               List<BackofficeDtos.FormSchemaField> formSchema) {
         taskRepository.deleteAll(taskRepository.findByProcedureTypeIdOrderByOrderIndexAsc(procedureTypeId));
-        if (tasks == null) return;
+        if (tasks == null) {
+            return;
+        }
         String serializedFormSchema = serializeFormSchema(formSchema);
         tasks.stream().sorted(Comparator.comparingInt(BackofficeDtos.ProcedureTaskConfig::orderIndex)).forEach(task -> {
             ProcedureTaskEntity entity = new ProcedureTaskEntity();
@@ -1261,7 +1275,9 @@ public class BackofficeService {
     }
 
     private double median(List<Double> values) {
-        if (values.isEmpty()) return 0;
+        if (values.isEmpty()) {
+            return 0;
+        }
         List<Double> sorted = values.stream().sorted().toList();
         int mid = sorted.size() / 2;
         return sorted.size() % 2 == 0

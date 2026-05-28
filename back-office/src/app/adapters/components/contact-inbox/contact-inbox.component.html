@@ -39,7 +39,7 @@
 
   <div *ngIf="!isLoading && !selectedMessage" class="space-y-4">
     <div class="bg-white rounded-lg shadow p-4">
-      <div class="flex items-center gap-2" role="group" aria-label="Filtro de mensajes">
+      <div class="flex items-center gap-2" role="group" [attr.aria-label]="'BO.CONTACT_INBOX.FILTER_LABEL' | translate">
         <button type="button" class="px-3 py-2 text-sm rounded-md border" [class.bg-blue-600]="filterStatus === 'all'" [class.text-white]="filterStatus === 'all'" (click)="setFilter('all')">Todos</button>
         <button type="button" class="px-3 py-2 text-sm rounded-md border inline-flex items-center gap-2" [class.bg-blue-600]="filterStatus === 'unread'" [class.text-white]="filterStatus === 'unread'" (click)="setFilter('unread')">
           No leidos

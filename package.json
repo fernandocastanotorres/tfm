@@ -1,0 +1,28 @@
+{
+  "name": "tfg-sede",
+  "private": true,
+  "scripts": {
+    "lint": "npm run lint:front && npm run lint:back && npm run lint:be",
+    "lint:front": "cd front-end && npm run lint",
+    "lint:back": "cd back-office && npm run lint",
+    "lint:be": "cd backend && mvn checkstyle:check -q",
+    "typecheck": "npm run typecheck:front && npm run typecheck:back && npm run typecheck:be",
+    "typecheck:front": "cd front-end && npm run typecheck",
+    "typecheck:back": "cd back-office && npm run typecheck",
+    "typecheck:be": "cd backend && mvn compile -q",
+    "test": "npm run test:front && npm run test:back && npm run test:be",
+    "test:front": "cd front-end && npm run test -- --no-watch --browsers=ChromeHeadless",
+    "test:back": "cd back-office && npm run test -- --no-watch",
+    "test:be": "cd backend && mvn test -q",
+    "build": "npm run build:front && npm run build:back && npm run build:be",
+    "build:front": "cd front-end && npm run build",
+    "build:back": "cd back-office && npm run build",
+    "build:be": "cd backend && mvn package -q -DskipTests",
+    "quality": "npm run lint && npm run typecheck",
+    "verify": "npm run quality && npm run test && npm run build",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.0.0"
+  }
+}

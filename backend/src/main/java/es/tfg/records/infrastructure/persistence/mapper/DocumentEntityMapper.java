@@ -16,7 +16,9 @@ public final class DocumentEntityMapper {
     }
 
     public static Document toDomain(DocumentEntity entity) {
-        if (entity == null) return null;
+        if (entity == null) {
+            return null;
+        }
         Document document = new Document();
         document.setId(entity.getId());
         document.setProcedureId(entity.getProcedure() != null ? entity.getProcedure().getId() : null);
@@ -43,7 +45,9 @@ public final class DocumentEntityMapper {
     }
 
     public static DocumentEntity toEntity(Document domain, ProcedureEntity procedure) {
-        if (domain == null) return null;
+        if (domain == null) {
+            return null;
+        }
         DocumentEntity entity = new DocumentEntity();
         entity.setId(domain.getId());
         entity.setProcedure(procedure);
@@ -68,7 +72,9 @@ public final class DocumentEntityMapper {
     }
 
     public static List<Document> toDomainList(List<DocumentEntity> entities) {
-        if (entities == null) return List.of();
+        if (entities == null) {
+            return List.of();
+        }
         return entities.stream()
                 .map(DocumentEntityMapper::toDomain)
                 .toList();

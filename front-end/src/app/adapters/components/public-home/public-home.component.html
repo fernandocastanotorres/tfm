@@ -101,9 +101,7 @@
   <div class="public-home__section public-home__section--alt">
     <div class="public-home__container">
       <h2 class="public-home__section-title">{{ 'PUBLIC_HOME.FEATURED_PROCEDURES' | translate }}</h2>
-      <div *ngIf="isLoading" class="public-home__loading">
-        {{ 'PUBLIC_HOME.LOADING' | translate }}
-      </div>
+      <app-skeleton-screen *ngIf="isLoading" pattern="card-grid" [count]="4" [lines]="2" ariaLabel="Cargando procedimientos destacados..."></app-skeleton-screen>
       <div class="public-home__procedures-grid" *ngIf="!isLoading">
         <div class="card p-6 public-home__procedure-card" *ngFor="let proc of procedures; trackBy: trackByIndex">
           <h3 class="text-lg font-semibold public-home__card-title">{{ proc.name }}</h3>

@@ -8,7 +8,6 @@ import es.tfg.records.domain.model.CaseStatus;
 import es.tfg.records.domain.model.Document;
 import es.tfg.records.domain.model.DocumentStatus;
 import es.tfg.records.domain.port.DocumentRepository;
-import es.tfg.records.domain.port.ProcedureRepository;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureEntity;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTypeEntity;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureJpaRepository;
@@ -33,7 +32,6 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
@@ -284,11 +282,19 @@ public class EniPackagerService {
     }
 
     private String mapProcedureToEniType(ProcedureTypeEntity type) {
-        if (type == null) return "TD99";
+        if (type == null) {
+            return "TD99";
+        }
         String title = type.getTitle().toLowerCase();
-        if (title.contains("licencia") || title.contains("urbanismo")) return "TD01";
-        if (title.contains("certificado") || title.contains("certificacion")) return "TD02";
-        if (title.contains("empadronamiento") || title.contains("domicilio")) return "TD03";
+        if (title.contains("licencia") || title.contains("urbanismo")) {
+            return "TD01";
+        }
+        if (title.contains("certificado") || title.contains("certificacion")) {
+            return "TD02";
+        }
+        if (title.contains("empadronamiento") || title.contains("domicilio")) {
+            return "TD03";
+        }
         return "TD99";
     }
 
@@ -348,12 +354,16 @@ public class EniPackagerService {
     }
 
     private String sanitizeFileName(String name) {
-        if (name == null) return "documento";
+        if (name == null) {
+            return "documento";
+        }
         return name.replaceAll("[^a-zA-Z0-9._\\-\\u00C0-\\u024F ]", "_");
     }
 
     private String escapeXml(String value) {
-        if (value == null) return "";
+        if (value == null) {
+            return "";
+        }
         return value.replace("&", "&amp;")
                 .replace("<", "&lt;")
                 .replace(">", "&gt;")

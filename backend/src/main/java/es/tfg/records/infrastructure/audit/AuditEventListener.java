@@ -1,8 +1,6 @@
 package es.tfg.records.infrastructure.audit;
 
 import es.tfg.records.infrastructure.persistence.entity.AuditLogEntity;
-import es.tfg.records.infrastructure.persistence.entity.AuditLogEntity.AuditAction;
-import es.tfg.records.infrastructure.persistence.entity.AuditLogEntity.AuditResult;
 import es.tfg.records.infrastructure.persistence.repository.AuditLogJpaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

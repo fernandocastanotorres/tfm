@@ -2,9 +2,6 @@ package es.tfg.records.application.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.List;
-import java.util.UUID;
-
 /**
  * Response body for successful login.
  */
