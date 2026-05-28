@@ -70,3 +70,8 @@
 :host-context(.theme-dark) .institutional__card-content {
   color: var(--sede-color-muted);
 }
+
+:host-context(.theme-dark) .institutional__card-icon {
+  background: var(--sede-color-icon-bg);
+  color: var(--sede-color-icon-fg);
+}

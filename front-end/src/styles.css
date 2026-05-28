@@ -110,6 +110,7 @@ body.theme-dark {
 @layer components {
   .auth-page {
     @apply min-h-[calc(100vh-4rem)] flex items-center justify-center px-6 py-10;
+    background-color: var(--sede-color-bg);
   }
 
 .card {

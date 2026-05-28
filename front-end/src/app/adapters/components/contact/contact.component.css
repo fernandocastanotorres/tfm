@@ -126,3 +126,8 @@
 :host-context(.theme-dark) .contact__success {
   @apply bg-emerald-950 border-emerald-800 text-emerald-200;
 }
+
+:host-context(.theme-dark) .contact__channel-icon {
+  background: var(--sede-color-icon-bg);
+  color: var(--sede-color-icon-fg);
+}
