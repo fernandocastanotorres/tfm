@@ -20,12 +20,14 @@ bun-debug.log*
 .env.*.local
 
 # Build and cache artifacts
+.artifacts/
 **/target/
 **/dist/
 **/build/
 **/.cache/
 **/.angular/cache/
 **/coverage/
+**/test-results/
 **/.eslintcache
 **/.stylelintcache
 **/*.tsbuildinfo
