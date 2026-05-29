@@ -10,6 +10,34 @@ body.theme-dark .public-header {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
+.public-breadcrumb__link {
+  color: var(--sede-color-link);
+}
+
+.public-breadcrumb__separator {
+  color: var(--sede-color-muted);
+}
+
+body.theme-dark .public-breadcrumb {
+  color: var(--sede-color-muted);
+}
+
+body.theme-dark .public-breadcrumb__link {
+  color: var(--sede-color-link);
+}
+
+body.theme-dark .public-breadcrumb__link:hover {
+  color: #bae6fd;
+}
+
+body.theme-dark .public-breadcrumb__current {
+  color: var(--sede-color-heading);
+}
+
+body.theme-dark .public-breadcrumb__separator {
+  color: rgba(148, 163, 184, 0.75);
+}
+
 .public-header__container {
   max-width: 64rem;
   margin-left: auto;
