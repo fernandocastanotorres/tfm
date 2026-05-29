@@ -15,8 +15,9 @@ export class LoginPage {
     this.emailInput = page.locator('#email');
     this.passwordInput = page.locator('#password');
     this.submitButton = page.locator('button[type="submit"]');
-    this.registerLink = page.locator('a[href*="registro"]');
-    this.forgotPasswordLink = page.locator('a[href*="recuperacion"]');
+    // Avoid footer links which would violate strict mode.
+    this.registerLink = page.locator('main a[href*="registro"], form a[href*="registro"]').first();
+    this.forgotPasswordLink = page.locator('main a[href*="recuperacion"], form a[href*="recuperacion"]').first();
     this.errorMessage = page.locator('.error-text[role="alert"]');
     this.infoMessage = page.locator('[role="status"]');
   }

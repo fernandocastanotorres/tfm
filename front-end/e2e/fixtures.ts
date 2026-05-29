@@ -16,22 +16,12 @@ export const test = base.extend<CustomFixtures>({
 
   authenticatedPage: async ({ page, authState }, use) => {
     if (authState) {
-      await page.context().addCookies([
-        {
-          name: 'auth_token',
-          value: authState.token,
-          domain: 'localhost',
-          path: '/',
-          httpOnly: false,
-          secure: false,
-          sameSite: 'Lax',
-        },
-      ]);
-
       await page.context().addInitScript(
         (state: AuthState) => {
-          window.localStorage.setItem('auth_token', state.token);
-          window.localStorage.setItem('user_email', state.email);
+          // AuthService stores tokens in sessionStorage.
+          window.sessionStorage.setItem('tfg.access_token', state.token);
+          window.sessionStorage.setItem('tfg.refresh_token', 'mock-refresh-token');
+          window.sessionStorage.setItem('tfg.authenticated', 'true');
         },
         authState,
       );
@@ -43,8 +33,21 @@ export const test = base.extend<CustomFixtures>({
 
 export const expect = test.expect;
 
+function createMockJwt(email: string): string {
+  const header = { alg: 'none', typ: 'JWT' };
+  const payload = {
+    email,
+    preferred_username: email,
+    exp: Math.floor(Date.now() / 1000) + 60 * 60,
+  };
+  // AuthService uses browser `atob` which expects standard base64 (not base64url).
+  const enc = (obj: unknown) => Buffer.from(JSON.stringify(obj)).toString('base64');
+  // Signature is intentionally empty for tests.
+  return `${enc(header)}.${enc(payload)}.`;
+}
+
 export const mockAuthState: AuthState = {
-  token: 'mock-jwt-token-for-e2e-testing',
+  token: createMockJwt('test@example.com'),
   email: 'test@example.com',
 };
 
@@ -78,17 +81,46 @@ export const mockCasesResponse = {
       lastUpdated: '2024-03-12T16:00:00Z',
     },
   ],
+  page: 0,
+  size: 10,
   totalItems: 3,
   totalPages: 1,
-  currentPage: 0,
 };
 
 export const mockEmptyCasesResponse = {
   items: [],
+  page: 0,
+  size: 10,
   totalItems: 0,
   totalPages: 0,
-  currentPage: 0,
 };
+
+// When the app runs with `environment.useMockCitizenFlow = true`, cases are loaded from sessionStorage.
+// Keep a stable dataset so E2E tests don't depend on backend availability.
+export const mockStoredCases = mockCasesResponse.items.map((item) => ({
+  item: {
+    ...item,
+    // Required by CaseItem interface in MockCitizenFlowService.
+    assignedUnit: '',
+  },
+  detail: {
+    id: item.id,
+    recordNumber: null,
+    entryNumber: null,
+    procedureType: item.procedureType,
+    status: item.status,
+    createdAt: item.createdAt,
+    lastUpdated: item.lastUpdated,
+    title: item.title,
+    description: item.description,
+    currentTask: '',
+    assignedUnit: '',
+    timeline: [],
+    attachments: [],
+    procedureTypeId: '',
+    formData: null,
+  },
+}));
 
 export const mockProceduresResponse = [
   {

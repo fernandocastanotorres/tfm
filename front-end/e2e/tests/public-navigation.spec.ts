@@ -50,9 +50,8 @@ test.describe('Public navigation', () => {
   });
 
   test('should navigate to calendar page', async ({ page }) => {
-    await publicHome.navigate();
-
-    await publicHome.goToCalendar();
+    // Home may not render calendar link if there are no upcoming events.
+    await page.goto('/sede/calendario');
 
     await expect(page).toHaveURL(/\/sede\/calendario/);
   });

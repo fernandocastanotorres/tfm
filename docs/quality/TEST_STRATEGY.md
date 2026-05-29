@@ -104,47 +104,31 @@ Coverage reports must separate:
 
 This avoids inflated global metrics hiding weak business-rule coverage.
 
-## 9) Current Coverage Status (2026-05-22)
+## 9) Current Coverage Status (2026-05-29)
 
-### Backend (Spring Boot) — 579 tests
-
+### Backend (Spring Boot)
 | Scope | Instructions | Branches | Status |
 |-------|-------------|----------|--------|
 | **Domain Model** | **100%** | n/a | ✅ Target met |
-| Application Layer | 80% | — | ✅ Above 80% target |
-| Controller Layer | 87% | — | ✅ Above 80% target |
-| Persistence Layer | 82% | — | ✅ Above 80% target |
-| Infrastructure Config | 96% | — | ✅ Above 80% target |
-| Infrastructure (security, storage) | 80% | — | ✅ Above 80% target |
-| **Total (all code)** | **84%** | **63%** | ✅ Above 80% target |
+| Aggregate Scope | 87.42% | 64.78% | ✅ Above 80% target |
 
-### Front-end (Angular Citizen) — 820 tests
-
+### Front-end (Angular Citizen)
 | Metric | Coverage | Status |
 |--------|----------|--------|
-| Statements | 85.67% | ✅ Above 80% target |
-| Branches | 81.49% | ✅ Above 80% target |
-| Functions | 80.2% | ✅ Above 80% target |
-| Lines | 85.67% | ✅ Above 80% target |
+| Lines | 83.18% | ✅ Above 80% target |
 
-### Back-office (Angular Admin) — 39 tests
-
+### Back-office (Angular Admin)
 | Metric | Coverage | Status |
 |--------|----------|--------|
-| Statements | 88.67% | ✅ Above 80% target |
-| Branches | — | — |
-| Functions | 82.5% | ✅ Above 80% target |
-| Lines | 88.67% | ✅ Above 80% target |
+| Lines | 87.8% | ✅ Above 80% target |
 
 ### Summary
-
-| Module | Tests | Line Coverage | Status |
-|--------|-------|--------------|--------|
-| Backend | 579 | 84% | ✅ |
-| Front-end (Citizen) | 820 | 85.67% | ✅ |
-| Back-office (Admin) | 39 | 88.67% | ✅ |
-| **Total** | **1,438** | **~85%** | ✅ All modules above 80% |
+| Module | Line Coverage | Status |
+|--------|--------------|--------|
+| Backend | 87.42% | ✅ |
+| Front-end (Citizen) | 83.18% | ✅ |
+| Back-office (Admin) | 87.8% | ✅ |
+| **Total** | **~86%** | ✅ All modules above 80% |
 
 ### Remaining Gaps
-
-- All modules have met the 80% target for statements, branches, functions, and lines. No remaining gaps.
+- E2E test regressions detected after Front-end migration to standalone components; ongoing resolution required.

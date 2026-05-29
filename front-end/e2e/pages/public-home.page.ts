@@ -8,18 +8,18 @@ export class PublicHomePage {
   readonly quickAccessCards: Locator;
   readonly faqCard: Locator;
   readonly contactCard: Locator;
-  readonly calendarLink: Locator;
   readonly seeAllProceduresLink: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.title = page.locator('#home-title');
-    this.proceduresLink = page.locator('a[href*="procedimientos"]').first();
-    this.loginLink = page.locator('a[href*="login"]');
+    // Use the hero CTAs to avoid hidden nav links (responsive menus).
+    this.proceduresLink = page.locator('.public-home__hero-actions a[href*="/sede/procedimientos"]').first();
+    this.loginLink = page.locator('.public-home__hero-actions a[href*="/sede/login"]').first();
     this.quickAccessCards = page.locator('.public-home__quick-card');
-    this.faqCard = page.locator('a[href*="faq"]');
-    this.contactCard = page.locator('a[href*="contacto"]');
-    this.calendarLink = page.locator('a[href*="calendario"]');
+    // Quick cards are anchors themselves (no nested <a>).
+    this.faqCard = page.locator('.public-home__quick-card[href*="/sede/faq"]').first();
+    this.contactCard = page.locator('.public-home__quick-card[href*="/sede/contacto"]').first();
     this.seeAllProceduresLink = page.locator('a[href*="procedimientos"]').last();
   }
 
@@ -41,10 +41,6 @@ export class PublicHomePage {
 
   async goToContact() {
     await this.contactCard.click();
-  }
-
-  async goToCalendar() {
-    await this.calendarLink.click();
   }
 
   async goToSeeAllProcedures() {

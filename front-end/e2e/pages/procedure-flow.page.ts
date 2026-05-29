@@ -26,8 +26,8 @@ export class ProcedureFlowPage {
     await this.page.goto('/sede/procedimientos');
   }
 
-  async navigateToWizard(procedureSlug: string) {
-    await this.page.goto(`/sede/expedientes/nuevo/${procedureSlug}`);
+  async navigateToWizard(procedureId: string) {
+    await this.page.goto(`/sede/expedientes/nuevo/${procedureId}`);
   }
 
   async navigateToCaseDetail(caseId: string) {

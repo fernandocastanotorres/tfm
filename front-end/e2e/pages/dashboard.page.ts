@@ -29,14 +29,15 @@ export class DashboardPage {
     this.nextPageButton = page.locator('button:has-text("Next"), button:has-text("Siguiente")');
     this.paginationInfo = page.locator('.text-sm.text-surface-600');
     this.emptyState = page.locator('.card.p-6.text-surface-600');
-    this.loadingState = page.locator('.card.p-6.text-center.text-surface-600');
+    // Loading block contains the skeleton component.
+    this.loadingState = page.locator('app-loading-skeleton');
     this.errorState = page.locator('.card.p-6.text-center.text-red-600');
     this.detailPanel = page.locator('aside.card.p-6');
     this.statCards = page.locator('.card.p-4');
   }
 
   async navigate() {
-    await this.page.goto('/dashboard');
+    await this.page.goto('/sede/dashboard');
   }
 
   async searchCases(query: string) {

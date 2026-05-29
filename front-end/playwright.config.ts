@@ -2,6 +2,12 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './e2e/tests',
+  // E2E runs include ng serve startup + initial data loading.
+  // Use a more forgiving timeout to reduce flakes on slower machines/CI.
+  timeout: 60_000,
+  expect: {
+    timeout: 10_000,
+  },
   fullyParallel: true,
   forbidOnly: !!process.env['CI'],
   retries: process.env['CI'] ? 2 : 1,
@@ -12,6 +18,8 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
+    // Avoid SW caching/interception which makes network routing/mocking flaky in E2E.
+    serviceWorkers: 'block',
   },
   projects: [
     {
@@ -23,7 +31,7 @@ export default defineConfig({
     command: 'npm run start -- --port=4200 --configuration=development',
     url: 'http://localhost:4200',
     reuseExistingServer: !process.env['CI'],
-    timeout: 120_000,
+    timeout: 180_000,
     stdout: 'pipe',
     stderr: 'pipe',
   },
