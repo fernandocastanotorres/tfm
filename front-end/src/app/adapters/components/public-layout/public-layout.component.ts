@@ -155,8 +155,24 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
     const segments = this.router.url.split('/').filter(s => s);
     const crumbs: { label: string; url: string }[] = [];
     let currentUrl = '';
-    for (const segment of segments) {
+    for (let i = 0; i < segments.length; i++) {
+      const segment = segments[i];
       currentUrl += '/' + segment;
+
+      // Avoid breadcrumbs that would navigate to non-existing routes.
+      if (segment === 'expedientes') {
+        const label = this.breadcrumbLabels[segment] || segment;
+        crumbs.push({ label, url: '/sede/expedientes/buscar' });
+        continue;
+      }
+
+      // Hide dynamic IDs in the breadcrumb trail.
+      const prev = segments[i - 1];
+      const isExpedienteId = prev === 'expedientes' && segment !== 'buscar' && segment !== 'nuevo' && segment !== 'detalle';
+      if (isExpedienteId) {
+        continue;
+      }
+
       const label = this.breadcrumbLabels[segment] || segment;
       crumbs.push({ label, url: currentUrl });
     }
