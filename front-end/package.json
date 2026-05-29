@@ -27,7 +27,7 @@
     "@angular/platform-browser-dynamic": "^19.2.22",
     "@angular/router": "^19.2.22",
     "@angular/service-worker": "^19.2.22",
-    "@ngx-translate/core": "^16.0.0",
+    "@ngx-translate/core": "^17.0.0",
     "@ngx-translate/http-loader": "^16.0.0",
     "intro.js": "^7.2.0",
     "jspdf": "^4.2.1",
