@@ -214,6 +214,14 @@ body.theme-dark {
   background-color: var(--sede-color-bg);
 }
 
+.bg-surface-200 {
+  background-color: var(--sede-color-surface-elevated);
+}
+
+.bg-surface-300 {
+  background-color: color-mix(in srgb, var(--sede-color-surface-elevated) 78%, var(--sede-color-text) 22%);
+}
+
 .bg-brand-50 {
   background-color: var(--sede-color-primary-50);
 }

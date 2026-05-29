@@ -74,27 +74,27 @@
             <div>
               <div class="flex items-center gap-2">
                 <p class="font-semibold">{{ attachment.name | translate }}</p>
-                <span *ngIf="attachment.signed" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700" title="Firmado electronicamente con CMS/PAdES (SHA256withRSA). Certificado: CN=TFG Service Signing, O=TFG Records, C=ES">
+                <span *ngIf="attachment.signed" class="case-detail__badge case-detail__badge--signed inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700" title="Firmado electronicamente con CMS/PAdES (SHA256withRSA). Certificado: CN=TFG Service Signing, O=TFG Records, C=ES">
                   <svg class="w-3 h-3" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                   Firmado
                 </span>
-                <span *ngIf="attachment.generated" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-700" title="Documento generado automaticamente por el sistema">
+                <span *ngIf="attachment.generated" class="case-detail__badge case-detail__badge--generated inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-700" title="Documento generado automaticamente por el sistema">
                   <svg class="w-3 h-3" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                   Generado
                 </span>
               </div>
               <p class="text-sm text-surface-500">{{ attachment.type }} · {{ formatFileSize(attachment.size) }} · {{ attachment.uploadedAt | date:'dd/MM/yyyy' }}</p>
-              <p *ngIf="attachment.signed" class="text-xs text-green-600 mt-0.5">Firma CMS/PAdES · SHA256withRSA · Verificable con cualquier lector PDF</p>
+              <p *ngIf="attachment.signed" class="case-detail__signed-hint text-xs text-green-600 mt-0.5">Firma CMS/PAdES · SHA256withRSA · Verificable con cualquier lector PDF</p>
               <p *ngIf="attachment.csvCode" class="text-xs text-surface-700 mt-0.5">CSV: {{ attachment.csvCode }}</p>
               <p *ngIf="attachment.exitNumber" class="text-xs text-surface-700 mt-0.5">{{ 'CASE_DETAIL.EXIT_NUMBER' | translate }}: {{ attachment.exitNumber }}</p>
             </div>
              <div class="flex gap-2">
                <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="downloadDocument(attachment.id, attachment.name, 'CURRENT')">{{ 'CASE_DETAIL.DOWNLOAD' | translate }}</button>
                <button *ngIf="attachment.hasOriginal" class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="downloadDocument(attachment.id, attachment.name, 'ORIGINAL')">Original</button>
-               <button *ngIf="attachment.hasSigned" class="btn-primary bg-green-100 text-green-700 hover:bg-green-200" type="button" (click)="downloadDocument(attachment.id, attachment.name, 'SIGNED')">Firmado</button>
-             </div>
-           </li>
-         </ul>
+               <button *ngIf="attachment.hasSigned" class="btn-primary case-detail__signed-button bg-green-100 text-green-700 hover:bg-green-200" type="button" (click)="downloadDocument(attachment.id, attachment.name, 'SIGNED')">Firmado</button>
+              </div>
+            </li>
+          </ul>
         <p *ngIf="caseDetail.attachments.length === 0" class="text-sm text-surface-600">No hay documentos adjuntos por el momento.</p>
         <div class="mt-6 rounded-xl bg-surface-100 p-4 text-sm text-surface-600">
           {{ 'CASE_DETAIL.ATTACHMENTS_HINT' | translate }}

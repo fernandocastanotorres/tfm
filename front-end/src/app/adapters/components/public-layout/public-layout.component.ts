@@ -153,25 +153,21 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
 
   get breadcrumbs(): { label: string; url: string }[] {
     const segments = this.router.url.split('/').filter(s => s);
+
+    // Expedientes pages are a deep tree (buscar, :id, detalle, nuevo...)
+    // but the UI breadcrumb should stay shallow: `Sede Electrónica / Mis expedientes`.
+    if (segments.includes('expedientes')) {
+      return [
+        { label: this.breadcrumbLabels['sede'], url: '/sede' },
+        { label: this.breadcrumbLabels['expedientes'], url: '/sede/expedientes/buscar' }
+      ];
+    }
+
     const crumbs: { label: string; url: string }[] = [];
     let currentUrl = '';
     for (let i = 0; i < segments.length; i++) {
       const segment = segments[i];
       currentUrl += '/' + segment;
-
-      // Avoid breadcrumbs that would navigate to non-existing routes.
-      if (segment === 'expedientes') {
-        const label = this.breadcrumbLabels[segment] || segment;
-        crumbs.push({ label, url: '/sede/expedientes/buscar' });
-        continue;
-      }
-
-      // Hide dynamic IDs in the breadcrumb trail.
-      const prev = segments[i - 1];
-      const isExpedienteId = prev === 'expedientes' && segment !== 'buscar' && segment !== 'nuevo' && segment !== 'detalle';
-      if (isExpedienteId) {
-        continue;
-      }
 
       const label = this.breadcrumbLabels[segment] || segment;
       crumbs.push({ label, url: currentUrl });
