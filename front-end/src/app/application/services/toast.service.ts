@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import Swal, { SweetAlertIcon } from 'sweetalert2';
 
 export interface ToastOptions {
   type: 'success' | 'error' | 'warning' | 'info';
@@ -13,33 +12,35 @@ export interface ToastOptions {
 })
 export class ToastService {
 
-  private readonly iconMap: Record<ToastOptions['type'], SweetAlertIcon> = {
+  private readonly iconMap = {
     success: 'success',
     error: 'error',
     warning: 'warning',
     info: 'info'
-  };
+  } as const;
 
   show(options: ToastOptions): void {
     const { type, title, message, duration = 5000 } = options;
 
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: this.iconMap[type],
-      title: message ? `<strong>${title}</strong><br/><span style="font-size:0.85em">${message}</span>` : title,
-      html: message ? `<strong>${title}</strong><br/><span style="font-size:0.85em">${message}</span>` : title,
-      showConfirmButton: false,
-      timer: duration,
-      timerProgressBar: true,
-      showCloseButton: true,
-      customClass: {
-        popup: 'toast-popup'
-      },
-      didOpen: (toast) => {
-        toast.addEventListener('mouseenter', Swal.stopTimer);
-        toast.addEventListener('mouseleave', Swal.resumeTimer);
-      }
+    void import('sweetalert2').then(({ default: Swal }) => {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: this.iconMap[type],
+        title: message ? `<strong>${title}</strong><br/><span style="font-size:0.85em">${message}</span>` : title,
+        html: message ? `<strong>${title}</strong><br/><span style="font-size:0.85em">${message}</span>` : title,
+        showConfirmButton: false,
+        timer: duration,
+        timerProgressBar: true,
+        showCloseButton: true,
+        customClass: {
+          popup: 'toast-popup'
+        },
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer);
+          toast.addEventListener('mouseleave', Swal.resumeTimer);
+        }
+      });
     });
   }
 

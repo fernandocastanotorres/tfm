@@ -22,6 +22,11 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 /**
@@ -34,10 +39,23 @@ public class AuthServiceImpl implements AuthService {
 
     private static final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
 
-    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,}$");
+    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,}$");
 
     private static final long OTP_EXPIRY_SECONDS = 86400L;
     private static final long PASSWORD_RESET_TOKEN_EXPIRY_SECONDS = 3600L;
+
+    private static final int MAX_OTP_ATTEMPTS_PER_EMAIL = 5;
+    private static final long LOGIN_COOLDOWN_MS = 1000;
+    private static final long FORGOT_PASSWORD_COOLDOWN_MS = 60_000;
+
+    private final Map<String, Instant> loginCooldowns = new ConcurrentHashMap<>();
+    private final Map<String, Instant> forgotPasswordCooldowns = new ConcurrentHashMap<>();
+    private final Map<String, AtomicInteger> otpAttempts = new ConcurrentHashMap<>();
+    private final ScheduledExecutorService otpCleanup = Executors.newSingleThreadScheduledExecutor(r -> {
+        Thread t = new Thread(r, "otp-rate-limit-cleanup");
+        t.setDaemon(true);
+        return t;
+    });
 
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
@@ -64,11 +82,14 @@ public class AuthServiceImpl implements AuthService {
         this.auditService = auditService;
         this.verificationBaseUrl = verificationBaseUrl;
         this.passwordResetBaseUrl = passwordResetBaseUrl;
+        this.otpCleanup.scheduleAtFixedRate(this::cleanupOtpAttempts, 5, 5, TimeUnit.MINUTES);
     }
 
     @Override
     public LoginResponse login(LoginRequest request) {
         String email = request.email();
+
+        checkLoginCooldown(email);
 
         if (lockoutManager.isLocked(email)) {
             auditService.record(AuditAction.LOGIN, "USER", AuditResult.FAILURE,
@@ -81,6 +102,7 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
                     lockoutManager.recordFailedAttempt(email);
+                    loginCooldowns.put(email, Instant.now().plusMillis(LOGIN_COOLDOWN_MS));
                     auditService.record(AuditAction.LOGIN, "USER", AuditResult.FAILURE,
                             "User not found: " + email);
                     return new AuthenticationException(
@@ -90,6 +112,7 @@ public class AuthServiceImpl implements AuthService {
 
         if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
             boolean isLocked = lockoutManager.recordFailedAttempt(email);
+            loginCooldowns.put(email, Instant.now().plusMillis(LOGIN_COOLDOWN_MS));
             int remaining = 5 - lockoutManager.getFailedAttempts(email);
             auditService.record(AuditAction.LOGIN, "USER", AuditResult.FAILURE,
                     "Invalid password for " + email);
@@ -114,6 +137,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         lockoutManager.resetFailedAttempts(email);
+        loginCooldowns.remove(email);
 
         user.setLastLogin(Instant.now());
         userRepository.save(user);
@@ -237,13 +261,21 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void forgotPassword(PasswordResetRequest request) {
-        userRepository.findByEmail(request.email()).ifPresent(user -> {
+        String email = request.email();
+        Instant cooldownUntil = forgotPasswordCooldowns.get(email);
+        if (cooldownUntil != null && Instant.now().isBefore(cooldownUntil)) {
+            return;
+        }
+
+        userRepository.findByEmail(email).ifPresent(user -> {
             String resetToken = UUID.randomUUID().toString();
             Instant expiry = Instant.now().plusSeconds(PASSWORD_RESET_TOKEN_EXPIRY_SECONDS);
 
             user.setPasswordResetToken(resetToken);
             user.setPasswordResetExpiry(expiry);
             userRepository.save(user);
+
+            forgotPasswordCooldowns.put(email, Instant.now().plusMillis(FORGOT_PASSWORD_COOLDOWN_MS));
 
             String resetUrl = passwordResetBaseUrl + "?token=" + resetToken;
             try {
@@ -287,10 +319,16 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void verifyOtp(OtpRequest request) {
-        User user = userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new AuthenticationException(
-                        "AUTH-400-INVALID_OTP",
-                        "Invalid OTP code"));
+        String email = request.email();
+        checkOtpRateLimit(email);
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    recordOtpAttempt(email);
+                    return new AuthenticationException(
+                            "AUTH-400-INVALID_OTP",
+                            "Invalid OTP code");
+                });
 
         if (user.isActive()) {
             throw new AuthenticationException(
@@ -299,12 +337,14 @@ public class AuthServiceImpl implements AuthService {
         }
 
         if (user.getOtpCode() == null || !user.getOtpCode().equals(request.code())) {
+            recordOtpAttempt(email);
             throw new AuthenticationException(
                     "AUTH-400-INVALID_OTP",
                     "Invalid OTP code");
         }
 
         if (user.getOtpExpiry() == null || Instant.now().isAfter(user.getOtpExpiry())) {
+            recordOtpAttempt(email);
             throw new AuthenticationException(
                     "AUTH-400-INVALID_OTP",
                     "OTP code has expired");
@@ -314,10 +354,11 @@ public class AuthServiceImpl implements AuthService {
         user.setOtpCode(null);
         user.setOtpExpiry(null);
         userRepository.save(user);
-        log.info("Account verified for: {}", request.email());
+        otpAttempts.remove(email);
+        log.info("Account verified for: {}", email);
 
         auditService.record(AuditAction.CREATE, "USER", AuditResult.SUCCESS,
-                "Account verified: " + request.email());
+                "Account verified: " + email);
     }
 
     @Override
@@ -474,6 +515,36 @@ public class AuthServiceImpl implements AuthService {
     private String generateOtpCode() {
         int value = SECURE_RANDOM.nextInt(1_000_000);
         return String.format("%06d", value);
+    }
+
+    private void checkLoginCooldown(String email) {
+        Instant cooldownUntil = loginCooldowns.get(email);
+        if (cooldownUntil != null && Instant.now().isBefore(cooldownUntil)) {
+            log.warn("Login cooldown active for {}", email);
+            throw new AuthenticationException(
+                    "AUTH-429-LOGIN_COOLDOWN",
+                    "Please wait before trying again.");
+        }
+    }
+
+    private void checkOtpRateLimit(String email) {
+        AtomicInteger attempts = otpAttempts.get(email);
+        if (attempts != null && attempts.get() >= MAX_OTP_ATTEMPTS_PER_EMAIL) {
+            log.warn("OTP rate limit exceeded for {}", email);
+            throw new AuthenticationException(
+                    "AUTH-429-OTP_RATE_LIMITED",
+                    "Too many OTP attempts. Please try again later.");
+        }
+    }
+
+    private void recordOtpAttempt(String email) {
+        otpAttempts.computeIfAbsent(email, k -> new AtomicInteger()).incrementAndGet();
+    }
+
+    private void cleanupOtpAttempts() {
+        int size = otpAttempts.size();
+        otpAttempts.clear();
+        log.debug("OTP rate limit cleanup: cleared {} entries", size);
     }
 
     private String hashToken(String token) {

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CasesApiService } from '../../../application/services/cases-api.service';
 import { I18nService } from '../../../application/services/i18n.service';
 import { ToastService } from '../../../application/services/toast.service';
@@ -7,12 +7,16 @@ import { CaseItem } from '../../../application/models/case.models';
 import { Subscription } from 'rxjs';
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
+import { RouterLink } from '@angular/router';
+import { NgIf, NgFor } from '@angular/common';
+import { SkeletonScreenComponent } from '../../../shared/components/skeleton-screen/skeleton-screen.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-case-search',
     templateUrl: './case-search.component.html',
     styleUrls: ['./case-search.component.css'],
-    standalone: false
+    imports: [RouterLink, FormsModule, ReactiveFormsModule, NgIf, SkeletonScreenComponent, NgFor, TranslatePipe]
 })
 export class CaseSearchComponent implements OnInit, OnDestroy {
   private localeSubscription: Subscription | null = null;

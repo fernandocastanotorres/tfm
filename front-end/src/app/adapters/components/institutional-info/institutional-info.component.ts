@@ -1,16 +1,19 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, skip } from 'rxjs';
 import { InstitutionalService } from '../../../application/services/institutional.service';
 import { I18nService } from '../../../application/services/i18n.service';
 import { InstitutionalSection } from '../../../application/models/sede.models';
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
+import { RouterLink } from '@angular/router';
+import { NgIf, NgFor, NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-institutional-info',
     templateUrl: './institutional-info.component.html',
     styleUrls: ['./institutional-info.component.css'],
-    standalone: false
+    imports: [RouterLink, NgIf, NgFor, NgSwitch, NgSwitchCase, NgSwitchDefault, TranslatePipe]
 })
 export class InstitutionalInfoComponent implements OnInit, OnDestroy {
   sections: InstitutionalSection[] = [];
@@ -26,9 +29,8 @@ export class InstitutionalInfoComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadSections();
-    this.localeSub = this.i18nService.getCurrentLocale$().subscribe(() => {
-      this.loadSections();
-    });
+    // Avoid double-fetch on init if the locale observable emits immediately.
+    this.localeSub = this.i18nService.getCurrentLocale$().pipe(skip(1)).subscribe(() => this.loadSections());
   }
 
   ngOnDestroy(): void {

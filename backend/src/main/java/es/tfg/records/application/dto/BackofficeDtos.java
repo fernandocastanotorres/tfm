@@ -152,6 +152,21 @@ public final class BackofficeDtos {
             boolean isActive
     ) {}
 
+    public record CitizenOption(
+            UUID id,
+            String email,
+            String displayName,
+            String nationalId
+    ) {}
+
+    public record CitizenCaseOption(
+            UUID id,
+            String title,
+            String procedureType,
+            String status,
+            Instant createdAt
+    ) {}
+
     public record CreateUserRequest(
             @NotBlank String email,
             @NotBlank String password,

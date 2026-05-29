@@ -357,6 +357,18 @@ public class BackofficeController {
         return ResponseEntity.ok(backofficeService.listUsers());
     }
 
+    @GetMapping("/procedures/documents/{id}/download")
+    @Operation(summary = "Download case document (admin)", description = "Download a document attached to any case, accessible by backoffice users")
+    public ResponseEntity<Resource> downloadDocument(
+            @PathVariable UUID id,
+            @RequestParam(name = "variant", defaultValue = "CURRENT") DocumentDownloadVariant variant) {
+        Resource resource = documentService.downloadDocumentForAdmin(id, variant);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .header(HttpHeaders.CONTENT_TYPE, "application/octet-stream")
+                .body(resource);
+    }
+
     @PostMapping("/users")
     @Operation(summary = "Create backoffice user")
     public ResponseEntity<BackofficeDtos.BackofficeUser> createUser(@Valid @RequestBody BackofficeDtos.CreateUserRequest request) {
@@ -443,17 +455,5 @@ public class BackofficeController {
             @PathVariable String locale) {
         backofficeService.deleteFieldTranslation(id, fieldId, locale);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/procedures/documents/{id}/download")
-    @Operation(summary = "Download case document (admin)", description = "Download a document attached to any case, accessible by backoffice users")
-    public ResponseEntity<Resource> downloadDocument(
-            @PathVariable UUID id,
-            @RequestParam(name = "variant", defaultValue = "CURRENT") DocumentDownloadVariant variant) {
-        Resource resource = documentService.downloadDocumentForAdmin(id, variant);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                .header(HttpHeaders.CONTENT_TYPE, "application/octet-stream")
-                .body(resource);
     }
 }

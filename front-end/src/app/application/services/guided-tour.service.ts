@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import introJs from 'intro.js';
 
 interface TourStepDefinition {
   element: string;
@@ -45,16 +44,33 @@ export class GuidedTourService {
       return;
     }
 
-    introJs().setOptions({
-      steps,
-      showProgress: true,
-      tooltipClass: 'tfg-tour-tooltip',
-      highlightClass: 'tfg-tour-highlight',
-      nextLabel: this.t('NEXT'),
-      prevLabel: this.t('PREV'),
-      doneLabel: this.t('DONE'),
-      skipLabel: '✕'
-    }).start();
+    this.ensureIntroCssLoaded();
+    void import('intro.js').then(({ default: introJs }) => {
+      introJs().setOptions({
+        steps,
+        showProgress: true,
+        tooltipClass: 'tfg-tour-tooltip',
+        highlightClass: 'tfg-tour-highlight',
+        nextLabel: this.t('NEXT'),
+        prevLabel: this.t('PREV'),
+        doneLabel: this.t('DONE'),
+        skipLabel: '✕'
+      }).start();
+    });
+  }
+
+  private ensureIntroCssLoaded(): void {
+    if (typeof document === 'undefined') {
+      return;
+    }
+    const href = '/assets/vendor/introjs/introjs.min.css';
+    if (document.querySelector(`link[rel="stylesheet"][href="${href}"]`)) {
+      return;
+    }
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    document.head.appendChild(link);
   }
 
   private resolvePageSteps(currentRoute: string): TourStepDefinition[] {

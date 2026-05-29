@@ -1,17 +1,21 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProfileService } from '../../../application/services/profile.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
 import { ToastService } from '../../../application/services/toast.service';
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
+import { RouterLink } from '@angular/router';
+import { NgIf, NgFor } from '@angular/common';
+import { SkeletonScreenComponent } from '../../../shared/components/skeleton-screen/skeleton-screen.component';
+import { CdkTrapFocus } from '@angular/cdk/a11y';
 
 @Component({
     selector: 'app-profile',
     templateUrl: './profile.component.html',
     styleUrls: ['./profile.component.css'],
-    standalone: false
+    imports: [RouterLink, NgIf, SkeletonScreenComponent, FormsModule, ReactiveFormsModule, CdkTrapFocus, NgFor, TranslatePipe]
 })
 export class ProfileComponent implements OnInit {
   readonly profileForm = this.fb.group({

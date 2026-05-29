@@ -24,19 +24,19 @@ describe('MessagesComponent', () => {
     toastSpy = jasmine.createSpyObj('ToastService', ['success', 'error', 'warning']);
 
     await TestBed.configureTestingModule({
-      declarations: [MessagesComponent],
-      imports: [
+    imports: [
         RouterTestingModule,
         TranslateModule.forRoot(),
         FormsModule,
         ReactiveFormsModule,
         HttpClientTestingModule,
-        SkeletonScreenComponent
-      ],
-      providers: [
+        SkeletonScreenComponent,
+        MessagesComponent
+    ],
+    providers: [
         { provide: ToastService, useValue: toastSpy }
-      ]
-    }).compileComponents();
+    ]
+}).compileComponents();
 
     fixture = TestBed.createComponent(MessagesComponent);
     component = fixture.componentInstance;

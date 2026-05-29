@@ -5,9 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 type ErrorVariant = '403' | '404' | '500';
 
 @Component({
-  selector: 'app-error-page',
-  standalone: false,
-  templateUrl: './error-page.component.html'
+    selector: 'app-error-page',
+    templateUrl: './error-page.component.html'
 })
 export class ErrorPageComponent {
   readonly variant: ErrorVariant;

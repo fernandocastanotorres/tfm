@@ -2,11 +2,12 @@ import { ComponentFixture, TestBed, fakeAsync, tick, flush, discardPeriodicTasks
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { of, throwError, Subject } from 'rxjs';
 import { CaseDetailComponent } from './case-detail.component';
 import { CasesApiService } from '../../../application/services/cases-api.service';
+import { MessagesService } from '../../../application/services/messages.service';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
 import { ToastService } from '../../../application/services/toast.service';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -15,6 +16,7 @@ describe('CaseDetailComponent', () => {
   let component: CaseDetailComponent;
   let fixture: ComponentFixture<CaseDetailComponent>;
   let casesApiService: jasmine.SpyObj<CasesApiService>;
+  let messagesApiService: jasmine.SpyObj<MessagesService>;
   let confirmDialogService: jasmine.SpyObj<ConfirmDialogService>;
   let toastSpy: jasmine.SpyObj<ToastService>;
   let router: Router;
@@ -43,18 +45,30 @@ describe('CaseDetailComponent', () => {
       'uploadDocument',
       'downloadDocument',
       'downloadReceipt',
+      'getRegistryReceipt',
       'amend'
+    ]);
+    messagesApiService = jasmine.createSpyObj('MessagesService', [
+      'getThreadMessages',
+      'sendMessage',
+      'downloadAttachment'
     ]);
     confirmDialogService = jasmine.createSpyObj('ConfirmDialogService', ['confirm']);
     toastSpy = jasmine.createSpyObj('ToastService', ['error', 'success', 'warning']);
+    casesApiService.getRegistryReceipt.and.returnValue(of({ caseId: 'case-1' } as any));
+    messagesApiService.getThreadMessages.and.returnValue(of({ messages: [], page: 0, size: 20, totalItems: 0, totalPages: 1 } as any));
+
 
     TestBed.configureTestingModule({
-    declarations: [CaseDetailComponent],
     imports: [TranslateModule.forRoot(), RouterTestingModule, FormsModule],
     providers: [
         { provide: CasesApiService, useValue: casesApiService },
+        { provide: MessagesService, useValue: messagesApiService },
         { provide: ConfirmDialogService, useValue: confirmDialogService },
         { provide: ToastService, useValue: toastSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+        provideRouter([]),
         {
             provide: ActivatedRoute,
             useValue: {
@@ -65,8 +79,6 @@ describe('CaseDetailComponent', () => {
                 }
             }
         },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
     ]
 });
 

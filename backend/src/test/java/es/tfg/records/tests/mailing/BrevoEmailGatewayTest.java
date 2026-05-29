@@ -71,4 +71,99 @@ class BrevoEmailGatewayTest {
         gateway.sendVerificationEmail("recipient@test.com", "Jane Doe", "https://verify.link");
         verify(sender).send(mimeMessage);
     }
+
+    @Test
+    void sendPasswordResetEmail_shouldDoNothing_whenDisabled() {
+        JavaMailSender sender = mock(JavaMailSender.class);
+        BrevoEmailGateway gateway = new BrevoEmailGateway(
+                false, "no-reply@test.com", "Test", sender);
+
+        gateway.sendPasswordResetEmail("user@example.com", "John", "https://example.com/reset");
+        verify(sender, never()).send(any(jakarta.mail.internet.MimeMessage.class));
+    }
+
+    @Test
+    void sendPasswordResetEmail_shouldAttemptSend_whenEnabled() {
+        JavaMailSender sender = mock(JavaMailSender.class);
+        jakarta.mail.internet.MimeMessage mimeMessage = mock(jakarta.mail.internet.MimeMessage.class);
+        org.mockito.Mockito.when(sender.createMimeMessage()).thenReturn(mimeMessage);
+        BrevoEmailGateway gateway = new BrevoEmailGateway(
+                true, "no-reply@test.com", "Test", sender);
+
+        gateway.sendPasswordResetEmail("user@example.com", "John", "https://example.com/reset");
+        verify(sender).send(mimeMessage);
+    }
+
+    @Test
+    void sendNewMessageNotification_shouldDoNothing_whenDisabled() {
+        JavaMailSender sender = mock(JavaMailSender.class);
+        BrevoEmailGateway gateway = new BrevoEmailGateway(
+                false, "no-reply@test.com", "Test", sender);
+
+        gateway.sendNewMessageNotification("user@example.com", "Sender", "Preview text", "case-123");
+        verify(sender, never()).send(any(jakarta.mail.internet.MimeMessage.class));
+    }
+
+    @Test
+    void sendNewMessageNotification_shouldAttemptSend_whenEnabled() {
+        JavaMailSender sender = mock(JavaMailSender.class);
+        jakarta.mail.internet.MimeMessage mimeMessage = mock(jakarta.mail.internet.MimeMessage.class);
+        org.mockito.Mockito.when(sender.createMimeMessage()).thenReturn(mimeMessage);
+        BrevoEmailGateway gateway = new BrevoEmailGateway(
+                true, "no-reply@test.com", "Test", sender);
+
+        gateway.sendNewMessageNotification("user@example.com", "Sender", "Preview text", "case-123");
+        verify(sender).send(mimeMessage);
+    }
+
+    @Test
+    void sendNewMessageNotification_shouldTruncatePreview_whenLongerThan200Chars() {
+        JavaMailSender sender = mock(JavaMailSender.class);
+        jakarta.mail.internet.MimeMessage mimeMessage = mock(jakarta.mail.internet.MimeMessage.class);
+        org.mockito.Mockito.when(sender.createMimeMessage()).thenReturn(mimeMessage);
+        BrevoEmailGateway gateway = new BrevoEmailGateway(
+                true, "no-reply@test.com", "Test", sender);
+        String longPreview = "x".repeat(250);
+
+        gateway.sendNewMessageNotification("user@example.com", "Sender", longPreview, "case-123");
+        verify(sender).send(mimeMessage);
+    }
+
+    @Test
+    void sendNewMessageNotification_shouldHandleNullPreview() {
+        JavaMailSender sender = mock(JavaMailSender.class);
+        jakarta.mail.internet.MimeMessage mimeMessage = mock(jakarta.mail.internet.MimeMessage.class);
+        org.mockito.Mockito.when(sender.createMimeMessage()).thenReturn(mimeMessage);
+        BrevoEmailGateway gateway = new BrevoEmailGateway(
+                true, "no-reply@test.com", "Test", sender);
+
+        gateway.sendNewMessageNotification("user@example.com", "Sender", null, "case-123");
+        verify(sender).send(mimeMessage);
+    }
+
+    @Test
+    void sendHtml_shouldThrow_whenMailSenderFails() {
+        JavaMailSender sender = mock(JavaMailSender.class);
+        jakarta.mail.internet.MimeMessage mimeMessage = mock(jakarta.mail.internet.MimeMessage.class);
+        org.mockito.Mockito.when(sender.createMimeMessage()).thenReturn(mimeMessage);
+        doThrow(new RuntimeException("smtp down")).when(sender).send(mimeMessage);
+        BrevoEmailGateway gateway = new BrevoEmailGateway(
+                true, "no-reply@test.com", "Test Service", sender);
+
+        assertThatThrownBy(() ->
+                gateway.sendPasswordResetEmail("user@example.com", "John", "https://example.com/reset"))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void sendNewMessageNotification_shouldIncludeCaseIdInUrl() {
+        JavaMailSender sender = mock(JavaMailSender.class);
+        jakarta.mail.internet.MimeMessage mimeMessage = mock(jakarta.mail.internet.MimeMessage.class);
+        org.mockito.Mockito.when(sender.createMimeMessage()).thenReturn(mimeMessage);
+        BrevoEmailGateway gateway = new BrevoEmailGateway(
+                true, "no-reply@test.com", "Test", sender);
+
+        gateway.sendNewMessageNotification("user@example.com", "Sender", "Preview", "CASE-42");
+        verify(sender).send(mimeMessage);
+    }
 }

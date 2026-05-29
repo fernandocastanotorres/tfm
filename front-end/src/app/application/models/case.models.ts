@@ -64,6 +64,16 @@ export interface CaseStatusResponse {
   lastUpdated: string;
 }
 
+export interface RegistryEntryReceipt {
+  caseId: string;
+  recordNumber?: string | null;
+  entryNumber?: string | null;
+  submittedAt?: string | null;
+  csvCode?: string | null;
+  verificationUrl?: string | null;
+  receiptDownloadPath?: string | null;
+}
+
 export interface CreateCaseRequest {
   procedureId: string;
   title: string;

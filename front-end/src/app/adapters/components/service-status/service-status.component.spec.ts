@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter } from '@angular/router';
 import { ServiceStatusComponent } from './service-status.component';
 import { ServiceStatusService } from '../../../application/services/service-status.service';
 import { of, throwError } from 'rxjs';
@@ -24,13 +24,13 @@ describe('ServiceStatusComponent', () => {
     serviceStatusService.getOperationalCount.and.returnValue(of(1));
 
     await TestBed.configureTestingModule({
-    declarations: [ServiceStatusComponent],
     schemas: [NO_ERRORS_SCHEMA],
-    imports: [TranslateModule.forRoot(), RouterTestingModule],
+    imports: [TranslateModule.forRoot(), ServiceStatusComponent],
     providers: [
         { provide: ServiceStatusService, useValue: serviceStatusService },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
+        provideHttpClientTesting(),
+        provideRouter([])
     ]
 }).compileComponents();
 

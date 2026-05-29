@@ -2,12 +2,13 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { I18nService } from './application/services/i18n.service';
 import { ThemePaletteService } from './application/services/theme-palette.service';
 import { interval, Subscription } from 'rxjs';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css'],
-    standalone: false
+    imports: [RouterOutlet]
 })
 export class AppComponent implements OnInit, OnDestroy {
   private readonly subscriptions = new Subscription();

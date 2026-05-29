@@ -7,8 +7,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 
 describe('AppComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({
-    declarations: [AppComponent],
-    imports: [RouterTestingModule, TranslateModule.forRoot()],
+    imports: [RouterTestingModule, TranslateModule.forRoot(), AppComponent],
     providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
 }));
 

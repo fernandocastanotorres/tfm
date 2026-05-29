@@ -1,5 +1,6 @@
 package es.tfg.records.infrastructure.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.LocaleResolver;
@@ -26,10 +27,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
             new Locale("va", "ES")
     );
 
+    @Value("${app.cors.allowed-origins:http://localhost:4200}")
+    private String[] allowedOrigins;
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns("http://localhost:4200", "http://localhost:4300")
+                .allowedOriginPatterns(allowedOrigins)
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("Content-Type", "Authorization", "X-Correlation-Id", "Accept-Language", "X-Requested-With")
                 .exposedHeaders("X-Correlation-Id")

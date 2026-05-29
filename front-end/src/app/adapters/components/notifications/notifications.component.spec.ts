@@ -3,7 +3,9 @@ import { NotificationsComponent } from './notifications.component';
 import { NotificationsService } from '../../../application/services/notifications.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
 describe('NotificationsComponent', () => {
@@ -37,14 +39,28 @@ describe('NotificationsComponent', () => {
   ];
 
   beforeEach(async () => {
-    notificationsServiceSpy = jasmine.createSpyObj('NotificationsService', ['getInbox']);
+    notificationsServiceSpy = jasmine.createSpyObj('NotificationsService', [
+      'getInbox',
+      'markAccessed',
+      'accept',
+      'reject',
+      'downloadAttachment'
+    ]);
     notificationsServiceSpy.getInbox.and.returnValue(of(mockInbox as any));
+    notificationsServiceSpy.markAccessed.and.returnValue(of({}));
+    notificationsServiceSpy.accept.and.returnValue(of({}));
+    notificationsServiceSpy.reject.and.returnValue(of({}));
+    notificationsServiceSpy.downloadAttachment.and.returnValue(of(new Blob()));
 
     await TestBed.configureTestingModule({
-      declarations: [NotificationsComponent],
-      imports: [TranslateModule.forRoot(), ReactiveFormsModule, HttpClientTestingModule],
-      providers: [{ provide: NotificationsService, useValue: notificationsServiceSpy }]
-    }).compileComponents();
+    imports: [TranslateModule.forRoot(), ReactiveFormsModule, NotificationsComponent],
+    providers: [
+        { provide: NotificationsService, useValue: notificationsServiceSpy },
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([])
+    ]
+}).compileComponents();
 
     fixture = TestBed.createComponent(NotificationsComponent);
     component = fixture.componentInstance;
@@ -109,19 +125,27 @@ describe('NotificationsComponent', () => {
     expect(types.length).toBeGreaterThan(0);
   });
 
-  it('selectItem should update selectedItem and activeItemId', () => {
-    const item = component.inbox[0];
+  it('selectItem should skip dialog and select directly for already read items', () => {
+    const item = component.inbox[1];
+    expect(item.read).toBeTrue();
     component.selectItem(item);
     expect(component.selectedItem).toBe(item);
     expect((component as any).activeItemId).toBe(item.id);
   });
 
-  it('markAsRead should set read to true', () => {
-    const item = component.inbox.find(i => !i.read);
-    if (item) {
-      component.markAsRead(item);
-      expect(item.read).toBeTrue();
-    }
+  it('accept should update status to ACCEPTED', () => {
+    const item = component.inbox[1];
+    component.selectItem(item);
+    component.accept(item);
+    expect(item.status).toBe('ACCEPTED');
+    expect(item.read).toBeTrue();
+  });
+
+  it('reject should update status to REJECTED', () => {
+    const item = component.inbox[1];
+    component.reject(item);
+    expect(item.status).toBe('REJECTED');
+    expect(item.read).toBeTrue();
   });
 
   it('changePage should update currentPage', () => {

@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../../application/services/auth.service';
+import { NgIf } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-email-verification',
     templateUrl: './email-verification.component.html',
-    standalone: false
+    imports: [NgIf, RouterLink, TranslatePipe]
 })
 export class EmailVerificationComponent implements OnInit {
   isLoading = true;

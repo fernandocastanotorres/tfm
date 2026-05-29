@@ -17,20 +17,19 @@ describe('PasswordRecoveryComponent', () => {
     mockAuthService.resetPassword.and.returnValue(of(void 0));
 
     await TestBed.configureTestingModule({
-      declarations: [PasswordRecoveryComponent],
-      imports: [ReactiveFormsModule, TranslateModule.forRoot()],
-      providers: [
+    imports: [ReactiveFormsModule, TranslateModule.forRoot(), PasswordRecoveryComponent],
+    providers: [
         { provide: AuthService, useValue: mockAuthService },
         {
-          provide: ActivatedRoute,
-          useValue: { snapshot: { queryParamMap: { get: () => null } } }
+            provide: ActivatedRoute,
+            useValue: { snapshot: { queryParamMap: { get: () => null } } }
         },
         {
-          provide: Router,
-          useValue: { navigate: jasmine.createSpy('navigate') }
+            provide: Router,
+            useValue: { navigate: jasmine.createSpy('navigate') }
         }
-      ]
-    }).compileComponents();
+    ]
+}).compileComponents();
 
     fixture = TestBed.createComponent(PasswordRecoveryComponent);
     component = fixture.componentInstance;

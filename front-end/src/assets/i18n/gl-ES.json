@@ -175,7 +175,8 @@
     "USER_MESSAGES": "Mensaxería",
     "USER_LOGOUT": "Pechar sesión",
     "TOUR_GUIDE": "Guía",
-    "USER_LABEL": "Usuario"
+    "USER_LABEL": "Usuario",
+    "SEARCH": "Buscar na sede"
   },
   "NOTIFICATIONS": {
     "EYEBROW": "Notificacións",
@@ -212,7 +213,17 @@
     "MOCK_DOCUMENTS_TITLE": "Documentación pendente",
     "MOCK_DOCUMENTS_MESSAGE": "Adxunta o xustificante de pago antes do 20/05/2026.",
     "MOCK_PAYMENT_TITLE": "Pago rexistrado",
-    "MOCK_PAYMENT_MESSAGE": "Recibiuse o pago asociado ao expediente EXP-2026-003."
+    "MOCK_PAYMENT_MESSAGE": "Recibiuse o pago asociado ao expediente EXP-2026-003.",
+    "ATTACHMENTS": "Adxuntos",
+    "CONFIRM_READ_TITLE": "Notificación electrónica",
+    "CONFIRM_READ_TEXT": "Quere ler esta notificación ou rexeitala?",
+    "CONFIRM_READ_BUTTON": "Ler contido",
+    "CONFIRM_REJECT_BUTTON": "Rexeitar notificación",
+    "REJECT_NOTES_TITLE": "Motivo do rexeitamento",
+    "REJECT_NOTES_PLACEHOLDER": "Indique o motivo do rexeitamento (opcional)",
+    "ACCEPT_BUTTON": "Aceptar notificación",
+    "REJECT_BUTTON": "Rexeitar notificación",
+    "RESOLUTION_NOTES": "Notas da resolución"
   },
   "DOCUMENTS": {
     "EYEBROW": "Documentos",

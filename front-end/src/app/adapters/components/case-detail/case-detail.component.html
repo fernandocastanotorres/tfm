@@ -48,6 +48,25 @@
         </div>
       </div>
 
+      <div class="card p-6" *ngIf="registryReceipt && (registryReceipt.recordNumber || registryReceipt.entryNumber || registryReceipt.csvCode)">
+        <h2 class="text-lg font-semibold text-surface-900">Datos registrales electronicos</h2>
+        <p class="text-sm text-surface-600 mt-1">Asiento formal de presentacion generado por la sede electronica.</p>
+        <div class="mt-4 grid gap-3 sm:grid-cols-2">
+          <p *ngIf="registryReceipt.recordNumber"><strong>{{ 'CASE_DETAIL.RECORD_NUMBER' | translate }}:</strong> {{ registryReceipt.recordNumber }}</p>
+          <p *ngIf="registryReceipt.entryNumber"><strong>{{ 'CASE_DETAIL.ENTRY_NUMBER' | translate }}:</strong> {{ registryReceipt.entryNumber }}</p>
+          <p *ngIf="registryReceipt.submittedAt"><strong>{{ 'CASE_DETAIL.SUBMITTED' | translate }}:</strong> {{ registryReceipt.submittedAt | date:'dd/MM/yyyy HH:mm' }}</p>
+          <p *ngIf="registryReceipt.csvCode"><strong>CSV:</strong> {{ registryReceipt.csvCode }}</p>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-3">
+          <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="downloadReceipt()">
+            Descargar justificante registral
+          </button>
+          <button *ngIf="registryReceipt.verificationUrl" class="btn-primary btn-primary--outline" type="button" (click)="openRegistryVerification()">
+            Verificar CSV
+          </button>
+        </div>
+      </div>
+
       <div class="card p-6">
         <h2 class="text-lg font-semibold text-surface-900">{{ 'CASE_DETAIL.ATTACHMENTS' | translate }}</h2>
         <ul class="mt-4 space-y-3">

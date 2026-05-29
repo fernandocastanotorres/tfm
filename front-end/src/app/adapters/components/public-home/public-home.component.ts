@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, skip } from 'rxjs';
 import { ProceduresApiService } from '../../../application/services/procedures-api.service';
 import { CalendarService } from '../../../application/services/calendar.service';
 import { I18nService } from '../../../application/services/i18n.service';
@@ -8,12 +8,16 @@ import { ProcedureItem } from '../../../application/models/procedure.models';
 import { CalendarEvent } from '../../../application/models/sede.models';
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
+import { RouterLink } from '@angular/router';
+import { NgIf, NgFor, CurrencyPipe, DatePipe } from '@angular/common';
+import { SkeletonScreenComponent } from '../../../shared/components/skeleton-screen/skeleton-screen.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-public-home',
     templateUrl: './public-home.component.html',
     styleUrls: ['./public-home.component.css'],
-    standalone: false
+    imports: [RouterLink, NgIf, SkeletonScreenComponent, NgFor, CurrencyPipe, DatePipe, TranslatePipe]
 })
 export class PublicHomeComponent implements OnInit, OnDestroy {
   procedures: ProcedureItem[] = [];
@@ -33,10 +37,10 @@ export class PublicHomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.isAuthenticated = this.authService.isAuthenticated();
-    this.loadData();
-    this.localeSub = this.i18nService.getCurrentLocale$().subscribe(() => {
-      this.loadData();
-    });
+    // Let the hero text render first; fetch below-the-fold data after the first paint.
+    setTimeout(() => this.loadData(), 0);
+    // Avoid double-fetch on init if the locale observable emits immediately.
+    this.localeSub = this.i18nService.getCurrentLocale$().pipe(skip(1)).subscribe(() => this.loadData());
   }
 
   ngOnDestroy(): void {

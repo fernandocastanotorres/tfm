@@ -9,7 +9,7 @@ import {
   ViewChildren
 } from '@angular/core';
 import { FocusKeyManager } from '@angular/cdk/a11y';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NotificationsService } from '../../../application/services/notifications.service';
 import { NotificationInboxItem } from '../../../application/models/notification.models';
 import { changePage, updatePageSize, getPaginationState, PaginationState } from '../../../application/utils/pagination';
@@ -18,11 +18,10 @@ import { startWith, takeUntil } from 'rxjs/operators';
 import { ToastService } from '../../../application/services/toast.service';
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
+import { NgClass, NgFor, NgIf, DatePipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
-@Directive({
-  selector: '[appNotificationCard]',
-  standalone: false
-})
+@Directive({ selector: '[appNotificationCard]' })
 export class NotificationCardDirective {
   constructor(private readonly elementRef: ElementRef<HTMLElement>) {}
 
@@ -35,7 +34,7 @@ export class NotificationCardDirective {
     selector: 'app-notifications',
     templateUrl: './notifications.component.html',
     styleUrls: [],
-    standalone: false
+    imports: [NgClass, FormsModule, ReactiveFormsModule, NgFor, NotificationCardDirective, NgIf, DatePipe, TranslatePipe]
 })
 export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy {
   inbox: NotificationInboxItem[] = [];
@@ -149,8 +148,95 @@ export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy 
     return Array.from(new Set(this.inbox.map((item) => item.typeKey)));
   }
 
-  markAsRead(item: NotificationInboxItem): void {
-    item.read = true;
+  async selectItem(item: NotificationInboxItem): Promise<void> {
+    if (item.read) {
+      this.setSelectedItem(item);
+      return;
+    }
+
+    const { default: Swal } = await import('sweetalert2');
+    const result = await Swal.fire({
+      title: 'Notificaci\u00f3n electr\u00f3nica',
+      text: '\u00bfDesea leer esta notificaci\u00f3n o rechazarla?',
+      icon: 'question',
+      showConfirmButton: true,
+      confirmButtonText: 'Leer contenido',
+      confirmButtonColor: '#2563eb',
+      showDenyButton: true,
+      denyButtonText: 'Rechazar notificaci\u00f3n',
+      denyButtonColor: '#dc2626',
+      showCancelButton: true,
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true,
+      focusConfirm: false
+    });
+
+    if (result.isConfirmed) {
+      this.notificationsService.markAccessed(item.id).subscribe({
+        next: () => {
+          item.read = true;
+          item.status = 'ACCESSED';
+          this.setSelectedItem(item);
+        },
+        error: () => {
+          this.toast.error('Error', 'No se pudo acceder a la notificaci\u00f3n.');
+        }
+      });
+    } else if (result.isDenied) {
+      const { value: notes } = await Swal.fire({
+        title: 'Motivo del rechazo',
+        input: 'textarea',
+        inputPlaceholder: 'Indique el motivo del rechazo (opcional)',
+        showCancelButton: true,
+        confirmButtonText: 'Rechazar',
+        confirmButtonColor: '#dc2626',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true
+      });
+      if (notes === undefined) return;
+      this.notificationsService.reject(item.id, notes || undefined).subscribe({
+        next: () => {
+          item.status = 'REJECTED';
+          item.read = true;
+          this.setSelectedItem(item);
+        },
+        error: () => this.toast.error('Error', 'No se pudo rechazar la notificaci\u00f3n.')
+      });
+    }
+  }
+
+  accept(item: NotificationInboxItem): void {
+    this.notificationsService.accept(item.id).subscribe({
+      next: () => {
+        item.status = 'ACCEPTED';
+        item.read = true;
+      },
+      error: () => this.toast.error('Error', 'No se pudo aceptar la notificaci\u00f3n.')
+    });
+  }
+
+  reject(item: NotificationInboxItem): void {
+    this.notificationsService.reject(item.id).subscribe({
+      next: () => {
+        item.status = 'REJECTED';
+        item.read = true;
+      },
+      error: () => this.toast.error('Error', 'No se pudo rechazar la notificaci\u00f3n.')
+    });
+  }
+
+  downloadAttachment(notificationId: string, attachmentId: string, name: string): void {
+    this.notificationsService.downloadAttachment(notificationId, attachmentId).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = name;
+        link.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: () => this.toast.error('Error', 'No se pudo descargar el adjunto.')
+    });
   }
 
   toggleFilter(filter: 'all' | 'unread'): void {
@@ -160,7 +246,7 @@ export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy 
     this.updatePaginationState();
   }
 
-  selectItem(item: NotificationInboxItem): void {
+  private setSelectedItem(item: NotificationInboxItem): void {
     this.selectedItem = item;
     this.activeItemId = item.id;
   }
@@ -172,6 +258,16 @@ export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy 
   updatePageSize(size: number): void {
     this.paginationState = updatePageSize(this.filterForm, size, this.paginationState);
     this.updatePaginationState();
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) {
+      return '0 B';
+    }
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
   }
 
   onNotificationListKeydown(event: KeyboardEvent): void {

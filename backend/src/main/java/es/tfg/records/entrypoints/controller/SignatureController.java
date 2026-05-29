@@ -65,13 +65,13 @@ public class SignatureController {
 
             return new ResponseEntity<>(signedContent, headers, HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Failed to sign document: {}", e.getMessage(), e);
+            log.error("Failed to sign document", e);
 
             auditService.record(AuditAction.SIGN, "DOCUMENT", AuditResult.FAILURE,
-                    "Signing failed: " + e.getMessage());
+                    "Signing failed");
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(("Signing failed: " + e.getMessage()).getBytes());
+                    .body("Signing failed".getBytes());
         }
     }
 
@@ -92,9 +92,9 @@ public class SignatureController {
                     "filename", file.getOriginalFilename()
             ));
         } catch (Exception e) {
-            log.error("Failed to compute digest: {}", e.getMessage());
+            log.error("Failed to compute digest", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Digest computation failed: " + e.getMessage()));
+                    .body(Map.of("error", "Digest computation failed"));
         }
     }
 
@@ -119,9 +119,9 @@ public class SignatureController {
                     "message", isValid ? "Signature is valid" : "Signature is invalid or not found"
             ));
         } catch (Exception e) {
-            log.error("Failed to verify signature: {}", e.getMessage());
+            log.error("Failed to verify signature", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Verification failed: " + e.getMessage()));
+                    .body(Map.of("error", "Verification failed"));
         }
     }
 

@@ -24,9 +24,8 @@ describe('InstitutionalInfoComponent', () => {
     institutionalService.getAllSections.and.returnValue(of(mockSections));
 
     await TestBed.configureTestingModule({
-    declarations: [InstitutionalInfoComponent],
     schemas: [NO_ERRORS_SCHEMA],
-    imports: [TranslateModule.forRoot(), RouterTestingModule],
+    imports: [TranslateModule.forRoot(), RouterTestingModule, InstitutionalInfoComponent],
     providers: [
         { provide: InstitutionalService, useValue: institutionalService },
         I18nService,

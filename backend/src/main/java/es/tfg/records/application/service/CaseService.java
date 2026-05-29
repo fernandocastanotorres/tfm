@@ -16,6 +16,8 @@ public interface CaseService {
 
     CaseStatusResponse getCaseStatus(UUID caseId, UUID ownerId);
 
+    RegistryEntryReceiptDto getRegistryEntryReceipt(UUID caseId, UUID ownerId);
+
     CaseItem createCase(UUID ownerId, CreateCaseRequest request);
 
     CaseStatusResponse submitCase(UUID caseId, UUID ownerId);

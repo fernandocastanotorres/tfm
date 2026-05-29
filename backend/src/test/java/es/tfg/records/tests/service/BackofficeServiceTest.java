@@ -2,8 +2,10 @@ package es.tfg.records.tests.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.tfg.records.application.dto.BackofficeDtos;
+import es.tfg.records.application.dto.TransparencyDtos;
 import es.tfg.records.application.exception.ConflictException;
 import es.tfg.records.application.exception.ResourceNotFoundException;
+import es.tfg.records.application.exception.ValidationException;
 import es.tfg.records.application.service.BackofficeService;
 import es.tfg.records.domain.model.CaseStatus;
 import es.tfg.records.domain.model.TaskType;
@@ -23,6 +25,7 @@ import org.flowable.engine.TaskService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Instant;
@@ -83,9 +86,9 @@ class BackofficeServiceTest {
     @Test
     void listCases_shouldFilterByStatus() {
         ProcedureEntity submitted = createProcedure(CaseStatus.SUBMITTED);
-        ProcedureEntity approved = createProcedure(CaseStatus.APPROVED);
         ProcedureTypeEntity type = createProcedureType("Test");
-        when(procedureRepository.findAll(any(PageRequest.class))).thenReturn(new PageImpl<>(List.of(submitted, approved)));
+        when(procedureRepository.findByStatus(eq(CaseStatus.SUBMITTED), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(submitted)));
         when(procedureTypeRepository.findAll()).thenReturn(List.of(type));
 
         var result = service.listCases(0, 10, "SUBMITTED");
@@ -518,6 +521,363 @@ class BackofficeServiceTest {
         verify(fieldI18nRepository).delete(translation);
     }
 
+    // ===== reassignCase =====
+
+    @Test
+    void reassignCase_shouldAddTimelineAndReturnStatus() {
+        UUID caseId = UUID.randomUUID();
+        UUID assigneeId = UUID.randomUUID();
+        ProcedureEntity proc = createProcedureWithIds(caseId, UUID.randomUUID(), UUID.randomUUID(), CaseStatus.IN_REVIEW);
+        UserEntity assignee = new UserEntity();
+        assignee.setId(assigneeId);
+        assignee.setEmail("tramitador@test.com");
+
+        when(procedureRepository.findById(caseId)).thenReturn(Optional.of(proc));
+        when(userRepository.findById(assigneeId)).thenReturn(Optional.of(assignee));
+        when(procedureRepository.save(any())).thenReturn(proc);
+
+        var result = service.reassignCase(caseId, assigneeId);
+
+        assertThat(result.id()).isEqualTo(caseId);
+        assertThat(result.status()).isEqualTo("IN_REVIEW");
+        verify(timelineRepository).save(argThat(event ->
+                event.getTitle().equals("Reasignacion de tramitacion") &&
+                event.getDescription().contains("tramitador@test.com")));
+    }
+
+    @Test
+    void reassignCase_shouldThrowWhenProcedureNotFound() {
+        UUID caseId = UUID.randomUUID();
+        when(procedureRepository.findById(caseId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.reassignCase(caseId, UUID.randomUUID()))
+                .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    void reassignCase_shouldThrowWhenAssigneeNotFound() {
+        UUID caseId = UUID.randomUUID();
+        UUID assigneeId = UUID.randomUUID();
+        ProcedureEntity proc = createProcedureWithIds(caseId, UUID.randomUUID(), UUID.randomUUID(), CaseStatus.IN_REVIEW);
+        when(procedureRepository.findById(caseId)).thenReturn(Optional.of(proc));
+        when(userRepository.findById(assigneeId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.reassignCase(caseId, assigneeId))
+                .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    // ===== listCitizens =====
+
+    @Test
+    void listCitizens_shouldReturnOnlyActiveCitizens() {
+        UUID citizenId = UUID.randomUUID();
+        UUID adminId = UUID.randomUUID();
+        UserEntity citizen = createUser(citizenId, "citizen@test.com");
+        UserEntity admin = createUserWithRoles(adminId, "admin@test.com", Set.of("ROLE_ADMIN"));
+
+        when(userRepository.findAll()).thenReturn(List.of(citizen, admin));
+
+        var result = service.listCitizens(null);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).email()).isEqualTo("citizen@test.com");
+    }
+
+    @Test
+    void listCitizens_shouldSearchByEmail() {
+        UserEntity matched = createUser(UUID.randomUUID(), "john@test.com");
+        UserEntity unmatched = createUser(UUID.randomUUID(), "other@test.com");
+        when(userRepository.findAll()).thenReturn(List.of(matched, unmatched));
+
+        var result = service.listCitizens("john");
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).email()).isEqualTo("john@test.com");
+    }
+
+    @Test
+    void listCitizens_shouldSearchByDisplayName() {
+        UserEntity matched = createUser(UUID.randomUUID(), "a@test.com");
+        matched.setDisplayName("John Smith");
+        UserEntity unmatched = createUser(UUID.randomUUID(), "b@test.com");
+        unmatched.setDisplayName("Jane Doe");
+        when(userRepository.findAll()).thenReturn(List.of(matched, unmatched));
+
+        var result = service.listCitizens("smith");
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).email()).isEqualTo("a@test.com");
+    }
+
+    @Test
+    void listCitizens_shouldSearchByNationalId() {
+        UserEntity matched = createUser(UUID.randomUUID(), "a@test.com");
+        matched.setNationalId("12345678A");
+        UserEntity unmatched = createUser(UUID.randomUUID(), "b@test.com");
+        unmatched.setNationalId("87654321B");
+        when(userRepository.findAll()).thenReturn(List.of(matched, unmatched));
+
+        var result = service.listCitizens("78A");
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).email()).isEqualTo("a@test.com");
+    }
+
+    @Test
+    void listCitizens_shouldReturnAllWhenNullSearch() {
+        UserEntity citizen = createUser(UUID.randomUUID(), "citizen@test.com");
+        when(userRepository.findAll()).thenReturn(List.of(citizen));
+
+        var result = service.listCitizens(null);
+
+        assertThat(result).hasSize(1);
+    }
+
+    @Test
+    void listCitizens_shouldReturnAllWhenBlankSearch() {
+        UserEntity citizen = createUser(UUID.randomUUID(), "citizen@test.com");
+        when(userRepository.findAll()).thenReturn(List.of(citizen));
+
+        var result = service.listCitizens("   ");
+
+        assertThat(result).hasSize(1);
+    }
+
+    @Test
+    void listCitizens_shouldReturnEmptyWhenNoMatch() {
+        UserEntity citizen = createUser(UUID.randomUUID(), "citizen@test.com");
+        when(userRepository.findAll()).thenReturn(List.of(citizen));
+
+        var result = service.listCitizens("nonexistent");
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void listCitizens_shouldSortByEmailCaseInsensitive() {
+        UserEntity aUser = createUser(UUID.randomUUID(), "alice@test.com");
+        aUser.setDisplayName("Alice");
+        UserEntity bUser = createUser(UUID.randomUUID(), "bob@test.com");
+        bUser.setDisplayName("Bob");
+        when(userRepository.findAll()).thenReturn(List.of(bUser, aUser));
+
+        var result = service.listCitizens(null);
+
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).email()).isEqualTo("alice@test.com");
+        assertThat(result.get(1).email()).isEqualTo("bob@test.com");
+    }
+
+    @Test
+    void listCitizens_shouldFilterByActive() {
+        UUID activeId = UUID.randomUUID();
+        UUID inactiveId = UUID.randomUUID();
+        UserEntity active = createUser(activeId, "active@test.com");
+        UserEntity inactive = createUser(inactiveId, "inactive@test.com");
+        inactive.setActive(false);
+        when(userRepository.findAll()).thenReturn(List.of(active, inactive));
+
+        var result = service.listCitizens(null);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).email()).isEqualTo("active@test.com");
+    }
+
+    // ===== listCitizenCases =====
+
+    @Test
+    void listCitizenCases_shouldReturnCasesSortedByDateDescending() {
+        UUID citizenId = UUID.randomUUID();
+        UUID typeId = UUID.randomUUID();
+        ProcedureEntity older = createProcedureWithIds(UUID.randomUUID(), typeId, citizenId, CaseStatus.SUBMITTED);
+        older.setCreatedAt(Instant.now().minusSeconds(86400));
+        ProcedureEntity newer = createProcedureWithIds(UUID.randomUUID(), typeId, citizenId, CaseStatus.APPROVED);
+        newer.setCreatedAt(Instant.now());
+        ProcedureTypeEntity type = createProcedureTypeWithId(typeId, "Licencias");
+
+        when(procedureRepository.findAllByOwnerId(citizenId)).thenReturn(List.of(older, newer));
+        when(procedureTypeRepository.findById(typeId)).thenReturn(Optional.of(type));
+
+        var result = service.listCitizenCases(citizenId);
+
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).id()).isEqualTo(newer.getId());
+        assertThat(result.get(1).id()).isEqualTo(older.getId());
+    }
+
+    @Test
+    void listCitizenCases_shouldReturnEmptyListWhenNoCases() {
+        UUID citizenId = UUID.randomUUID();
+        when(procedureRepository.findAllByOwnerId(citizenId)).thenReturn(List.of());
+
+        var result = service.listCitizenCases(citizenId);
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void listCitizenCases_shouldResolveProcedureTypeTitle() {
+        UUID citizenId = UUID.randomUUID();
+        UUID typeId = UUID.randomUUID();
+        ProcedureEntity proc = createProcedureWithIds(UUID.randomUUID(), typeId, citizenId, CaseStatus.SUBMITTED);
+        ProcedureTypeEntity type = createProcedureTypeWithId(typeId, "Licencias Urbanisticas");
+
+        when(procedureRepository.findAllByOwnerId(citizenId)).thenReturn(List.of(proc));
+        when(procedureTypeRepository.findById(typeId)).thenReturn(Optional.of(type));
+
+        var result = service.listCitizenCases(citizenId);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).procedureType()).isEqualTo("Licencias Urbanisticas");
+    }
+
+    // ===== analyticsReport =====
+
+    @Test
+    void analyticsReport_shouldGenerateReportWithDateRange() {
+        Instant now = Instant.now();
+        Instant yesterday = now.minusSeconds(86400);
+        ProcedureEntity proc = createProcedureWithDates(CaseStatus.APPROVED, yesterday, now);
+        ProcedureTypeEntity type = createProcedureType("Test");
+        when(procedureRepository.findAll()).thenReturn(List.of(proc));
+        when(procedureTypeRepository.findAll()).thenReturn(List.of(type));
+
+        var result = service.analyticsReport(LocalDate.now().minusDays(30), LocalDate.now());
+
+        assertThat(result.summary()).isNotNull();
+        assertThat(result.monthlyTrend()).isNotNull();
+        assertThat(result.procedureTypeMetrics()).isNotNull();
+        assertThat(result.unitSlaBreakdown()).isNotNull();
+    }
+
+    @Test
+    void analyticsReport_shouldUseDefaultsWhenDatesAreNull() {
+        when(procedureRepository.findAll()).thenReturn(List.of());
+        when(procedureTypeRepository.findAll()).thenReturn(List.of());
+
+        var result = service.analyticsReport(null, null);
+
+        assertThat(result.summary()).isNotNull();
+    }
+
+    // ===== exportAnalyticsPdf =====
+
+    @Test
+    void exportAnalyticsPdf_shouldGeneratePdfBytes() {
+        when(procedureRepository.findAll()).thenReturn(List.of());
+        when(procedureTypeRepository.findAll()).thenReturn(List.of());
+
+        byte[] pdf = service.exportAnalyticsPdf(LocalDate.now().minusDays(30), LocalDate.now());
+
+        assertThat(pdf).isNotEmpty();
+    }
+
+    @Test
+    void exportAnalyticsPdf_shouldHandleNullDates() {
+        when(procedureRepository.findAll()).thenReturn(List.of());
+        when(procedureTypeRepository.findAll()).thenReturn(List.of());
+
+        byte[] pdf = service.exportAnalyticsPdf(null, null);
+
+        assertThat(pdf).isNotEmpty();
+    }
+
+    // ===== upsertFieldTranslation =====
+
+    @Test
+    void upsertFieldTranslation_shouldCreateNewTranslation() {
+        UUID procTypeId = UUID.randomUUID();
+        UUID taskId = UUID.randomUUID();
+        ProcedureTaskEntity task = createTask(procTypeId, 1, "Form Task");
+        BackofficeDtos.FieldI18nUpsertRequest request = new BackofficeDtos.FieldI18nUpsertRequest(
+                1, "name", "es-ES", "Nombre", "Introduce tu nombre", null);
+
+        when(taskRepository.findByProcedureTypeIdOrderByOrderIndexAsc(procTypeId)).thenReturn(List.of(task));
+        when(fieldI18nRepository.findByProcedureTypeIdAndTaskOrderIndexAndFieldIdAndLocale(
+                procTypeId, 1, "name", "es-ES")).thenReturn(Optional.empty());
+
+        ProcedureTaskFieldI18nEntity saved = new ProcedureTaskFieldI18nEntity();
+        saved.setId(UUID.randomUUID());
+        saved.setProcedureTypeId(procTypeId);
+        saved.setTaskOrderIndex(1);
+        saved.setFieldId("name");
+        saved.setLocale("es-ES");
+        saved.setName("Nombre");
+        saved.setPlaceholder("Introduce tu nombre");
+        when(fieldI18nRepository.save(any())).thenReturn(saved);
+
+        var result = service.upsertFieldTranslation(procTypeId, request);
+
+        assertThat(result.name()).isEqualTo("Nombre");
+        assertThat(result.placeholder()).isEqualTo("Introduce tu nombre");
+        verify(fieldI18nRepository).save(any());
+    }
+
+    @Test
+    void upsertFieldTranslation_shouldUpdateExistingTranslation() {
+        UUID procTypeId = UUID.randomUUID();
+        ProcedureTaskEntity task = createTask(procTypeId, 1, "Form Task");
+        BackofficeDtos.FieldI18nUpsertRequest request = new BackofficeDtos.FieldI18nUpsertRequest(
+                1, "name", "es-ES", "Nombre Actualizado", null, null);
+
+        ProcedureTaskFieldI18nEntity existing = new ProcedureTaskFieldI18nEntity();
+        existing.setId(UUID.randomUUID());
+        existing.setProcedureTypeId(procTypeId);
+        existing.setTaskOrderIndex(1);
+        existing.setFieldId("name");
+        existing.setLocale("es-ES");
+        existing.setName("Nombre Antiguo");
+        existing.setPlaceholder("");
+
+        when(taskRepository.findByProcedureTypeIdOrderByOrderIndexAsc(procTypeId)).thenReturn(List.of(task));
+        when(fieldI18nRepository.findByProcedureTypeIdAndTaskOrderIndexAndFieldIdAndLocale(
+                procTypeId, 1, "name", "es-ES")).thenReturn(Optional.of(existing));
+
+        ProcedureTaskFieldI18nEntity saved = new ProcedureTaskFieldI18nEntity();
+        saved.setId(existing.getId());
+        saved.setProcedureTypeId(procTypeId);
+        saved.setTaskOrderIndex(1);
+        saved.setFieldId("name");
+        saved.setLocale("es-ES");
+        saved.setName("Nombre Actualizado");
+        saved.setPlaceholder("");
+        when(fieldI18nRepository.save(any())).thenReturn(saved);
+
+        var result = service.upsertFieldTranslation(procTypeId, request);
+
+        assertThat(result.name()).isEqualTo("Nombre Actualizado");
+    }
+
+    @Test
+    void upsertFieldTranslation_shouldThrowWhenLocaleIsNull() {
+        UUID procTypeId = UUID.randomUUID();
+        BackofficeDtos.FieldI18nUpsertRequest request = new BackofficeDtos.FieldI18nUpsertRequest(
+                1, "name", null, "Nombre", null, null);
+
+        assertThatThrownBy(() -> service.upsertFieldTranslation(procTypeId, request))
+                .isInstanceOf(ValidationException.class);
+    }
+
+    @Test
+    void upsertFieldTranslation_shouldThrowWhenNameIsNull() {
+        UUID procTypeId = UUID.randomUUID();
+        BackofficeDtos.FieldI18nUpsertRequest request = new BackofficeDtos.FieldI18nUpsertRequest(
+                1, "name", "es-ES", null, null, null);
+
+        assertThatThrownBy(() -> service.upsertFieldTranslation(procTypeId, request))
+                .isInstanceOf(ValidationException.class);
+    }
+
+    @Test
+    void upsertFieldTranslation_shouldThrowWhenFieldIdIsNull() {
+        UUID procTypeId = UUID.randomUUID();
+        BackofficeDtos.FieldI18nUpsertRequest request = new BackofficeDtos.FieldI18nUpsertRequest(
+                1, null, "es-ES", "Nombre", null, null);
+
+        assertThatThrownBy(() -> service.upsertFieldTranslation(procTypeId, request))
+                .isInstanceOf(ValidationException.class);
+    }
+
     // ===== Helper Methods =====
 
     private UUID createProcedureId() {
@@ -575,6 +935,16 @@ class BackofficeServiceTest {
         user.setEmail(email);
         user.setDisplayName(email);
         user.setRoles(Set.of("ROLE_CITIZEN"));
+        user.setActive(true);
+        return user;
+    }
+
+    private UserEntity createUserWithRoles(UUID id, String email, Set<String> roles) {
+        UserEntity user = new UserEntity();
+        user.setId(id);
+        user.setEmail(email);
+        user.setDisplayName(email);
+        user.setRoles(roles);
         user.setActive(true);
         return user;
     }

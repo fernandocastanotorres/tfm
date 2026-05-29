@@ -137,11 +137,49 @@ Backoffice (Angular) ──┘                                         │
 4. Mostrar sistema de mensajería (1 hilo por expediente, con adjuntos)
 5. Responder a una solicitud de subsanación (amendment)
 
+### 2.5.1 Justificante registral formal (nuevo)
+
+**Demostrar:**
+1. En el detalle del expediente, localizar el bloque **Datos registrales electronicos**
+2. Mostrar:
+   - Numero de expediente (`EXP/...`)
+   - Numero de registro de entrada (`RE/...`)
+   - Fecha de presentacion
+   - CSV (si existe)
+3. Pulsar **Descargar justificante registral**
+4. Pulsar **Verificar CSV** (abre validacion publica)
+
 **Qué destacar:**
+- Contrato API especifico para registro formal: `GET /citizen/procedures/{id}/registry-receipt`
+- Separacion entre:
+  - datos operativos del expediente
+  - evidencia registral formal para defensa/auditoria
+
+### 2.5.2 Carpeta Ciudadana unificada (nuevo)
+...
 - Timeline inmutable con auditoría
 - Mensajería integrada con paginación (10/20/50 mensajes)
 - Soporte para adjuntos en mensajes
 - Estados visuales con colores
+
+### 2.5.3 Notificaciones Electronicas Formales (nuevo)
+
+**Demostrar:**
+1. Abrir `/sede/notificaciones`
+2. Mostrar la bandeja de entrada con notificaciones formales
+3. Abrir una notificación:
+   - Ver asunto, cuerpo y plazo de caducidad
+   - Descargar adjuntos formales
+4. Acciones del ciudadano:
+   - Marcar como leída (cambia estado a ACCESSED)
+   - Aceptar notificación
+   - Rechazar notificación (con motivo)
+5. Mostrar el cambio de estado en tiempo real
+
+**Qué destacar:**
+- Cumplimiento normativo: estados legamente definidos (Disponible, Accedida, Aceptada, Rechazada, Caducada)
+- Plazos de caducidad automáticos gestionados por el servidor
+- Diferencia entre mensajería operativa y notificación formal administrativa
 
 ### 2.6 Búsqueda de expedientes
 
@@ -233,7 +271,25 @@ Backoffice (Angular) ──┘                                         │
 - Generación de PDF con OpenPDF
 - Datos reales de la plataforma
 
-### 3.7 Buzón de contacto (solo Backoffice)
+### 3.7 Gestión de Notificaciones Formales (nuevo)
+
+**Demostrar:**
+1. Ir a **Notificaciones e-** en el menú lateral (sección Admin)
+2. Buscar un ciudadano mediante email o DNI
+3. Seleccionar un expediente activo del ciudadano
+4. Configurar la notificación:
+   - Seleccionar tipo (ej: Requerimiento de subsanación)
+   - Definir asunto y cuerpo
+   - Establecer plazo de caducidad (ej: 10 días)
+   - Adjuntar documentos de evidencia
+5. Enviar notificación y verificar aviso por email en Mailpit
+
+**Qué destacar:**
+- Flujo administrativo completo: selección de destinatario → vínculo con expediente → definición de plazo legal
+- Automatización de la caducidad: el sistema marca como EXPIRED al cumplirse el plazo
+- Integración con almacenamiento de archivos para adjuntos formales
+
+### 3.8 Buzón de contacto (solo Backoffice)
 
 **Demostrar:**
 1. Ir a "Buzón de contacto"

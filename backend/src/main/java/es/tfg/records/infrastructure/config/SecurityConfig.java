@@ -100,6 +100,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/citizen/public-content/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/swagger-ui.html", "/api-docs/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers(ADMIN_ONLY_ENDPOINTS).hasRole("ADMIN")
+                        .requestMatchers("/citizen/signatures/verify", "/citizen/signatures/certificate-info").hasAnyRole("CITIZEN", "ADMIN", "TRAMITADOR")
                         .requestMatchers(BACKOFFICE_ENDPOINTS).hasAnyRole("TRAMITADOR", "ADMIN")
                         .requestMatchers(CITIZEN_ENDPOINTS).hasAnyRole("CITIZEN", "ADMIN")
                         .anyRequest().authenticated()

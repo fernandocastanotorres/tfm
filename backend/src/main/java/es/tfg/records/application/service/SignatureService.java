@@ -13,6 +13,7 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.bouncycastle.util.Store;
 import org.jodconverter.core.DocumentConverter;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,13 +49,20 @@ public class SignatureService {
 
     @Autowired
     public SignatureService(@Autowired(required = false) DocumentConverter documentConverter,
-                            @Value("${signing.keystore.password:changeit}") String keystorePassword) throws Exception {
+                            @Value("${signing.keystore.password}") String keystorePassword) throws Exception {
         this.documentConverter = documentConverter;
         this.keystorePassword = keystorePassword.toCharArray();
         this.signingKeyStore = createSigningKeyStore();
         this.signingCertificate = (X509Certificate) signingKeyStore.getCertificate("signing");
         if (documentConverter == null) {
             log.info("JODConverter not available (LibreOffice not configured). Document conversion disabled.");
+        }
+    }
+
+    @PostConstruct
+    public void validateConfiguration() {
+        if (keystorePassword.length == 0 || new String(keystorePassword).equals("changeit")) {
+            log.warn("SIGNING_KEYSTORE_PASSWORD is using the default value. Set a strong password via environment variable in production.");
         }
     }
 

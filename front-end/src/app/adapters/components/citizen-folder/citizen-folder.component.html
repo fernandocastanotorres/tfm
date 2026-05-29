@@ -1,0 +1,140 @@
+<div class="citizen-folder" aria-labelledby="citizen-folder-title">
+  <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <header class="mb-8">
+      <h1 id="citizen-folder-title" class="text-2xl font-semibold text-surface-900">{{ 'CITIZEN_FOLDER.TITLE' | translate }}</h1>
+      <p class="text-surface-600 mt-1">{{ 'CITIZEN_FOLDER.SUBTITLE' | translate }}</p>
+      <div class="mt-4">
+        <button class="btn-primary" type="button" (click)="exportFolderPdf()">Exportar resumen PDF</button>
+      </div>
+    </header>
+
+
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+      <article class="card p-5">
+        <p class="text-sm text-surface-500">Expedientes</p>
+        <p class="text-2xl font-semibold text-surface-900">{{ cases.length }}</p>
+      </article>
+      <article class="card p-5">
+        <p class="text-sm text-surface-500">Mensajes no leidos</p>
+        <p class="text-2xl font-semibold text-surface-900">{{ unreadMessages }}</p>
+      </article>
+      <article class="card p-5">
+        <p class="text-sm text-surface-500">Pagos pendientes</p>
+        <p class="text-2xl font-semibold text-surface-900">{{ pendingPayments }}</p>
+      </article>
+      <article class="card p-5">
+        <p class="text-sm text-surface-500">Citas pendientes</p>
+        <p class="text-2xl font-semibold text-surface-900">{{ pendingAppointments }}</p>
+      </article>
+    </div>
+
+    <div class="grid gap-6 lg:grid-cols-[2fr_1fr]">
+      <section class="card p-6">
+        <h2 class="text-lg font-semibold text-surface-900">Ultimos expedientes</h2>
+        <p class="text-sm text-surface-600 mt-1">Acceso rapido a tus tramites recientes.</p>
+
+        <div *ngIf="isLoading" class="mt-4 text-surface-600">Cargando...</div>
+
+        <ul *ngIf="!isLoading" class="mt-4 space-y-3">
+          <li *ngFor="let item of cases.slice(0, 5)" class="border border-surface-200 rounded-xl p-4">
+            <p class="font-semibold text-surface-900">{{ item.title }}</p>
+            <p class="text-sm text-surface-600">{{ item.id }} · {{ item.procedureType }}</p>
+            <p class="text-xs text-surface-500 mt-1" *ngIf="item.recordNumber">{{ item.recordNumber }}</p>
+          </li>
+          <li *ngIf="cases.length === 0" class="text-surface-600">No hay expedientes disponibles.</li>
+        </ul>
+      </section>
+
+      <aside class="space-y-6">
+        <section class="card p-6">
+          <h2 class="text-lg font-semibold text-surface-900">{{ 'CITIZEN_FOLDER.LATEST_NOTIFICATION' | translate }}</h2>
+          <div class="mt-3" *ngIf="latestNotification; else noNotification">
+            <p class="text-surface-800">{{ latestNotification.title }}</p>
+            <p class="text-sm text-surface-600 mt-1">{{ latestNotification.message }}</p>
+            <p class="text-xs text-surface-500 mt-2">{{ latestNotification.date | date:'dd/MM/yyyy HH:mm' }}</p>
+          </div>
+          <ng-template #noNotification>
+            <p class="text-surface-600 mt-3">{{ 'CITIZEN_FOLDER.NO_NOTIFICATIONS' | translate }}</p>
+          </ng-template>
+        </section>
+
+        <section class="card p-6">
+          <h2 class="text-lg font-semibold text-surface-900">{{ 'CITIZEN_FOLDER.QUICK_ACCESS' | translate }}</h2>
+          <div class="mt-4 flex flex-col gap-3">
+            <a class="btn-primary btn-primary--outline text-center" [routerLink]="['/sede/expedientes/buscar']">{{ 'CITIZEN_FOLDER.SHORTCUT_CASES' | translate }}</a>
+            <a class="btn-primary btn-primary--outline text-center" [routerLink]="['/sede/notificaciones']">{{ 'CITIZEN_FOLDER.SHORTCUT_NOTIFICATIONS' | translate }}</a>
+            <a class="btn-primary btn-primary--outline text-center" [routerLink]="['/sede/documentos']">{{ 'CITIZEN_FOLDER.SHORTCUT_DOCUMENTS' | translate }}</a>
+            <a class="btn-primary btn-primary--outline text-center" [routerLink]="['/sede/pagos']">{{ 'CITIZEN_FOLDER.SHORTCUT_PAYMENTS' | translate }}</a>
+            <a class="btn-primary btn-primary--outline text-center" [routerLink]="['/sede/perfil']">{{ 'CITIZEN_FOLDER.SHORTCUT_PROFILE' | translate }}</a>
+          </div>
+        </section>
+      </aside>
+    </div>
+
+    <section class="card p-6 mt-6" aria-labelledby="timeline-title">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h2 id="timeline-title" class="text-lg font-semibold text-surface-900">{{ 'CITIZEN_FOLDER.TIMELINE_TITLE' | translate }}</h2>
+          <p class="text-sm text-surface-600 mt-1">{{ 'CITIZEN_FOLDER.TIMELINE_SUBTITLE' | translate }}</p>
+        </div>
+        <div class="flex flex-col gap-2 sm:flex-row">
+          <select class="field-input field-input--sm" [(ngModel)]="timelineTypeFilter" aria-label="Filtrar por tipo" (ngModelChange)="onTimelineFilterChange()">
+            <option [value]="'all'">{{ 'CITIZEN_FOLDER.TIMELINE_TYPE_ALL' | translate }}</option>
+            <option [value]="'CASE'">{{ 'CITIZEN_FOLDER.TIMELINE_TYPE_CASE' | translate }}</option>
+            <option [value]="'MESSAGE'">{{ 'CITIZEN_FOLDER.TIMELINE_TYPE_MESSAGE' | translate }}</option>
+            <option [value]="'PAYMENT'">{{ 'CITIZEN_FOLDER.TIMELINE_TYPE_PAYMENT' | translate }}</option>
+            <option [value]="'APPOINTMENT'">{{ 'CITIZEN_FOLDER.TIMELINE_TYPE_APPOINTMENT' | translate }}</option>
+          </select>
+          <select class="field-input field-input--sm" [(ngModel)]="timelinePriorityFilter" aria-label="Filtrar por prioridad" (ngModelChange)="onTimelineFilterChange()">
+            <option [value]="'all'">{{ 'CITIZEN_FOLDER.TIMELINE_PRIORITY_ALL' | translate }}</option>
+            <option [value]="'HIGH'">{{ 'CITIZEN_FOLDER.TIMELINE_PRIORITY_HIGH' | translate }}</option>
+            <option [value]="'MEDIUM'">{{ 'CITIZEN_FOLDER.TIMELINE_PRIORITY_MEDIUM' | translate }}</option>
+            <option [value]="'LOW'">{{ 'CITIZEN_FOLDER.TIMELINE_PRIORITY_LOW' | translate }}</option>
+          </select>
+          <select class="field-input field-input--sm" [(ngModel)]="timelinePeriodFilter" aria-label="Filtrar por periodo" (ngModelChange)="onTimelineFilterChange()">
+            <option [value]="'7d'">{{ 'CITIZEN_FOLDER.TIMELINE_PERIOD_7D' | translate }}</option>
+            <option [value]="'30d'">{{ 'CITIZEN_FOLDER.TIMELINE_PERIOD_30D' | translate }}</option>
+            <option [value]="'all'">{{ 'CITIZEN_FOLDER.TIMELINE_PERIOD_ALL' | translate }}</option>
+          </select>
+          <select class="field-input field-input--sm" [(ngModel)]="timelineSort" aria-label="Ordenar timeline" (ngModelChange)="onTimelineFilterChange()">
+            <option [value]="'date_desc'">{{ 'CITIZEN_FOLDER.TIMELINE_SORT_DATE_DESC' | translate }}</option>
+            <option [value]="'date_asc'">{{ 'CITIZEN_FOLDER.TIMELINE_SORT_DATE_ASC' | translate }}</option>
+            <option [value]="'priority_desc'">{{ 'CITIZEN_FOLDER.TIMELINE_SORT_PRIORITY_DESC' | translate }}</option>
+            <option [value]="'priority_asc'">{{ 'CITIZEN_FOLDER.TIMELINE_SORT_PRIORITY_ASC' | translate }}</option>
+          </select>
+        </div>
+      </div>
+
+
+      <ul class="mt-4 space-y-3">
+        <li *ngFor="let event of pagedTimelineEvents; trackBy: trackByIndex" class="border border-surface-200 rounded-xl p-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <p class="font-semibold text-surface-900">{{ event.title }}</p>
+            <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-semibold" [ngClass]="priorityClass(event.priority)">
+              {{ event.priority }}
+            </span>
+          </div>
+          <p class="text-sm text-surface-600 mt-1">{{ event.detail }}</p>
+          <div class="mt-2 flex items-center justify-between gap-2 text-xs text-surface-500">
+            <span>{{ typeLabel(event.type) }} · {{ event.date | date:'dd/MM/yyyy HH:mm' }}</span>
+            <a class="text-brand-600 hover:underline" [routerLink]="[event.route]">Abrir</a>
+          </div>
+        </li>
+         <li *ngIf="filteredTimelineEvents.length === 0" class="text-surface-600">
+           {{ 'CITIZEN_FOLDER.TIMELINE_EMPTY' | translate }}
+         </li>
+      </ul>
+
+       <div class="mt-4 flex items-center justify-between" *ngIf="filteredTimelineEvents.length > 0">
+         <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changeTimelinePage(timelinePage - 1)" [disabled]="timelinePage === 1">
+           {{ 'CITIZEN_FOLDER.TIMELINE_PREVIOUS' | translate }}
+         </button>
+         <span class="text-sm text-surface-600">{{ 'CITIZEN_FOLDER.TIMELINE_PAGE' | translate }} {{ timelinePage }} / {{ timelineTotalPages }}</span>
+         <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changeTimelinePage(timelinePage + 1)" [disabled]="timelinePage === timelineTotalPages">
+           {{ 'CITIZEN_FOLDER.TIMELINE_NEXT' | translate }}
+         </button>
+       </div>
+
+    </section>
+  </section>
+</div>

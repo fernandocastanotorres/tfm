@@ -25,9 +25,8 @@ describe('LegislationComponent', () => {
     legislationService.getByType.and.returnValue(of(mockLegislation));
 
     await TestBed.configureTestingModule({
-    declarations: [LegislationComponent],
     schemas: [NO_ERRORS_SCHEMA],
-    imports: [TranslateModule.forRoot(), RouterTestingModule],
+    imports: [TranslateModule.forRoot(), RouterTestingModule, LegislationComponent],
     providers: [
         { provide: LegislationService, useValue: legislationService },
         I18nService,

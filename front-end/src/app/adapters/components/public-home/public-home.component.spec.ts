@@ -1,8 +1,8 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter } from '@angular/router';
 import { PublicHomeComponent } from './public-home.component';
 import { ProceduresApiService } from '../../../application/services/procedures-api.service';
 import { CalendarService } from '../../../application/services/calendar.service';
@@ -32,15 +32,15 @@ describe('PublicHomeComponent', () => {
     calendarService.getUpcoming.and.returnValue(of(mockEvents));
 
     await TestBed.configureTestingModule({
-    declarations: [PublicHomeComponent],
     schemas: [NO_ERRORS_SCHEMA],
-    imports: [TranslateModule.forRoot(), RouterTestingModule],
+    imports: [TranslateModule.forRoot(), PublicHomeComponent],
     providers: [
         { provide: ProceduresApiService, useValue: proceduresApi },
         { provide: CalendarService, useValue: calendarService },
         I18nService,
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
+        provideHttpClientTesting(),
+        provideRouter([])
     ]
 }).compileComponents();
 
@@ -52,30 +52,34 @@ describe('PublicHomeComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load procedures and events on init', () => {
+  it('should load procedures and events on init', fakeAsync(() => {
     fixture.detectChanges();
+    tick();
     expect(proceduresApi.listAll).toHaveBeenCalled();
     expect(calendarService.getUpcoming).toHaveBeenCalledWith(3);
     expect(component.procedures.length).toBe(2);
     expect(component.upcomingEvents.length).toBe(1);
     expect(component.isLoading).toBeFalse();
-  });
+  }));
 
-  it('should handle empty procedures list', () => {
+  it('should handle empty procedures list', fakeAsync(() => {
     proceduresApi.listAll.and.returnValue(of([]));
     fixture.detectChanges();
+    tick();
     expect(component.procedures.length).toBe(0);
     expect(component.isLoading).toBeFalse();
-  });
+  }));
 
-  it('should set isLoading to false on procedure load error', () => {
+  it('should set isLoading to false on procedure load error', fakeAsync(() => {
     proceduresApi.listAll.and.returnValue(throwError(() => new Error('Network error')));
     fixture.detectChanges();
+    tick();
     expect(component.isLoading).toBeFalse();
-  });
+  }));
 
   it('should format date correctly', () => {
     const result = component.formatDate('2026-06-15');
     expect(result).toContain('2026');
   });
+
 });

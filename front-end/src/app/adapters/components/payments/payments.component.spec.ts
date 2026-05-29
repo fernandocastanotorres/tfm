@@ -3,6 +3,9 @@ import { PaymentsComponent } from './payments.component';
 import { PaymentsService } from '../../../application/services/payments.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('PaymentsComponent', () => {
   let component: PaymentsComponent;
@@ -10,10 +13,14 @@ describe('PaymentsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PaymentsComponent],
-      imports: [TranslateModule.forRoot(), ReactiveFormsModule],
-      providers: [PaymentsService]
-    }).compileComponents();
+    imports: [TranslateModule.forRoot(), ReactiveFormsModule, PaymentsComponent],
+    providers: [
+        PaymentsService,
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting()
+    ]
+}).compileComponents();
 
     fixture = TestBed.createComponent(PaymentsComponent);
     component = fixture.componentInstance;

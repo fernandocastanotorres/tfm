@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpEventType, HttpProgressEvent } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { DocumentsApiService, UploadMetadata } from '../../../application/services/documents-api.service';
@@ -13,12 +13,15 @@ import { changePage, updatePageSize, getPaginationState, PaginationState } from 
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
+import { NgIf, NgFor, NgClass } from '@angular/common';
+import { SkeletonScreenComponent } from '../../../shared/components/skeleton-screen/skeleton-screen.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-documents',
     templateUrl: './documents.component.html',
     styleUrls: [],
-    standalone: false
+    imports: [NgIf, SkeletonScreenComponent, NgFor, FormsModule, NgClass, ReactiveFormsModule, TranslatePipe]
 })
 export class DocumentsComponent implements OnInit, OnDestroy {
   documents: DocumentItem[] = [];

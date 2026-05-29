@@ -40,9 +40,8 @@ describe('ContactComponent', () => {
     }));
 
     await TestBed.configureTestingModule({
-    declarations: [ContactComponent],
     schemas: [NO_ERRORS_SCHEMA],
-    imports: [TranslateModule.forRoot(), RouterTestingModule, ReactiveFormsModule],
+    imports: [TranslateModule.forRoot(), RouterTestingModule, ReactiveFormsModule, ContactComponent],
     providers: [
         { provide: ContactService, useValue: contactService },
         provideHttpClient(withInterceptorsFromDi()),

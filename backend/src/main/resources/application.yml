@@ -103,6 +103,11 @@ logging:
     es.tfg.records: DEBUG
     org.springframework.security: WARN
 
+# CORS
+app:
+  cors:
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:4200,http://localhost:4300}
+
 # File Storage
 storage:
   documents-path: ${STORAGE_DOCUMENTS_PATH:./data/documents}

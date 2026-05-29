@@ -2,6 +2,7 @@ package es.tfg.records.tests.mailing;
 
 import es.tfg.records.infrastructure.mailing.BrevoEmailGateway;
 import es.tfg.records.infrastructure.mailing.EmailVerificationMessage;
+import es.tfg.records.infrastructure.mailing.NewMessageNotificationMessage;
 import es.tfg.records.infrastructure.mailing.VerificationEmailConsumer;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -64,6 +65,35 @@ class VerificationEmailConsumerTest {
         doThrow(expected).when(brevoEmailGateway).sendVerificationEmail(anyString(), anyString(), anyString());
 
         assertThatThrownBy(() -> consumer.handle(message))
+                .isSameAs(expected);
+
+        verify(failedCounter).increment();
+        verify(deliveredCounter, never()).increment();
+    }
+
+    @Test
+    void handleNewMessage_shouldSendAndIncrementDeliveredCounter() {
+        NewMessageNotificationMessage message = new NewMessageNotificationMessage(
+                "user@example.com", "Sender", "Preview text", "case-42"
+        );
+
+        consumer.handleNewMessage(message);
+
+        verify(brevoEmailGateway).sendNewMessageNotification("user@example.com", "Sender", "Preview text", "case-42");
+        verify(deliveredCounter).increment();
+        verify(failedCounter, never()).increment();
+    }
+
+    @Test
+    void handleNewMessage_shouldIncrementFailedCounterAndRethrowOnFailure() {
+        NewMessageNotificationMessage message = new NewMessageNotificationMessage(
+                "user@example.com", "Sender", "Preview text", "case-42"
+        );
+
+        RuntimeException expected = new RuntimeException("SMTP error");
+        doThrow(expected).when(brevoEmailGateway).sendNewMessageNotification(anyString(), anyString(), anyString(), anyString());
+
+        assertThatThrownBy(() -> consumer.handleNewMessage(message))
                 .isSameAs(expected);
 
         verify(failedCounter).increment();

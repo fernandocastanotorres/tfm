@@ -1,16 +1,20 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, skip } from 'rxjs';
 import { LegislationService } from '../../../application/services/legislation.service';
 import { I18nService } from '../../../application/services/i18n.service';
 import { LegislationItem } from '../../../application/models/sede.models';
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
+import { RouterLink } from '@angular/router';
+import { NgFor, NgIf, NgClass } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-legislation',
     templateUrl: './legislation.component.html',
     styleUrls: ['./legislation.component.css'],
-    standalone: false
+    imports: [RouterLink, NgFor, FormsModule, NgIf, NgClass, TranslatePipe]
 })
 export class LegislationComponent implements OnInit, OnDestroy {
   legislation: LegislationItem[] = [];
@@ -28,9 +32,8 @@ export class LegislationComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadData();
-    this.localeSub = this.i18nService.getCurrentLocale$().subscribe(() => {
-      this.loadData();
-    });
+    // Avoid double-fetch on init if the locale observable emits immediately.
+    this.localeSub = this.i18nService.getCurrentLocale$().pipe(skip(1)).subscribe(() => this.loadData());
   }
 
   ngOnDestroy(): void {

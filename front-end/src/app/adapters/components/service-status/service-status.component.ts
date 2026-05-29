@@ -3,12 +3,15 @@ import { ServiceStatusService } from '../../../application/services/service-stat
 import { ServiceStatusItem } from '../../../application/models/sede.models';
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
+import { RouterLink } from '@angular/router';
+import { NgIf, NgFor, NgClass, DatePipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-service-status',
     templateUrl: './service-status.component.html',
     styleUrls: ['./service-status.component.css'],
-    standalone: false
+    imports: [RouterLink, NgIf, NgFor, NgClass, DatePipe, TranslatePipe]
 })
 export class ServiceStatusComponent implements OnInit {
   services: ServiceStatusItem[] = [];

@@ -1,5 +1,44 @@
 {
+  "CITIZEN_FOLDER": {
+    "TITLE": "Carpeta Ciudadana",
+    "SUBTITLE": "Vista unificada de tus expedientes, comunicaciones y tareas pendientes.",
+    "SHORTCUT_CASES": "Buscar expedientes",
+    "SHORTCUT_NOTIFICATIONS": "Notificaciones",
+    "SHORTCUT_DOCUMENTS": "Mis documentos",
+    "SHORTCUT_PAYMENTS": "Pagos y tasas",
+    "SHORTCUT_PROFILE": "Perfil",
+    "LATEST_NOTIFICATION": "Última notificación",
+    "NO_NOTIFICATIONS": "No hay notificaciones recientes.",
+    "QUICK_ACCESS": "Accesos directos",
+    "TIMELINE_TITLE": "Timeline unificado",
+    "TIMELINE_SUBTITLE": "Actividad combinada de expedientes, mensajes, pagos y citas.",
+    "TIMELINE_FILTER_TYPE": "Tipo",
+    "TIMELINE_FILTER_PRIORITY": "Prioridad",
+    "TIMELINE_FILTER_PERIOD": "Periodo",
+    "TIMELINE_FILTER_SORT": "Ordenar",
+    "TIMELINE_TYPE_ALL": "Todos los tipos",
+    "TIMELINE_TYPE_CASE": "Expedientes",
+    "TIMELINE_TYPE_MESSAGE": "Mensajes",
+    "TIMELINE_TYPE_PAYMENT": "Pagos",
+    "TIMELINE_TYPE_APPOINTMENT": "Citas",
+    "TIMELINE_PRIORITY_ALL": "Todas las prioridades",
+    "TIMELINE_PRIORITY_HIGH": "Alta",
+    "TIMELINE_PRIORITY_MEDIUM": "Media",
+    "TIMELINE_PRIORITY_LOW": "Baja",
+    "TIMELINE_PERIOD_7D": "Últimos 7 días",
+    "TIMELINE_PERIOD_30D": "Últimos 30 días",
+    "TIMELINE_PERIOD_ALL": "Todo",
+    "TIMELINE_SORT_DATE_DESC": "Fecha (recientes primero)",
+    "TIMELINE_SORT_DATE_ASC": "Fecha (antiguos primero)",
+    "TIMELINE_SORT_PRIORITY_DESC": "Prioridad (alta primero)",
+    "TIMELINE_SORT_PRIORITY_ASC": "Prioridad (baja primero)",
+    "TIMELINE_PAGE": "Página",
+    "TIMELINE_PREVIOUS": "Anterior",
+    "TIMELINE_NEXT": "Siguiente",
+    "TIMELINE_EMPTY": "No hay eventos para los filtros seleccionados."
+  },
   "COMMON": {
+
     "LOADING": "Cargando contenido"
   },
   "APP": {
@@ -184,6 +223,7 @@
     "THEME_DARK": "Activar modo noche",
     "SELECT_LANGUAGE": "Seleccionar idioma",
     "NAV_MAIN": "Navegacion principal",
+    "SEARCH": "Buscar en sede",
     "MENU_OPEN": "Abrir menu de navegacion",
     "MENU_CLOSE": "Cerrar menu de navegacion"
   },
@@ -222,7 +262,27 @@
     "MOCK_DOCUMENTS_TITLE": "Documentación pendiente",
     "MOCK_DOCUMENTS_MESSAGE": "Adjunta el justificante de pago antes del 20/05/2026.",
     "MOCK_PAYMENT_TITLE": "Pago registrado",
-    "MOCK_PAYMENT_MESSAGE": "Se ha recibido el pago asociado al expediente EXP-2026-003."
+      "MOCK_PAYMENT_MESSAGE": "Se ha recibido el pago asociado al expediente EXP-2026-003.",
+      "NOTIFICATION_TYPE.FORMAL_NOTICE": "Notificación formal",
+      "NOTIFICATION_TYPE.REQUEST_INFO": "Requerimiento de información",
+      "NOTIFICATION_TYPE.AMENDMENT_REQUIRED": "Requerimiento de subsanación",
+      "NOTIFICATION_TYPE.RESOLUTION_NOTICE": "Comunicación de resolución",
+      "NOTIFICATION_STATUS.AVAILABLE": "Disponible",
+      "NOTIFICATION_STATUS.ACCESSED": "Accedida",
+      "NOTIFICATION_STATUS.ACCEPTED": "Aceptada",
+      "NOTIFICATION_STATUS.REJECTED": "Rechazada",
+      "NOTIFICATION_STATUS.EXPIRED": "Caducada",
+      "ATTACHMENTS": "Adjuntos",
+      "CONFIRM_READ_TITLE": "Notificación electrónica",
+      "CONFIRM_READ_TEXT": "¿Desea leer esta notificación o rechazarla?",
+      "CONFIRM_READ_BUTTON": "Leer contenido",
+      "CONFIRM_REJECT_BUTTON": "Rechazar notificación",
+      "REJECT_NOTES_TITLE": "Motivo del rechazo",
+      "REJECT_NOTES_PLACEHOLDER": "Indique el motivo del rechazo (opcional)",
+      "ACCEPT_BUTTON": "Aceptar notificación",
+      "REJECT_BUTTON": "Rechazar notificación",
+      "RESOLUTION_NOTES": "Notas de la resolución"
+
   },
   "DOCUMENTS": {
     "EYEBROW": "Documentos",
@@ -239,7 +299,10 @@
     "SIGNING": "Firmando...",
     "VERIFYING": "Verificando...",
     "DELETE": "Eliminar",
-    "EMPTY": "No hay documentos para este filtro."
+    "EMPTY": "No hay documentos para este filtro.",
+    "PREVIOUS": "Anterior",
+    "PAGE": "Página",
+    "NEXT": "Siguiente"
   },
   "DOCUMENT_STATUS": {
     "PENDING": "Pendiente",

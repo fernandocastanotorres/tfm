@@ -2,12 +2,15 @@ import { Component } from '@angular/core';
 import { SitemapSection, SitemapLink } from '../../../application/models/sede.models';
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
+import { RouterLink } from '@angular/router';
+import { NgFor } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-sitemap',
     templateUrl: './sitemap.component.html',
     styleUrls: ['./sitemap.component.css'],
-    standalone: false
+    imports: [RouterLink, NgFor, TranslatePipe]
 })
 export class SitemapComponent {
   readonly sections: SitemapSection[] = [

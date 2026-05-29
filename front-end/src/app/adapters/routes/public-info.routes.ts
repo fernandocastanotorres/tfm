@@ -1,9 +1,4 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule, Routes } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
-
+import { Routes } from '@angular/router';
 import { InstitutionalInfoComponent } from '../components/institutional-info/institutional-info.component';
 import { LegislationComponent } from '../components/legislation/legislation.component';
 import { FaqComponent } from '../components/faq/faq.component';
@@ -16,9 +11,9 @@ import { GlossaryComponent } from '../components/glossary/glossary.component';
 import { AccessibilityStatementComponent } from '../components/accessibility-statement/accessibility-statement.component';
 import { SitemapComponent } from '../components/sitemap/sitemap.component';
 import { DocumentVerificationComponent } from '../components/document-verification/document-verification.component';
-import { SkeletonScreenComponent } from '../../shared/components/skeleton-screen/skeleton-screen.component';
+import { SiteSearchComponent } from '../components/site-search/site-search.component';
 
-const routes: Routes = [
+export const PUBLIC_INFO_ROUTES: Routes = [
   { path: 'institucional', component: InstitutionalInfoComponent, title: 'PUBLIC.NAV_INSTITUTIONAL' },
   { path: 'normativa', component: LegislationComponent, title: 'PUBLIC.NAV_LEGISLATION' },
   { path: 'faq', component: FaqComponent, title: 'PUBLIC.NAV_FAQ' },
@@ -31,30 +26,5 @@ const routes: Routes = [
   { path: 'accesibilidad', component: AccessibilityStatementComponent, title: 'PUBLIC.NAV_ACCESSIBILITY' },
   { path: 'mapa', component: SitemapComponent, title: 'PUBLIC.NAV_SITEMAP' },
   { path: 'validar-documento', component: DocumentVerificationComponent, title: 'PUBLIC.VALIDATE_DOCUMENT' },
+  { path: 'busqueda', component: SiteSearchComponent, title: 'Buscador de sede' },
 ];
-
-@NgModule({
-  declarations: [
-    InstitutionalInfoComponent,
-    LegislationComponent,
-    FaqComponent,
-    ContactComponent,
-    ServiceStatusComponent,
-    OrganismsDirectoryComponent,
-    TransparencyComponent,
-    CalendarComponent,
-    GlossaryComponent,
-    AccessibilityStatementComponent,
-    SitemapComponent,
-    DocumentVerificationComponent,
-  ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    RouterModule.forChild(routes),
-    TranslateModule,
-    SkeletonScreenComponent,
-  ],
-})
-export class PublicInfoModule {}

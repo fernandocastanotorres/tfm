@@ -97,19 +97,7 @@
           <span class="public-header__chevron" aria-hidden="true">&#9662;</span>
         </button>
         <div id="public-user-menu" class="public-header__user-menu" [class.public-header__user-menu--open]="userMenuOpen" role="menu">
-          <button type="button" role="menuitem" (click)="onProfile()">{{ 'LAYOUT.USER_PROFILE' | translate }}</button>
-          <button type="button" role="menuitem" (click)="onSearchCases()">{{ 'LAYOUT.USER_SEARCH' | translate }}</button>
-          <button
-            type="button"
-            role="menuitem"
-            (click)="onMessages()"
-            [attr.aria-label]="unreadMessageCount > 0 ? ('LAYOUT.USER_MESSAGES_UNREAD' | translate: { count: unreadMessageCount > 9 ? '9+' : unreadMessageCount }) : ('LAYOUT.USER_MESSAGES' | translate)"
-          >
-            {{ 'LAYOUT.USER_MESSAGES' | translate }}
-            <span *ngIf="unreadMessageCount > 0" class="ml-1 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 font-semibold">
-              {{ unreadMessageCount > 9 ? '9+' : unreadMessageCount }}
-            </span>
-          </button>
+          <button type="button" role="menuitem" (click)="onCitizenFolder()">Carpeta ciudadana</button>
           <button type="button" role="menuitem" (click)="onLogout()">{{ 'LAYOUT.USER_LOGOUT' | translate }}</button>
         </div>
       </div>
@@ -150,6 +138,15 @@
 ></button>
 
 <main class="public-main" id="main-content" role="main">
+  <nav aria-label="Breadcrumb" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4" *ngIf="breadcrumbs.length > 1">
+    <ol class="flex items-center gap-2 text-sm text-surface-600">
+      <li *ngFor="let crumb of breadcrumbs; let last = last; let idx = index">
+        <a *ngIf="!last" [routerLink]="crumb.url" class="hover:text-brand-600 underline underline-offset-2">{{ crumb.label }}</a>
+        <span *ngIf="last" aria-current="page" class="font-semibold text-surface-900">{{ crumb.label }}</span>
+        <span *ngIf="!last" class="mx-1 text-surface-400" aria-hidden="true">/</span>
+      </li>
+    </ol>
+  </nav>
   <router-outlet></router-outlet>
 </main>
 

@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
 import { SignatureApiService, PublicCsvVerificationInfo, SignatureInfo } from '../../../application/services/signature-api.service';
 import { ActivatedRoute } from '@angular/router';
+import { NgIf, NgClass, DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-document-verification',
-  templateUrl: './document-verification.component.html',
-  styleUrls: ['./document-verification.component.css'],
-  standalone: false
+    selector: 'app-document-verification',
+    templateUrl: './document-verification.component.html',
+    styleUrls: ['./document-verification.component.css'],
+    imports: [NgIf, NgClass, FormsModule, DatePipe]
 })
 export class DocumentVerificationComponent {
   csvCode = '';

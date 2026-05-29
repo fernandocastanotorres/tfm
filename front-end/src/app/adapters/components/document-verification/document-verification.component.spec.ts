@@ -13,13 +13,12 @@ describe('DocumentVerificationComponent', () => {
   beforeEach(async () => {
     signatureSpy = jasmine.createSpyObj('SignatureApiService', ['verifyPublicFile', 'verifyByCsv']);
     await TestBed.configureTestingModule({
-      declarations: [DocumentVerificationComponent],
-      imports: [FormsModule],
-      providers: [
+    imports: [FormsModule, DocumentVerificationComponent],
+    providers: [
         { provide: SignatureApiService, useValue: signatureSpy },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: { get: () => null } } } }
-      ]
-    }).compileComponents();
+    ]
+}).compileComponents();
 
     fixture = TestBed.createComponent(DocumentVerificationComponent);
     component = fixture.componentInstance;

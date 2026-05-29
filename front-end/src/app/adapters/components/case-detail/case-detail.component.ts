@@ -2,18 +2,22 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CasesApiService } from '../../../application/services/cases-api.service';
 import { MessagesService } from '../../../application/services/messages.service';
-import { CaseDetail } from '../../../application/models/case.models';
+import { CaseDetail, RegistryEntryReceipt } from '../../../application/models/case.models';
 import { MessageDto } from '../../../application/models/message.models';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
 import { ToastService } from '../../../application/services/toast.service';
 import { Subscription, interval } from 'rxjs';
 import { trackByIndex } from '../../../application/utils/track-by.utils';
+import { NgIf, NgClass, NgFor, DatePipe } from '@angular/common';
+import { SkeletonScreenComponent } from '../../../shared/components/skeleton-screen/skeleton-screen.component';
+import { FormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-case-detail',
     templateUrl: './case-detail.component.html',
     styleUrls: ['./case-detail.component.css'],
-    standalone: false
+    imports: [NgIf, SkeletonScreenComponent, NgClass, NgFor, FormsModule, DatePipe, TranslatePipe]
 })
 export class CaseDetailComponent implements OnInit, OnDestroy {
 
@@ -23,6 +27,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
   isLoading = true;
   isUploading = false;
   isDownloadingEni = false;
+  registryReceipt: RegistryEntryReceipt | null = null;
   private caseId: string | null = null;
   private readonly subscriptions = new Subscription();
 
@@ -46,7 +51,9 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    console.log('CaseDetailComponent ngOnInit called');
     this.caseId = this.route.snapshot.paramMap.get('id');
+    console.log('CaseDetailComponent caseId:', this.caseId);
     if (!this.caseId) {
       this.toast.error('Error', 'No se ha podido identificar el expediente.');
       this.isLoading = false;
@@ -143,6 +150,14 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
     });
   }
 
+  openRegistryVerification(): void {
+    const url = this.registryReceipt?.verificationUrl;
+    if (!url) {
+      return;
+    }
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
+
   downloadEniDoc(): void {
     if (!this.caseDetail) {
       return;
@@ -209,11 +224,27 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
       next: (data) => {
         this.caseDetail = data;
         this.isLoading = false;
+        this.loadRegistryReceipt();
         this.loadMessages();
       },
       error: (err) => {
         this.toast.error('Error al cargar', err?.error?.message ?? 'No se ha podido cargar el expediente.');
         this.isLoading = false;
+      }
+    });
+  }
+
+  private loadRegistryReceipt(): void {
+    if (!this.caseId) {
+      return;
+    }
+
+    this.casesApiService.getRegistryReceipt(this.caseId).subscribe({
+      next: (data) => {
+        this.registryReceipt = data;
+      },
+      error: () => {
+        this.registryReceipt = null;
       }
     });
   }

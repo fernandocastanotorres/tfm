@@ -10,10 +10,9 @@ describe('AppointmentsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AppointmentsComponent],
-      imports: [TranslateModule.forRoot(), ReactiveFormsModule],
-      providers: [AppointmentsService]
-    }).compileComponents();
+    imports: [TranslateModule.forRoot(), ReactiveFormsModule, AppointmentsComponent],
+    providers: [AppointmentsService]
+}).compileComponents();
 
     fixture = TestBed.createComponent(AppointmentsComponent);
     component = fixture.componentInstance;

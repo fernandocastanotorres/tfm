@@ -1,16 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ProceduresApiService } from '../../../application/services/procedures-api.service';
 import { ProcedureItem } from '../../../application/models/procedure.models';
 import { ToastService } from '../../../application/services/toast.service';
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
+import { NgIf, NgFor } from '@angular/common';
+import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-procedures',
     templateUrl: './procedures.component.html',
     styleUrls: [],
-    standalone: false
+    imports: [RouterLink, NgIf, LoadingSkeletonComponent, NgFor, TranslatePipe]
 })
 export class ProceduresComponent implements OnInit {
   procedures: ProcedureItem[] = [];

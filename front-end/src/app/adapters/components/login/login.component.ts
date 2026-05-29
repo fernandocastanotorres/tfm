@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../application/services/auth.service';
+import { NgIf } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
-    standalone: false
+    imports: [FormsModule, ReactiveFormsModule, NgIf, RouterLink, TranslatePipe]
 })
 export class LoginComponent {
   loginForm: FormGroup;

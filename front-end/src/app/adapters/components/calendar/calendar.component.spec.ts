@@ -25,9 +25,8 @@ describe('CalendarComponent', () => {
     calendarService.getByType.and.returnValue(of(mockEvents));
 
     await TestBed.configureTestingModule({
-    declarations: [CalendarComponent],
     schemas: [NO_ERRORS_SCHEMA],
-    imports: [TranslateModule.forRoot(), RouterTestingModule],
+    imports: [TranslateModule.forRoot(), RouterTestingModule, CalendarComponent],
     providers: [
         { provide: CalendarService, useValue: calendarService },
         I18nService,

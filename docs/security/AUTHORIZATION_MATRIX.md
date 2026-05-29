@@ -35,6 +35,9 @@ It complements `REQUIREMENTS.md`, ADR-0003 (security stack), and boundary rules.
 | Citizen Procedures | `/api/v1/citizen/procedures/{procedureUuid}/amend` | POST | ✅ | ❌ | ✅ | Allowed only when procedure is in amendment state |
 | Citizen Documents | `/api/v1/citizen/procedures/{procedureUuid}/documents` | POST | ✅ | ❌ | ✅ | Citizen: own resource only |
 | Citizen Documents | `/api/v1/citizen/procedures/{procedureUuid}/documents/{docUuid}` | GET | ✅ | ❌ | ✅ | Citizen: own resource only |
+| Citizen Messages | `/api/v1/citizen/procedures/{procedureUuid}/messages` | GET | ✅ | ❌ | ✅ | Citizen: own resource only — ownership verified via `MessageService.verifyCitizenProcedureAccess()` |
+| Citizen Messages | `/api/v1/citizen/procedures/{procedureUuid}/messages` | POST | ✅ | ❌ | ✅ | Citizen: own resource only — ownership verified via `MessageService.verifyCitizenProcedureAccess()` |
+| Citizen Messages | `/api/v1/citizen/procedures/{procedureUuid}/messages/attachments/{attachmentId}/download` | GET | ✅ | ❌ | ✅ | Citizen: own resource only — ownership verified via `MessageService.verifyCitizenAttachmentAccess()` |
 | Public Catalog | `/api/v1/citizen/procedures/catalog` | GET | ✅ | ✅ | ✅ | Public endpoint, no auth required |
 | Public Catalog | `/api/v1/citizen/procedures/catalog/{identifier}` | GET | ✅ | ✅ | ✅ | Public endpoint, supports UUID or slug identifier |
 | Public Catalog | `/api/v1/citizen/procedures/catalog/{identifier}/form-schema` | GET | ✅ | ✅ | ✅ | Public read-only schema |
@@ -63,6 +66,8 @@ It complements `REQUIREMENTS.md`, ADR-0003 (security stack), and boundary rules.
 ## 3.1 Ownership Policy (Citizen)
 - Citizens can only access procedures and documents where `procedure.owner_id == authenticated_user_id`.
 - Ownership checks are mandatory in service/use-case authorization, not only at controller level.
+- **Message threads**: ownership verified via `MessageService.verifyCitizenProcedureAccess()` — checks `procedure.getOwnerId().equals(citizenId)` before any read/write operation.
+- **Message attachment download**: ownership verified via `MessageService.verifyCitizenAttachmentAccess()` — traverses `Attachment → Message → Thread → Procedure → ownerId` to verify the attachment belongs to a case owned by the citizen.
 
 ## 3.2 Task Processing Policy (Backoffice)
 - `ROLE_TRAMITADOR` can only complete tasks assigned/claimable under configured queue policies.

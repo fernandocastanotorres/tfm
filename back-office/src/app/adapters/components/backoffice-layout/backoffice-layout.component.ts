@@ -44,6 +44,7 @@ export class BackofficeLayoutComponent implements OnInit, OnDestroy {
     { label: 'Buzon de Contacto', icon: 'inbox', route: '/contact-inbox' },
     { label: 'Usuarios', icon: 'people', route: '/admin/users', roles: ['ROLE_ADMIN'] },
     { label: 'Procedimientos', icon: 'settings', route: '/admin/procedures', roles: ['ROLE_ADMIN'] },
+    { label: 'Notificaciones e-', icon: 'mail', route: '/admin/notifications', roles: ['ROLE_ADMIN'] },
     { label: 'Contenido Publico', icon: 'public', route: '/admin/public-content', roles: ['ROLE_ADMIN'] },
     { label: 'Transparencia', icon: 'transparency', route: '/admin/transparency', roles: ['ROLE_ADMIN'] }
   ];
@@ -135,10 +136,40 @@ export class BackofficeLayoutComponent implements OnInit, OnDestroy {
       inbox: '📬',
       people: '👥',
       settings: '⚙️',
+      mail: '✉️',
       public: '🌐',
       transparency: '📋'
     };
     return icons[icon] || '📄';
+  }
+
+  get breadcrumbs(): { label: string; url: string }[] {
+    const labels: Record<string, string> = {
+      dashboard: 'Panel Principal',
+      statistics: 'Estad\u00edsticas',
+      cases: 'Expedientes',
+      tasks: 'Tareas Pendientes',
+      'contact-inbox': 'Buz\u00f3n de Contacto',
+      admin: 'Administraci\u00f3n',
+      users: 'Usuarios',
+      procedures: 'Procedimientos',
+      notifications: 'Notificaciones electr\u00f3nicas',
+      'public-content': 'Contenido P\u00fablico',
+      transparency: 'Transparencia'
+    };
+    const segments = this.router.url.split('/').filter(s => s && !s.match(/^[0-9a-f-]{36}$/i));
+    if (segments.length === 0) return [];
+    const crumbs: { label: string; url: string }[] = [{ label: 'Inicio', url: '/dashboard' }];
+    let currentUrl = '';
+    for (const segment of segments) {
+      currentUrl += '/' + segment;
+      const label = labels[segment] || (segment.includes('-') ? segment.replace(/-/g, ' ') : segment);
+      crumbs.push({ label, url: currentUrl });
+    }
+    if (crumbs.length > 1 && crumbs[crumbs.length - 1].label.startsWith('cases')) {
+      crumbs[crumbs.length - 1] = { label: 'Detalle del expediente', url: crumbs[crumbs.length - 1].url };
+    }
+    return crumbs;
   }
 
   getPageTitle(): string {

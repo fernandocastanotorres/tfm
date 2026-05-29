@@ -8,6 +8,16 @@ export interface NotificationInboxItem {
   recordNumber?: string | null;
   caseTitle: string;
   typeKey: string;
+  status?: 'AVAILABLE' | 'ACCESSED' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED';
+  attachments?: NotificationAttachmentItem[];
+}
+
+export interface NotificationAttachmentItem {
+  id: string;
+  name: string;
+  mimeType: string;
+  size: number;
+  createdAt: string;
 }
 
 export interface DashboardNotificationItem {

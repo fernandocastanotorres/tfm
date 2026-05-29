@@ -17,6 +17,7 @@ import es.tfg.records.infrastructure.storage.FileStorageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -333,6 +334,233 @@ class DocumentServiceImplTest {
         assertThatThrownBy(() -> documentService.downloadDocument(documentId, ownerId, DocumentDownloadVariant.CURRENT))
                 .isInstanceOf(ResourceNotFoundException.class);
 
+        verify(fileStorageService, never()).openStream(any(), any());
+    }
+
+    @Test
+    void deleteDocument_shouldDeleteFileAndSetRejected_whenStoragePathExists() {
+        // Given
+        Document document = new Document();
+        document.setId(documentId);
+        document.setProcedureId(caseId);
+        document.setStoragePath("file.pdf");
+
+        Procedure procedure = new Procedure();
+        procedure.setId(caseId);
+        procedure.setOwnerId(ownerId);
+
+        when(documentRepository.findById(documentId)).thenReturn(Optional.of(document));
+        when(procedureRepository.findById(caseId)).thenReturn(Optional.of(procedure));
+        when(documentRepository.save(any(Document.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        // When
+        documentService.deleteDocument(documentId, ownerId);
+
+        // Then
+        verify(fileStorageService).delete(caseId, "file.pdf");
+        ArgumentCaptor<Document> captor = ArgumentCaptor.forClass(Document.class);
+        verify(documentRepository).save(captor.capture());
+        assertThat(captor.getValue().getStatus()).isEqualTo(DocumentStatus.REJECTED);
+        verify(eniMetadataService).upsertDocumentMetadata(any(Document.class));
+    }
+
+    @Test
+    void deleteDocument_shouldSkipFileDelete_whenStoragePathIsNull() {
+        // Given
+        Document document = new Document();
+        document.setId(documentId);
+        document.setProcedureId(caseId);
+        document.setStoragePath(null);
+
+        Procedure procedure = new Procedure();
+        procedure.setId(caseId);
+        procedure.setOwnerId(ownerId);
+
+        when(documentRepository.findById(documentId)).thenReturn(Optional.of(document));
+        when(procedureRepository.findById(caseId)).thenReturn(Optional.of(procedure));
+        when(documentRepository.save(any(Document.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        // When
+        documentService.deleteDocument(documentId, ownerId);
+
+        // Then
+        verify(fileStorageService, never()).delete(any(), any());
+        verify(documentRepository).save(any(Document.class));
+        verify(eniMetadataService).upsertDocumentMetadata(any(Document.class));
+    }
+
+    @Test
+    void deleteDocument_shouldThrowException_whenDocumentNotFound() {
+        // Given
+        when(documentRepository.findById(documentId)).thenReturn(Optional.empty());
+
+        // When/Then
+        assertThatThrownBy(() -> documentService.deleteDocument(documentId, ownerId))
+                .isInstanceOf(ResourceNotFoundException.class);
+        verify(documentRepository, never()).save(any());
+    }
+
+    @Test
+    void downloadDocumentForAdmin_shouldReturnCurrentVariant() {
+        // Given
+        Document document = new Document();
+        document.setId(documentId);
+        document.setProcedureId(caseId);
+        document.setName("test.pdf");
+        document.setStoragePath("current.pdf");
+        document.setSize(100L);
+
+        when(documentRepository.findById(documentId)).thenReturn(Optional.of(document));
+        when(fileStorageService.openStream(caseId, "current.pdf"))
+                .thenReturn(new ByteArrayInputStream(new byte[]{1, 2, 3}));
+
+        // When
+        Resource result = documentService.downloadDocumentForAdmin(documentId, DocumentDownloadVariant.CURRENT);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.getFilename()).isEqualTo("test.pdf");
+        verify(fileStorageService).openStream(caseId, "current.pdf");
+    }
+
+    @Test
+    void downloadDocumentForAdmin_shouldReturnOriginalVariant() {
+        // Given
+        Document document = new Document();
+        document.setId(documentId);
+        document.setProcedureId(caseId);
+        document.setName("original.pdf");
+        document.setOriginalStoragePath("original-path.pdf");
+        document.setOriginalSize(50L);
+
+        when(documentRepository.findById(documentId)).thenReturn(Optional.of(document));
+        when(fileStorageService.openStream(caseId, "original-path.pdf"))
+                .thenReturn(new ByteArrayInputStream(new byte[]{4, 5}));
+
+        // When
+        Resource result = documentService.downloadDocumentForAdmin(documentId, DocumentDownloadVariant.ORIGINAL);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.getFilename()).isEqualTo("original.pdf");
+        verify(fileStorageService).openStream(caseId, "original-path.pdf");
+    }
+
+    @Test
+    void downloadDocumentForAdmin_shouldReturnSignedVariant() {
+        // Given
+        Document document = new Document();
+        document.setId(documentId);
+        document.setProcedureId(caseId);
+        document.setName("test.pdf");
+        document.setSignedStoragePath("signed.pdf");
+        document.setSignedSize(200L);
+
+        when(documentRepository.findById(documentId)).thenReturn(Optional.of(document));
+        when(fileStorageService.openStream(caseId, "signed.pdf"))
+                .thenReturn(new ByteArrayInputStream(new byte[]{6, 7, 8, 9}));
+
+        // When
+        Resource result = documentService.downloadDocumentForAdmin(documentId, DocumentDownloadVariant.SIGNED);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.getFilename()).isEqualTo("signed-test.pdf");
+        verify(fileStorageService).openStream(caseId, "signed.pdf");
+    }
+
+    @Test
+    void downloadDocumentForAdmin_shouldThrowException_whenArtifactNotAvailable() {
+        // Given
+        Document document = new Document();
+        document.setId(documentId);
+        document.setProcedureId(caseId);
+        document.setName("test.pdf");
+        document.setOriginalStoragePath(null);
+
+        when(documentRepository.findById(documentId)).thenReturn(Optional.of(document));
+
+        // When/Then
+        assertThatThrownBy(() -> documentService.downloadDocumentForAdmin(documentId, DocumentDownloadVariant.ORIGINAL))
+                .isInstanceOf(ResourceNotFoundException.class);
+        verify(fileStorageService, never()).openStream(any(), any());
+    }
+
+    @Test
+    void downloadDocument_shouldReturnOriginalVariant() {
+        // Given
+        Procedure procedure = new Procedure();
+        procedure.setId(caseId);
+        procedure.setOwnerId(ownerId);
+
+        Document document = new Document();
+        document.setId(documentId);
+        document.setProcedureId(caseId);
+        document.setName("original.pdf");
+        document.setOriginalStoragePath("original-path.pdf");
+        document.setOriginalSize(50L);
+
+        when(documentRepository.findById(documentId)).thenReturn(Optional.of(document));
+        when(procedureRepository.findById(caseId)).thenReturn(Optional.of(procedure));
+        when(fileStorageService.openStream(caseId, "original-path.pdf"))
+                .thenReturn(new ByteArrayInputStream(new byte[]{1, 2}));
+
+        // When
+        Resource result = documentService.downloadDocument(documentId, ownerId, DocumentDownloadVariant.ORIGINAL);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.getFilename()).isEqualTo("original.pdf");
+        verify(fileStorageService).openStream(caseId, "original-path.pdf");
+    }
+
+    @Test
+    void downloadDocument_shouldReturnSignedVariant() {
+        // Given
+        Procedure procedure = new Procedure();
+        procedure.setId(caseId);
+        procedure.setOwnerId(ownerId);
+
+        Document document = new Document();
+        document.setId(documentId);
+        document.setProcedureId(caseId);
+        document.setName("test.pdf");
+        document.setSignedStoragePath("signed.pdf");
+        document.setSignedSize(200L);
+
+        when(documentRepository.findById(documentId)).thenReturn(Optional.of(document));
+        when(procedureRepository.findById(caseId)).thenReturn(Optional.of(procedure));
+        when(fileStorageService.openStream(caseId, "signed.pdf"))
+                .thenReturn(new ByteArrayInputStream(new byte[]{6, 7, 8, 9}));
+
+        // When
+        Resource result = documentService.downloadDocument(documentId, ownerId, DocumentDownloadVariant.SIGNED);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.getFilename()).isEqualTo("signed-test.pdf");
+        verify(fileStorageService).openStream(caseId, "signed.pdf");
+    }
+
+    @Test
+    void downloadDocument_shouldThrowException_whenOriginalArtifactNotAvailable() {
+        // Given
+        Procedure procedure = new Procedure();
+        procedure.setId(caseId);
+        procedure.setOwnerId(ownerId);
+
+        Document document = new Document();
+        document.setId(documentId);
+        document.setProcedureId(caseId);
+        document.setName("test.pdf");
+        document.setOriginalStoragePath(null);
+
+        when(documentRepository.findById(documentId)).thenReturn(Optional.of(document));
+        when(procedureRepository.findById(caseId)).thenReturn(Optional.of(procedure));
+
+        // When/Then
+        assertThatThrownBy(() -> documentService.downloadDocument(documentId, ownerId, DocumentDownloadVariant.ORIGINAL))
+                .isInstanceOf(ResourceNotFoundException.class);
         verify(fileStorageService, never()).openStream(any(), any());
     }
 }

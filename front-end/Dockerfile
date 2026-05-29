@@ -15,7 +15,7 @@ FROM nginx:1.25-alpine
 RUN apk add --no-cache curl && \
     addgroup -S appgroup && adduser -S appuser -G appgroup
 
-COPY --from=build /app/dist/front-end/ /usr/share/nginx/html/
+COPY --from=build /app/dist/front-end/browser/ /usr/share/nginx/html/
 COPY front-end/nginx.conf /etc/nginx/conf.d/default.conf
 COPY certs/tfg-selfsigned.crt /etc/nginx/certs/
 COPY certs/tfg-selfsigned.key /etc/nginx/certs/

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DashboardService, QuickAccessItem } from '../../../application/services/dashboard.service';
 import { CasesApiService } from '../../../application/services/cases-api.service';
 import { CaseItem } from '../../../application/models/case.models';
@@ -8,11 +8,15 @@ import { ToastService } from '../../../application/services/toast.service';
 import { changePage, updatePageSize, getPaginationState, PaginationState } from '../../../application/utils/pagination';
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
+import { NgFor, NgIf, NgClass, NgSwitch, NgSwitchCase, NgSwitchDefault, DatePipe } from '@angular/common';
+import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
+import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
-    standalone: false
+    imports: [NgFor, FormsModule, ReactiveFormsModule, NgIf, LoadingSkeletonComponent, NgClass, RouterLink, NgSwitch, NgSwitchCase, NgSwitchDefault, DatePipe, TranslatePipe]
 })
 export class DashboardComponent implements OnInit {
   cases: CaseItem[] = [];

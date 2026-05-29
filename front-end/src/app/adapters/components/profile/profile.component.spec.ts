@@ -1,7 +1,9 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Observable, of, throwError } from 'rxjs';
 import { ProfileComponent } from './profile.component';
@@ -37,21 +39,23 @@ describe('ProfileComponent', () => {
     toastSpy = jasmine.createSpyObj('ToastService', ['success', 'error', 'warning']);
 
     TestBed.configureTestingModule({
-      declarations: [ProfileComponent],
-      imports: [
+    imports: [
         ReactiveFormsModule,
-        RouterTestingModule,
         TranslateModule.forRoot({
-          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
-        })
-      ],
-      providers: [
+            loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
+        }),
+        ProfileComponent
+    ],
+    providers: [
         { provide: ProfileService, useValue: profileSpy },
         { provide: ConfirmDialogService, useValue: confirmSpy },
-        { provide: ToastService, useValue: toastSpy }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    });
+        { provide: ToastService, useValue: toastSpy },
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting()
+    ],
+    schemas: [NO_ERRORS_SCHEMA]
+});
 
     fixture = TestBed.createComponent(ProfileComponent);
     component = fixture.componentInstance;

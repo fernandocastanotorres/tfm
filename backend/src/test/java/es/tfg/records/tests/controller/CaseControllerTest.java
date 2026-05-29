@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.TestingAuthenticationToken;
@@ -41,10 +41,10 @@ class CaseControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
+    @MockitoBean
     private CaseService caseService;
 
-    @MockBean
+    @MockitoBean
     private EniPackagerService eniPackagerService;
 
     @Test
@@ -168,6 +168,29 @@ class CaseControllerTest {
                         .principal(new TestingAuthenticationToken(ownerId.toString(), null)))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.code").value("PROC-403-NOT_OWNER"));
+    }
+
+    @Test
+    void getRegistryReceipt_shouldReturn200() throws Exception {
+        UUID ownerId = UUID.randomUUID();
+        UUID caseId = UUID.randomUUID();
+        RegistryEntryReceiptDto receipt = new RegistryEntryReceiptDto(
+                caseId,
+                "EXP/URB/2026/000123",
+                "RE/URB/2026/000456",
+                Instant.now(),
+                "CSV123456",
+                "http://localhost:4200/sede/validar-documento?csv=CSV123456",
+                "/citizen/procedures/" + caseId + "/receipt"
+        );
+        when(caseService.getRegistryEntryReceipt(eq(caseId), eq(ownerId))).thenReturn(receipt);
+
+        mockMvc.perform(get("/citizen/procedures/{id}/registry-receipt", caseId)
+                        .principal(new TestingAuthenticationToken(ownerId.toString(), null)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.caseId").value(caseId.toString()))
+                .andExpect(jsonPath("$.recordNumber").value("EXP/URB/2026/000123"))
+                .andExpect(jsonPath("$.entryNumber").value("RE/URB/2026/000456"));
     }
 
     // ========================================================================

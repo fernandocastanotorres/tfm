@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SecureHomeComponent } from './secure-home.component';
 
 describe('SecureHomeComponent', () => {
@@ -8,9 +11,13 @@ describe('SecureHomeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SecureHomeComponent],
-      imports: [TranslateModule.forRoot()]
-    }).compileComponents();
+    imports: [TranslateModule.forRoot(), SecureHomeComponent],
+    providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting()
+    ]
+}).compileComponents();
 
     fixture = TestBed.createComponent(SecureHomeComponent);
     component = fixture.componentInstance;

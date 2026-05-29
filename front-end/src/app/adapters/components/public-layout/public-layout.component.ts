@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { I18nService, SupportedLocale } from '../../../application/services/i18n.service';
 import { GuidedTourService } from '../../../application/services/guided-tour.service';
 import { AuthService } from '../../../application/services/auth.service';
@@ -18,16 +18,53 @@ export interface MenuItem {
 }
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
+import { NgIf, NgFor } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-public-layout',
     templateUrl: './public-layout.component.html',
     styleUrls: ['./public-layout.component.css'],
-    standalone: false
+    imports: [RouterLink, NgIf, RouterLinkActive, NgFor, RouterOutlet, TranslatePipe]
 })
 export class PublicLayoutComponent implements OnInit, OnDestroy {
 
   private static readonly UNREAD_POLL_INTERVAL_MS = 30_000;
+
+  private readonly breadcrumbLabels: Record<string, string> = {
+    sede: 'Sede Electr\u00f3nica',
+    dashboard: 'Dashboard',
+    perfil: 'Perfil',
+    notificaciones: 'Notificaciones',
+    documentos: 'Documentos',
+    expedientes: 'Mis expedientes',
+    mensajes: 'Mensajes',
+    carpeta: 'Carpeta ciudadana',
+    pagos: 'Pagos',
+    procedimientos: 'Procedimientos',
+    citas: 'Citas',
+    login: 'Iniciar sesi\u00f3n',
+    registro: 'Registro',
+    faq: 'Preguntas frecuentes',
+    institucional: 'Informaci\u00f3n institucional',
+    normativa: 'Normativa',
+    contacto: 'Contacto',
+    estado: 'Estado del servicio',
+    organismo: 'Directorio de organismos',
+    transparencia: 'Transparencia',
+    calendario: 'Calendario',
+    glosario: 'Glosario',
+    accesibilidad: 'Accesibilidad',
+    mapa: 'Mapa web',
+    nuevo: 'Nuevo expediente',
+    detalle: 'Detalle',
+    buscar: 'Buscar',
+    flujo: 'Solicitud',
+    'verificar-email': 'Verificar email',
+    recuperacion: 'Recuperar contrase\u00f1a',
+    'validar-documento': 'Validar documento',
+    busqueda: 'Buscador'
+  };
 
   menuOpen = false;
   activeDropdown: string | null = null;
@@ -68,6 +105,7 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
     {
       labelKey: 'PUBLIC.MENU_RESOURCES',
       items: [
+        { labelKey: 'LAYOUT.SEARCH', route: '/sede/busqueda' },
         { labelKey: 'PUBLIC.NAV_CONTACT', route: '/sede/contacto' },
         { labelKey: 'PUBLIC.NAV_STATUS', route: '/sede/estado' },
         { labelKey: 'PUBLIC.NAV_GLOSSARY', route: '/sede/glosario' },
@@ -110,12 +148,19 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
       this.userMenuOpen = false;
     });
     this.loadUnreadMessageCount();
-    this.unreadPollSub = interval(PublicLayoutComponent.UNREAD_POLL_INTERVAL_MS)
-      .pipe(switchMap(() => this.messagesService.getUnreadCount()))
-      .subscribe({
-        next: (count) => { this.unreadMessageCount = count; },
-        error: () => {}
-      });
+    this.ensureUnreadPolling();
+  }
+
+  get breadcrumbs(): { label: string; url: string }[] {
+    const segments = this.router.url.split('/').filter(s => s);
+    const crumbs: { label: string; url: string }[] = [];
+    let currentUrl = '';
+    for (const segment of segments) {
+      currentUrl += '/' + segment;
+      const label = this.breadcrumbLabels[segment] || segment;
+      crumbs.push({ label, url: currentUrl });
+    }
+    return crumbs;
   }
 
   ngOnDestroy(): void {
@@ -187,6 +232,11 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
   onProfile(): void {
     this.closeUserMenu();
     this.router.navigate(['/sede/perfil']);
+  }
+
+  onCitizenFolder(): void {
+    this.closeUserMenu();
+    this.router.navigate(['/sede/carpeta']);
   }
 
   onLogout(): void {
@@ -305,6 +355,29 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
     this.isAuthenticated = this.authService.isAuthenticated();
     const label = this.authService.getAuthenticatedUserLabel();
     this.authenticatedUserLabel = label ?? 'Usuario';
+
+    // Avoid background polling for anonymous users.
+    this.ensureUnreadPolling();
+  }
+
+  private ensureUnreadPolling(): void {
+    if (!this.isAuthenticated) {
+      this.unreadPollSub?.unsubscribe();
+      this.unreadPollSub = undefined;
+      this.unreadMessageCount = 0;
+      return;
+    }
+
+    if (this.unreadPollSub) {
+      return;
+    }
+
+    this.unreadPollSub = interval(PublicLayoutComponent.UNREAD_POLL_INTERVAL_MS)
+      .pipe(switchMap(() => this.messagesService.getUnreadCount()))
+      .subscribe({
+        next: (count) => { this.unreadMessageCount = count; },
+        error: () => {}
+      });
   }
 
   private initTheme(): void {

@@ -9,9 +9,8 @@ describe('AccessibilityStatementComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AccessibilityStatementComponent],
-      imports: [TranslateModule.forRoot(), RouterTestingModule]
-    }).compileComponents();
+    imports: [TranslateModule.forRoot(), RouterTestingModule, AccessibilityStatementComponent]
+}).compileComponents();
 
     fixture = TestBed.createComponent(AccessibilityStatementComponent);
     component = fixture.componentInstance;

@@ -7,6 +7,7 @@ import {
   CaseItem,
   CaseDetail,
   CaseStatusResponse,
+  RegistryEntryReceipt,
   CreateCaseRequest,
   AmendCaseRequest,
   PagedResponse
@@ -87,6 +88,18 @@ export class CasesApiService {
       status: raw.status,
       currentTask: raw.currentTask ?? '',
       lastUpdated: raw.lastUpdated ?? raw.statusUpdatedAt
+    };
+  }
+
+  private mapRegistryReceipt(raw: any): RegistryEntryReceipt {
+    return {
+      caseId: raw.caseId,
+      recordNumber: raw.recordNumber ?? null,
+      entryNumber: raw.entryNumber ?? null,
+      submittedAt: raw.submittedAt ?? null,
+      csvCode: raw.csvCode ?? null,
+      verificationUrl: raw.verificationUrl ?? null,
+      receiptDownloadPath: raw.receiptDownloadPath ?? null
     };
   }
 
@@ -183,6 +196,12 @@ export class CasesApiService {
     }
     return this.http.get<any>(`${this.baseUrl}/${id}/status`).pipe(
       map((response) => this.mapStatus(response))
+    );
+  }
+
+  getRegistryReceipt(id: string): Observable<RegistryEntryReceipt> {
+    return this.http.get<any>(`${this.baseUrl}/${id}/registry-receipt`).pipe(
+      map((response) => this.mapRegistryReceipt(response))
     );
   }
 

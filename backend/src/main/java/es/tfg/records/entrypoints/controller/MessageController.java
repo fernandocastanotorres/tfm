@@ -44,6 +44,8 @@ public class MessageController {
             @RequestPart(value = "files", required = false) List<MultipartFile> files) {
 
         UUID citizenId = UUID.fromString(authentication.getName());
+        messageService.verifyCitizenProcedureAccess(procedureId, citizenId);
+
         UserEntity citizen = userJpaRepository.findById(citizenId).orElse(null);
         String senderName = citizen != null ? citizen.getDisplayName() : "Ciudadano";
         String senderEmail = citizen != null ? citizen.getEmail() : authentication.getName();
@@ -59,9 +61,13 @@ public class MessageController {
     @Operation(summary = "Get citizen thread messages", description = "Get paginated messages for a case thread as citizen")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<PagedMessages> getThreadMessagesAsCitizen(
+            Authentication authentication,
             @PathVariable UUID procedureId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
+
+        UUID citizenId = UUID.fromString(authentication.getName());
+        messageService.verifyCitizenProcedureAccess(procedureId, citizenId);
 
         PagedMessages messages = messageService.getThreadMessages(procedureId, page, size);
         messageService.markThreadAsRead(procedureId, MessageSenderRole.CITIZEN);
@@ -72,7 +78,11 @@ public class MessageController {
     @Operation(summary = "Download message attachment (citizen)")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Resource> downloadAttachmentAsCitizen(
+            Authentication authentication,
             @PathVariable UUID attachmentId) {
+
+        UUID citizenId = UUID.fromString(authentication.getName());
+        messageService.verifyCitizenAttachmentAccess(attachmentId, citizenId);
 
         Resource resource = messageService.downloadAttachment(attachmentId);
         return ResponseEntity.ok()

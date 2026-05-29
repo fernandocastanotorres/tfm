@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,7 +37,7 @@ class AdminCaseControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private BackofficeService backofficeService;
 
     @Test
@@ -196,5 +196,19 @@ class AdminCaseControllerTest {
                         .content("not valid json"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("SYS-400-BAD_REQUEST"));
+    }
+
+    @Test
+    void reassignCase_shouldReturn200() throws Exception {
+        UUID caseId = UUID.randomUUID();
+        UUID assigneeId = UUID.randomUUID();
+        when(backofficeService.reassignCase(eq(caseId), eq(assigneeId)))
+                .thenReturn(new CaseStatusResponse(caseId, "IN_REVIEW", Instant.now(), "Revision", null, null));
+
+        mockMvc.perform(patch("/admin/procedures/{id}/reassign", caseId)
+                        .queryParam("assigneeId", assigneeId.toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(caseId.toString()))
+                .andExpect(jsonPath("$.status").value("IN_REVIEW"));
     }
 }

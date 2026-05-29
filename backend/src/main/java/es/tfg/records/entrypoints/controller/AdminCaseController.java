@@ -86,4 +86,12 @@ public class AdminCaseController {
         return ResponseEntity.ok(backofficeService.resolveTask(id, request));
     }
 
+    @PatchMapping("/{id}/reassign")
+    @Operation(summary = "Reassign case", description = "Register reassignment of a case/task to another backoffice user and append audit timeline event.")
+    public ResponseEntity<CaseStatusResponse> reassignCase(
+            @PathVariable("id") UUID id,
+            @RequestParam UUID assigneeId) {
+        return ResponseEntity.ok(backofficeService.reassignCase(id, assigneeId));
+    }
+
 }

@@ -11,6 +11,7 @@ import { TaskResolutionComponent } from './adapters/components/task-resolution/t
 import { UserManagementComponent } from './adapters/components/user-management/user-management.component';
 import { ProcedureManagementComponent } from './adapters/components/procedure-management/procedure-management.component';
 import { ContactInboxComponent } from './adapters/components/contact-inbox/contact-inbox.component';
+import { ElectronicNotificationsComponent } from './adapters/components/electronic-notifications/electronic-notifications.component';
 import { ErrorPageComponent } from './adapters/components/error-page/error-page.component';
 
 import { authGuard, tramitadorGuard, adminGuard } from './application/guards/auth.guard';
@@ -40,6 +41,7 @@ const routes: Routes = [
         children: [
           { path: 'users', component: UserManagementComponent, canDeactivate: [pendingChangesGuard], title: 'BO.NAV.USERS' },
           { path: 'procedures', component: ProcedureManagementComponent, canDeactivate: [pendingChangesGuard], title: 'BO.NAV.PROCEDURES' },
+          { path: 'notifications', component: ElectronicNotificationsComponent, title: 'Notificaciones electronicas' },
           { path: 'public-content', loadComponent: () => import('./adapters/components/public-content-management/public-content-management.component').then(m => m.PublicContentManagementComponent), title: 'BO.NAV.PUBLIC_CONTENT' },
           { path: 'transparency', loadComponent: () => import('./adapters/components/transparency-management/transparency-management.component').then(m => m.TransparencyManagementComponent), title: 'BO.NAV.TRANSPARENCY' }
         ]

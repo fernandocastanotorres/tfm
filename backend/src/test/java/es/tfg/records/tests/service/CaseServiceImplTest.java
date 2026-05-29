@@ -5,6 +5,7 @@ import es.tfg.records.application.dto.CaseItem;
 import es.tfg.records.application.dto.CaseStatusResponse;
 import es.tfg.records.application.dto.CreateCaseRequest;
 import es.tfg.records.application.dto.PagedResponse;
+import es.tfg.records.application.dto.RegistryEntryReceiptDto;
 import es.tfg.records.application.dto.WorkflowDtos;
 import es.tfg.records.application.exception.AccessDeniedException;
 import es.tfg.records.application.exception.ConflictException;
@@ -34,7 +35,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -401,5 +405,230 @@ class CaseServiceImplTest {
 
         assertThatThrownBy(() -> caseService.updateCaseStatus(caseId, ownerId, "bad_status"))
                 .isInstanceOf(ValidationException.class);
+    }
+
+    @Test
+    void getCaseStatus_shouldReturnCaseStatusResponse() {
+        // Given
+        Procedure procedure = new Procedure();
+        procedure.setId(caseId);
+        procedure.setOwnerId(ownerId);
+        procedure.setStatus(CaseStatus.DRAFT);
+
+        when(procedureRepository.findById(caseId)).thenReturn(Optional.of(procedure));
+
+        // When
+        CaseStatusResponse result = caseService.getCaseStatus(caseId, ownerId);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.status()).isEqualTo("DRAFT");
+    }
+
+    @Test
+    void getCaseStatus_shouldThrowExceptionWhenCaseNotFound() {
+        // Given
+        when(procedureRepository.findById(caseId)).thenReturn(Optional.empty());
+
+        // When/Then
+        assertThatThrownBy(() -> caseService.getCaseStatus(caseId, ownerId))
+                .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    void getCaseStatus_shouldThrowExceptionWhenOwnerDoesNotMatch() {
+        // Given
+        Procedure procedure = new Procedure();
+        procedure.setId(caseId);
+        procedure.setOwnerId(UUID.randomUUID());
+
+        when(procedureRepository.findById(caseId)).thenReturn(Optional.of(procedure));
+
+        // When/Then
+        assertThatThrownBy(() -> caseService.getCaseStatus(caseId, ownerId))
+                .isInstanceOf(AccessDeniedException.class);
+    }
+
+    @Test
+    void getRegistryEntryReceipt_shouldReturnReceiptWithoutCsv() {
+        // Given
+        Procedure procedure = new Procedure();
+        procedure.setId(caseId);
+        procedure.setOwnerId(ownerId);
+        procedure.setStatus(CaseStatus.SUBMITTED);
+        procedure.setRecordNumber("REC-001");
+        procedure.setEntryNumber("ENT-001");
+        procedure.setSubmittedAt(Instant.now());
+
+        when(procedureRepository.findById(caseId)).thenReturn(Optional.of(procedure));
+        when(documentRepository.findByProcedureId(caseId)).thenReturn(List.of());
+
+        // When
+        RegistryEntryReceiptDto result = caseService.getRegistryEntryReceipt(caseId, ownerId);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.caseId()).isEqualTo(caseId);
+        assertThat(result.recordNumber()).isEqualTo("REC-001");
+        assertThat(result.entryNumber()).isEqualTo("ENT-001");
+        assertThat(result.csvCode()).isNull();
+        assertThat(result.verificationUrl()).isNull();
+    }
+
+    @Test
+    void getRegistryEntryReceipt_shouldReturnReceiptWithCsv() {
+        // Given
+        Procedure procedure = new Procedure();
+        procedure.setId(caseId);
+        procedure.setOwnerId(ownerId);
+        procedure.setStatus(CaseStatus.SUBMITTED);
+        procedure.setRecordNumber("REC-001");
+        procedure.setEntryNumber("ENT-001");
+        procedure.setSubmittedAt(Instant.now());
+
+        when(procedureRepository.findById(caseId)).thenReturn(Optional.of(procedure));
+
+        Document doc = new Document();
+        doc.setId(UUID.randomUUID());
+        when(documentRepository.findByProcedureId(caseId)).thenReturn(List.of(doc));
+        when(publicSignatureVerificationService.findCsvCodeByDocumentId(doc.getId())).thenReturn("CSV-123");
+
+        // When
+        RegistryEntryReceiptDto result = caseService.getRegistryEntryReceipt(caseId, ownerId);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.caseId()).isEqualTo(caseId);
+        assertThat(result.csvCode()).isEqualTo("CSV-123");
+        assertThat(result.verificationUrl()).contains("CSV-123");
+    }
+
+    @Test
+    void updateDraft_shouldUpdateFormData() throws Exception {
+        // Given
+        Procedure procedure = new Procedure();
+        procedure.setId(caseId);
+        procedure.setOwnerId(ownerId);
+        procedure.setStatus(CaseStatus.DRAFT);
+        procedure.setFormData("{\"field\":\"value\"}");
+
+        CreateCaseRequest request = new CreateCaseRequest(
+                procedureTypeId.toString(),
+                java.util.Map.of("field", "new value"),
+                null
+        );
+
+        when(procedureRepository.findById(caseId)).thenReturn(Optional.of(procedure));
+        doReturn("{\"field\":\"new value\"}").when(objectMapper).writeValueAsString(any());
+        when(procedureRepository.save(any(Procedure.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        // When
+        CaseStatusResponse result = caseService.updateDraft(caseId, ownerId, request);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.status()).isEqualTo("DRAFT");
+        verify(objectMapper).writeValueAsString(any());
+        verify(procedureRepository).save(any(Procedure.class));
+        verify(eniMetadataService).upsertProcedureMetadata(any(Procedure.class));
+    }
+
+    @Test
+    void updateDraft_shouldUpdateWithoutFormData() throws Exception {
+        // Given
+        Procedure procedure = new Procedure();
+        procedure.setId(caseId);
+        procedure.setOwnerId(ownerId);
+        procedure.setStatus(CaseStatus.DRAFT);
+
+        CreateCaseRequest request = new CreateCaseRequest(
+                procedureTypeId.toString(),
+                null,
+                null
+        );
+
+        when(procedureRepository.findById(caseId)).thenReturn(Optional.of(procedure));
+        when(procedureRepository.save(any(Procedure.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        // When
+        CaseStatusResponse result = caseService.updateDraft(caseId, ownerId, request);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.status()).isEqualTo("DRAFT");
+        verify(objectMapper, never()).writeValueAsString(any());
+        verify(procedureRepository).save(any(Procedure.class));
+        verify(eniMetadataService).upsertProcedureMetadata(any(Procedure.class));
+    }
+
+    @Test
+    void updateDraft_shouldThrowConflictWhenNotDraft() {
+        // Given
+        Procedure procedure = new Procedure();
+        procedure.setId(caseId);
+        procedure.setOwnerId(ownerId);
+        procedure.setStatus(CaseStatus.SUBMITTED);
+
+        when(procedureRepository.findById(caseId)).thenReturn(Optional.of(procedure));
+
+        CreateCaseRequest request = new CreateCaseRequest(procedureTypeId.toString(), null, null);
+
+        // When/Then
+        assertThatThrownBy(() -> caseService.updateDraft(caseId, ownerId, request))
+                .isInstanceOf(ConflictException.class);
+    }
+
+    @Test
+    void downloadReceipt_shouldGeneratePdfWithoutCsv() {
+        // Given
+        Procedure procedure = new Procedure();
+        procedure.setId(caseId);
+        procedure.setOwnerId(ownerId);
+        procedure.setStatus(CaseStatus.APPROVED);
+        procedure.setTitle("Test Procedure");
+        procedure.setRecordNumber("REC-001");
+        procedure.setEntryNumber("ENT-001");
+        procedure.setSubmittedAt(Instant.now());
+        procedure.setAssignedUnit("Test Unit");
+
+        when(procedureRepository.findById(caseId)).thenReturn(Optional.of(procedure));
+        when(documentRepository.findByProcedureId(caseId)).thenReturn(List.of());
+
+        // When
+        Resource result = caseService.downloadReceipt(caseId, ownerId);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result).isInstanceOf(ByteArrayResource.class);
+        assertThat(((ByteArrayResource) result).getByteArray()).isNotEmpty();
+    }
+
+    @Test
+    void downloadReceipt_shouldGeneratePdfWithCsv() {
+        // Given
+        Procedure procedure = new Procedure();
+        procedure.setId(caseId);
+        procedure.setOwnerId(ownerId);
+        procedure.setStatus(CaseStatus.APPROVED);
+        procedure.setTitle("Test Procedure");
+        procedure.setRecordNumber("REC-001");
+        procedure.setEntryNumber("ENT-001");
+        procedure.setSubmittedAt(Instant.now());
+        procedure.setAssignedUnit("Test Unit");
+
+        when(procedureRepository.findById(caseId)).thenReturn(Optional.of(procedure));
+
+        Document doc = new Document();
+        doc.setId(UUID.randomUUID());
+        when(documentRepository.findByProcedureId(caseId)).thenReturn(List.of(doc));
+        when(publicSignatureVerificationService.findCsvCodeByDocumentId(doc.getId())).thenReturn("CSV-123");
+
+        // When
+        Resource result = caseService.downloadReceipt(caseId, ownerId);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result).isInstanceOf(ByteArrayResource.class);
+        assertThat(((ByteArrayResource) result).getByteArray()).isNotEmpty();
     }
 }

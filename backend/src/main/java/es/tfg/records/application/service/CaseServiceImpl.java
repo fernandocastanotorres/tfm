@@ -160,6 +160,22 @@ public class CaseServiceImpl implements CaseService {
     }
 
     @Override
+    public RegistryEntryReceiptDto getRegistryEntryReceipt(UUID caseId, UUID ownerId) {
+        Procedure procedure = findAndVerifyOwnership(caseId, ownerId);
+        String csvCode = resolveFirstCsvCode(caseId);
+        String verificationUrl = csvCode == null ? null : publicSedeBaseUrl + "/validar-documento?csv=" + csvCode;
+        return new RegistryEntryReceiptDto(
+                procedure.getId(),
+                procedure.getRecordNumber(),
+                procedure.getEntryNumber(),
+                procedure.getSubmittedAt(),
+                csvCode,
+                verificationUrl,
+                "/citizen/procedures/" + procedure.getId() + "/receipt"
+        );
+    }
+
+    @Override
     public CaseItem createCase(UUID ownerId, CreateCaseRequest request) {
         UUID procedureTypeId = parseProcedureId(request.procedureId());
 
@@ -427,12 +443,7 @@ public class CaseServiceImpl implements CaseService {
         pdfDocument.add(new Paragraph("CODIGO DE VERIFICACION", sectionFont));
         pdfDocument.add(new Paragraph("SHA-256: " + digest, bodyFont));
 
-        String csvCode = documentRepository.findByProcedureId(caseId).stream()
-                .map(Document::getId)
-                .map(publicSignatureVerificationService::findCsvCodeByDocumentId)
-                .filter(Objects::nonNull)
-                .findFirst()
-                .orElse(null);
+        String csvCode = resolveFirstCsvCode(caseId);
 
         if (csvCode != null) {
             String verifyUrl = publicSedeBaseUrl + "/validar-documento?csv=" + csvCode;
@@ -472,6 +483,15 @@ public class CaseServiceImpl implements CaseService {
         } catch (Exception ex) {
             return "N/A";
         }
+    }
+
+    private String resolveFirstCsvCode(UUID caseId) {
+        return documentRepository.findByProcedureId(caseId).stream()
+                .map(Document::getId)
+                .map(publicSignatureVerificationService::findCsvCodeByDocumentId)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
     }
 
     private Procedure findAndVerifyOwnership(UUID caseId, UUID ownerId) {

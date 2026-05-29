@@ -72,7 +72,43 @@ Tras iniciar sesion, veras tu panel personal con:
    - **Estado actual:** Borrador, Enviado, En Tramitacion, Aprobado, Rechazado.
    - **Linea temporal:** Historial completo de eventos con fechas.
    - **Documentos:** Lista de documentos asociados con opcion de descarga.
-   - **Mensajes:** Sistema de mensajeria integrado para comunicarte con la administracion.
+    - **Mensajes:** Sistema de mensajeria integrado para comunicarte con la administracion.
+
+### 1.6.1 Datos registrales electronicos y justificante
+
+En el detalle del expediente, la sede muestra un bloque de **Datos registrales electronicos** con:
+
+- **Numero de expediente** (`EXP/...`)
+- **Numero de registro de entrada** (`RE/...`)
+- **Fecha/hora de presentacion**
+- **CSV** (si existe)
+
+Desde ese bloque puedes:
+
+1. **Descargar justificante registral** (PDF)
+2. **Verificar CSV** en la URL publica de validacion
+
+API asociada para este bloque:
+
+- `GET /api/v1/citizen/procedures/{id}/registry-receipt`
+
+### 1.6.2 Carpeta Ciudadana unificada
+
+La ruta **/sede/carpeta** centraliza la informacion operativa principal del ciudadano en una sola vista:
+
+- Resumen de expedientes
+- Mensajes no leidos
+- Pagos pendientes
+- Citas pendientes
+- Ultima notificacion
+
+Tambien incluye accesos directos a:
+
+- Expedientes
+- Mensajes
+- Pagos
+- Citas
+- Perfil
 
 ### 1.7 Gestion de Documentos
 
@@ -93,11 +129,27 @@ Tras iniciar sesion, veras tu panel personal con:
 4. Puedes **Responder** con texto y adjuntar archivos.
 
 ### 1.9 Perfil de Usuario
-
+...
 1. Haz click en tu nombre (esquina superior derecha) > **Datos personales**.
 2. Puedes consultar y modificar tu informacion personal.
 
-### 1.10 Cambio de Idioma
+### 1.10 Notificaciones Electronicas Formales (nuevo)
+
+La sede incluye una bandeja de notificaciones formales administrativas con validez juridica:
+
+1. Accede a la sección de **Notificaciones**.
+2. Podras ver tus notificaciones formales con su estado actual:
+   - **Disponible:** Notificacion emitida, pendiente de acceso.
+   - **Accedida:** Has abierto el contenido de la notificacion.
+   - **Aceptada/Rechazada:** Has respondido formalmente a la notificacion.
+   - **Caducada:** El plazo legal de respuesta ha expirado.
+3. Desde la bandeja puedes:
+   - Abrir la notificacion para leer su contenido y descargar adjuntos.
+   - **Aceptar** la notificacion.
+   - **Rechazar** la notificacion (debes indicar un motivo).
+
+### 1.11 Cambio de Idioma
+...
 
 - Usa el selector de idioma en la barra superior.
 - Idiomas disponibles: Espanol, Catalan, Euskera, Gallego, Valenciano.
@@ -196,16 +248,26 @@ El panel principal muestra:
 3. Puedes responder y gestionar las consultas.
 
 ### 2.10 Gestion de Contenido Publico
+...
+240. Gestionar calendario de eventos.
+241. Informes de transparencia.
+242. Legislacion.
+243. Glosario.
+244. Directorio de organismos.
 
-1. Ve a **Contenido Publico** en el menu lateral.
-2. Puedes editar:
-   - Informacion institucional.
-   - Preguntas frecuentes (FAQ).
-   - Calendario de eventos.
-   - Informes de transparencia.
-   - Legislacion.
-   - Glosario.
-   - Directorio de organismos.
+### 2.11 Gestion de Notificaciones Formales (nuevo)
+
+Permite a la administracion emitir comunicaciones formales vinculadas a expedientes:
+
+1. Ve a la sección **Notificaciones e-** en el menú lateral.
+2. Busca al ciudadano destinatario por email, nombre o DNI.
+3. Selecciona un expediente activo del ciudadano.
+4. Configura los detalles de la notificación:
+   - Tipo de notificación (ej: Requerimiento, Notificación formal, etc.)
+   - Asunto y cuerpo del mensaje.
+   - Plazo de caducidad en días naturales.
+   - Adjuntar documentos de soporte.
+5. Envía la notificación. El sistema notificará al ciudadano por email y registrará la fecha de disponibilidad y caducidad.
 
 ---
 

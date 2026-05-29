@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MessagesService } from '../../../application/services/messages.service';
 import { MessageThreadSummary, MessageDto } from '../../../application/models/message.models';
 import { changePage, updatePageSize, getPaginationState, PaginationState } from '../../../application/utils/pagination';
@@ -7,12 +7,16 @@ import { ToastService } from '../../../application/services/toast.service';
 import { Subscription } from 'rxjs';
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
+import { RouterLink } from '@angular/router';
+import { NgClass, NgFor, NgIf, DatePipe } from '@angular/common';
+import { SkeletonScreenComponent } from '../../../shared/components/skeleton-screen/skeleton-screen.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-messages',
     templateUrl: './messages.component.html',
     styleUrls: ['./messages.component.css'],
-    standalone: false
+    imports: [RouterLink, FormsModule, ReactiveFormsModule, NgClass, NgFor, NgIf, SkeletonScreenComponent, DatePipe, TranslatePipe]
 })
 export class MessagesComponent implements OnInit, OnDestroy {
   threads: MessageThreadSummary[] = [];

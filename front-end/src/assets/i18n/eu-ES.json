@@ -175,7 +175,8 @@
     "USER_MESSAGES": "Mezularitza",
     "USER_LOGOUT": "Saioa itxi",
     "TOUR_GUIDE": "Gida",
-    "USER_LABEL": "Erabiltzailea"
+    "USER_LABEL": "Erabiltzailea",
+    "SEARCH": "Bilatu egoitzan"
   },
   "NOTIFICATIONS": {
     "EYEBROW": "Jakinarazpenak",
@@ -212,7 +213,17 @@
     "MOCK_DOCUMENTS_TITLE": "Egiteke dagoen dokumentazioa",
     "MOCK_DOCUMENTS_MESSAGE": "Erantsi ordainketa-justifikantea 2026/05/20 baino lehen.",
     "MOCK_PAYMENT_TITLE": "Ordainketa erregistratuta",
-    "MOCK_PAYMENT_MESSAGE": "EXP-2026-003 espedientearekin lotutako ordainketa jaso da."
+    "MOCK_PAYMENT_MESSAGE": "EXP-2026-003 espedientearekin lotutako ordainketa jaso da.",
+    "ATTACHMENTS": "Eranskinak",
+    "CONFIRM_READ_TITLE": "Jakinarazpen elektronikoa",
+    "CONFIRM_READ_TEXT": "Jakinarazpen hau irakurri edo baztertu nahi duzu?",
+    "CONFIRM_READ_BUTTON": "Edukia irakurri",
+    "CONFIRM_REJECT_BUTTON": "Jakinarazpena baztertu",
+    "REJECT_NOTES_TITLE": "Baztertzeko arrazoia",
+    "REJECT_NOTES_PLACEHOLDER": "Adierazi baztertzeko arrazoia (aukerakoa)",
+    "ACCEPT_BUTTON": "Jakinarazpena onartu",
+    "REJECT_BUTTON": "Jakinarazpena baztertu",
+    "RESOLUTION_NOTES": "Ebazpenaren oharrak"
   },
   "DOCUMENTS": {
     "EYEBROW": "Dokumentuak",

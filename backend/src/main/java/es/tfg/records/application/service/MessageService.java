@@ -1,6 +1,7 @@
 package es.tfg.records.application.service;
 
 import es.tfg.records.application.dto.MessagingDtos.*;
+import es.tfg.records.application.exception.AccessDeniedException;
 import es.tfg.records.application.exception.ResourceNotFoundException;
 import es.tfg.records.domain.model.MessageSenderRole;
 import es.tfg.records.domain.port.MessageThreadRepository;
@@ -237,6 +238,23 @@ public class MessageService {
                 .map(Optional::get)
                 .sorted(Comparator.comparing(ThreadSummary::lastMessageAt, Comparator.nullsLast(Comparator.naturalOrder())).reversed())
                 .toList();
+    }
+
+    public void verifyCitizenProcedureAccess(UUID procedureId, UUID citizenId) {
+        ProcedureEntity procedure = procedureJpaRepository.findById(procedureId)
+                .orElseThrow(() -> new ResourceNotFoundException("PROC", procedureId.toString()));
+        if (!procedure.getOwnerId().equals(citizenId)) {
+            throw new AccessDeniedException("PROC", procedureId.toString());
+        }
+    }
+
+    public void verifyCitizenAttachmentAccess(UUID attachmentId, UUID citizenId) {
+        MessageAttachmentEntity attachment = attachmentRepository.findById(attachmentId)
+                .orElseThrow(() -> new ResourceNotFoundException("ATTACHMENT", attachmentId.toString()));
+        MessageEntity message = attachment.getMessage();
+        MessageThreadEntity thread = message.getThread();
+        UUID procedureId = thread.getProcedure().getId();
+        verifyCitizenProcedureAccess(procedureId, citizenId);
     }
 
     @Transactional(readOnly = true)

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter } from '@angular/router';
 import { Router } from '@angular/router';
 import { ProceduresComponent } from './procedures.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -21,14 +21,14 @@ describe('ProceduresComponent', () => {
     toastSpy = jasmine.createSpyObj('ToastService', ['error', 'success', 'warning']);
 
     await TestBed.configureTestingModule({
-      declarations: [ProceduresComponent, LoadingSkeletonComponent],
-      imports: [CommonModule, RouterTestingModule, TranslateModule.forRoot(), HttpClientTestingModule],
-      providers: [
+    imports: [CommonModule, TranslateModule.forRoot(), HttpClientTestingModule, ProceduresComponent, LoadingSkeletonComponent],
+    providers: [
         { provide: ToastService, useValue: toastSpy },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    }).compileComponents();
+        provideHttpClientTesting(),
+        provideRouter([])
+    ]
+}).compileComponents();
 
     fixture = TestBed.createComponent(ProceduresComponent);
     component = fixture.componentInstance;

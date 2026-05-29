@@ -1,5 +1,6 @@
-<main class="min-h-screen bg-surface-50 px-6 py-10" aria-labelledby="payments-title">
-  <div class="max-w-4xl mx-auto">
+<div class="bg-surface-50 min-h-screen">
+  <main aria-labelledby="payments-title">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <header class="space-y-2">
       <p class="text-sm font-semibold text-brand-600">{{ 'PAYMENTS.EYEBROW' | translate }}</p>
       <h1 id="payments-title" class="text-2xl font-semibold text-surface-900">{{ 'PAYMENTS.TITLE' | translate }}</h1>
@@ -48,7 +49,7 @@
       </select>
     </div>
 
-    <section class="mt-8 grid gap-6 lg:grid-cols-[2fr_1fr]">
+    <section class="mt-8 grid gap-6 lg:grid-cols-[2fr_1fr]" *ngIf="filteredPayments.length > 0">
       <div class="grid gap-4" tabindex="0" (keydown)="onPaymentListKeydown($event)" (focusin)="onPaymentListFocus()">
         <button
           type="button"
@@ -79,29 +80,30 @@
         {{ 'PAYMENTS.NEXT' | translate }}
       </button>
         </div>
-      </div>
-      <aside class="card p-6" *ngIf="selectedPayment">
-        <h2 class="text-lg font-semibold text-surface-900">{{ 'PAYMENTS.DETAIL_TITLE' | translate }}</h2>
-        <p class="text-surface-600 mt-2">{{ selectedPayment.conceptKey | translate }}</p>
-        <div class="mt-4 space-y-2">
-          <p><strong>{{ 'PAYMENTS.DETAIL_AMOUNT' | translate }}:</strong> {{ selectedPayment.amountLabel }}</p>
-          <p><strong>{{ 'PAYMENTS.DETAIL_DUE' | translate }}:</strong> {{ selectedPayment.dueDate }}</p>
-          <p><strong>{{ 'PAYMENTS.DETAIL_STATUS' | translate }}:</strong> {{ selectedPayment.statusKey | translate }}</p>
-          <p><strong>{{ 'PAYMENTS.DETAIL_CASE' | translate }}:</strong> {{ selectedPayment.caseId }} · {{ selectedPayment.caseTitleKey | translate }}</p>
-          <p><strong>{{ 'PAYMENTS.DETAIL_UNIT' | translate }}:</strong> {{ selectedPayment.unitKey | translate }}</p>
-        </div>
-        <div class="mt-5 flex flex-col gap-3">
-          <button class="btn-primary" type="button" [disabled]="selectedPayment.statusKey === 'PAYMENT_STATUS.PAID'" (click)="markAsPaid(selectedPayment)">
-            {{ 'PAYMENTS.PAY' | translate }}
-          </button>
-          <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button">
-            {{ 'PAYMENTS.DOWNLOAD' | translate }}
-          </button>
-        </div>
-      </aside>
-      <div *ngIf="payments.length === 0" class="card p-6 text-surface-600">
-        {{ 'PAYMENTS.EMPTY' | translate }}
-      </div>
-    </section>
-  </div>
-</main>
+       </div>
+       <aside class="card p-6" *ngIf="selectedPayment">
+         <h2 class="text-lg font-semibold text-surface-900">{{ 'PAYMENTS.DETAIL_TITLE' | translate }}</h2>
+         <p class="text-surface-600 mt-2">{{ selectedPayment.conceptKey | translate }}</p>
+         <div class="mt-4 space-y-2">
+           <p><strong>{{ 'PAYMENTS.DETAIL_AMOUNT' | translate }}:</strong> {{ selectedPayment.amountLabel }}</p>
+           <p><strong>{{ 'PAYMENTS.DETAIL_DUE' | translate }}:</strong> {{ selectedPayment.dueDate }}</p>
+           <p><strong>{{ 'PAYMENTS.DETAIL_STATUS' | translate }}:</strong> {{ selectedPayment.statusKey | translate }}</p>
+           <p><strong>{{ 'PAYMENTS.DETAIL_CASE' | translate }}:</strong> {{ selectedPayment.caseId }} · {{ selectedPayment.caseTitleKey | translate }}</p>
+           <p><strong>{{ 'PAYMENTS.DETAIL_UNIT' | translate }}:</strong> {{ selectedPayment.unitKey | translate }}</p>
+         </div>
+         <div class="mt-5 flex flex-col gap-3">
+           <button class="btn-primary" type="button" [disabled]="selectedPayment.statusKey === 'PAYMENT_STATUS.PAID'" (click)="markAsPaid(selectedPayment)">
+             {{ 'PAYMENTS.PAY' | translate }}
+           </button>
+           <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button">
+             {{ 'PAYMENTS.DOWNLOAD' | translate }}
+           </button>
+         </div>
+       </aside>
+     </section>
+     <div *ngIf="filteredPayments.length === 0" class="mt-8 card p-6 text-center text-surface-600">
+       {{ 'PAYMENTS.EMPTY' | translate }}
+     </div>
+   </div>
+  </main>
+</div>

@@ -1,103 +1,135 @@
-<main class="min-h-screen bg-surface-50 px-6 py-10" aria-labelledby="notifications-title">
-  <div class="max-w-4xl mx-auto">
-    <header class="space-y-2">
-      <p class="text-sm font-semibold text-brand-600">{{ 'NOTIFICATIONS.EYEBROW' | translate }}</p>
-      <h1 id="notifications-title" class="text-2xl font-semibold text-surface-900">{{ 'NOTIFICATIONS.TITLE' | translate }}</h1>
-      <p class="text-surface-600">{{ 'NOTIFICATIONS.SUBTITLE' | translate }}</p>
-    </header>
-
-    <div class="mt-6 flex flex-wrap gap-3">
-      <button class="btn-primary" type="button" (click)="toggleFilter('all')" [ngClass]="filter === 'all' ? '' : 'bg-surface-200 text-surface-700 hover:bg-surface-300'">
-        {{ 'NOTIFICATIONS.FILTER_ALL' | translate }}
-      </button>
-      <button class="btn-primary" type="button" (click)="toggleFilter('unread')" [ngClass]="filter === 'unread' ? '' : 'bg-surface-200 text-surface-700 hover:bg-surface-300'">
-        {{ 'NOTIFICATIONS.FILTER_UNREAD' | translate }}
-      </button>
-      <div class="flex flex-wrap gap-3" [formGroup]="filterForm">
-        <label class="sr-only" for="notifications-search">{{ 'NOTIFICATIONS.SEARCH_LABEL' | translate }}</label>
-        <input id="notifications-search" type="text" formControlName="search" class="field-input w-64" [placeholder]="'NOTIFICATIONS.SEARCH_PLACEHOLDER' | translate" />
-        <label class="sr-only" for="notifications-status">{{ 'NOTIFICATIONS.FILTER_STATUS' | translate }}</label>
-        <select id="notifications-status" formControlName="status" class="field-input w-44">
-          <option value="all">{{ 'NOTIFICATIONS.FILTER_ALL' | translate }}</option>
-          <option value="unread">{{ 'NOTIFICATIONS.FILTER_UNREAD' | translate }}</option>
-          <option value="read">{{ 'NOTIFICATIONS.FILTER_READ' | translate }}</option>
-        </select>
-        <label class="sr-only" for="notifications-type">{{ 'NOTIFICATIONS.FILTER_TYPE' | translate }}</label>
-        <select id="notifications-type" formControlName="type" class="field-input w-44">
-          <option value="all">{{ 'NOTIFICATIONS.FILTER_TYPE_ALL' | translate }}</option>
-          <option *ngFor="let type of typeOptions; trackBy: trackByIndex" [value]="type">{{ type | translate }}</option>
-        </select>
-        <label class="sr-only" for="notifications-case">{{ 'NOTIFICATIONS.FILTER_CASE' | translate }}</label>
-        <select id="notifications-case" formControlName="caseId" class="field-input w-44">
-          <option value="all">{{ 'NOTIFICATIONS.FILTER_CASE_ALL' | translate }}</option>
-          <option *ngFor="let caseOption of caseOptions; trackBy: trackByIndex" [value]="caseOption.id">
-            {{ caseOption.recordNumber || caseOption.id }} · {{ caseOption.label }}
-          </option>
-        </select>
-        <label class="sr-only" for="notifications-sort">{{ 'NOTIFICATIONS.SORT_LABEL' | translate }}</label>
-        <select id="notifications-sort" formControlName="sort" class="field-input w-40">
-          <option value="date">{{ 'NOTIFICATIONS.SORT_DATE' | translate }}</option>
-          <option value="title">{{ 'NOTIFICATIONS.SORT_TITLE' | translate }}</option>
-        </select>
-        <label class="sr-only" for="notifications-page-size">{{ 'NOTIFICATIONS.PAGE_SIZE_LABEL' | translate }}</label>
-        <select id="notifications-page-size" formControlName="pageSize" class="field-input w-24" (change)="updatePageSize($any($event.target).value)">
-          <option *ngFor="let size of paginationOptions; trackBy: trackByIndex" [value]="size">{{ size }}</option>
-        </select>
-      </div>
-    </div>
-
-    <section class="mt-6 grid gap-4" tabindex="0" (keydown)="onNotificationListKeydown($event)" (focusin)="onNotificationListFocus()">
-      <article
-        class="card p-6"
-        *ngFor="let item of pagedInbox; trackBy: trackByIndex"
-        appNotificationCard
-        tabindex="0"
-        role="button"
-        (click)="selectItem(item)"
-        (keydown.enter)="selectItem(item)"
-        (keydown.space)="$event.preventDefault(); selectItem(item)"
-        [ngClass]="selectedItem?.id === item.id ? 'ring-2 ring-brand-300' : ''"
-      >
-        <div class="flex items-start justify-between gap-4">
-          <div>
-            <h2 class="text-lg font-semibold text-surface-900">{{ item.title }}</h2>
-            <p class="text-surface-600 mt-2">{{ item.message }}</p>
-            <p class="text-surface-500 text-sm mt-2">{{ (item.recordNumber || item.caseId) }} · {{ item.caseTitle }}</p>
-            <p class="text-surface-500 text-sm mt-2">{{ item.date | date:'dd/MM/yyyy HH:mm' }}</p>
+<main class="min-h-screen bg-surface-50" aria-labelledby="notifications-title">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <header class="space-y-2">
+          <p class="text-sm font-semibold text-brand-600">{{ 'NOTIFICATIONS.EYEBROW' | translate }}</p>
+          <h1 id="notifications-title" class="text-2xl font-semibold text-surface-900">{{ 'NOTIFICATIONS.TITLE' | translate }}</h1>
+          <p class="text-surface-600">{{ 'NOTIFICATIONS.SUBTITLE' | translate }}</p>
+        </header>
+        
+        <div class="mt-6 flex flex-wrap gap-3">
+          <button class="btn-primary" type="button" (click)="toggleFilter('all')" [ngClass]="filter === 'all' ? '' : 'bg-surface-200 text-surface-700 hover:bg-surface-300'">
+            {{ 'NOTIFICATIONS.FILTER_ALL' | translate }}
+          </button>
+          <button class="btn-primary" type="button" (click)="toggleFilter('unread')" [ngClass]="filter === 'unread' ? '' : 'bg-surface-200 text-surface-700 hover:bg-surface-300'">
+            {{ 'NOTIFICATIONS.FILTER_UNREAD' | translate }}
+          </button>
+          <div class="flex flex-wrap gap-3" [formGroup]="filterForm">
+            <label class="sr-only" for="notifications-search">{{ 'NOTIFICATIONS.SEARCH_LABEL' | translate }}</label>
+            <input id="notifications-search" type="text" formControlName="search" class="field-input w-64" [placeholder]="'NOTIFICATIONS.SEARCH_PLACEHOLDER' | translate" />
+            <label class="sr-only" for="notifications-status">{{ 'NOTIFICATIONS.FILTER_STATUS' | translate }}</label>
+            <select id="notifications-status" formControlName="status" class="field-input w-44">
+              <option value="all">{{ 'NOTIFICATIONS.FILTER_ALL' | translate }}</option>
+              <option value="unread">{{ 'NOTIFICATIONS.FILTER_UNREAD' | translate }}</option>
+              <option value="read">{{ 'NOTIFICATIONS.FILTER_READ' | translate }}</option>
+            </select>
+            <label class="sr-only" for="notifications-type">{{ 'NOTIFICATIONS.FILTER_TYPE' | translate }}</label>
+            <select id="notifications-type" formControlName="type" class="field-input w-44">
+              <option value="all">{{ 'NOTIFICATIONS.FILTER_TYPE_ALL' | translate }}</option>
+              <option *ngFor="let type of typeOptions; trackBy: trackByIndex" [value]="type">{{ type | translate }}</option>
+            </select>
+            <label class="sr-only" for="notifications-case">{{ 'NOTIFICATIONS.FILTER_CASE' | translate }}</label>
+            <select id="notifications-case" formControlName="caseId" class="field-input w-44">
+              <option value="all">{{ 'NOTIFICATIONS.FILTER_CASE_ALL' | translate }}</option>
+              <option *ngFor="let caseOption of caseOptions; trackBy: trackByIndex" [value]="caseOption.id">
+                {{ caseOption.recordNumber || caseOption.id }} · {{ caseOption.label }}
+              </option>
+            </select>
+            <label class="sr-only" for="notifications-sort">{{ 'NOTIFICATIONS.SORT_LABEL' | translate }}</label>
+            <select id="notifications-sort" formControlName="sort" class="field-input w-40">
+              <option value="date">{{ 'NOTIFICATIONS.SORT_DATE' | translate }}</option>
+              <option value="title">{{ 'NOTIFICATIONS.SORT_TITLE' | translate }}</option>
+            </select>
+            <label class="sr-only" for="notifications-page-size">{{ 'NOTIFICATIONS.PAGE_SIZE_LABEL' | translate }}</label>
+            <select id="notifications-page-size" formControlName="pageSize" class="field-input w-24" (change)="updatePageSize($any($event.target).value)">
+              <option *ngFor="let size of paginationOptions; trackBy: trackByIndex" [value]="size">{{ size }}</option>
+            </select>
           </div>
-          <span class="text-xs font-semibold px-3 py-1 rounded-full" [ngClass]="item.read ? 'bg-surface-100 text-surface-600' : 'bg-brand-100 text-brand-700'">
-            {{ item.read ? ('NOTIFICATIONS.READ' | translate) : ('NOTIFICATIONS.NEW' | translate) }}
-          </span>
         </div>
-        <div class="mt-4 flex flex-wrap gap-3">
-          <button class="btn-primary" type="button" (click)="markAsRead(item)">{{ 'NOTIFICATIONS.MARK_READ' | translate }}</button>
-          <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button">{{ 'NOTIFICATIONS.VIEW' | translate }}</button>
+        
+        <section class="mt-6 grid gap-4" tabindex="0" (keydown)="onNotificationListKeydown($event)" (focusin)="onNotificationListFocus()">
+          <article
+            class="card p-6"
+            *ngFor="let item of pagedInbox; trackBy: trackByIndex"
+            appNotificationCard
+            tabindex="0"
+            role="button"
+            (click)="selectItem(item)"
+            (keydown.enter)="selectItem(item)"
+            (keydown.space)="$event.preventDefault(); selectItem(item)"
+            [ngClass]="selectedItem?.id === item.id ? 'ring-2 ring-brand-300' : ''"
+          >
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <h2 class="text-lg font-semibold text-surface-900">{{ item.title }}</h2>
+                <p class="text-surface-600 mt-2">{{ item.message }}</p>
+                <p class="text-surface-500 text-sm mt-2">{{ (item.recordNumber || item.caseId) }} · {{ item.caseTitle }}</p>
+                <p class="text-surface-500 text-sm mt-2">{{ item.date | date:'dd/MM/yyyy HH:mm' }}</p>
+              </div>
+              <span class="text-xs font-semibold px-3 py-1 rounded-full" [ngClass]="item.read ? 'bg-surface-100 text-surface-600' : 'bg-brand-100 text-brand-700'">
+                {{ item.read ? ('NOTIFICATIONS.READ' | translate) : ('NOTIFICATIONS.NEW' | translate) }}
+              </span>
+            </div>
+            <div class="mt-4 flex flex-wrap gap-3">
+              <button class="btn-primary" type="button" (click)="selectItem(item)">{{ 'NOTIFICATIONS.VIEW' | translate }}</button>
+            </div>
+          </article>
+          <div *ngIf="pagedInbox.length === 0" class="card p-6 text-surface-600">
+            {{ 'NOTIFICATIONS.EMPTY' | translate }}
+          </div>
+        </section>
+        
+        <div class="mt-6 flex items-center justify-between" *ngIf="filteredInbox.length > 0">
+          <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage - 1)" [disabled]="paginationState.currentPage === 1">
+            {{ 'NOTIFICATIONS.PREVIOUS' | translate }}
+          </button>
+          <span class="text-sm text-surface-600">{{ 'NOTIFICATIONS.PAGE' | translate }} {{ paginationState.currentPage }} / {{ paginationState.totalPages }}</span>
+          <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage + 1)" [disabled]="paginationState.currentPage === paginationState.totalPages">
+            {{ 'NOTIFICATIONS.NEXT' | translate }}
+          </button>
         </div>
-      </article>
-      <div *ngIf="pagedInbox.length === 0" class="card p-6 text-surface-600">
-        {{ 'NOTIFICATIONS.EMPTY' | translate }}
-      </div>
-    </section>
+        
+         <section class="mt-8 card p-6" *ngIf="selectedItem">
+           <h2 class="text-lg font-semibold text-surface-900">{{ 'NOTIFICATIONS.DETAIL_TITLE' | translate }}</h2>
+           <div class="mt-4 space-y-2">
+             <p class="text-sm text-surface-500">{{ 'NOTIFICATION_STATUS.' + selectedItem.status | translate }}</p>
+             <p class="text-sm text-surface-500">{{ selectedItem.typeKey | translate }}</p>
+             <p class="text-base font-semibold text-surface-900">{{ selectedItem.title }}</p>
+             <p class="text-surface-600">{{ selectedItem.message }}</p>
+             <p class="text-sm text-surface-500">{{ (selectedItem.recordNumber || selectedItem.caseId) }} · {{ selectedItem.caseTitle }}</p>
+             <p class="text-sm text-surface-500">{{ selectedItem.date | date:'dd/MM/yyyy HH:mm' }}</p>
+           </div>
 
-    <div class="mt-6 flex items-center justify-between" *ngIf="filteredInbox.length > 0">
-      <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage - 1)" [disabled]="paginationState.currentPage === 1">
-        {{ 'NOTIFICATIONS.PREVIOUS' | translate }}
-      </button>
-      <span class="text-sm text-surface-600">{{ 'NOTIFICATIONS.PAGE' | translate }} {{ paginationState.currentPage }} / {{ paginationState.totalPages }}</span>
-      <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage + 1)" [disabled]="paginationState.currentPage === paginationState.totalPages">
-        {{ 'NOTIFICATIONS.NEXT' | translate }}
-      </button>
+           <div *ngIf="selectedItem.status === 'ACCESSED'" class="mt-6 flex flex-wrap gap-3">
+             <button class="px-4 py-2 rounded-md bg-green-600 text-white text-sm font-medium hover:bg-green-700" type="button" (click)="accept(selectedItem)">
+               {{ 'NOTIFICATIONS.ACCEPT_BUTTON' | translate }}
+             </button>
+             <button class="px-4 py-2 rounded-md bg-red-600 text-white text-sm font-medium hover:bg-red-700" type="button" (click)="reject(selectedItem)">
+               {{ 'NOTIFICATIONS.REJECT_BUTTON' | translate }}
+             </button>
+           </div>
+
+           <div *ngIf="selectedItem.attachments && selectedItem.attachments.length > 0" class="mt-6">
+             <h3 class="text-sm font-semibold text-surface-900 mb-3">{{ 'NOTIFICATIONS.ATTACHMENTS' | translate }}</h3>
+             <div class="grid gap-2">
+               <button
+                 *ngFor="let attachment of selectedItem.attachments"
+                 class="btn-primary bg-surface-100 text-surface-700 hover:bg-surface-200 flex items-center gap-3 p-3 text-left"
+                 type="button"
+                 (click)="downloadAttachment(selectedItem.id, attachment.id, attachment.name)"
+               >
+                 <svg class="w-5 h-5 text-surface-400" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                 </svg>
+                 <div class="flex-1 overflow-hidden">
+                   <p class="text-sm font-medium text-surface-900 truncate">{{ attachment.name }}</p>
+                   <p class="text-xs text-surface-500">{{ formatFileSize(attachment.size) }}</p>
+                 </div>
+                 <svg class="w-4 h-4 text-surface-400" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m0 0v8" />
+                 </svg>
+               </button>
+             </div>
+           </div>
+         </section>
     </div>
-
-    <section class="mt-8 card p-6" *ngIf="selectedItem">
-      <h2 class="text-lg font-semibold text-surface-900">{{ 'NOTIFICATIONS.DETAIL_TITLE' | translate }}</h2>
-      <div class="mt-4 space-y-2">
-        <p class="text-sm text-surface-500">{{ selectedItem.typeKey | translate }}</p>
-        <p class="text-base font-semibold text-surface-900">{{ selectedItem.title }}</p>
-        <p class="text-surface-600">{{ selectedItem.message }}</p>
-        <p class="text-sm text-surface-500">{{ (selectedItem.recordNumber || selectedItem.caseId) }} · {{ selectedItem.caseTitle }}</p>
-        <p class="text-sm text-surface-500">{{ selectedItem.date | date:'dd/MM/yyyy HH:mm' }}</p>
-      </div>
-    </section>
-  </div>
 </main>

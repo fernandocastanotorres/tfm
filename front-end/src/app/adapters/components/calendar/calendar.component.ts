@@ -1,16 +1,20 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, skip } from 'rxjs';
 import { CalendarService } from '../../../application/services/calendar.service';
 import { I18nService } from '../../../application/services/i18n.service';
 import { CalendarEvent } from '../../../application/models/sede.models';
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
+import { RouterLink } from '@angular/router';
+import { NgFor, NgIf, NgClass, DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-calendar',
     templateUrl: './calendar.component.html',
     styleUrls: ['./calendar.component.css'],
-    standalone: false
+    imports: [RouterLink, NgFor, FormsModule, NgIf, NgClass, DatePipe, TranslatePipe]
 })
 export class CalendarComponent implements OnInit, OnDestroy {
   events: CalendarEvent[] = [];
@@ -35,9 +39,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadEvents();
-    this.localeSub = this.i18nService.getCurrentLocale$().subscribe(() => {
-      this.loadEvents();
-    });
+    // Avoid double-fetch on init if the locale observable emits immediately.
+    this.localeSub = this.i18nService.getCurrentLocale$().pipe(skip(1)).subscribe(() => this.loadEvents());
   }
 
   ngOnDestroy(): void {

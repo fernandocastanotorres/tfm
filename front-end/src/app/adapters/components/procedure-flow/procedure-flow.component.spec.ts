@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 
@@ -36,43 +36,45 @@ describe('ProcedureFlowComponent', () => {
     tasks: mockTasks
   };
 
-  function setupComponent(routeParams: { procedureId?: string } = { procedureId: 'test-procedure' }, apiResponse?: { data?: ProcedureDetail; error?: Error }): void {
-    proceduresSpy = jasmine.createSpyObj('ProceduresApiService', ['getByIdentifier']);
-    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-    toastSpy = jasmine.createSpyObj('ToastService', ['error']);
+    function setupComponent(routeParams: { procedureId?: string } = { procedureId: 'test-procedure' }, apiResponse?: { data?: ProcedureDetail; error?: Error }): void {
+        proceduresSpy = jasmine.createSpyObj('ProceduresApiService', ['getByIdentifier']);
+        routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+        toastSpy = jasmine.createSpyObj('ToastService', ['error']);
 
-    if (apiResponse?.error) {
-      proceduresSpy.getByIdentifier.and.returnValue(throwError(() => apiResponse.error));
-    } else if (apiResponse?.data) {
-      proceduresSpy.getByIdentifier.and.returnValue(of(apiResponse.data));
-    }
+        if (apiResponse?.error) {
+            proceduresSpy.getByIdentifier.and.returnValue(throwError(() => apiResponse.error));
+        } else if (apiResponse?.data) {
+            proceduresSpy.getByIdentifier.and.returnValue(of(apiResponse.data));
+        }
 
-    TestBed.configureTestingModule({
-    declarations: [ProcedureFlowComponent],
-    schemas: [NO_ERRORS_SCHEMA],
-    imports: [TranslateModule.forRoot()],
-    providers: [
-        { provide: ProceduresApiService, useValue: proceduresSpy },
-        { provide: ToastService, useValue: toastSpy },
-        {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    paramMap: {
-                        get: (key: string) => routeParams[key as keyof typeof routeParams]
+        TestBed.configureTestingModule({
+            schemas: [NO_ERRORS_SCHEMA],
+            imports: [TranslateModule.forRoot(), ProcedureFlowComponent],
+            providers: [
+                { provide: ProceduresApiService, useValue: proceduresSpy },
+                { provide: ToastService, useValue: toastSpy },
+                provideRouter([]),
+                {
+                    provide: ActivatedRoute,
+                    useValue: {
+                        snapshot: {
+                            paramMap: {
+                                get: (key: string) => routeParams[key as keyof typeof routeParams]
+                            }
+                        }
                     }
                 }
-            }
-        },
-        { provide: Router, useValue: routerSpy },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-    ]
-});
+            ]
+        });
 
-    fixture = TestBed.createComponent(ProcedureFlowComponent);
-    component = fixture.componentInstance;
-  }
+        fixture = TestBed.createComponent(ProcedureFlowComponent);
+        component = fixture.componentInstance;
+        const router = TestBed.inject(Router);
+        spyOn(router, 'navigate').and.callFake((args) => {
+            routerSpy.navigate(args);
+            return Promise.resolve(true);
+        });
+    }
 
   afterEach(() => {
     TestBed.resetTestingModule();
@@ -98,39 +100,43 @@ describe('ProcedureFlowComponent', () => {
       expect(routerSpy.navigate).toHaveBeenCalledWith(['/sede/procedimientos']);
     });
 
-    it('should load procedure when procedureId exists', () => {
+    it('should load procedure when procedureId exists', fakeAsync(() => {
       setupComponent({ procedureId: 'test-procedure' }, { data: mockProcedure });
       fixture.detectChanges();
+      tick();
       expect(proceduresSpy.getByIdentifier).toHaveBeenCalledWith('test-procedure');
-    });
+    }));
   });
 
   describe('Procedure Loading', () => {
-    it('should set procedure and tasks on successful load', () => {
+    it('should set procedure and tasks on successful load', fakeAsync(() => {
       setupComponent({ procedureId: 'test-procedure' }, { data: mockProcedure });
       fixture.detectChanges();
+      tick();
 
       expect(component.procedure).toEqual(mockProcedure);
       expect(component.tasks).toEqual(mockTasks);
       expect(component.isLoading).toBeFalse();
-    });
+    }));
 
-    it('should set currentTask to first task after loading', () => {
+    it('should set currentTask to first task after loading', fakeAsync(() => {
       setupComponent({ procedureId: 'test-procedure' }, { data: mockProcedure });
       fixture.detectChanges();
+      tick();
 
       expect(component.currentTaskIndex).toBe(0);
       expect(component.currentTask).toEqual(mockTasks[0]);
-    });
+    }));
 
-    it('should show toast error when procedure loading fails', () => {
+    it('should show toast error when procedure loading fails', fakeAsync(() => {
       setupComponent({ procedureId: 'test-procedure' }, { error: new Error('Network error') });
       fixture.detectChanges();
+      tick();
 
       expect(toastSpy.error).toHaveBeenCalled();
       expect(component.isLoading).toBeFalse();
       expect(component.procedure).toBeNull();
-    });
+    }));
   });
 
   describe('Task Navigation', () => {

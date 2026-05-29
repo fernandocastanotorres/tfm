@@ -260,7 +260,7 @@ public class DataInitializer {
             citizen.setRoles(Set.of("ROLE_CITIZEN"));
             citizen.setActive(true);
             userRepository.save(citizen);
-            log.info("Created citizen user: citizen@tfg.es / Citizen1");
+            log.info("Created citizen user: citizen@tfg.es");
 
             UUID adminId = UUID.randomUUID();
             User admin = new User();
@@ -271,7 +271,7 @@ public class DataInitializer {
             admin.setRoles(Set.of("ROLE_ADMIN", "ROLE_CITIZEN"));
             admin.setActive(true);
             userRepository.save(admin);
-            log.info("Created admin user: admin@tfg.es / Admin1234");
+            log.info("Created admin user: admin@tfg.es");
 
             // --- Seed procedure types ---
             List<UUID> seededProcedureTypeIds = new ArrayList<>();

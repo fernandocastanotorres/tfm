@@ -9,18 +9,17 @@ import {
   ViewChildren
 } from '@angular/core';
 import { FocusKeyManager } from '@angular/cdk/a11y';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PaymentsService, PaymentItem } from '../../../application/services/payments.service';
 import { changePage, updatePageSize, getPaginationState, PaginationState } from '../../../application/utils/pagination';
 import { Subject } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
+import { NgClass, NgFor, NgIf } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
-@Directive({
-  selector: '[appPaymentCard]',
-  standalone: false
-})
+@Directive({ selector: '[appPaymentCard]' })
 export class PaymentCardDirective {
   constructor(private readonly elementRef: ElementRef<HTMLButtonElement>) {}
 
@@ -33,7 +32,7 @@ export class PaymentCardDirective {
     selector: 'app-payments',
     templateUrl: './payments.component.html',
     styleUrls: [],
-    standalone: false
+    imports: [FormsModule, ReactiveFormsModule, NgClass, NgFor, PaymentCardDirective, NgIf, TranslatePipe]
 })
 export class PaymentsComponent implements OnInit, AfterViewInit, OnDestroy {
   payments: PaymentItem[] = [];

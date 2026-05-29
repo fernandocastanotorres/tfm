@@ -1,13 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProceduresApiService } from '../../../application/services/procedures-api.service';
 import { ProcedureDetail, ProcedureTaskDto } from '../../../application/models/procedure.models';
 import { ToastService } from '../../../application/services/toast.service';
+import { NgIf } from '@angular/common';
+import { SkeletonScreenComponent } from '../../../shared/components/skeleton-screen/skeleton-screen.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-procedure-flow',
     templateUrl: './procedure-flow.component.html',
-    standalone: false
+    imports: [NgIf, SkeletonScreenComponent, RouterLink, TranslatePipe]
 })
 export class ProcedureFlowComponent implements OnInit {
   procedure: ProcedureDetail | null = null;

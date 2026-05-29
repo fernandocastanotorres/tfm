@@ -22,6 +22,7 @@ import { TaskResolutionComponent } from './adapters/components/task-resolution/t
 import { UserManagementComponent } from './adapters/components/user-management/user-management.component';
 import { ProcedureManagementComponent } from './adapters/components/procedure-management/procedure-management.component';
 import { ContactInboxComponent } from './adapters/components/contact-inbox/contact-inbox.component';
+import { ElectronicNotificationsComponent } from './adapters/components/electronic-notifications/electronic-notifications.component';
 import { FieldI18nManagementComponent } from './adapters/components/field-i18n-management/field-i18n-management.component';
 import { ErrorPageComponent } from './adapters/components/error-page/error-page.component';
 import { I18nTitleStrategy } from './application/routing/i18n-title.strategy';
@@ -52,6 +53,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         UserManagementComponent,
         ProcedureManagementComponent,
         ContactInboxComponent,
+        ElectronicNotificationsComponent,
         FieldI18nManagementComponent,
         ErrorPageComponent
     ],

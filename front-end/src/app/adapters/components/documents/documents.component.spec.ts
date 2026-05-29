@@ -54,9 +54,8 @@ describe('DocumentsComponent', () => {
     documentsSpy.listByCase.and.returnValue(of(mockDocs));
 
     TestBed.configureTestingModule({
-    declarations: [DocumentsComponent],
     schemas: [NO_ERRORS_SCHEMA],
-    imports: [TranslateModule.forRoot(), ReactiveFormsModule],
+    imports: [TranslateModule.forRoot(), ReactiveFormsModule, DocumentsComponent],
     providers: [
         { provide: DocumentsApiService, useValue: documentsSpy },
         { provide: SignatureApiService, useValue: signatureSpy },
@@ -114,9 +113,8 @@ describe('DocumentsComponent', () => {
       casesSpy.list.and.returnValue(throwError(() => new Error('Network error')));
 
       TestBed.configureTestingModule({
-    declarations: [DocumentsComponent],
     schemas: [NO_ERRORS_SCHEMA],
-    imports: [TranslateModule.forRoot(), ReactiveFormsModule],
+    imports: [TranslateModule.forRoot(), ReactiveFormsModule, DocumentsComponent],
     providers: [
         { provide: DocumentsApiService, useValue: documentsSpy },
         { provide: CasesApiService, useValue: casesSpy },
@@ -668,19 +666,18 @@ describe('DocumentsComponent', () => {
       documentsSpy.listByCase.and.returnValue(throwError(() => new Error('Doc list failed')));
 
       TestBed.configureTestingModule({
-        declarations: [DocumentsComponent],
-        schemas: [NO_ERRORS_SCHEMA],
-        imports: [TranslateModule.forRoot(), ReactiveFormsModule],
-        providers: [
-          { provide: DocumentsApiService, useValue: documentsSpy },
-          { provide: CasesApiService, useValue: casesSpy },
-          { provide: ConfirmDialogService, useValue: confirmSpy },
-          { provide: ToastService, useValue: toastSpy },
-          { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => null } } } },
-          provideHttpClient(withInterceptorsFromDi()),
-          provideHttpClientTesting()
-        ]
-      });
+    schemas: [NO_ERRORS_SCHEMA],
+    imports: [TranslateModule.forRoot(), ReactiveFormsModule, DocumentsComponent],
+    providers: [
+        { provide: DocumentsApiService, useValue: documentsSpy },
+        { provide: CasesApiService, useValue: casesSpy },
+        { provide: ConfirmDialogService, useValue: confirmSpy },
+        { provide: ToastService, useValue: toastSpy },
+        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => null } } } },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
 
       fixture = TestBed.createComponent(DocumentsComponent);
       component = fixture.componentInstance;

@@ -10,6 +10,7 @@ import { I18nService, SupportedLocale } from '../../../application/services/i18n
 import { ToastService } from '../../../application/services/toast.service';
 import { PagedResponse } from '../../../application/models/case.models';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 
 describe('CaseSearchComponent', () => {
   let component: CaseSearchComponent;
@@ -41,15 +42,15 @@ describe('CaseSearchComponent', () => {
     i18nSpy.getCurrentLocale$.and.returnValue(localeSubject.asObservable());
 
     TestBed.configureTestingModule({
-    declarations: [CaseSearchComponent],
     schemas: [NO_ERRORS_SCHEMA],
-    imports: [ReactiveFormsModule, TranslateModule.forRoot()],
+    imports: [ReactiveFormsModule, TranslateModule.forRoot(), CaseSearchComponent],
     providers: [
         { provide: CasesApiService, useValue: casesSpy },
         { provide: I18nService, useValue: i18nSpy },
         { provide: ToastService, useValue: toastSpy },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
+        provideHttpClientTesting(),
+        provideRouter([])
     ]
 });
 

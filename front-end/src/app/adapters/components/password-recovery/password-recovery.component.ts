@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../application/services/auth.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { NgIf } from '@angular/common';
 
 @Component({
     selector: 'app-password-recovery',
     templateUrl: './password-recovery.component.html',
-    standalone: false
+    imports: [NgIf, FormsModule, ReactiveFormsModule, RouterLink, TranslatePipe]
 })
 export class PasswordRecoveryComponent implements OnInit {
   readonly requestForm = this.fb.group({

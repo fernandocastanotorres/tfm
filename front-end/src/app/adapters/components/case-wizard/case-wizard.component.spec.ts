@@ -46,9 +46,8 @@ describe('CaseWizardComponent', () => {
 
   function configureAndCreate(): void {
     TestBed.configureTestingModule({
-    declarations: [CaseWizardComponent],
     schemas: [NO_ERRORS_SCHEMA],
-    imports: [ReactiveFormsModule, TranslateModule.forRoot()],
+    imports: [ReactiveFormsModule, TranslateModule.forRoot(), CaseWizardComponent],
     providers: [
         { provide: ProceduresApiService, useValue: proceduresSpy },
         { provide: CasesApiService, useValue: casesSpy },

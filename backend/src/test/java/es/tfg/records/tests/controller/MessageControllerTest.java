@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
@@ -37,10 +37,10 @@ class MessageControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private MessageService messageService;
 
-    @MockBean
+    @MockitoBean
     private UserJpaRepository userJpaRepository;
 
     @Test
@@ -82,17 +82,20 @@ class MessageControllerTest {
 
     @Test
     void getThreadMessagesAsCitizen_shouldReturn200() throws Exception {
+        UUID citizenId = UUID.randomUUID();
         UUID procedureId = UUID.randomUUID();
         PagedMessages paged = new PagedMessages(
                 List.of(createMessageDto("CITIZEN", "Hello"), createMessageDto("ADMIN", "Reply")),
                 0, 20, 2, 1);
 
+        doNothing().when(messageService).verifyCitizenProcedureAccess(procedureId, citizenId);
         when(messageService.getThreadMessages(procedureId, 0, 20)).thenReturn(paged);
         doNothing().when(messageService).markThreadAsRead(any(), eq(MessageSenderRole.CITIZEN));
 
         mockMvc.perform(get("/citizen/procedures/{procedureId}/messages", procedureId)
                         .param("page", "0")
-                        .param("size", "20"))
+                        .param("size", "20")
+                        .principal(new TestingAuthenticationToken(citizenId.toString(), null)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.messages").isArray())
                 .andExpect(jsonPath("$.messages.length()").value(2))
@@ -117,6 +120,7 @@ class MessageControllerTest {
 
     @Test
     void downloadAttachmentAsCitizen_shouldReturnFile() throws Exception {
+        UUID citizenId = UUID.randomUUID();
         UUID attachmentId = UUID.randomUUID();
         ByteArrayResource resource = new ByteArrayResource("file-content".getBytes()) {
             @Override
@@ -125,10 +129,12 @@ class MessageControllerTest {
             }
         };
 
+        doNothing().when(messageService).verifyCitizenAttachmentAccess(attachmentId, citizenId);
         when(messageService.downloadAttachment(attachmentId)).thenReturn(resource);
 
         mockMvc.perform(get("/citizen/procedures/{procedureId}/messages/attachments/{attachmentId}/download",
-                        UUID.randomUUID(), attachmentId))
+                        UUID.randomUUID(), attachmentId)
+                        .principal(new TestingAuthenticationToken(citizenId.toString(), null)))
                 .andExpect(status().isOk())
                 .andExpect(header().string("Content-Disposition", "attachment; filename=\"document.pdf\""));
     }

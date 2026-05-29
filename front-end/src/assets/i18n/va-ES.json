@@ -175,7 +175,8 @@
     "USER_MESSAGES": "Missatgeria",
     "USER_LOGOUT": "Tancar sessió",
     "TOUR_GUIDE": "Guia",
-    "USER_LABEL": "Usuari"
+    "USER_LABEL": "Usuari",
+    "SEARCH": "Buscar en la seu"
   },
   "NOTIFICATIONS": {
     "EYEBROW": "Notificacions",
@@ -212,7 +213,27 @@
     "MOCK_DOCUMENTS_TITLE": "Documentació pendent",
     "MOCK_DOCUMENTS_MESSAGE": "Adjunta el justificant de pagament abans del 20/05/2026.",
     "MOCK_PAYMENT_TITLE": "Pagament registrat",
-    "MOCK_PAYMENT_MESSAGE": "S'ha rebut el pagament associat a l'expedient EXP-2026-003."
+    "MOCK_PAYMENT_MESSAGE": "S'ha rebut el pagament associat a l'expedient EXP-2026-003.",
+    "NOTIFICATION_TYPE.FORMAL_NOTICE": "Notificació formal",
+    "NOTIFICATION_TYPE.REQUEST_INFO": "Requeriment d'informació",
+    "NOTIFICATION_TYPE.AMENDMENT_REQUIRED": "Requeriment de subsanació",
+    "NOTIFICATION_TYPE.RESOLUTION_NOTICE": "Comunicació de resolució",
+    "NOTIFICATION_STATUS.AVAILABLE": "Disponible",
+    "NOTIFICATION_STATUS.ACCESSED": "Accedida",
++    "NOTIFICATION_STATUS.ACCEPTED": "Acceptada",
++    "NOTIFICATION_STATUS.REJECTED": "Rebutjada",
++    "NOTIFICATION_STATUS.EXPIRED": "Caducada",
+    "ATTACHMENTS": "Adjunts",
+    "CONFIRM_READ_TITLE": "Notificació electrònica",
+    "CONFIRM_READ_TEXT": "Vol llegir esta notificació o rebutjar-la?",
+    "CONFIRM_READ_BUTTON": "Llegir contingut",
+    "CONFIRM_REJECT_BUTTON": "Rebutjar notificació",
+    "REJECT_NOTES_TITLE": "Motiu del rebuig",
+    "REJECT_NOTES_PLACEHOLDER": "Indiqueu el motiu del rebuig (opcional)",
+    "ACCEPT_BUTTON": "Acceptar notificació",
+    "REJECT_BUTTON": "Rebutjar notificació",
+    "RESOLUTION_NOTES": "Notes de la resolució"
+
   },
   "DOCUMENTS": {
     "EYEBROW": "Documents",

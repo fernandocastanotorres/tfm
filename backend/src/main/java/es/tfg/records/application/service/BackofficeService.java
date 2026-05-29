@@ -24,6 +24,7 @@ import es.tfg.records.domain.model.TaskType;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureEntity;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTypeI18nEntity;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.data.domain.Pageable;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTaskEntity;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTypeEntity;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTaskFieldI18nEntity;
@@ -160,14 +161,19 @@ public class BackofficeService {
     public PagedResponse<BackofficeDtos.AdminCaseItem> listCases(int page, int size, String status) {
         int clampedPage = Math.max(0, page);
         int clampedSize = Math.min(Math.max(1, size), 100);
-        Page<ProcedureEntity> result = procedureRepository.findAll(PageRequest.of(
-                clampedPage,
-                clampedSize,
-                org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "updatedAt")));
+        Pageable pageable = PageRequest.of(clampedPage, clampedSize,
+                org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "updatedAt"));
+
+        Page<ProcedureEntity> result;
+        if (status != null && !status.isBlank()) {
+            result = procedureRepository.findByStatus(parseStatus(status), pageable);
+        } else {
+            result = procedureRepository.findAll(pageable);
+        }
+
         Map<UUID, ProcedureTypeEntity> types = procedureTypeRepository.findAll().stream()
                 .collect(Collectors.toMap(ProcedureTypeEntity::getId, Function.identity()));
         List<BackofficeDtos.AdminCaseItem> items = result.getContent().stream()
-                .filter(procedure -> status == null || status.isBlank() || procedure.getStatus() == parseStatus(status))
                 .map(procedure -> toAdminCaseItem(procedure, types.get(procedure.getProcedureTypeId())))
                 .toList();
 
@@ -420,6 +426,33 @@ public class BackofficeService {
         return updateCaseStatus(caseId, nextStatus.name());
     }
 
+    @Transactional
+    public CaseStatusResponse reassignCase(UUID caseId, UUID assigneeId) {
+        ProcedureEntity procedure = findProcedure(caseId);
+        UserEntity assignee = userRepository.findById(assigneeId)
+                .orElseThrow(() -> new ResourceNotFoundException("USER", assigneeId.toString()));
+
+        String assigneeLabel = assignee.getEmail() == null || assignee.getEmail().isBlank()
+                ? assigneeId.toString()
+                : assignee.getEmail();
+
+        addTimelineEvent(
+                procedure.getId(),
+                "Reasignacion de tramitacion",
+                "El expediente se ha reasignado al usuario: " + assigneeLabel
+        );
+
+        ProcedureEntity refreshed = findProcedure(caseId);
+        return new CaseStatusResponse(
+                refreshed.getId(),
+                refreshed.getStatus().name(),
+                refreshed.getUpdatedAt(),
+                currentTask(refreshed, null),
+                refreshed.getRecordNumber(),
+                refreshed.getEntryNumber()
+        );
+    }
+
     @Transactional(readOnly = true)
     public BackofficeDtos.DashboardStats dashboardStats() {
         List<ProcedureEntity> procedures = procedureRepository.findAll();
@@ -495,6 +528,47 @@ public class BackofficeService {
     @Transactional(readOnly = true)
     public List<BackofficeDtos.BackofficeUser> listUsers() {
         return userRepository.findAll().stream().map(this::toUserDto).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<BackofficeDtos.CitizenOption> listCitizens(String search) {
+        return userRepository.findAll().stream()
+                .filter(user -> user.getRoles() != null && user.getRoles().contains("ROLE_CITIZEN"))
+                .filter(UserEntity::isActive)
+                .filter(user -> {
+                    if (search == null || search.isBlank()) {
+                        return true;
+                    }
+                    String term = search.toLowerCase();
+                    return user.getEmail() != null && user.getEmail().toLowerCase().contains(term) ||
+                           user.getDisplayName() != null && user.getDisplayName().toLowerCase().contains(term) ||
+                           user.getNationalId() != null && user.getNationalId().toLowerCase().contains(term);
+                })
+                .map(user -> new BackofficeDtos.CitizenOption(
+                        user.getId(),
+                        user.getEmail(),
+                        user.getDisplayName(),
+                        user.getNationalId()
+                ))
+                .sorted(Comparator.comparing(BackofficeDtos.CitizenOption::email, String.CASE_INSENSITIVE_ORDER))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<BackofficeDtos.CitizenCaseOption> listCitizenCases(UUID citizenId) {
+        return procedureRepository.findAllByOwnerId(citizenId).stream()
+                .map(procedure -> {
+                    ProcedureTypeEntity type = procedureTypeRepository.findById(procedure.getProcedureTypeId()).orElse(null);
+                    return new BackofficeDtos.CitizenCaseOption(
+                            procedure.getId(),
+                            procedure.getTitle(),
+                            typeTitle(type),
+                            procedure.getStatus().name(),
+                            procedure.getCreatedAt()
+                    );
+                })
+                .sorted(Comparator.comparing(BackofficeDtos.CitizenCaseOption::createdAt).reversed())
+                .toList();
     }
 
     @Transactional

@@ -29,9 +29,8 @@ describe('GlossaryComponent', () => {
     glossaryService.getLetters.and.returnValue(of(['A', 'C', 'D']));
 
     await TestBed.configureTestingModule({
-    declarations: [GlossaryComponent],
     schemas: [NO_ERRORS_SCHEMA],
-    imports: [TranslateModule.forRoot(), RouterTestingModule],
+    imports: [TranslateModule.forRoot(), RouterTestingModule, GlossaryComponent],
     providers: [
         { provide: GlossaryService, useValue: glossaryService },
         I18nService,

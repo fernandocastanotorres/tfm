@@ -1,8 +1,11 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-loading-skeleton',
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, TranslateModule],
   templateUrl: './loading-skeleton.component.html'
 })
 export class LoadingSkeletonComponent {

@@ -118,6 +118,25 @@ public class CaseController {
         return ResponseEntity.ok(caseService.getCaseStatus(id, ownerId));
     }
 
+    @GetMapping("/{id}/registry-receipt")
+    @Operation(summary = "Get formal registry receipt data", description = "Return formal electronic registry details (entry number, record number, submitted timestamp, and CSV verification data if available)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Registry receipt data",
+                    content = @Content(schema = @Schema(implementation = RegistryEntryReceiptDto.class))),
+            @ApiResponse(responseCode = "403", description = "Forbidden — case not owned by citizen",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Case not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity<RegistryEntryReceiptDto> getRegistryReceipt(
+            Authentication authentication,
+            @Parameter(description = "Case UUID", required = true)
+            @PathVariable("id") UUID id) {
+
+        UUID ownerId = extractUserId(authentication);
+        return ResponseEntity.ok(caseService.getRegistryEntryReceipt(id, ownerId));
+    }
+
     @PostMapping("/{id}/amend")
     @Operation(summary = "Request amendment", description = "Request an amendment for a case that has been returned for correction")
     @ApiResponses({

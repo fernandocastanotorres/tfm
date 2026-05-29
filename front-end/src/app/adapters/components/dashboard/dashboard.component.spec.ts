@@ -38,13 +38,12 @@ describe('DashboardComponent', () => {
     toastSpy = jasmine.createSpyObj('ToastService', ['error', 'success', 'warning']);
 
     await TestBed.configureTestingModule({
-    declarations: [DashboardComponent, LoadingSkeletonComponent],
-    imports: [CommonModule, ReactiveFormsModule, TranslateModule.forRoot(), RouterTestingModule],
+    imports: [CommonModule, ReactiveFormsModule, TranslateModule.forRoot(), RouterTestingModule, DashboardComponent, LoadingSkeletonComponent],
     providers: [
-      DashboardService,
-      { provide: ToastService, useValue: toastSpy },
-      provideHttpClient(withInterceptorsFromDi()),
-      provideHttpClientTesting()
+        DashboardService,
+        { provide: ToastService, useValue: toastSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
     ]
 }).compileComponents();
 

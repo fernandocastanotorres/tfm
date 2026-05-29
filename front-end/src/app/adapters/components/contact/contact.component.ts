@@ -1,16 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ContactService, ContactMessagePayload } from '../../../application/services/contact.service';
 import { ContactOffice, ContactChannel } from '../../../application/models/sede.models';
 import { ToastService } from '../../../application/services/toast.service';
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
+import { RouterLink } from '@angular/router';
+import { NgFor, NgSwitch, NgSwitchCase, NgSwitchDefault, NgIf } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-contact',
     templateUrl: './contact.component.html',
     styleUrls: ['./contact.component.css'],
-    standalone: false
+    imports: [RouterLink, NgFor, NgSwitch, NgSwitchCase, NgSwitchDefault, NgIf, FormsModule, ReactiveFormsModule, TranslatePipe]
 })
 export class ContactComponent implements OnInit {
   offices: ContactOffice[] = [];

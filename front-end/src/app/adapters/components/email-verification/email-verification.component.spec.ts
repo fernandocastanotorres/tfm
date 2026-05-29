@@ -21,14 +21,13 @@ describe('EmailVerificationComponent', () => {
     }
 
     TestBed.configureTestingModule({
-      declarations: [EmailVerificationComponent],
-      imports: [TranslateModule.forRoot()],
-      providers: [
+    imports: [TranslateModule.forRoot(), EmailVerificationComponent],
+    providers: [
         { provide: AuthService, useValue: authSpy },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: { get: () => token } } } }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    });
+    ],
+    schemas: [NO_ERRORS_SCHEMA]
+});
 
     fixture = TestBed.createComponent(EmailVerificationComponent);
     component = fixture.componentInstance;

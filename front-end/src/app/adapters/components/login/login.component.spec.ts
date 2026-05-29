@@ -1,7 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import { LoginComponent } from './login.component';
@@ -17,35 +19,31 @@ describe('LoginComponent', () => {
     const authSpy = jasmine.createSpyObj('AuthService', ['login', 'resendVerificationEmail']);
 
     await TestBed.configureTestingModule({
-      declarations: [LoginComponent],
-      imports: [ReactiveFormsModule, TranslateModule.forRoot()],
-      schemas: [NO_ERRORS_SCHEMA],
-      providers: [
+    imports: [ReactiveFormsModule, TranslateModule.forRoot(), LoginComponent],
+    schemas: [NO_ERRORS_SCHEMA],
+    providers: [
         { provide: AuthService, useValue: authSpy },
         {
-          provide: Router,
-          useValue: {
-            navigate: jasmine.createSpy('navigate'),
-            navigateByUrl: jasmine.createSpy('navigateByUrl')
-          }
-        },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              queryParamMap: {
-                get: () => null
-              }
+            provide: ActivatedRoute,
+            useValue: {
+                snapshot: {
+                    queryParamMap: {
+                        get: () => null
+                    }
+                }
             }
-          }
-        }
-      ]
-    }).compileComponents();
+        },
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([])
+    ],
+}).compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
     authService = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
     router = TestBed.inject(Router);
+    spyOn(router, 'navigateByUrl');
     fixture.detectChanges();
   });
 

@@ -1,15 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppointmentsService, AppointmentItem } from '../../../application/services/appointments.service';
 import { changePage, updatePageSize, getPaginationState, PaginationState } from '../../../application/utils/pagination';
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
+import { NgClass, NgFor, NgIf } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-appointments',
     templateUrl: './appointments.component.html',
     styleUrls: [],
-    standalone: false
+    imports: [FormsModule, ReactiveFormsModule, NgClass, NgFor, NgIf, TranslatePipe]
 })
 export class AppointmentsComponent implements OnInit {
   appointments: AppointmentItem[] = [];

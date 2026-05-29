@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { Router, Event, NavigationEnd } from '@angular/router';
+import { Router, Event, NavigationEnd, provideRouter } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subject, of } from 'rxjs';
 import { PublicLayoutComponent } from './public-layout.component';
@@ -14,50 +14,57 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 describe('PublicLayoutComponent', () => {
   let component: PublicLayoutComponent;
   let fixture: ComponentFixture<PublicLayoutComponent>;
-  let i18nSpy: jasmine.SpyObj<I18nService>;
-  let routerSpy: jasmine.SpyObj<Router>;
-  let tourSpy: jasmine.SpyObj<GuidedTourService>;
-  let authSpy: jasmine.SpyObj<AuthService>;
-  let messagesSpy: jasmine.SpyObj<MessagesService>;
+  let i18nSpy: any;
+  let routerSpy: Router;
+  let tourSpy: any;
+  let authSpy: any;
+  let messagesSpy: any;
   let localeSubject: Subject<SupportedLocale>;
 
   beforeEach(() => {
     localeSubject = new Subject<SupportedLocale>();
-    i18nSpy = jasmine.createSpyObj('I18nService', ['getCurrentLocale$', 'setLocale']);
-    i18nSpy.getCurrentLocale$.and.returnValue(localeSubject.asObservable());
-    routerSpy = jasmine.createSpyObj('Router', ['navigate'], {
-      url: '/sede',
-      events: of({})
-    });
-    tourSpy = jasmine.createSpyObj('GuidedTourService', ['startCitizenTour']);
-    authSpy = jasmine.createSpyObj('AuthService', ['isAuthenticated', 'getAuthenticatedUserLabel', 'logout']);
-    authSpy.isAuthenticated.and.returnValue(false);
-    authSpy.getAuthenticatedUserLabel.and.returnValue(null);
-    authSpy.logout.and.returnValue(of(undefined));
-    messagesSpy = jasmine.createSpyObj('MessagesService', ['getUnreadCount']);
-    messagesSpy.getUnreadCount.and.returnValue(of(0));
+    
+    const mockAuthService = jasmine.createSpyObj('AuthService', ['isAuthenticated', 'getAuthenticatedUserLabel', 'logout']);
+    mockAuthService.isAuthenticated.and.returnValue(false);
+    mockAuthService.getAuthenticatedUserLabel.and.returnValue(null);
+    mockAuthService.logout.and.returnValue(of(undefined));
 
-    localStorage.clear();
+    const mockMessagesService = jasmine.createSpyObj('MessagesService', ['getUnreadCount']);
+    mockMessagesService.getUnreadCount.and.returnValue(of(0));
 
+    const mockI18nService = jasmine.createSpyObj('I18nService', ['getCurrentLocale$', 'setLocale']);
+    mockI18nService.getCurrentLocale$.and.returnValue(localeSubject.asObservable());
+
+    const mockTourService = jasmine.createSpyObj('GuidedTourService', ['startCitizenTour']);
+    
     TestBed.configureTestingModule({
-      declarations: [PublicLayoutComponent],
-      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-      providers: [
-        { provide: I18nService, useValue: i18nSpy },
-        { provide: Router, useValue: routerSpy },
-        { provide: GuidedTourService, useValue: tourSpy },
-        { provide: AuthService, useValue: authSpy },
-        { provide: MessagesService, useValue: messagesSpy },
+    imports: [TranslateModule.forRoot(), PublicLayoutComponent],
+    providers: [
+        { provide: I18nService, useValue: mockI18nService },
+        provideRouter([]),
+        { provide: GuidedTourService, useValue: mockTourService },
+        { provide: AuthService, useValue: mockAuthService },
+        { provide: MessagesService, useValue: mockMessagesService },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    });
+        provideHttpClientTesting(),
+    ],
+    schemas: [NO_ERRORS_SCHEMA]
+ });
 
     fixture = TestBed.createComponent(PublicLayoutComponent);
     component = fixture.componentInstance;
+    
+    i18nSpy = TestBed.inject(I18nService);
+    routerSpy = TestBed.inject(Router);
+    tourSpy = TestBed.inject(GuidedTourService);
+    authSpy = TestBed.inject(AuthService);
+    messagesSpy = TestBed.inject(MessagesService);
+    
+    spyOn(routerSpy, 'navigate');
+    
     fixture.detectChanges();
   });
+
 
   afterEach(() => {
     TestBed.resetTestingModule();

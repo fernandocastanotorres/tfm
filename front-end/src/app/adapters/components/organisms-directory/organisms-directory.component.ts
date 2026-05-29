@@ -1,16 +1,20 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, skip } from 'rxjs';
 import { OrganismsService } from '../../../application/services/organisms.service';
 import { I18nService } from '../../../application/services/i18n.service';
 import { OrganismItem } from '../../../application/models/sede.models';
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
+import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { NgFor, NgIf } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-organisms-directory',
     templateUrl: './organisms-directory.component.html',
     styleUrls: ['./organisms-directory.component.css'],
-    standalone: false
+    imports: [RouterLink, FormsModule, NgFor, NgIf, TranslatePipe]
 })
 export class OrganismsDirectoryComponent implements OnInit, OnDestroy {
   organisms: OrganismItem[] = [];
@@ -29,9 +33,8 @@ export class OrganismsDirectoryComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadData();
-    this.localeSub = this.i18nService.getCurrentLocale$().subscribe(() => {
-      this.loadData();
-    });
+    // Avoid double-fetch on init if the locale observable emits immediately.
+    this.localeSub = this.i18nService.getCurrentLocale$().pipe(skip(1)).subscribe(() => this.loadData());
   }
 
   ngOnDestroy(): void {

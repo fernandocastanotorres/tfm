@@ -1,15 +1,16 @@
 import { Component } from '@angular/core';
-import { FormBuilder, Validators, ValidationErrors } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
+import { FormBuilder, Validators, ValidationErrors, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../../../application/services/auth.service';
 import { RegisterRequest } from '../../../application/models/auth.models';
+import { NgIf } from '@angular/common';
 
 @Component({
     selector: 'app-register',
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.css'],
-    standalone: false
+    imports: [FormsModule, ReactiveFormsModule, NgIf, RouterLink, TranslatePipe]
 })
 export class RegisterComponent {
   readonly registerForm = this.fb.group({

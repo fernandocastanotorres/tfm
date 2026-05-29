@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, Validators } from '@angular/forms';
-import { TranslateService } from '@ngx-translate/core';
+import { FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { CasesApiService } from '../../../application/services/cases-api.service';
 import { ProceduresApiService } from '../../../application/services/procedures-api.service';
 import { I18nService } from '../../../application/services/i18n.service';
@@ -12,12 +12,13 @@ import { ToastService } from '../../../application/services/toast.service';
 import { Subscription } from 'rxjs';
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
     selector: 'app-case-wizard',
     templateUrl: './case-wizard.component.html',
     styleUrls: ['./case-wizard.component.css'],
-    standalone: false
+    imports: [NgIf, FormsModule, ReactiveFormsModule, NgFor, TranslatePipe]
 })
 export class CaseWizardComponent implements OnInit, OnDestroy {
   private static readonly GENERIC_UPLOAD_ID = '__genericUpload__';

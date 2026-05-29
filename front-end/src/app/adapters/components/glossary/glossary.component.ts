@@ -1,16 +1,21 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, skip } from 'rxjs';
 import { GlossaryService } from '../../../application/services/glossary.service';
 import { I18nService } from '../../../application/services/i18n.service';
 import { GlossaryTerm } from '../../../application/models/sede.models';
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
+import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { NgFor, NgIf } from '@angular/common';
+import { SkeletonScreenComponent } from '../../../shared/components/skeleton-screen/skeleton-screen.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-glossary',
     templateUrl: './glossary.component.html',
     styleUrls: ['./glossary.component.css'],
-    standalone: false
+    imports: [RouterLink, FormsModule, NgFor, NgIf, SkeletonScreenComponent, TranslatePipe]
 })
 export class GlossaryComponent implements OnInit, OnDestroy {
   terms: GlossaryTerm[] = [];
@@ -29,9 +34,8 @@ export class GlossaryComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadData();
-    this.localeSub = this.i18nService.getCurrentLocale$().subscribe(() => {
-      this.loadData();
-    });
+    // Avoid double-fetch on init if the locale observable emits immediately.
+    this.localeSub = this.i18nService.getCurrentLocale$().pipe(skip(1)).subscribe(() => this.loadData());
   }
 
   ngOnDestroy(): void {

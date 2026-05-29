@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter } from '@angular/router';
 import { OrganismsDirectoryComponent } from './organisms-directory.component';
 import { OrganismsService } from '../../../application/services/organisms.service';
 import { I18nService } from '../../../application/services/i18n.service';
@@ -27,14 +27,14 @@ describe('OrganismsDirectoryComponent', () => {
     organismsService.search.and.returnValue(of(mockOrganisms));
 
     await TestBed.configureTestingModule({
-    declarations: [OrganismsDirectoryComponent],
     schemas: [NO_ERRORS_SCHEMA],
-    imports: [TranslateModule.forRoot(), RouterTestingModule],
+    imports: [TranslateModule.forRoot(), OrganismsDirectoryComponent],
     providers: [
         { provide: OrganismsService, useValue: organismsService },
         I18nService,
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
+        provideHttpClientTesting(),
+        provideRouter([])
     ]
 }).compileComponents();
 

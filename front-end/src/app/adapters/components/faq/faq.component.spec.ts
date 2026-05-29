@@ -32,9 +32,8 @@ describe('FaqComponent', () => {
     faqService.searchFaqs.and.returnValue(of(mockFaqs));
 
     await TestBed.configureTestingModule({
-    declarations: [FaqComponent],
     schemas: [NO_ERRORS_SCHEMA],
-    imports: [TranslateModule.forRoot(), RouterTestingModule],
+    imports: [TranslateModule.forRoot(), RouterTestingModule, FaqComponent],
     providers: [
         { provide: FaqService, useValue: faqService },
         I18nService,

@@ -1,7 +1,9 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import { RegisterComponent } from './register.component';
@@ -11,7 +13,7 @@ describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
   let authSpy: jasmine.SpyObj<AuthService>;
-  let routerSpy: jasmine.SpyObj<Router>;
+  let routerSpy: Router;
   let routeSpy: jasmine.SpyObj<ActivatedRoute>;
 
   function createRouteWithReturnUrl(url: string | null): jasmine.SpyObj<ActivatedRoute> {
@@ -38,22 +40,24 @@ describe('RegisterComponent', () => {
 
   beforeEach(() => {
     authSpy = jasmine.createSpyObj('AuthService', ['register', 'resendVerificationEmail']);
-    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     routeSpy = createRouteWithReturnUrl(null);
 
     TestBed.configureTestingModule({
-      declarations: [RegisterComponent],
-      imports: [ReactiveFormsModule, TranslateModule.forRoot()],
-      providers: [
+    imports: [ReactiveFormsModule, TranslateModule.forRoot(), RegisterComponent],
+    providers: [
         { provide: AuthService, useValue: authSpy },
-        { provide: Router, useValue: routerSpy },
-        { provide: ActivatedRoute, useValue: routeSpy }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    });
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: routeSpy },
+        provideHttpClient(),
+        provideHttpClientTesting(),
+    ],
+    schemas: [NO_ERRORS_SCHEMA]
+});
 
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
+    routerSpy = TestBed.inject(Router);
+    spyOn(routerSpy, 'navigate');
     fixture.detectChanges();
   });
 
@@ -146,23 +150,25 @@ describe('RegisterComponent', () => {
   // ─── Return URL ──────────────────────────────────────────────────
 
   describe('Return URL', () => {
-    it('should return query param when valid', () => {
+    it('should return query param when valid', fakeAsync(() => {
+      // Create a new test module for this specific case to mock ActivatedRoute differently
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
-        declarations: [RegisterComponent],
-        imports: [ReactiveFormsModule, TranslateModule.forRoot()],
+        imports: [ReactiveFormsModule, TranslateModule.forRoot(), RegisterComponent],
         providers: [
           { provide: AuthService, useValue: authSpy },
-          { provide: Router, useValue: routerSpy },
-          { provide: ActivatedRoute, useValue: createRouteWithReturnUrl('/dashboard') }
+          provideRouter([]),
+          { provide: ActivatedRoute, useValue: createRouteWithReturnUrl('/dashboard') },
+          provideHttpClient(),
+          provideHttpClientTesting(),
         ],
         schemas: [NO_ERRORS_SCHEMA]
       });
-      fixture = TestBed.createComponent(RegisterComponent);
-      component = fixture.componentInstance;
+      const localFixture = TestBed.createComponent(RegisterComponent);
+      const localComponent = localFixture.componentInstance;
 
-      expect(component.returnUrl).toBe('/dashboard');
-    });
+      expect(localComponent.returnUrl).toBe('/dashboard');
+    }));
 
     it('should return "/" when no query param', () => {
       expect(component.returnUrl).toBe('/');
