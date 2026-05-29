@@ -29,7 +29,7 @@
     "@angular/service-worker": "^19.2.22",
     "@ngx-translate/core": "^16.0.0",
     "@ngx-translate/http-loader": "^16.0.0",
-    "intro.js": "^7.2.0",
+    "intro.js": "^8.3.2",
     "jspdf": "^4.2.1",
     "rxjs": "~7.8.0",
     "sweetalert2": "^11.26.24",
