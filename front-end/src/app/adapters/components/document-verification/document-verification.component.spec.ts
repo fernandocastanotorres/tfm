@@ -1,9 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { DocumentVerificationComponent } from './document-verification.component';
 import { SignatureApiService } from '../../../application/services/signature-api.service';
+
+class FakeTranslateLoader implements TranslateLoader {
+  getTranslation(lang: string): Observable<Record<string, string>> {
+    return of({});
+  }
+}
 
 describe('DocumentVerificationComponent', () => {
   let component: DocumentVerificationComponent;
@@ -13,7 +20,9 @@ describe('DocumentVerificationComponent', () => {
   beforeEach(async () => {
     signatureSpy = jasmine.createSpyObj('SignatureApiService', ['verifyPublicFile', 'verifyByCsv']);
     await TestBed.configureTestingModule({
-    imports: [FormsModule, DocumentVerificationComponent],
+    imports: [FormsModule, TranslateModule.forRoot({
+        loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
+    }), DocumentVerificationComponent],
     providers: [
         { provide: SignatureApiService, useValue: signatureSpy },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: { get: () => null } } } }

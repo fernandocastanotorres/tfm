@@ -66,7 +66,7 @@ describe('ProceduresComponent', () => {
     const req = httpMock.expectOne(`${baseUrl}/citizen/procedures/catalog`);
     req.flush({ message: 'Service unavailable' }, { status: 500, statusText: 'Server Error' });
 
-    expect(toastSpy.error).toHaveBeenCalledWith('Error', 'Service unavailable');
+    expect(toastSpy.error).toHaveBeenCalledWith('COMMON.ERROR', 'Service unavailable');
     expect(component.isLoading).toBeFalse();
   });
 
@@ -76,7 +76,7 @@ describe('ProceduresComponent', () => {
     const req = httpMock.expectOne(`${baseUrl}/citizen/procedures/catalog`);
     req.error(new ProgressEvent('Network error'));
 
-    expect(toastSpy.error).toHaveBeenCalledWith('Error', 'No se han podido cargar los procedimientos.');
+    expect(toastSpy.error).toHaveBeenCalledWith('COMMON.ERROR', 'COMMON.ERROR_LOAD_PROCEDURES');
     expect(component.isLoading).toBeFalse();
   });
 

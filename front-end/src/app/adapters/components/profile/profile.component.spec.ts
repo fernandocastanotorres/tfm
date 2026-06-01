@@ -143,9 +143,9 @@ describe('ProfileComponent', () => {
       await component.saveProfile();
 
       expect(confirmSpy.confirm).toHaveBeenCalledWith(
-        'Confirmar cambios',
-        'Vas a actualizar tus datos personales. ¿Deseas continuar?',
-        'Si, actualizar'
+        'PROFILE.CONFIRM_CHANGES_TITLE',
+        'PROFILE.CONFIRM_CHANGES_TEXT',
+        'PROFILE.CONFIRM_UPDATE_BUTTON'
       );
     });
 
@@ -371,7 +371,7 @@ describe('ProfileComponent', () => {
 
       component.changePassword();
 
-      expect(toastSpy.error).toHaveBeenCalledWith('Error', 'No se pudo cambiar la contraseña. Intentalo de nuevo.');
+      expect(toastSpy.error).toHaveBeenCalledWith('COMMON.ERROR', 'COMMON.ERROR_PASSWORD');
     });
   });
 

@@ -9,12 +9,13 @@ import { RouterLink } from '@angular/router';
 import { NgFor, NgIf, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
+import { DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-legislation',
     templateUrl: './legislation.component.html',
     styleUrls: ['./legislation.component.css'],
-    imports: [RouterLink, NgFor, FormsModule, NgIf, NgClass, TranslatePipe]
+    imports: [RouterLink, NgFor, NgIf, NgClass, FormsModule, TranslatePipe, DatePipe]
 })
 export class LegislationComponent implements OnInit, OnDestroy {
   legislation: LegislationItem[] = [];

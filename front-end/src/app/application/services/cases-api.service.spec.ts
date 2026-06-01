@@ -177,7 +177,7 @@ describe('CasesApiService', () => {
       service.getDetail('c-2').subscribe({
         next: (detail) => {
           expect(detail.timeline.length).toBe(1);
-          expect(detail.timeline[0].title).toContain('Expediente enviado');
+          expect(detail.timeline[0].title).toContain('CASE_DETAIL.MOCK_TIMELINE_REGISTERED_TITLE');
           done();
         }
       });
@@ -206,7 +206,7 @@ describe('CasesApiService', () => {
       service.getDetail('c-3').subscribe({
         next: (detail) => {
           expect(detail.timeline.length).toBe(1);
-          expect(detail.timeline[0].title).toContain('Expediente enviado');
+          expect(detail.timeline[0].title).toContain('CASE_DETAIL.MOCK_TIMELINE_REGISTERED_TITLE');
           expect(detail.timeline[0].date).toBe('2026-03-02T00:00:00Z');
           done();
         }
