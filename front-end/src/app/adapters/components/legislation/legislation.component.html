@@ -28,17 +28,18 @@
             {{ getTypeLabel(item.type) | translate }}
           </span>
           <h2 class="legislation__item-title">{{ item.title }}</h2>
-          <time class="legislation__item-date" [attr.datetime]="item.date">
+          <time class="legislation__item-date" [attr.datetime]="item.date | date:'yyyy-MM-dd'">
             {{ formatDate(item.date) }}
           </time>
         </div>
         <p class="legislation__item-desc">{{ item.description }}</p>
         <div class="legislation__item-actions">
-          <a *ngIf="item.externalUrl" [href]="item.externalUrl" target="_blank" rel="noopener noreferrer" class="btn-primary btn-primary--sm btn-primary--outline">
-            {{ 'LEGISLATION.VIEW_EXTERNAL' | translate }}
+          <a *ngIf="item.externalUrl" [href]="item.externalUrl" target="_blank" rel="noopener noreferrer" class="btn-primary btn-primary--sm btn-primary--outline" [attr.aria-label]="'LEGISLATION.VIEW_EXTERNAL_ARIA' | translate:{title: item.title}">
+            {{ 'LEGISLATION.VIEW_EXTERNAL' | translate }} — {{ item.title }}
+            <span class="sr-only">({{ 'LEGISLATION.OPENS_NEW_WINDOW' | translate }})</span>
           </a>
-          <a *ngIf="item.downloadUrl" [href]="item.downloadUrl" class="btn-primary btn-primary--sm">
-            {{ 'LEGISLATION.DOWNLOAD' | translate }}
+          <a *ngIf="item.downloadUrl" [href]="item.downloadUrl" class="btn-primary btn-primary--sm" [attr.aria-label]="'LEGISLATION.DOWNLOAD_ARIA' | translate:{title: item.title}">
+            {{ 'LEGISLATION.DOWNLOAD' | translate }} — {{ item.title }}
           </a>
         </div>
       </li>

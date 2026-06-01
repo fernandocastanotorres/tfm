@@ -39,18 +39,19 @@
         <h2 class="organisms__item-name">{{ org.name }}</h2>
         <span class="organisms__item-category">{{ org.category }}</span>
         <p class="organisms__item-desc">{{ org.description }}</p>
-        <address class="organisms__item-contact">
+        <div class="organisms__item-contact">
           <p><strong>{{ 'ORGANISMS.PHONE' | translate }}:</strong> <a [href]="'tel:' + org.phone">{{ org.phone }}</a></p>
           <p><strong>{{ 'ORGANISMS.EMAIL' | translate }}:</strong> <a [href]="'mailto:' + org.email">{{ org.email }}</a></p>
           <p>{{ org.address }}</p>
-        </address>
-        <a *ngIf="org.websiteUrl" [href]="org.websiteUrl" class="organisms__item-link btn-primary btn-primary--sm btn-primary--outline mt-4">
+        </div>
+        <a *ngIf="org.websiteUrl" [href]="org.websiteUrl" target="_blank" rel="noopener noreferrer" class="organisms__item-link btn-primary btn-primary--sm btn-primary--outline mt-4" [attr.aria-label]="'ORGANISMS.VIEW_WEBSITE_ARIA' | translate:{name: org.name}">
           {{ 'ORGANISMS.VIEW_WEBSITE' | translate }}
+          <span class="sr-only">({{ 'ORGANISMS.OPENS_NEW_WINDOW' | translate }})</span>
         </a>
       </article>
     </div>
 
-    <div *ngIf="!isLoading && organisms.length === 0" class="organisms__empty card p-6 text-center">
+    <div *ngIf="!isLoading && organisms.length === 0" class="organisms__empty card p-6 text-center" role="status" aria-live="polite">
       {{ 'ORGANISMS.EMPTY' | translate }}
     </div>
   </div>

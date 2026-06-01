@@ -24,7 +24,7 @@
     <ul class="calendar__list" *ngIf="!isLoading">
       <li class="card p-6 calendar__event" *ngFor="let event of events; trackBy: trackByIndex">
         <div class="calendar__event-header">
-          <time class="calendar__event-date" [attr.datetime]="event.date">
+          <time class="calendar__event-date" [attr.datetime]="event.date | date:'yyyy-MM-dd'">
             <span class="calendar__event-day">{{ event.date | date:'dd' }}</span>
             <span class="calendar__event-month">{{ event.date | date:'MMM yyyy' }}</span>
           </time>

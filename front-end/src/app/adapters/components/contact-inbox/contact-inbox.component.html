@@ -35,12 +35,13 @@
     <button type="button" class="btn-primary" [ngClass]="filterStatus === 'all' ? '' : 'bg-surface-200 text-surface-700 hover:bg-surface-300'" (click)="setFilter('all')">
       Todos
     </button>
-    <button type="button" class="btn-primary relative" [ngClass]="filterStatus === 'unread' ? '' : 'bg-surface-200 text-surface-700 hover:bg-surface-300'" (click)="setFilter('unread')">
-      No leidos
-      <span *ngIf="unreadCount > 0" class="ml-1 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 font-semibold">
-        {{ unreadCount }}
-      </span>
-    </button>
+      <button type="button" class="btn-primary relative" [ngClass]="filterStatus === 'unread' ? '' : 'bg-surface-200 text-surface-700 hover:bg-surface-300'" (click)="setFilter('unread')">
+        No leidos
+        <span *ngIf="unreadCount > 0" class="ml-1 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 font-semibold">
+          {{ unreadCount }}
+          <span class="sr-only">mensajes sin leer</span>
+        </span>
+      </button>
     <button type="button" class="btn-primary" [ngClass]="filterStatus === 'read' ? '' : 'bg-surface-200 text-surface-700 hover:bg-surface-300'" (click)="setFilter('read')">
       Leidos
     </button>
@@ -74,7 +75,9 @@
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2">
             <h3 class="font-semibold text-surface-900 truncate">{{ msg.subject }}</h3>
-            <span *ngIf="!msg.read" class="inline-block w-2 h-2 rounded-full bg-blue-500 flex-shrink-0"></span>
+            <span *ngIf="!msg.read" class="inline-block w-2 h-2 rounded-full bg-blue-500 flex-shrink-0">
+                  <span class="sr-only">(sin leer)</span>
+                </span>
           </div>
           <p class="text-sm text-surface-500 mt-1">{{ msg.fullName }} &lt;{{ msg.email }}&gt;</p>
           <p class="text-sm text-surface-600 mt-1 line-clamp-1">{{ msg.message }}</p>

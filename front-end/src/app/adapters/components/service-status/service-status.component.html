@@ -35,7 +35,7 @@
           </span>
         </div>
         <p class="service-status__item-desc">{{ service.descriptionKey | translate }}</p>
-        <time class="service-status__item-updated" [attr.datetime]="service.lastUpdated">
+        <time class="service-status__item-updated" [attr.datetime]="service.lastUpdated | date:'yyyy-MM-dd'">
           {{ 'SERVICE_STATUS.UPDATED_AT' | translate }}: {{ formatDate(service.lastUpdated) }}
         </time>
       </li>

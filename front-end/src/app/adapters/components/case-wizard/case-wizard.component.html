@@ -33,6 +33,8 @@
               [formControlName]="field.id"
               class="field-input"
               [placeholder]="field.placeholder | translate"
+              [attr.aria-describedby]="field.id + '-error'"
+              [attr.aria-invalid]="wizardForm.get(field.id)?.invalid && wizardForm.get(field.id)?.touched"
             />
             <textarea
               *ngIf="field.type === 'textarea'"
@@ -40,19 +42,23 @@
               [formControlName]="field.id"
               class="field-input min-h-[140px]"
               [placeholder]="field.placeholder | translate"
+              [attr.aria-describedby]="field.id + '-error'"
+              [attr.aria-invalid]="wizardForm.get(field.id)?.invalid && wizardForm.get(field.id)?.touched"
             ></textarea>
             <select
               *ngIf="field.type === 'select'"
               [id]="field.id"
               [formControlName]="field.id"
               class="field-input"
+              [attr.aria-describedby]="field.id + '-error'"
+              [attr.aria-invalid]="wizardForm.get(field.id)?.invalid && wizardForm.get(field.id)?.touched"
             >
               <option value="">{{ field.placeholder | translate }}</option>
               <option *ngFor="let option of field.options; trackBy: trackByIndex" [value]="option.value">
                 {{ option.label | translate }}
               </option>
             </select>
-            <p class="error-text" *ngIf="wizardForm.get(field.id)?.invalid && wizardForm.get(field.id)?.touched">
+            <p [id]="field.id + '-error'" class="error-text" role="alert" *ngIf="wizardForm.get(field.id)?.invalid && wizardForm.get(field.id)?.touched">
               {{ 'CASE_WIZARD.FIELD_REQUIRED' | translate }}
             </p>
           </div>
@@ -127,7 +133,7 @@
       </div>
 
       <div class="mt-6 flex flex-wrap gap-3" *ngIf="!isSubmitting">
-        <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="previousStep()" [disabled]="currentTaskIndex === 0">
+        <button class="btn-secondary" type="button" (click)="previousStep()" [disabled]="currentTaskIndex === 0">
           {{ 'CASE_WIZARD.BACK' | translate }}
         </button>
         <button class="btn-primary" type="button" (click)="nextStep()" *ngIf="!isLastStep">

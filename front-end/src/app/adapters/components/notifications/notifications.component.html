@@ -51,39 +51,37 @@
             class="card p-6"
             *ngFor="let item of pagedInbox; trackBy: trackByIndex"
             appNotificationCard
-            tabindex="0"
-            role="button"
-            (click)="selectItem(item)"
-            (keydown.enter)="selectItem(item)"
-            (keydown.space)="$event.preventDefault(); selectItem(item)"
+            [attr.aria-labelledby]="'notification-title-' + item.id"
             [ngClass]="selectedItem?.id === item.id ? 'ring-2 ring-brand-300' : ''"
           >
             <div class="flex items-start justify-between gap-4">
               <div>
-                <h2 class="text-lg font-semibold text-surface-900">{{ item.title }}</h2>
+                <h2 [id]="'notification-title-' + item.id" class="text-lg font-semibold text-surface-900">{{ item.title }}</h2>
                 <p class="text-surface-600 mt-2">{{ item.message }}</p>
                 <p class="text-surface-500 text-sm mt-2">{{ (item.recordNumber || item.caseId) }} · {{ item.caseTitle }}</p>
                 <p class="text-surface-500 text-sm mt-2">{{ item.date | date:'dd/MM/yyyy HH:mm' }}</p>
               </div>
               <span class="text-xs font-semibold px-3 py-1 rounded-full" [ngClass]="item.read ? 'bg-surface-100 text-surface-600' : 'bg-brand-100 text-brand-700'">
                 {{ item.read ? ('NOTIFICATIONS.READ' | translate) : ('NOTIFICATIONS.NEW' | translate) }}
+                <span class="sr-only">({{ item.read ? ('NOTIFICATIONS.READ_SR' | translate) : ('NOTIFICATIONS.NEW_SR' | translate) }})</span>
               </span>
             </div>
             <div class="mt-4 flex flex-wrap gap-3">
-              <button class="btn-primary" type="button" (click)="selectItem(item)">{{ 'NOTIFICATIONS.VIEW' | translate }}</button>
+              <button class="btn-primary" type="button" [attr.aria-label]="'NOTIFICATIONS.VIEW_ACTION' | translate:{title: item.title}" (click)="selectItem(item)">{{ 'NOTIFICATIONS.VIEW' | translate }}</button>
             </div>
           </article>
-          <div *ngIf="pagedInbox.length === 0" class="card p-6 text-surface-600">
+          <div *ngIf="pagedInbox.length === 0" class="card p-6 text-surface-600" role="status" aria-live="polite">
             {{ 'NOTIFICATIONS.EMPTY' | translate }}
           </div>
         </section>
         
         <div class="mt-6 flex items-center justify-between" *ngIf="filteredInbox.length > 0">
-          <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage - 1)" [disabled]="paginationState.currentPage === 1">
+          <button class="btn-secondary" type="button" (click)="changePage(paginationState.currentPage - 1)" [disabled]="paginationState.currentPage === 1" [attr.aria-label]="'NOTIFICATIONS.PREVIOUS' | translate">
             {{ 'NOTIFICATIONS.PREVIOUS' | translate }}
           </button>
-          <span class="text-sm text-surface-600">{{ 'NOTIFICATIONS.PAGE' | translate }} {{ paginationState.currentPage }} / {{ paginationState.totalPages }}</span>
-          <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage + 1)" [disabled]="paginationState.currentPage === paginationState.totalPages">
+          <span class="text-sm text-surface-600" aria-live="polite">{{ 'NOTIFICATIONS.PAGE' | translate }} {{ paginationState.currentPage }} / {{ paginationState.totalPages }}</span>
+          <span class="sr-only" aria-live="polite">{{ 'NOTIFICATIONS.PAGE_ANNOUNCEMENT' | translate:{current: paginationState.currentPage, total: paginationState.totalPages} }}</span>
+          <button class="btn-secondary" type="button" (click)="changePage(paginationState.currentPage + 1)" [disabled]="paginationState.currentPage === paginationState.totalPages" [attr.aria-label]="'NOTIFICATIONS.NEXT' | translate">
             {{ 'NOTIFICATIONS.NEXT' | translate }}
           </button>
         </div>
@@ -100,23 +98,24 @@
            </div>
 
            <div *ngIf="selectedItem.status === 'ACCESSED'" class="mt-6 flex flex-wrap gap-3">
-             <button class="px-4 py-2 rounded-md bg-green-600 text-white text-sm font-medium hover:bg-green-700" type="button" (click)="accept(selectedItem)">
-               {{ 'NOTIFICATIONS.ACCEPT_BUTTON' | translate }}
-             </button>
-             <button class="px-4 py-2 rounded-md bg-red-600 text-white text-sm font-medium hover:bg-red-700" type="button" (click)="reject(selectedItem)">
-               {{ 'NOTIFICATIONS.REJECT_BUTTON' | translate }}
-             </button>
+<button class="px-4 py-2 rounded-md bg-green-600 text-white text-sm font-medium hover:bg-green-700" type="button" [attr.aria-label]="'NOTIFICATIONS.ACCEPT_ACTION' | translate:{title: selectedItem.title}" (click)="accept(selectedItem)">
+                {{ 'NOTIFICATIONS.ACCEPT_BUTTON' | translate }}
+              </button>
+              <button class="px-4 py-2 rounded-md bg-red-600 text-white text-sm font-medium hover:bg-red-700" type="button" [attr.aria-label]="'NOTIFICATIONS.REJECT_ACTION' | translate:{title: selectedItem.title}" (click)="reject(selectedItem)">
+                {{ 'NOTIFICATIONS.REJECT_BUTTON' | translate }}
+              </button>
            </div>
 
            <div *ngIf="selectedItem.attachments && selectedItem.attachments.length > 0" class="mt-6">
              <h3 class="text-sm font-semibold text-surface-900 mb-3">{{ 'NOTIFICATIONS.ATTACHMENTS' | translate }}</h3>
              <div class="grid gap-2">
-               <button
-                 *ngFor="let attachment of selectedItem.attachments"
-                 class="btn-primary bg-surface-100 text-surface-700 hover:bg-surface-200 flex items-center gap-3 p-3 text-left"
-                 type="button"
-                 (click)="downloadAttachment(selectedItem.id, attachment.id, attachment.name)"
-               >
+<button
+                  *ngFor="let attachment of selectedItem.attachments"
+                  class="btn-primary bg-surface-100 text-surface-700 hover:bg-surface-200 flex items-center gap-3 p-3 text-left"
+                  type="button"
+                  [attr.aria-label]="'NOTIFICATIONS.DOWNLOAD_ATTACHMENT' | translate:{name: attachment.name}"
+                  (click)="downloadAttachment(selectedItem.id, attachment.id, attachment.name)"
+                >
                  <svg class="w-5 h-5 text-surface-400" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
                  </svg>

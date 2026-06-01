@@ -4,6 +4,7 @@ import { MessagesService } from '../../../application/services/messages.service'
 import { MessageThreadSummary, MessageDto } from '../../../application/models/message.models';
 import { changePage, updatePageSize, getPaginationState, PaginationState } from '../../../application/utils/pagination';
 import { ToastService } from '../../../application/services/toast.service';
+import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
@@ -47,7 +48,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
   constructor(
     private readonly messagesService: MessagesService,
     private readonly fb: FormBuilder,
-    private readonly toast: ToastService
+    private readonly toast: ToastService,
+    private readonly translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -143,11 +145,11 @@ export class MessagesComponent implements OnInit, OnDestroy {
         this.messagePage = 0;
         this.loadMessages(this.selectedThread!.procedureId);
         this.isSending = false;
-        this.toast.success('Mensaje enviado correctamente');
+        this.toast.success(this.translate.instant('COMMON.SUCCESS'), this.translate.instant('COMMON.SUCCESS_MESSAGE_SENT'));
       },
       error: () => {
         this.isSending = false;
-        this.toast.error('Error al enviar el mensaje');
+        this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_SEND_MESSAGE'));
       }
     });
   }
@@ -163,7 +165,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
         URL.revokeObjectURL(objectUrl);
       },
       error: () => {
-        this.toast.error('Error al descargar el adjunto');
+        this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_DOWNLOAD_ATTACHMENT'));
       }
     });
   }

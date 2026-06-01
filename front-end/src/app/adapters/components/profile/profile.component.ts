@@ -63,7 +63,7 @@ export class ProfileComponent implements OnInit {
         this.isLoading = false;
       },
       error: () => {
-        this.toast.error('Error', 'No se pudieron cargar los datos del perfil.');
+        this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_LOAD_PROFILE'));
         this.isLoading = false;
       }
     });
@@ -86,9 +86,9 @@ export class ProfileComponent implements OnInit {
     }
 
     const confirmed = await this.confirmDialogService.confirm(
-      'Confirmar cambios',
-      'Vas a actualizar tus datos personales. ¿Deseas continuar?',
-      'Si, actualizar'
+      this.translate.instant('PROFILE.CONFIRM_CHANGES_TITLE'),
+      this.translate.instant('PROFILE.CONFIRM_CHANGES_TEXT'),
+      this.translate.instant('PROFILE.CONFIRM_UPDATE_BUTTON')
     );
     if (!confirmed) {
       return;
@@ -112,7 +112,7 @@ export class ProfileComponent implements OnInit {
       },
       error: () => {
         this.isSaving = false;
-        this.toast.error('Error', 'No se pudieron guardar los cambios del perfil.');
+        this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_SAVE_PROFILE'));
       }
     });
   }
@@ -205,12 +205,12 @@ export class ProfileComponent implements OnInit {
     }
 
     if (this.passwordStrength < 5) {
-      this.toast.warning('Contraseña debil', 'La nueva contraseña no cumple todos los requisitos.');
+      this.toast.warning(this.translate.instant('PROFILE.WEAK_PASSWORD'), this.translate.instant('PROFILE.WEAK_PASSWORD_HINT'));
       return;
     }
 
     if (!this.passwordsMatch()) {
-      this.toast.warning('Contraseñas no coinciden', 'Las contraseñas no coinciden.');
+      this.toast.warning(this.translate.instant('PROFILE.PASSWORDS_MISMATCH'), this.translate.instant('PROFILE.PASSWORDS_MISMATCH_HINT'));
       return;
     }
 
@@ -220,7 +220,7 @@ export class ProfileComponent implements OnInit {
     this.profileService.changePassword(currentPassword!, newPassword!).subscribe({
       next: () => {
         this.isChangingPassword = false;
-        this.toast.success('Contraseña actualizada', 'Tu contraseña se ha cambiado correctamente.');
+        this.toast.success(this.translate.instant('PROFILE.SUCCESS_PASSWORD_TITLE'), this.translate.instant('PROFILE.SUCCESS_PASSWORD_TEXT'));
         setTimeout(() => {
           this.closePasswordModal();
         }, 1500);
@@ -228,11 +228,11 @@ export class ProfileComponent implements OnInit {
       error: (err) => {
         this.isChangingPassword = false;
         if (err.status === 401) {
-          this.toast.error('Error', 'La contraseña actual es incorrecta.');
+          this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_PASSWORD_WRONG'));
         } else if (err.error?.errors) {
-          this.toast.error('Error', err.error.errors.map((e: any) => e.message).join(', '));
+          this.toast.error(this.translate.instant('COMMON.ERROR'), err.error.errors.map((e: any) => e.message).join(', '));
         } else {
-          this.toast.error('Error', 'No se pudo cambiar la contraseña. Intentalo de nuevo.');
+          this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_PASSWORD'));
         }
       }
     });

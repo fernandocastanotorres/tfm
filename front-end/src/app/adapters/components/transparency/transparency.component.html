@@ -31,8 +31,8 @@
             <span class="transparency__report-year">{{ report.year }}</span>
           </div>
           <p class="transparency__report-desc">{{ report.description || (report.descriptionKey | translate) }}</p>
-          <a *ngIf="report.downloadUrl" [href]="report.downloadUrl" class="btn-primary btn-primary--sm mt-3">
-            {{ 'TRANSPARENCY.DOWNLOAD_REPORT' | translate }}
+          <a *ngIf="report.downloadUrl" [href]="report.downloadUrl" class="btn-primary btn-primary--sm mt-3" [attr.aria-label]="'TRANSPARENCY.DOWNLOAD_REPORT_ARIA' | translate:{title: (report.title || (report.titleKey | translate))}">
+            {{ 'TRANSPARENCY.DOWNLOAD_REPORT' | translate }} — {{ report.title || (report.titleKey | translate) }}
           </a>
         </li>
       </ul>

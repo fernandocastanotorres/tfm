@@ -30,7 +30,7 @@
         <select id="case-page-size" formControlName="pageSize" class="field-input w-24" (change)="updatePageSize($any($event.target).value)">
           <option *ngFor="let size of paginationOptions; trackBy: trackByIndex" [value]="size">{{ size }}</option>
         </select>
-        <button type="button" class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" (click)="clearFilters()">
+        <button type="button" class="btn-secondary" (click)="clearFilters()">
           {{ 'DASHBOARD.CLEAR' | translate }}
         </button>
       </form>
@@ -45,12 +45,10 @@
     <!-- Case list -->
     <div class="mt-6 grid gap-6 lg:grid-cols-[2fr_1fr]" *ngIf="!isLoading">
       <div class="grid gap-4">
-        <button
-          type="button"
+        <a
+          [routerLink]="['/sede/expedientes', caseItem.id, 'detalle']"
           class="card p-5 text-left border border-transparent hover:border-brand-200 focus-visible:outline-brand-300"
           *ngFor="let caseItem of pagedCases; trackBy: trackByIndex"
-          (click)="selectCase(caseItem)"
-          [attr.aria-pressed]="selectedCase?.id === caseItem.id"
           [ngClass]="selectedCase?.id === caseItem.id ? 'ring-2 ring-brand-300' : ''"
         >
           <div class="flex items-start justify-between gap-4">
@@ -61,20 +59,21 @@
             </div>
             <span class="px-3 py-1 rounded-full text-xs font-semibold" [ngClass]="statusClass(caseItem.status)">
               {{ 'CASE_STATUS.' + toCaseStatusKey(caseItem.status) | translate }}
+              <span class="sr-only">({{ 'DASHBOARD.STATUS_OF' | translate:{status: ('CASE_STATUS.' + toCaseStatusKey(caseItem.status) | translate)} }})</span>
             </span>
           </div>
           <p class="text-surface-600 mt-3">{{ caseItem.description | translate }}</p>
           <p class="text-surface-500 text-sm mt-3">{{ 'DASHBOARD.UPDATED' | translate }} {{ caseItem.lastUpdated | date:'dd/MM/yyyy' }}</p>
-        </button>
+        </a>
         <div *ngIf="pagedCases.length === 0" class="card p-6 text-surface-600">
           {{ 'DASHBOARD.EMPTY' | translate }}
         </div>
         <div class="mt-4 flex items-center justify-between" *ngIf="filteredCases.length > 0">
-          <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage - 1)" [disabled]="paginationState.currentPage === 1">
+          <button class="btn-secondary" type="button" (click)="changePage(paginationState.currentPage - 1)" [disabled]="paginationState.currentPage === 1">
             {{ 'DASHBOARD.PREVIOUS' | translate }}
           </button>
           <span class="text-sm text-surface-600">{{ 'DASHBOARD.PAGE' | translate }} {{ paginationState.currentPage }} / {{ paginationState.totalPages }}</span>
-          <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage + 1)" [disabled]="paginationState.currentPage === paginationState.totalPages">
+          <button class="btn-secondary" type="button" (click)="changePage(paginationState.currentPage + 1)" [disabled]="paginationState.currentPage === paginationState.totalPages">
             {{ 'DASHBOARD.NEXT' | translate }}
           </button>
         </div>
@@ -94,7 +93,7 @@
         </div>
         <div class="mt-5 flex flex-col gap-3">
           <button class="btn-primary" type="button">{{ 'DASHBOARD.DETAIL_ATTACH' | translate }}</button>
-          <a class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300 text-center" [routerLink]="['/sede/expedientes', selectedCase.id, 'detalle']">
+          <a class="btn-secondary text-center" [routerLink]="['/sede/expedientes', selectedCase.id, 'detalle']">
             {{ 'DASHBOARD.DETAIL_HISTORY' | translate }}
           </a>
         </div>

@@ -1,10 +1,11 @@
 {
   "BO": {
     "TITLE": "Backoffice",
-    "SUBTITLE": "Gestio d'Expedients Electronics",
+    "SUBTITLE": "Gestió d'Expedients Electrònics",
     "SIDEBAR": {
       "TOGGLE": "Alternar barra lateral",
-      "LOGOUT": "Tancar sessio"
+      "LOGOUT": "Tancar sessió",
+      "NAV_MAIN": "Menú principal"
     },
     "HEADER": {
       "GUIDE": "Guia",
@@ -13,7 +14,9 @@
       "NO_UNREAD": "No hi ha missatges sense llegir",
       "NO_CONTENT": "Sense contingut",
       "VIEW_ALL_CASES": "Veure tots els expedients",
-      "NOTIFICATION_BELL": "Missatges no llegits"
+      "NOTIFICATION_BELL": "Missatges no llegits",
+      "NOTIFICATION_BELL_WITH_COUNT": "Missatges no llegits ({{count}} sense llegir)",
+      "NOTIFICATIONS_LABEL": "Notificacions"
     },
     "NAV": {
       "DASHBOARD": "Panell Principal",
@@ -21,22 +24,22 @@
       "TASKS": "Tasques Pendents",
       "USERS": "Usuaris",
       "PROCEDURES": "Procediments",
-      "PUBLIC_CONTENT": "Contingut Public",
-      "TRANSPARENCY": "Transparencia",
-      "STATISTICS": "Estadistiques",
-      "CONTACT_INBOX": "Bustia de Contacte",
-      "LOGOUT": "Tancar sessio"
+      "PUBLIC_CONTENT": "Contingut Públic",
+      "TRANSPARENCY": "Transparència",
+      "STATISTICS": "Estadístiques",
+      "CONTACT_INBOX": "Bústia de Contacte",
+      "LOGOUT": "Tancar sessió"
     },
     "LOGIN": {
       "TITLE": "Backoffice",
-      "SUBTITLE": "Gestio d'Expedients Electronics",
+      "SUBTITLE": "Gestió d'Expedients Electrònics",
       "EMAIL_LABEL": "Email",
       "EMAIL_PLACEHOLDER": "usuari@organisme.es",
       "PASSWORD_LABEL": "Contrasenya",
-      "PASSWORD_PLACEHOLDER": "Introduix la teua contrasenya",
-      "SUBMIT": "Iniciar sessio",
+      "PASSWORD_PLACEHOLDER": "Introduïx la teua contrasenya",
+      "SUBMIT": "Iniciar sessió",
       "LOADING": "Carregant...",
-      "INVALID_CREDENTIALS": "Credencials invalides"
+      "INVALID_CREDENTIALS": "Credencials no vàlides"
     },
     "DASHBOARD": {
       "LOADING": "Carregant dashboard...",
@@ -192,7 +195,7 @@
       "LOADING": "Carregant procediments...",
       "SAVE": "Guardar",
       "SAVING": "Guardando...",
-      "CANCEL": "Cancel\u00b7lar",
+      "CANCEL": "Cancel·lar",
       "TITLE_LABEL": "Titulo",
       "DESCRIPTION_LABEL": "Descripcion",
       "I18N": {
@@ -284,6 +287,7 @@
       "NEW": "Nuevo"
     },
     "CONTACT_INBOX": {
+      "FILTER_LABEL": "Filtre de missatges",
       "TITLE": "Bustia de Contacte",
       "SUBTITLE": "Mensajes recibidos desde el formulario de contacto de la sede.",
       "LOADING": "Carregant missatges...",
@@ -309,7 +313,7 @@
     "COMMON": {
       "SAVE": "Guardar",
       "SAVING": "Guardant...",
-      "CANCEL": "Cancel\u00b7lar",
+      "CANCEL": "Cancel·lar",
       "CLOSE": "Tancar",
       "DELETE": "Eliminar",
       "EDIT": "Editar",

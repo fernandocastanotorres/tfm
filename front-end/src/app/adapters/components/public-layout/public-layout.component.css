@@ -11,11 +11,37 @@ body.theme-dark .public-header {
 }
 
 .public-breadcrumb__container {
+  max-width: 64rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
   text-align: left;
+  display: flex;
+  justify-content: flex-start;
+}
+
+@media (min-width: 640px) {
+  .public-breadcrumb__container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .public-breadcrumb__container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
 }
 
 .public-breadcrumb__link {
   color: var(--sede-color-link);
+}
+
+.public-breadcrumb__link:hover {
+  color: var(--sede-color-primary-hover);
 }
 
 .public-breadcrumb__separator {
@@ -465,6 +491,7 @@ body.theme-dark .public-header__user-menu {
   min-height: 90vh;
   display: flex;
   flex-direction: column;
+  background-color: var(--sede-color-bg);
 }
 
 /* Auth pages inside public layout */

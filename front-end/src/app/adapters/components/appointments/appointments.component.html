@@ -58,18 +58,19 @@
           <button class="btn-secondary" type="button">{{ 'APPOINTMENTS.CANCEL' | translate }}</button>
         </div>
       </article>
-      <div *ngIf="pagedAppointments.length === 0" class="card p-6 text-surface-600">
+      <div *ngIf="pagedAppointments.length === 0" class="card p-6 text-surface-600" role="status" aria-live="polite">
         {{ 'APPOINTMENTS.EMPTY' | translate }}
       </div>
-      <div class="mt-4 flex items-center justify-between" *ngIf="filteredAppointments.length > 0">
-        <button class="btn-secondary" type="button" (click)="changePage(paginationState.currentPage - 1)" [disabled]="paginationState.currentPage === 1">
-          {{ 'APPOINTMENTS.PREVIOUS' | translate }}
-        </button>
-        <span class="text-sm text-surface-600">{{ 'APPOINTMENTS.PAGE' | translate }} {{ paginationState.currentPage }} / {{ paginationState.totalPages }}</span>
-        <button class="btn-secondary" type="button" (click)="changePage(paginationState.currentPage + 1)" [disabled]="paginationState.currentPage === paginationState.totalPages">
-          {{ 'APPOINTMENTS.NEXT' | translate }}
-        </button>
-      </div>
+        <div class="mt-4 flex items-center justify-between" *ngIf="filteredAppointments.length > 0">
+          <button class="btn-secondary" type="button" (click)="changePage(paginationState.currentPage - 1)" [disabled]="paginationState.currentPage === 1" [attr.aria-label]="'APPOINTMENTS.PREVIOUS' | translate">
+            {{ 'APPOINTMENTS.PREVIOUS' | translate }}
+          </button>
+          <span class="text-sm text-surface-600" aria-live="polite">{{ 'APPOINTMENTS.PAGE' | translate }} {{ paginationState.currentPage }} / {{ paginationState.totalPages }}</span>
+          <span class="sr-only" aria-live="polite">{{ 'APPOINTMENTS.PAGE_ANNOUNCEMENT' | translate:{current: paginationState.currentPage, total: paginationState.totalPages} }}</span>
+          <button class="btn-secondary" type="button" (click)="changePage(paginationState.currentPage + 1)" [disabled]="paginationState.currentPage === paginationState.totalPages" [attr.aria-label]="'APPOINTMENTS.NEXT' | translate">
+            {{ 'APPOINTMENTS.NEXT' | translate }}
+          </button>
+        </div>
     </section>
     <section class="mt-10 card p-6" aria-labelledby="slot-title">
       <h2 id="slot-title" class="text-lg font-semibold text-surface-900">{{ 'APPOINTMENTS.SLOTS_TITLE' | translate }}</h2>

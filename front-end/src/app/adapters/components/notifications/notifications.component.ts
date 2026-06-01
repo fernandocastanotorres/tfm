@@ -16,6 +16,7 @@ import { changePage, updatePageSize, getPaginationState, PaginationState } from 
 import { Subject } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { ToastService } from '../../../application/services/toast.service';
+import { TranslateService } from '@ngx-translate/core';
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
 import { NgClass, NgFor, NgIf, DatePipe } from '@angular/common';
@@ -62,7 +63,8 @@ export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy 
   constructor(
     private readonly notificationsService: NotificationsService,
     private readonly fb: FormBuilder,
-    private readonly toast: ToastService
+    private readonly toast: ToastService,
+    private readonly translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -78,7 +80,7 @@ export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy 
         this.selectedItem = null;
         this.activeItemId = null;
         this.updatePaginationState();
-        this.toast.error('Error al cargar', 'No se pudieron cargar las notificaciones.');
+        this.toast.error(this.translate.instant('NOTIFICATIONS.ERROR_LOAD'), this.translate.instant('NOTIFICATIONS.ERROR_LOAD_NOTIFICATIONS'));
       }
     });
   }
@@ -156,17 +158,17 @@ export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy 
 
     const { default: Swal } = await import('sweetalert2');
     const result = await Swal.fire({
-      title: 'Notificaci\u00f3n electr\u00f3nica',
-      text: '\u00bfDesea leer esta notificaci\u00f3n o rechazarla?',
+      title: this.translate.instant('NOTIFICATIONS.CONFIRM_READ_TITLE'),
+      text: this.translate.instant('NOTIFICATIONS.CONFIRM_READ_TEXT'),
       icon: 'question',
       showConfirmButton: true,
-      confirmButtonText: 'Leer contenido',
+      confirmButtonText: this.translate.instant('NOTIFICATIONS.CONFIRM_READ_BUTTON'),
       confirmButtonColor: '#2563eb',
       showDenyButton: true,
-      denyButtonText: 'Rechazar notificaci\u00f3n',
+      denyButtonText: this.translate.instant('NOTIFICATIONS.CONFIRM_REJECT_BUTTON'),
       denyButtonColor: '#dc2626',
       showCancelButton: true,
-      cancelButtonText: 'Cancelar',
+      cancelButtonText: this.translate.instant('COMMON.CANCEL'),
       reverseButtons: true,
       focusConfirm: false
     });
@@ -179,18 +181,18 @@ export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy 
           this.setSelectedItem(item);
         },
         error: () => {
-          this.toast.error('Error', 'No se pudo acceder a la notificaci\u00f3n.');
+          this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('NOTIFICATIONS.ERROR_ACCESS'));
         }
       });
     } else if (result.isDenied) {
       const { value: notes } = await Swal.fire({
-        title: 'Motivo del rechazo',
+        title: this.translate.instant('NOTIFICATIONS.REJECT_NOTES_TITLE'),
         input: 'textarea',
-        inputPlaceholder: 'Indique el motivo del rechazo (opcional)',
+        inputPlaceholder: this.translate.instant('NOTIFICATIONS.CONFIRM_REJECT_PLACEHOLDER'),
         showCancelButton: true,
-        confirmButtonText: 'Rechazar',
+        confirmButtonText: this.translate.instant('NOTIFICATIONS.REJECT_BUTTON'),
         confirmButtonColor: '#dc2626',
-        cancelButtonText: 'Cancelar',
+        cancelButtonText: this.translate.instant('COMMON.CANCEL'),
         reverseButtons: true
       });
       if (notes === undefined) return;
@@ -200,7 +202,7 @@ export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy 
           item.read = true;
           this.setSelectedItem(item);
         },
-        error: () => this.toast.error('Error', 'No se pudo rechazar la notificaci\u00f3n.')
+        error: () => this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('NOTIFICATIONS.ERROR_REJECT'))
       });
     }
   }
@@ -211,7 +213,7 @@ export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy 
         item.status = 'ACCEPTED';
         item.read = true;
       },
-      error: () => this.toast.error('Error', 'No se pudo aceptar la notificaci\u00f3n.')
+      error: () => this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('NOTIFICATIONS.ERROR_ACCEPT'))
     });
   }
 
@@ -221,7 +223,7 @@ export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy 
         item.status = 'REJECTED';
         item.read = true;
       },
-      error: () => this.toast.error('Error', 'No se pudo rechazar la notificaci\u00f3n.')
+      error: () => this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('NOTIFICATIONS.ERROR_REJECT'))
     });
   }
 
@@ -235,7 +237,7 @@ export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy 
         link.click();
         window.URL.revokeObjectURL(url);
       },
-      error: () => this.toast.error('Error', 'No se pudo descargar el adjunto.')
+      error: () => this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('NOTIFICATIONS.ERROR_DOWNLOAD'))
     });
   }
 

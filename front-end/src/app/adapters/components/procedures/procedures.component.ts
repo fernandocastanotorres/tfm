@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { ProceduresApiService } from '../../../application/services/procedures-api.service';
 import { ProcedureItem } from '../../../application/models/procedure.models';
 import { ToastService } from '../../../application/services/toast.service';
+import { TranslateService } from '@ngx-translate/core';
 
 import { trackByIndex } from '../../../application/utils/track-by.utils';
 import { NgIf, NgFor } from '@angular/common';
@@ -24,7 +25,8 @@ export class ProceduresComponent implements OnInit {
   constructor(
     private readonly proceduresApiService: ProceduresApiService,
     private readonly router: Router,
-    private readonly toast: ToastService
+    private readonly toast: ToastService,
+    private readonly translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -34,7 +36,7 @@ export class ProceduresComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        this.toast.error('Error', err?.error?.message ?? 'No se han podido cargar los procedimientos.');
+        this.toast.error(this.translate.instant('COMMON.ERROR'), err?.error?.message ?? this.translate.instant('COMMON.ERROR_LOAD_PROCEDURES'));
         this.isLoading = false;
       }
     });

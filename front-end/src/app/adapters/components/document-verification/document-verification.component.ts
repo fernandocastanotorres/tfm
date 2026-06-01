@@ -3,12 +3,13 @@ import { SignatureApiService, PublicCsvVerificationInfo, SignatureInfo } from '.
 import { ActivatedRoute } from '@angular/router';
 import { NgIf, NgClass, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-document-verification',
     templateUrl: './document-verification.component.html',
     styleUrls: ['./document-verification.component.css'],
-    imports: [NgIf, NgClass, FormsModule, DatePipe]
+    imports: [NgIf, NgClass, FormsModule, DatePipe, TranslateModule]
 })
 export class DocumentVerificationComponent {
   csvCode = '';
@@ -20,7 +21,8 @@ export class DocumentVerificationComponent {
 
   constructor(
     private readonly signatureApiService: SignatureApiService,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly translate: TranslateService
   ) {
     const csv = this.route.snapshot.queryParamMap.get('csv');
     if (csv) {
@@ -45,7 +47,7 @@ export class DocumentVerificationComponent {
         this.isVerifyingFile = false;
       },
       error: () => {
-        this.errorMessage = 'No se ha podido validar la firma del fichero.';
+        this.errorMessage = this.translate.instant('DOCUMENT_VERIFICATION.ERROR_FILE');
         this.isVerifyingFile = false;
       }
     });
@@ -67,7 +69,7 @@ export class DocumentVerificationComponent {
         this.isVerifyingCsv = false;
       },
       error: () => {
-        this.errorMessage = 'CSV no encontrado o no valido.';
+        this.errorMessage = this.translate.instant('DOCUMENT_VERIFICATION.ERROR_CSV');
         this.isVerifyingCsv = false;
       }
     });

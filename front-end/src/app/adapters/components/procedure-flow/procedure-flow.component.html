@@ -37,7 +37,7 @@
             <a class="btn-primary" [routerLink]="['/sede/expedientes/nuevo', procedure.slug]">
               {{ 'PROCEDURE_FLOW.START' | translate }}
             </a>
-            <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="previousTask()">
+            <button class="btn-secondary" type="button" (click)="previousTask()">
               {{ 'PROCEDURE_FLOW.PREVIOUS' | translate }}
             </button>
             <button class="btn-primary" type="button" (click)="nextTask()">

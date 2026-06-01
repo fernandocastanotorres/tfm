@@ -32,7 +32,7 @@
         <button class="btn-primary" type="button" (click)="toggleEdit()" [disabled]="isSaving">
           {{ isEditing ? ('PROFILE.CANCEL' | translate) : ('PROFILE.EDIT' | translate) }}
         </button>
-        <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="saveProfile()" [disabled]="!isEditing || isSaving">
+        <button class="btn-secondary" type="button" (click)="saveProfile()" [disabled]="!isEditing || isSaving">
           {{ isSaving ? ('PROFILE.SAVING' | translate) : ('PROFILE.SAVE' | translate) }}
         </button>
         <button class="btn-primary bg-brand-600 text-white hover:bg-brand-700" type="button" (click)="openPasswordModal()">

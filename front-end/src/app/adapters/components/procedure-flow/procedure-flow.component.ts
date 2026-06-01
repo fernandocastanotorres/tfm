@@ -3,6 +3,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProceduresApiService } from '../../../application/services/procedures-api.service';
 import { ProcedureDetail, ProcedureTaskDto } from '../../../application/models/procedure.models';
 import { ToastService } from '../../../application/services/toast.service';
+import { TranslateService } from '@ngx-translate/core';
 import { NgIf } from '@angular/common';
 import { SkeletonScreenComponent } from '../../../shared/components/skeleton-screen/skeleton-screen.component';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -23,7 +24,8 @@ export class ProcedureFlowComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly proceduresApiService: ProceduresApiService,
-    private readonly toast: ToastService
+    private readonly toast: ToastService,
+    private readonly translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -42,7 +44,7 @@ export class ProcedureFlowComponent implements OnInit {
         this.isLoading = false;
       },
       error: () => {
-        this.toast.error('Error', 'No se ha podido cargar el procedimiento.');
+        this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_LOAD_PROCEDURE'));
         this.isLoading = false;
       }
     });

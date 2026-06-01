@@ -10,51 +10,51 @@
       <div class="grid gap-6 md:grid-cols-2">
         <div class="space-y-2">
           <label for="fullName" class="field-label">{{ 'REGISTER.FULL_NAME' | translate }}</label>
-          <input id="fullName" type="text" formControlName="fullName" autocomplete="name" required class="field-input" placeholder="Nombre y apellidos" />
-          <p class="error-text" *ngIf="registerForm.get('fullName')?.invalid && registerForm.get('fullName')?.touched">
+          <input id="fullName" type="text" formControlName="fullName" autocomplete="name" required class="field-input" placeholder="Nombre y apellidos" aria-describedby="fullName-error" [attr.aria-invalid]="registerForm.get('fullName')?.invalid && registerForm.get('fullName')?.touched" />
+          <p id="fullName-error" class="error-text" role="alert" *ngIf="registerForm.get('fullName')?.invalid && registerForm.get('fullName')?.touched">
             {{ 'REGISTER.FULL_NAME_ERROR' | translate }}
           </p>
         </div>
 
         <div class="space-y-2">
           <label for="email" class="field-label">{{ 'REGISTER.EMAIL' | translate }}</label>
-          <input id="email" type="email" formControlName="email" autocomplete="email" required class="field-input" placeholder="usuario@dominio.es" />
-          <p class="error-text" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+          <input id="email" type="email" formControlName="email" autocomplete="email" required class="field-input" placeholder="usuario@dominio.es" aria-describedby="email-error" [attr.aria-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" />
+          <p id="email-error" class="error-text" role="alert" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
             {{ 'REGISTER.EMAIL_ERROR' | translate }}
           </p>
         </div>
 
         <div class="space-y-2">
           <label for="nationalId" class="field-label">{{ 'REGISTER.NATIONAL_ID' | translate }}</label>
-          <input id="nationalId" type="text" formControlName="nationalId" autocomplete="off" required class="field-input" placeholder="DNI/NIE" />
+          <input id="nationalId" type="text" formControlName="nationalId" autocomplete="off" required class="field-input" placeholder="DNI/NIE" aria-describedby="nationalId-error" [attr.aria-invalid]="registerForm.get('nationalId')?.invalid && registerForm.get('nationalId')?.touched" />
           <p class="helper-text">{{ 'REGISTER.NATIONAL_ID_HELP' | translate }}</p>
-          <p class="error-text" *ngIf="registerForm.get('nationalId')?.invalid && registerForm.get('nationalId')?.touched">
+          <p id="nationalId-error" class="error-text" role="alert" *ngIf="registerForm.get('nationalId')?.invalid && registerForm.get('nationalId')?.touched">
             {{ 'REGISTER.NATIONAL_ID_ERROR' | translate }}
           </p>
         </div>
 
         <div class="space-y-2">
           <label for="phone" class="field-label">{{ 'REGISTER.PHONE' | translate }}</label>
-          <input id="phone" type="tel" formControlName="phone" autocomplete="tel" required class="field-input" placeholder="600123123" />
+          <input id="phone" type="tel" formControlName="phone" autocomplete="tel" required class="field-input" placeholder="600123123" aria-describedby="phone-error" [attr.aria-invalid]="registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched" />
           <p class="helper-text">{{ 'REGISTER.PHONE_HELP' | translate }}</p>
-          <p class="error-text" *ngIf="registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched">
+          <p id="phone-error" class="error-text" role="alert" *ngIf="registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched">
             {{ 'REGISTER.PHONE_ERROR' | translate }}
           </p>
         </div>
 
         <div class="space-y-2">
           <label for="password" class="field-label">{{ 'REGISTER.PASSWORD' | translate }}</label>
-          <input id="password" type="password" formControlName="password" autocomplete="new-password" required class="field-input" placeholder="Minimo 8 caracteres" />
+          <input id="password" type="password" formControlName="password" autocomplete="new-password" required class="field-input" placeholder="Minimo 8 caracteres" aria-describedby="password-error" [attr.aria-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" />
           <p class="helper-text">{{ 'REGISTER.PASSWORD_HELP' | translate }}</p>
-          <p class="error-text" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+          <p id="password-error" class="error-text" role="alert" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
             {{ 'REGISTER.PASSWORD_ERROR' | translate }}
           </p>
         </div>
 
         <div class="space-y-2">
           <label for="confirmPassword" class="field-label">{{ 'REGISTER.CONFIRM_PASSWORD' | translate }}</label>
-          <input id="confirmPassword" type="password" formControlName="confirmPassword" autocomplete="new-password" required class="field-input" placeholder="Repite la contrasena" />
-          <p class="error-text" *ngIf="registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched">
+          <input id="confirmPassword" type="password" formControlName="confirmPassword" autocomplete="new-password" required class="field-input" placeholder="Repite la contrasena" aria-describedby="confirmPassword-error" [attr.aria-invalid]="registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched" />
+          <p id="confirmPassword-error" class="error-text" role="alert" *ngIf="registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched">
             {{ 'REGISTER.CONFIRM_PASSWORD_ERROR' | translate }}
           </p>
         </div>

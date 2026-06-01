@@ -43,9 +43,9 @@ export class CasesApiService {
     const fallbackTimeline = submittedAt
       ? [{
           id: `${raw.id}-submitted`,
-          title: 'Expediente enviado',
+          title: 'CASE_DETAIL.MOCK_TIMELINE_REGISTERED_TITLE',
           date: submittedAt,
-          description: 'La solicitud ha sido registrada y enviada para su tramitacion.'
+          description: 'CASE_DETAIL.MOCK_TIMELINE_REGISTERED_DESC'
         }]
       : [];
 

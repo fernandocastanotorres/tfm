@@ -102,7 +102,7 @@
     <div class="public-home__container">
       <h2 class="public-home__section-title">{{ 'PUBLIC_HOME.FEATURED_PROCEDURES' | translate }}</h2>
       <app-skeleton-screen *ngIf="isLoading" pattern="card-grid" [count]="4" [lines]="2" ariaLabel="Cargando procedimientos destacados..."></app-skeleton-screen>
-      <div class="public-home__procedures-grid" *ngIf="!isLoading">
+      <div class="public-home__procedures-grid" *ngIf="!isLoading && procedures.length > 0">
         <div class="card p-6 public-home__procedure-card" *ngFor="let proc of procedures; trackBy: trackByIndex">
           <h3 class="text-lg font-semibold public-home__card-title">{{ proc.name }}</h3>
           <p class="text-sm mt-2 public-home__card-muted">{{ proc.description }}</p>
@@ -115,7 +115,10 @@
           </a>
         </div>
       </div>
-      <div class="public-home__see-all" *ngIf="!isLoading">
+      <div *ngIf="!isLoading && procedures.length === 0" class="card p-6 text-surface-600 text-center" role="status" aria-live="polite">
+        {{ 'PUBLIC_HOME.NO_PROCEDURES' | translate }}
+      </div>
+      <div class="public-home__see-all" *ngIf="!isLoading && procedures.length > 0">
         <a [routerLink]="['/sede/procedimientos']" class="btn-primary btn-primary--outline">
           {{ 'PUBLIC_HOME.SEE_ALL_PROCEDURES' | translate }}
         </a>
@@ -139,10 +142,18 @@
           </div>
         </li>
       </ul>
-      <div class="public-home__see-all">
+      <div class="public-home__see-all" *ngIf="upcomingEvents.length > 0">
         <a [routerLink]="['/sede/calendario']" class="btn-primary btn-primary--outline">
           {{ 'PUBLIC_HOME.SEE_CALENDAR' | translate }}
         </a>
+      </div>
+    </div>
+  </div>
+  <div class="public-home__section" *ngIf="upcomingEvents.length === 0 && !isLoading">
+    <div class="public-home__container">
+      <h2 class="public-home__section-title">{{ 'PUBLIC_HOME.UPCOMING_EVENTS' | translate }}</h2>
+      <div class="card p-6 text-surface-600 text-center" role="status" aria-live="polite">
+        {{ 'PUBLIC_HOME.NO_EVENTS' | translate }}
       </div>
     </div>
   </div>

@@ -7,6 +7,7 @@ import { AppointmentsService } from '../../../application/services/appointments.
 import { PaymentsService } from '../../../application/services/payments.service';
 import { NotificationInboxItem } from '../../../application/models/notification.models';
 import { ToastService } from '../../../application/services/toast.service';
+import { TranslateService } from '@ngx-translate/core';
 import { trackByIndex } from '../../../application/utils/track-by.utils';
 import jsPDF from 'jspdf';
 import { NgIf, NgFor, NgClass, DatePipe } from '@angular/common';
@@ -57,7 +58,8 @@ export class CitizenFolderComponent implements OnInit {
     private readonly notificationsService: NotificationsService,
     private readonly appointmentsService: AppointmentsService,
     private readonly paymentsService: PaymentsService,
-    private readonly toast: ToastService
+    private readonly toast: ToastService,
+    private readonly translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -83,7 +85,7 @@ export class CitizenFolderComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        this.toast.error('Error al cargar', err?.error?.message ?? 'No se pudo cargar la carpeta ciudadana.');
+        this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_FOLDER'));
         this.isLoading = false;
       }
     });
@@ -157,20 +159,20 @@ export class CitizenFolderComponent implements OnInit {
     const now = new Date();
 
     doc.setFontSize(16);
-    doc.text('Carpeta Ciudadana - Resumen', 14, 18);
+    doc.text(this.translate.instant('CITIZEN_FOLDER.PDF_TITLE'), 14, 18);
     doc.setFontSize(10);
-    doc.text(`Fecha: ${now.toLocaleString('es-ES')}`, 14, 24);
+    doc.text(`${this.translate.instant('CITIZEN_FOLDER.PDF_DATE')} ${now.toLocaleString()}`, 14, 24);
 
     doc.setFontSize(12);
-    doc.text('Indicadores', 14, 34);
+    doc.text(this.translate.instant('CITIZEN_FOLDER.PDF_INDICATORS'), 14, 34);
     doc.setFontSize(10);
-    doc.text(`Expedientes: ${this.cases.length}`, 14, 40);
-    doc.text(`Mensajes no leidos: ${this.unreadMessages}`, 14, 46);
-    doc.text(`Pagos pendientes: ${this.pendingPayments}`, 14, 52);
-    doc.text(`Citas pendientes: ${this.pendingAppointments}`, 14, 58);
+    doc.text(`${this.translate.instant('CITIZEN_FOLDER.STATS_CASES')}: ${this.cases.length}`, 14, 40);
+    doc.text(`${this.translate.instant('CITIZEN_FOLDER.STATS_UNREAD_MESSAGES')}: ${this.unreadMessages}`, 14, 46);
+    doc.text(`${this.translate.instant('CITIZEN_FOLDER.STATS_PENDING_PAYMENTS')}: ${this.pendingPayments}`, 14, 52);
+    doc.text(`${this.translate.instant('CITIZEN_FOLDER.STATS_PENDING_APPOINTMENTS')}: ${this.pendingAppointments}`, 14, 58);
 
     doc.setFontSize(12);
-    doc.text('Timeline unificado (primeros 12 eventos)', 14, 70);
+    doc.text(this.translate.instant('CITIZEN_FOLDER.PDF_TIMELINE'), 14, 70);
     doc.setFontSize(9);
 
     const events = this.filteredTimelineEvents.slice(0, 12);
@@ -180,7 +182,8 @@ export class CitizenFolderComponent implements OnInit {
         doc.addPage();
         y = 20;
       }
-      const line = `${index + 1}. [${this.typeLabel(event.type)}|${event.priority}] ${event.date.toLocaleString('es-ES')} - ${event.title}`;
+      const typeLabelText = this.typeLabel(event.type);
+      const line = `${index + 1}. [${typeLabelText}|${event.priority}] ${event.date.toLocaleString()} - ${event.title}`;
       doc.text(line, 14, y);
       y += 6;
     });
@@ -202,13 +205,13 @@ export class CitizenFolderComponent implements OnInit {
   typeLabel(type: TimelineType): string {
     switch (type) {
       case 'CASE':
-        return 'Expediente';
+        return this.translate.instant('CITIZEN_FOLDER.TYPE_CASE');
       case 'MESSAGE':
-        return 'Mensaje';
+        return this.translate.instant('CITIZEN_FOLDER.TYPE_MESSAGE');
       case 'PAYMENT':
-        return 'Pago';
+        return this.translate.instant('CITIZEN_FOLDER.TYPE_PAYMENT');
       default:
-        return 'Cita';
+        return this.translate.instant('CITIZEN_FOLDER.TYPE_APPOINTMENT');
     }
   }
 

@@ -6,6 +6,7 @@ import { CaseDetail, RegistryEntryReceipt } from '../../../application/models/ca
 import { MessageDto } from '../../../application/models/message.models';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
 import { ToastService } from '../../../application/services/toast.service';
+import { TranslateService } from '@ngx-translate/core';
 import { Subscription, interval } from 'rxjs';
 import { trackByIndex } from '../../../application/utils/track-by.utils';
 import { NgIf, NgClass, NgFor, DatePipe } from '@angular/common';
@@ -47,15 +48,14 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly confirmDialogService: ConfirmDialogService,
-    private readonly toast: ToastService
+    private readonly toast: ToastService,
+    private readonly translate: TranslateService
   ) {}
 
   ngOnInit(): void {
-    console.log('CaseDetailComponent ngOnInit called');
     this.caseId = this.route.snapshot.paramMap.get('id');
-    console.log('CaseDetailComponent caseId:', this.caseId);
     if (!this.caseId) {
-      this.toast.error('Error', 'No se ha podido identificar el expediente.');
+      this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_CASE_IDENTIFY'));
       this.isLoading = false;
       return;
     }
@@ -104,7 +104,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
         },
         error: () => {
           pending -= 1;
-          this.toast.error('Error', 'No se ha podido subir el documento.');
+          this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_DOCUMENT_UPLOAD'));
           if (pending === 0) {
             this.isUploading = false;
             this.loadCaseDetail();
@@ -125,7 +125,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
         URL.revokeObjectURL(objectUrl);
       },
       error: () => {
-        this.toast.error('Error', 'No se ha podido descargar el documento.');
+        this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_DOCUMENT_DOWNLOAD'));
       }
     });
   }
@@ -145,7 +145,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
         URL.revokeObjectURL(objectUrl);
       },
       error: () => {
-        this.toast.error('Error', 'No se ha podido descargar el justificante.');
+        this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_RECEIPT_DOWNLOAD'));
       }
     });
   }
@@ -175,7 +175,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
         this.isDownloadingEni = false;
       },
       error: () => {
-        this.toast.error('Error', 'No se ha podido descargar el expediente electronico ENI.');
+        this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_ENI_DOWNLOAD'));
         this.isDownloadingEni = false;
       }
     });
@@ -195,9 +195,9 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
     }
 
     const confirmed = await this.confirmDialogService.confirm(
-      'Solicitar aclaracion',
-      'Se enviara una solicitud de aclaracion para este expediente.',
-      'Solicitar'
+      this.translate.instant('CASE_DETAIL.CONFIRM_AMENDMENT_TITLE'),
+      this.translate.instant('CASE_DETAIL.CONFIRM_AMENDMENT_TEXT'),
+      this.translate.instant('CASE_DETAIL.CONFIRM_AMENDMENT_BUTTON')
     );
 
     if (!confirmed) {
@@ -207,7 +207,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
     this.casesApiService.amend(this.caseDetail.id, { reason: 'Solicitud de aclaracion desde sede' }).subscribe({
       next: () => this.loadCaseDetail(),
       error: () => {
-        this.toast.error('Error', 'No se ha podido solicitar la aclaracion.');
+        this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_REQUEST_AMENDMENT'));
       }
     });
   }
@@ -228,7 +228,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
         this.loadMessages();
       },
       error: (err) => {
-        this.toast.error('Error al cargar', err?.error?.message ?? 'No se ha podido cargar el expediente.');
+        this.toast.error(this.translate.instant('COMMON.ERROR'), err?.error?.message ?? this.translate.instant('COMMON.ERROR_LOAD_CASES'));
         this.isLoading = false;
       }
     });
@@ -278,11 +278,11 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
         this.messagePage = 0;
         this.loadMessages();
         this.isSending = false;
-        this.toast.success('Mensaje enviado correctamente');
+        this.toast.success(this.translate.instant('COMMON.SUCCESS'), this.translate.instant('COMMON.SUCCESS_MESSAGE_SENT'));
       },
       error: () => {
         this.isSending = false;
-        this.toast.error('Error al enviar el mensaje');
+        this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_SEND_MESSAGE'));
       }
     });
   }
@@ -298,7 +298,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
         URL.revokeObjectURL(objectUrl);
       },
       error: () => {
-        this.toast.error('Error al descargar el adjunto');
+        this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_DOWNLOAD_ATTACHMENT'));
       }
     });
   }
@@ -347,7 +347,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
 
     const procedureId = this.caseDetail.procedureTypeId || this.toSlug(this.caseDetail.procedureType);
     if (!procedureId) {
-      this.toast.error('Error', 'No se ha podido continuar con el tramite.');
+      this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_CONTINUE_PROCESS'));
       return;
     }
 

@@ -1,19 +1,22 @@
 {
   "BO": {
     "TITLE": "Backoffice",
-    "SUBTITLE": "Xestion de Expedientes Electronicos",
+    "SUBTITLE": "Xestión de Expedientes Electrónicos",
     "SIDEBAR": {
       "TOGGLE": "Alternar barra lateral",
-      "LOGOUT": "Pecher sesion"
+      "LOGOUT": "Pecher sesión",
+      "NAV_MAIN": "Menú principal"
     },
     "HEADER": {
-      "GUIDE": "Guia",
+      "GUIDE": "Guía",
       "UNREAD_MESSAGES": "Mensaxes sen ler",
       "PENDING_CASES": "{{count}} expediente(s) pendente(s)",
       "NO_UNREAD": "Non hai mensaxes sen ler",
       "NO_CONTENT": "Sen contido",
       "VIEW_ALL_CASES": "Ver todos os expedientes",
-      "NOTIFICATION_BELL": "Mensaxes non lidos"
+      "NOTIFICATION_BELL": "Mensaxes non lidos",
+      "NOTIFICATION_BELL_WITH_COUNT": "Mensaxes non lidos ({{count}} sen ler)",
+      "NOTIFICATIONS_LABEL": "Notificacións"
     },
     "NAV": {
       "DASHBOARD": "Panel Principal",
@@ -21,22 +24,22 @@
       "TASKS": "Tarefas Pendentes",
       "USERS": "Usuarios",
       "PROCEDURES": "Procedementos",
-      "PUBLIC_CONTENT": "Contido Publico",
+      "PUBLIC_CONTENT": "Contido Público",
       "TRANSPARENCY": "Transparencia",
-      "STATISTICS": "Estatisticas",
-      "CONTACT_INBOX": "Buzon de Contacto",
-      "LOGOUT": "Pecher sesion"
+      "STATISTICS": "Estatísticas",
+      "CONTACT_INBOX": "Buzón de Contacto",
+      "LOGOUT": "Pecher sesión"
     },
     "LOGIN": {
       "TITLE": "Backoffice",
-      "SUBTITLE": "Xestion de Expedientes Electronicos",
+      "SUBTITLE": "Xestión de Expedientes Electrónicos",
       "EMAIL_LABEL": "Email",
       "EMAIL_PLACEHOLDER": "usuario@organismo.es",
       "PASSWORD_LABEL": "Contrasinal",
       "PASSWORD_PLACEHOLDER": "Introduce o teu contrasinal",
-      "SUBMIT": "Iniciar sesion",
+      "SUBMIT": "Iniciar sesión",
       "LOADING": "Cargando...",
-      "INVALID_CREDENTIALS": "Credenciais invalidas"
+      "INVALID_CREDENTIALS": "Credenciais inválidas"
     },
     "DASHBOARD": {
       "LOADING": "Cargando dashboard...",
@@ -284,6 +287,7 @@
       "NEW": "Nuevo"
     },
     "CONTACT_INBOX": {
+      "FILTER_LABEL": "Filtro de mensaxes",
       "TITLE": "Buzon de Contacto",
       "SUBTITLE": "Mensajes recibidos desde el formulario de contacto de la sede.",
       "LOADING": "Cargando mensaxes...",

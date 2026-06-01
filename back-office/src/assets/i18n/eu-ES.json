@@ -4,7 +4,8 @@
     "SUBTITLE": "Espediente Elektronikoen Kudeaketa",
     "SIDEBAR": {
       "TOGGLE": "Alboko barra txandakatu",
-      "LOGOUT": "Saioa itxi"
+      "LOGOUT": "Saioa itxi",
+      "NAV_MAIN": "Menu nagusia"
     },
     "HEADER": {
       "GUIDE": "Gida",
@@ -13,7 +14,9 @@
       "NO_UNREAD": "Ez dago irakurri gabeko mezurik",
       "NO_CONTENT": "Edukirik gabe",
       "VIEW_ALL_CASES": "Espediente guztiak ikusi",
-      "NOTIFICATION_BELL": "Irakurri gabeko mezuak"
+      "NOTIFICATION_BELL": "Irakurri gabeko mezuak",
+      "NOTIFICATION_BELL_WITH_COUNT": "Irakurri gabeko mezuak ({{count}} irakurri gabe)",
+      "NOTIFICATIONS_LABEL": "Jakinarazpenak"
     },
     "NAV": {
       "DASHBOARD": "Panel Nagusia",
@@ -31,12 +34,12 @@
       "TITLE": "Backoffice",
       "SUBTITLE": "Espediente Elektronikoen Kudeaketa",
       "EMAIL_LABEL": "Email",
-      "EMAIL_PLACEHOLDER": "erabiltzailea@erakundea.es",
+      "EMAIL_PLACEHOLDER": "usuario@organismo.es",
       "PASSWORD_LABEL": "Pasahitza",
       "PASSWORD_PLACEHOLDER": "Sartu zure pasahitza",
-      "SUBMIT": "Saioa hasi",
+      "SUBMIT": "Sartu",
       "LOADING": "Kargatzen...",
-      "INVALID_CREDENTIALS": "Kredentzial baliogabeak"
+      "INVALID_CREDENTIALS": "Kredentzialak baliogabeak"
     },
     "DASHBOARD": {
       "LOADING": "Dashboard kargatzen...",
@@ -284,6 +287,7 @@
       "NEW": "Nuevo"
     },
     "CONTACT_INBOX": {
+      "FILTER_LABEL": "Mezu-iragazkia",
       "TITLE": "Kontaktu Ontzia",
       "SUBTITLE": "Mensajes recibidos desde el formulario de contacto de la sede.",
       "LOADING": "Mezuak kargatzen...",

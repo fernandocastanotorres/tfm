@@ -1,36 +1,39 @@
-<main class="min-h-screen bg-surface-50 px-6 py-10">
-  <section class="mx-auto max-w-4xl space-y-6">
-    <header class="card p-6">
-      <h1 class="text-2xl font-semibold text-surface-900">Validacion de documentos firmados</h1>
-      <p class="mt-2 text-surface-600">Puede validar por fichero firmado o por CSV.</p>
+<main class="min-h-screen bg-surface-50" aria-labelledby="document-verification-title">
+  <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <header class="card p-6 mb-6">
+      <h1 id="document-verification-title" class="text-2xl font-semibold text-surface-900">{{ 'DOCUMENT_VERIFICATION.TITLE' | translate }}</h1>
+      <p class="mt-2 text-surface-600">{{ 'DOCUMENT_VERIFICATION.SUBTITLE' | translate }}</p>
     </header>
 
-    <article class="card p-6 space-y-4">
-      <h2 class="text-lg font-semibold text-surface-900">Validar por fichero</h2>
-      <input type="file" accept="application/pdf" (change)="verifyFile($any($event.target).files)" />
-      <p *ngIf="isVerifyingFile" class="text-surface-600">Validando fichero...</p>
+    <article class="card p-6 mb-4 space-y-4">
+      <h2 class="text-lg font-semibold text-surface-900">{{ 'DOCUMENT_VERIFICATION.FILE_SECTION_TITLE' | translate }}</h2>
+      <label class="btn-primary cursor-pointer inline-flex items-center gap-2">
+        {{ 'DOCUMENT_VERIFICATION.SELECT_FILE' | translate }}
+        <input type="file" accept="application/pdf" class="hidden" (change)="verifyFile($any($event.target).files)" />
+      </label>
+      <p *ngIf="isVerifyingFile" class="text-surface-600">{{ 'DOCUMENT_VERIFICATION.FILE_VERIFYING' | translate }}</p>
       <div *ngIf="fileVerificationResult" class="rounded border p-3" [ngClass]="fileVerificationResult.valid ? 'border-green-300 bg-green-50' : 'border-red-300 bg-red-50'">
-        <p class="font-semibold">{{ fileVerificationResult.valid ? 'Firma valida' : 'Firma no valida' }}</p>
+        <p class="font-semibold">{{ (fileVerificationResult.valid ? 'DOCUMENT_VERIFICATION.SIGNATURE_VALID' : 'DOCUMENT_VERIFICATION.SIGNATURE_INVALID') | translate }}</p>
         <p class="text-sm">{{ fileVerificationResult.message }}</p>
       </div>
     </article>
 
     <article class="card p-6 space-y-4">
-      <h2 class="text-lg font-semibold text-surface-900">Validar por CSV</h2>
+      <h2 class="text-lg font-semibold text-surface-900">{{ 'DOCUMENT_VERIFICATION.CSV_SECTION_TITLE' | translate }}</h2>
       <div class="flex flex-wrap gap-3">
-        <input class="field-input w-80" type="text" [(ngModel)]="csvCode" placeholder="Introduzca codigo CSV" />
-        <button class="btn-primary bg-brand-500 text-white hover:bg-brand-600" type="button" (click)="verifyCsv()" [disabled]="isVerifyingCsv">Validar CSV</button>
+        <input class="field-input w-80" type="text" [(ngModel)]="csvCode" [placeholder]="'DOCUMENT_VERIFICATION.CSV_INPUT_PLACEHOLDER' | translate" />
+        <button class="btn-primary bg-brand-500 text-white hover:bg-brand-600" type="button" (click)="verifyCsv()" [disabled]="isVerifyingCsv">{{ 'DOCUMENT_VERIFICATION.CSV_BUTTON' | translate }}</button>
       </div>
-      <p *ngIf="isVerifyingCsv" class="text-surface-600">Consultando CSV...</p>
+      <p *ngIf="isVerifyingCsv" class="text-surface-600">{{ 'DOCUMENT_VERIFICATION.CSV_CONSULTING' | translate }}</p>
       <div *ngIf="csvVerificationResult" class="rounded border border-green-300 bg-green-50 p-3">
         <p class="font-semibold">{{ csvVerificationResult.message }}</p>
-        <p class="text-sm">CSV: {{ csvVerificationResult.csvCode }}</p>
-        <p class="text-sm">Expediente: {{ csvVerificationResult.caseId }}</p>
-        <p class="text-sm">Documento: {{ csvVerificationResult.documentId }}</p>
-        <p class="text-sm">Firma: {{ csvVerificationResult.signedAt | date:'dd/MM/yyyy HH:mm:ss' }}</p>
+        <p class="text-sm">{{ 'DOCUMENT_VERIFICATION.CSV_LABEL' | translate }} {{ csvVerificationResult.csvCode }}</p>
+        <p class="text-sm">{{ 'DOCUMENT_VERIFICATION.CASE_LABEL' | translate }} {{ csvVerificationResult.caseId }}</p>
+        <p class="text-sm">{{ 'DOCUMENT_VERIFICATION.DOC_LABEL' | translate }} {{ csvVerificationResult.documentId }}</p>
+        <p class="text-sm">{{ 'DOCUMENT_VERIFICATION.SIGN_LABEL' | translate }} {{ csvVerificationResult.signedAt | date:'dd/MM/yyyy HH:mm:ss' }}</p>
       </div>
     </article>
 
-    <p *ngIf="errorMessage" class="text-sm text-red-600">{{ errorMessage }}</p>
+    <p *ngIf="errorMessage" class="text-sm text-red-600 mt-4">{{ errorMessage }}</p>
   </section>
 </main>

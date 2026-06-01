@@ -72,11 +72,11 @@
           <p class="text-xl font-semibold mt-4">{{ payment.amountLabel }}</p>
         </button>
         <div class="mt-4 flex items-center justify-between" *ngIf="filteredPayments.length > 0">
-      <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage - 1)" [disabled]="paginationState.currentPage === 1">
+      <button class="btn-secondary" type="button" (click)="changePage(paginationState.currentPage - 1)" [disabled]="paginationState.currentPage === 1">
         {{ 'PAYMENTS.PREVIOUS' | translate }}
       </button>
       <span class="text-sm text-surface-600">{{ 'PAYMENTS.PAGE' | translate }} {{ paginationState.currentPage }} / {{ paginationState.totalPages }}</span>
-      <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button" (click)="changePage(paginationState.currentPage + 1)" [disabled]="paginationState.currentPage === paginationState.totalPages">
+      <button class="btn-secondary" type="button" (click)="changePage(paginationState.currentPage + 1)" [disabled]="paginationState.currentPage === paginationState.totalPages">
         {{ 'PAYMENTS.NEXT' | translate }}
       </button>
         </div>
@@ -95,7 +95,7 @@
            <button class="btn-primary" type="button" [disabled]="selectedPayment.statusKey === 'PAYMENT_STATUS.PAID'" (click)="markAsPaid(selectedPayment)">
              {{ 'PAYMENTS.PAY' | translate }}
            </button>
-           <button class="btn-primary bg-surface-200 text-surface-700 hover:bg-surface-300" type="button">
+           <button class="btn-secondary" type="button">
              {{ 'PAYMENTS.DOWNLOAD' | translate }}
            </button>
          </div>

@@ -43,12 +43,12 @@
       <div class="contact__offices-grid">
         <div class="card p-6 contact__office" *ngFor="let office of offices; trackBy: trackByIndex">
           <h3 class="contact__office-name">{{ office.nameKey | translate }}</h3>
-          <address class="contact__office-address">
+          <div class="contact__office-address">
             <p>{{ office.addressKey | translate }}</p>
             <p><strong>{{ 'CONTACT.PHONE' | translate }}:</strong> <a [href]="'tel:' + office.phone">{{ office.phone }}</a></p>
             <p><strong>{{ 'CONTACT.EMAIL' | translate }}:</strong> <a [href]="'mailto:' + office.email">{{ office.email }}</a></p>
             <p><strong>{{ 'CONTACT.SCHEDULE' | translate }}:</strong> {{ office.scheduleKey | translate }}</p>
-          </address>
+          </div>
         </div>
       </div>
     </div>
@@ -62,29 +62,29 @@
       <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="card p-6 contact__form" novalidate>
         <div class="contact__form-group">
           <label class="field-label" for="contact-name">{{ 'CONTACT.FORM_NAME' | translate }}</label>
-          <input id="contact-name" type="text" formControlName="name" autocomplete="name" class="field-input" placeholder="Tu nombre completo" />
-          <div *ngIf="contactForm.get('name')?.invalid && contactForm.get('name')?.touched" class="error-text" role="alert" aria-live="polite">
+          <input id="contact-name" type="text" formControlName="name" autocomplete="name" class="field-input" placeholder="Tu nombre completo" aria-describedby="contact-name-error" [attr.aria-invalid]="contactForm.get('name')?.invalid && contactForm.get('name')?.touched" />
+          <div id="contact-name-error" *ngIf="contactForm.get('name')?.invalid && contactForm.get('name')?.touched" class="error-text" role="alert" aria-live="polite">
             {{ 'CONTACT.FORM_NAME_ERROR' | translate }}
           </div>
         </div>
         <div class="contact__form-group">
           <label class="field-label" for="contact-email">{{ 'CONTACT.FORM_EMAIL' | translate }}</label>
-          <input id="contact-email" type="email" formControlName="email" autocomplete="email" class="field-input" placeholder="usuario@dominio.es" />
-          <div *ngIf="contactForm.get('email')?.invalid && contactForm.get('email')?.touched" class="error-text" role="alert" aria-live="polite">
+          <input id="contact-email" type="email" formControlName="email" autocomplete="email" class="field-input" placeholder="usuario@dominio.es" aria-describedby="contact-email-error" [attr.aria-invalid]="contactForm.get('email')?.invalid && contactForm.get('email')?.touched" />
+          <div id="contact-email-error" *ngIf="contactForm.get('email')?.invalid && contactForm.get('email')?.touched" class="error-text" role="alert" aria-live="polite">
             {{ 'CONTACT.FORM_EMAIL_ERROR' | translate }}
           </div>
         </div>
         <div class="contact__form-group">
           <label class="field-label" for="contact-subject">{{ 'CONTACT.FORM_SUBJECT' | translate }}</label>
-          <input id="contact-subject" type="text" formControlName="subject" class="field-input" placeholder="Asunto de la consulta" />
-          <div *ngIf="contactForm.get('subject')?.invalid && contactForm.get('subject')?.touched" class="error-text" role="alert" aria-live="polite">
+          <input id="contact-subject" type="text" formControlName="subject" class="field-input" placeholder="Asunto de la consulta" aria-describedby="contact-subject-error" [attr.aria-invalid]="contactForm.get('subject')?.invalid && contactForm.get('subject')?.touched" />
+          <div id="contact-subject-error" *ngIf="contactForm.get('subject')?.invalid && contactForm.get('subject')?.touched" class="error-text" role="alert" aria-live="polite">
             {{ 'CONTACT.FORM_SUBJECT_ERROR' | translate }}
           </div>
         </div>
         <div class="contact__form-group">
           <label class="field-label" for="contact-message">{{ 'CONTACT.FORM_MESSAGE' | translate }}</label>
-          <textarea id="contact-message" formControlName="message" class="field-input" rows="5" placeholder="Describe tu consulta con el mayor detalle posible"></textarea>
-          <div *ngIf="contactForm.get('message')?.invalid && contactForm.get('message')?.touched" class="error-text" role="alert" aria-live="polite">
+          <textarea id="contact-message" formControlName="message" class="field-input" rows="5" placeholder="Describe tu consulta con el mayor detalle posible" aria-describedby="contact-message-error" [attr.aria-invalid]="contactForm.get('message')?.invalid && contactForm.get('message')?.touched"></textarea>
+          <div id="contact-message-error" *ngIf="contactForm.get('message')?.invalid && contactForm.get('message')?.touched" class="error-text" role="alert" aria-live="polite">
             {{ 'CONTACT.FORM_MESSAGE_ERROR' | translate }}
           </div>
         </div>
