@@ -138,12 +138,12 @@
 ></button>
 
 <main class="public-main" id="main-content" role="main">
-  <nav aria-label="Breadcrumb" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4" *ngIf="breadcrumbs.length > 1">
-    <ol class="public-breadcrumb flex items-center gap-2 text-sm text-surface-600">
+  <nav aria-label="Breadcrumb" class="public-breadcrumb__container max-w-5xl mx-auto px-6 pt-4" *ngIf="breadcrumbs.length > 1">
+    <ol class="public-breadcrumb flex items-center justify-start gap-2 text-sm">
       <li *ngFor="let crumb of breadcrumbs; let last = last; let idx = index">
         <a *ngIf="!last" [routerLink]="crumb.url" class="public-breadcrumb__link hover:text-brand-600 underline underline-offset-2">{{ crumb.label }}</a>
-        <span *ngIf="last" aria-current="page" class="public-breadcrumb__current font-semibold text-surface-900">{{ crumb.label }}</span>
-        <span *ngIf="!last" class="public-breadcrumb__separator mx-1 text-surface-400" aria-hidden="true">/</span>
+        <span *ngIf="last" aria-current="page" class="public-breadcrumb__current font-semibold">{{ crumb.label }}</span>
+        <span *ngIf="!last" class="public-breadcrumb__separator mx-1" aria-hidden="true">/</span>
       </li>
     </ol>
   </nav>

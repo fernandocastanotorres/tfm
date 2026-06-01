@@ -10,12 +10,24 @@ body.theme-dark .public-header {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
+.public-breadcrumb__container {
+  text-align: left;
+}
+
 .public-breadcrumb__link {
   color: var(--sede-color-link);
 }
 
 .public-breadcrumb__separator {
   color: var(--sede-color-muted);
+}
+
+.public-breadcrumb {
+  color: var(--sede-color-muted);
+}
+
+.public-breadcrumb__current {
+  color: var(--sede-color-text);
 }
 
 body.theme-dark .public-breadcrumb {
