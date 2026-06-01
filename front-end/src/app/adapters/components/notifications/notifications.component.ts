@@ -38,6 +38,7 @@ export class NotificationCardDirective {
     imports: [NgClass, FormsModule, ReactiveFormsModule, NgFor, NotificationCardDirective, NgIf, DatePipe, TranslatePipe]
 })
 export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy {
+  private static readonly ERROR_KEY = 'COMMON.ERROR';
   inbox: NotificationInboxItem[] = [];
   filter: 'all' | 'unread' = 'all';
   readonly paginationOptions = [10, 20, 50];
@@ -181,7 +182,7 @@ export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy 
           this.setSelectedItem(item);
         },
         error: () => {
-          this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('NOTIFICATIONS.ERROR_ACCESS'));
+          this.toast.error(this.translate.instant(NotificationsComponent.ERROR_KEY), this.translate.instant('NOTIFICATIONS.ERROR_ACCESS'));
         }
       });
     } else if (result.isDenied) {
@@ -202,7 +203,7 @@ export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy 
           item.read = true;
           this.setSelectedItem(item);
         },
-        error: () => this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('NOTIFICATIONS.ERROR_REJECT'))
+        error: () => this.toast.error(this.translate.instant(NotificationsComponent.ERROR_KEY), this.translate.instant('NOTIFICATIONS.ERROR_REJECT'))
       });
     }
   }
@@ -213,7 +214,7 @@ export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy 
         item.status = 'ACCEPTED';
         item.read = true;
       },
-      error: () => this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('NOTIFICATIONS.ERROR_ACCEPT'))
+      error: () => this.toast.error(this.translate.instant(NotificationsComponent.ERROR_KEY), this.translate.instant('NOTIFICATIONS.ERROR_ACCEPT'))
     });
   }
 
@@ -223,7 +224,7 @@ export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy 
         item.status = 'REJECTED';
         item.read = true;
       },
-      error: () => this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('NOTIFICATIONS.ERROR_REJECT'))
+      error: () => this.toast.error(this.translate.instant(NotificationsComponent.ERROR_KEY), this.translate.instant('NOTIFICATIONS.ERROR_REJECT'))
     });
   }
 
@@ -237,7 +238,7 @@ export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy 
         link.click();
         window.URL.revokeObjectURL(url);
       },
-      error: () => this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('NOTIFICATIONS.ERROR_DOWNLOAD'))
+      error: () => this.toast.error(this.translate.instant(NotificationsComponent.ERROR_KEY), this.translate.instant('NOTIFICATIONS.ERROR_DOWNLOAD'))
     });
   }
 

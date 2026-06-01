@@ -18,6 +18,7 @@ import { CdkTrapFocus } from '@angular/cdk/a11y';
     imports: [RouterLink, NgIf, SkeletonScreenComponent, FormsModule, ReactiveFormsModule, CdkTrapFocus, NgFor, TranslatePipe]
 })
 export class ProfileComponent implements OnInit {
+  private static readonly ERROR_KEY = 'COMMON.ERROR';
   readonly profileForm = this.fb.group({
     fullName: [''],
     email: [''],
@@ -63,7 +64,7 @@ export class ProfileComponent implements OnInit {
         this.isLoading = false;
       },
       error: () => {
-        this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_LOAD_PROFILE'));
+        this.toast.error(this.translate.instant(ProfileComponent.ERROR_KEY), this.translate.instant('COMMON.ERROR_LOAD_PROFILE'));
         this.isLoading = false;
       }
     });
@@ -112,7 +113,7 @@ export class ProfileComponent implements OnInit {
       },
       error: () => {
         this.isSaving = false;
-        this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_SAVE_PROFILE'));
+        this.toast.error(this.translate.instant(ProfileComponent.ERROR_KEY), this.translate.instant('COMMON.ERROR_SAVE_PROFILE'));
       }
     });
   }
@@ -228,11 +229,11 @@ export class ProfileComponent implements OnInit {
       error: (err) => {
         this.isChangingPassword = false;
         if (err.status === 401) {
-          this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_PASSWORD_WRONG'));
+          this.toast.error(this.translate.instant(ProfileComponent.ERROR_KEY), this.translate.instant('COMMON.ERROR_PASSWORD_WRONG'));
         } else if (err.error?.errors) {
-          this.toast.error(this.translate.instant('COMMON.ERROR'), err.error.errors.map((e: any) => e.message).join(', '));
+          this.toast.error(this.translate.instant(ProfileComponent.ERROR_KEY), err.error.errors.map((e: any) => e.message).join(', '));
         } else {
-          this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_PASSWORD'));
+          this.toast.error(this.translate.instant(ProfileComponent.ERROR_KEY), this.translate.instant('COMMON.ERROR_PASSWORD'));
         }
       }
     });

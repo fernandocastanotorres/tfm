@@ -23,6 +23,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class CaseDetailComponent implements OnInit, OnDestroy {
 
   private static readonly STATUS_POLL_INTERVAL_MS = 30_000;
+  private static readonly ERROR_KEY = 'COMMON.ERROR';
 
   caseDetail: CaseDetail | null = null;
   isLoading = true;
@@ -55,7 +56,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.caseId = this.route.snapshot.paramMap.get('id');
     if (!this.caseId) {
-      this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_CASE_IDENTIFY'));
+      this.toast.error(this.translate.instant(CaseDetailComponent.ERROR_KEY), this.translate.instant('COMMON.ERROR_CASE_IDENTIFY'));
       this.isLoading = false;
       return;
     }
@@ -104,7 +105,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
         },
         error: () => {
           pending -= 1;
-          this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_DOCUMENT_UPLOAD'));
+          this.toast.error(this.translate.instant(CaseDetailComponent.ERROR_KEY), this.translate.instant('COMMON.ERROR_DOCUMENT_UPLOAD'));
           if (pending === 0) {
             this.isUploading = false;
             this.loadCaseDetail();
@@ -125,7 +126,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
         URL.revokeObjectURL(objectUrl);
       },
       error: () => {
-        this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_DOCUMENT_DOWNLOAD'));
+        this.toast.error(this.translate.instant(CaseDetailComponent.ERROR_KEY), this.translate.instant('COMMON.ERROR_DOCUMENT_DOWNLOAD'));
       }
     });
   }
@@ -145,7 +146,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
         URL.revokeObjectURL(objectUrl);
       },
       error: () => {
-        this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_RECEIPT_DOWNLOAD'));
+        this.toast.error(this.translate.instant(CaseDetailComponent.ERROR_KEY), this.translate.instant('COMMON.ERROR_RECEIPT_DOWNLOAD'));
       }
     });
   }
@@ -175,7 +176,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
         this.isDownloadingEni = false;
       },
       error: () => {
-        this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_ENI_DOWNLOAD'));
+        this.toast.error(this.translate.instant(CaseDetailComponent.ERROR_KEY), this.translate.instant('COMMON.ERROR_ENI_DOWNLOAD'));
         this.isDownloadingEni = false;
       }
     });
@@ -207,7 +208,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
     this.casesApiService.amend(this.caseDetail.id, { reason: 'Solicitud de aclaracion desde sede' }).subscribe({
       next: () => this.loadCaseDetail(),
       error: () => {
-        this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_REQUEST_AMENDMENT'));
+        this.toast.error(this.translate.instant(CaseDetailComponent.ERROR_KEY), this.translate.instant('COMMON.ERROR_REQUEST_AMENDMENT'));
       }
     });
   }
@@ -228,7 +229,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
         this.loadMessages();
       },
       error: (err) => {
-        this.toast.error(this.translate.instant('COMMON.ERROR'), err?.error?.message ?? this.translate.instant('COMMON.ERROR_LOAD_CASES'));
+        this.toast.error(this.translate.instant(CaseDetailComponent.ERROR_KEY), err?.error?.message ?? this.translate.instant('COMMON.ERROR_LOAD_CASES'));
         this.isLoading = false;
       }
     });
@@ -282,7 +283,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.isSending = false;
-        this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_SEND_MESSAGE'));
+        this.toast.error(this.translate.instant(CaseDetailComponent.ERROR_KEY), this.translate.instant('COMMON.ERROR_SEND_MESSAGE'));
       }
     });
   }
@@ -298,7 +299,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
         URL.revokeObjectURL(objectUrl);
       },
       error: () => {
-        this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_DOWNLOAD_ATTACHMENT'));
+        this.toast.error(this.translate.instant(CaseDetailComponent.ERROR_KEY), this.translate.instant('COMMON.ERROR_DOWNLOAD_ATTACHMENT'));
       }
     });
   }
@@ -347,7 +348,7 @@ export class CaseDetailComponent implements OnInit, OnDestroy {
 
     const procedureId = this.caseDetail.procedureTypeId || this.toSlug(this.caseDetail.procedureType);
     if (!procedureId) {
-      this.toast.error(this.translate.instant('COMMON.ERROR'), this.translate.instant('COMMON.ERROR_CONTINUE_PROCESS'));
+      this.toast.error(this.translate.instant(CaseDetailComponent.ERROR_KEY), this.translate.instant('COMMON.ERROR_CONTINUE_PROCESS'));
       return;
     }
 
