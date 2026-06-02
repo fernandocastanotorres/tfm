@@ -20,6 +20,7 @@ export class I18nService {
 
   constructor(private readonly translate: TranslateService) {
     this.translate.addLangs(this.supportedLocales);
+    this.translate.setDefaultLang('es-ES');
   }
 
   init(): void {

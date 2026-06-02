@@ -14,7 +14,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     selector: 'app-faq',
     templateUrl: './faq.component.html',
     styleUrls: ['./faq.component.css'],
-    imports: [RouterLink, FormsModule, NgFor, NgIf, TranslatePipe]
+    imports: [FormsModule, NgFor, NgIf, TranslatePipe]
 })
 export class FaqComponent implements OnInit, OnDestroy {
   categories: FaqCategory[] = [];

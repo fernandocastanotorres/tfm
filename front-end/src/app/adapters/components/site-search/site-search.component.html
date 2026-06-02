@@ -1,8 +1,8 @@
 <main class="site-search" aria-labelledby="site-search-title">
-  <section class="max-w-5xl mx-auto px-6 py-10">
-    <header class="mb-6">
-      <h1 id="site-search-title" class="text-2xl font-semibold text-surface-900">{{ 'SITE_SEARCH.TITLE' | translate }}</h1>
-      <p class="text-surface-600 mt-1">{{ 'SITE_SEARCH.SUBTITLE' | translate }}</p>
+  <div class="site-search__container">
+    <header class="site-search__header">
+      <h1 id="site-search-title">{{ 'SITE_SEARCH.TITLE' | translate }}</h1>
+      <p class="site-search__subtitle">{{ 'SITE_SEARCH.SUBTITLE' | translate }}</p>
     </header>
 
     <div class="card p-6 mb-6">
@@ -26,5 +26,5 @@
         {{ 'SITE_SEARCH.NO_RESULTS' | translate: { query: query } }}
       </div>
     </section>
-  </section>
+  </div>
 </main>

@@ -12,7 +12,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     selector: 'app-transparency',
     templateUrl: './transparency.component.html',
     styleUrls: ['./transparency.component.css'],
-    imports: [RouterLink, NgIf, SkeletonScreenComponent, NgFor, NgClass, TranslatePipe]
+    imports: [NgIf, SkeletonScreenComponent, NgFor, NgClass, TranslatePipe]
 })
 export class TransparencyComponent implements OnInit {
   metrics: TransparencyMetric[] = [];

@@ -15,7 +15,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     selector: 'app-glossary',
     templateUrl: './glossary.component.html',
     styleUrls: ['./glossary.component.css'],
-    imports: [RouterLink, FormsModule, NgFor, NgIf, SkeletonScreenComponent, TranslatePipe]
+    imports: [FormsModule, NgFor, NgIf, SkeletonScreenComponent, TranslatePipe]
 })
 export class GlossaryComponent implements OnInit, OnDestroy {
   terms: GlossaryTerm[] = [];

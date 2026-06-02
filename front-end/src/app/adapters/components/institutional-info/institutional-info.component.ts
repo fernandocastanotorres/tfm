@@ -13,7 +13,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     selector: 'app-institutional-info',
     templateUrl: './institutional-info.component.html',
     styleUrls: ['./institutional-info.component.css'],
-    imports: [RouterLink, NgIf, NgFor, NgSwitch, NgSwitchCase, NgSwitchDefault, TranslatePipe]
+    imports: [NgIf, NgFor, NgSwitch, NgSwitchCase, NgSwitchDefault, TranslatePipe]
 })
 export class InstitutionalInfoComponent implements OnInit, OnDestroy {
   sections: InstitutionalSection[] = [];

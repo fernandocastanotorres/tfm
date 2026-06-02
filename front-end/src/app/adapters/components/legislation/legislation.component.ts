@@ -15,7 +15,7 @@ import { DatePipe } from '@angular/common';
     selector: 'app-legislation',
     templateUrl: './legislation.component.html',
     styleUrls: ['./legislation.component.css'],
-    imports: [RouterLink, NgFor, NgIf, NgClass, FormsModule, TranslatePipe, DatePipe]
+    imports: [NgFor, NgIf, NgClass, FormsModule, TranslatePipe, DatePipe]
 })
 export class LegislationComponent implements OnInit, OnDestroy {
   legislation: LegislationItem[] = [];

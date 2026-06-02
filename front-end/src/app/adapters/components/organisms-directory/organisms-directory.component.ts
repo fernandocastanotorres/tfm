@@ -14,7 +14,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     selector: 'app-organisms-directory',
     templateUrl: './organisms-directory.component.html',
     styleUrls: ['./organisms-directory.component.css'],
-    imports: [RouterLink, FormsModule, NgFor, NgIf, TranslatePipe]
+    imports: [FormsModule, NgFor, NgIf, TranslatePipe]
 })
 export class OrganismsDirectoryComponent implements OnInit, OnDestroy {
   organisms: OrganismItem[] = [];

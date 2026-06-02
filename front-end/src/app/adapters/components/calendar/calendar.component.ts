@@ -14,7 +14,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     selector: 'app-calendar',
     templateUrl: './calendar.component.html',
     styleUrls: ['./calendar.component.css'],
-    imports: [RouterLink, NgFor, FormsModule, NgIf, NgClass, DatePipe, TranslatePipe]
+    imports: [NgFor, FormsModule, NgIf, NgClass, DatePipe, TranslatePipe]
 })
 export class CalendarComponent implements OnInit, OnDestroy {
   events: CalendarEvent[] = [];

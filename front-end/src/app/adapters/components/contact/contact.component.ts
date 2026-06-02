@@ -13,7 +13,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     selector: 'app-contact',
     templateUrl: './contact.component.html',
     styleUrls: ['./contact.component.css'],
-    imports: [RouterLink, NgFor, NgSwitch, NgSwitchCase, NgSwitchDefault, NgIf, FormsModule, ReactiveFormsModule, TranslatePipe]
+    imports: [NgFor, NgSwitch, NgSwitchCase, NgSwitchDefault, NgIf, FormsModule, ReactiveFormsModule, TranslatePipe]
 })
 export class ContactComponent implements OnInit {
   offices: ContactOffice[] = [];

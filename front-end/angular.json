@@ -36,7 +36,7 @@
               "src/styles.css"
             ],
             "scripts": [],
-            "allowedCommonJsDependencies": ["sweetalert2"]
+            "allowedCommonJsDependencies": ["sweetalert2", "canvg", "html2canvas", "jspdf", "raf", "rgbcolor", "core-js"]
           },
           "configurations": {
             "production": {
@@ -64,8 +64,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "12kb",
-                  "maximumError": "16kb"
+                  "maximumWarning": "16kb",
+                  "maximumError": "20kb"
                 }
               ]
             },

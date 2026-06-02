@@ -15,7 +15,7 @@ import { CdkTrapFocus } from '@angular/cdk/a11y';
     selector: 'app-profile',
     templateUrl: './profile.component.html',
     styleUrls: ['./profile.component.css'],
-    imports: [RouterLink, NgIf, SkeletonScreenComponent, FormsModule, ReactiveFormsModule, CdkTrapFocus, NgFor, TranslatePipe]
+    imports: [NgIf, SkeletonScreenComponent, FormsModule, ReactiveFormsModule, CdkTrapFocus, NgFor, TranslatePipe]
 })
 export class ProfileComponent implements OnInit {
   private static readonly ERROR_KEY = 'COMMON.ERROR';

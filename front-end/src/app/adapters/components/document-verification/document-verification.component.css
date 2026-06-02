@@ -1,3 +1,33 @@
 :host {
   display: block;
 }
+
+.document-verification__container {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+}
+
+.document-verification__header {
+  margin-bottom: 2.5rem;
+}
+
+.document-verification__header h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--sede-color-text);
+}
+
+.document-verification__subtitle {
+  font-size: 1.125rem;
+  color: var(--sede-color-muted);
+  margin-top: 0.5rem;
+}
+
+:host-context(.theme-dark) .document-verification__header h1 {
+  color: var(--sede-color-text);
+}
+
+:host-context(.theme-dark) .document-verification__subtitle {
+  color: var(--sede-color-muted);
+}

@@ -2,3 +2,33 @@
   min-height: 100vh;
   background-color: var(--sede-color-bg);
 }
+
+.site-search__container {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+}
+
+.site-search__header {
+  margin-bottom: 2.5rem;
+}
+
+.site-search__header h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--sede-color-text);
+}
+
+.site-search__subtitle {
+  font-size: 1.125rem;
+  color: var(--sede-color-muted);
+  margin-top: 0.5rem;
+}
+
+:host-context(.theme-dark) .site-search__header h1 {
+  color: var(--sede-color-text);
+}
+
+:host-context(.theme-dark) .site-search__subtitle {
+  color: var(--sede-color-muted);
+}

@@ -17,7 +17,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     selector: 'app-messages',
     templateUrl: './messages.component.html',
     styleUrls: ['./messages.component.css'],
-    imports: [RouterLink, FormsModule, ReactiveFormsModule, NgClass, NgFor, NgIf, SkeletonScreenComponent, DatePipe, TranslatePipe]
+    imports: [FormsModule, ReactiveFormsModule, NgClass, NgFor, NgIf, SkeletonScreenComponent, DatePipe, TranslatePipe]
 })
 export class MessagesComponent implements OnInit, OnDestroy {
   threads: MessageThreadSummary[] = [];

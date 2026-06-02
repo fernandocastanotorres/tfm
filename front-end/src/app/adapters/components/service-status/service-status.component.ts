@@ -11,7 +11,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     selector: 'app-service-status',
     templateUrl: './service-status.component.html',
     styleUrls: ['./service-status.component.css'],
-    imports: [RouterLink, NgIf, NgFor, NgClass, DatePipe, TranslatePipe]
+    imports: [NgIf, NgFor, NgClass, DatePipe, TranslatePipe]
 })
 export class ServiceStatusComponent implements OnInit {
   services: ServiceStatusItem[] = [];
