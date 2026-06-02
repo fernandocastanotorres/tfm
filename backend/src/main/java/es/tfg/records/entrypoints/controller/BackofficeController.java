@@ -456,4 +456,16 @@ public class BackofficeController {
         backofficeService.deleteFieldTranslation(id, fieldId, locale);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/catalog/categories")
+    @Operation(summary = "List available procedure categories")
+    public ResponseEntity<List<String>> listCatalogCategories() {
+        return ResponseEntity.ok(backofficeService.listCatalogCategories());
+    }
+
+    @GetMapping("/catalog/units")
+    @Operation(summary = "List available procedure units")
+    public ResponseEntity<List<String>> listCatalogUnits() {
+        return ResponseEntity.ok(backofficeService.listCatalogUnits());
+    }
 }

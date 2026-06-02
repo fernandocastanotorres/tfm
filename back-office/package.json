@@ -40,6 +40,7 @@
     "@angular-eslint/utils": "^21.4.0",
     "@angular/cli": "^19.2.26",
     "@angular/compiler-cli": "^19.2.22",
+    "@playwright/test": "^1.60.0",
     "@types/jasmine": "~4.3.0",
     "@typescript-eslint/eslint-plugin": "^8.60.0",
     "@typescript-eslint/parser": "^8.60.0",

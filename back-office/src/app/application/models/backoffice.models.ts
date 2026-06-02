@@ -207,6 +207,7 @@ export interface ProcedureTaskConfig {
   description: string;
   orderIndex: number;
   assignedRole: 'ROLE_TRAMITADOR' | 'ROLE_ADMIN';
+  fields?: FormSchemaField[];
 }
 
 export interface ManagedProcedure {

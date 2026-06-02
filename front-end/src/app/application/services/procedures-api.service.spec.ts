@@ -267,9 +267,9 @@ describe('ProceduresApiService', () => {
     it('should delegate to mock service when useMockCitizenFlow is true', fakeAsync(() => {
       environment.useMockCitizenFlow = true;
       let result: any;
-      service.getByIdentifier('licencia-obra-menor').subscribe(r => { result = r; });
+      service.getByIdentifier('solicitud-de-licencia').subscribe(r => { result = r; });
       tick(180);
-      expect(result.id).toBe('proc-lic-obra-menor');
+      expect(result.id).toBe('mock-license-application');
     }));
   });
 
@@ -290,7 +290,7 @@ describe('ProceduresApiService', () => {
     it('should delegate to mock service when useMockCitizenFlow is true', fakeAsync(() => {
       environment.useMockCitizenFlow = true;
       let result: any;
-      service.getFormSchema('licencia-obra-menor').subscribe(r => { result = r; });
+      service.getFormSchema('solicitud-de-licencia').subscribe(r => { result = r; });
       tick(180);
       expect(result.length).toBeGreaterThan(0);
     }));
@@ -314,9 +314,9 @@ describe('ProceduresApiService', () => {
     it('should delegate to mock service when useMockCitizenFlow is true', fakeAsync(() => {
       environment.useMockCitizenFlow = true;
       let result: any;
-      service.getTaskSchema('licencia-obra-menor', 'task-datos-solicitante').subscribe(r => { result = r; });
+      service.getTaskSchema('solicitud-de-licencia', 'task-0-license').subscribe(r => { result = r; });
       tick(180);
-      expect(result.id).toBe('task-datos-solicitante');
+      expect(result.id).toBe('task-0-license');
     }));
   });
 

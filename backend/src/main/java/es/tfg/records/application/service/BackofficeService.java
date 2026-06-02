@@ -665,6 +665,34 @@ public class BackofficeService {
         return toManagedProcedure(procedureTypeRepository.save(entity));
     }
 
+    private static final List<String> DEFAULT_CATEGORIES = List.of(
+            "Urbanismo", "Padrón", "Administración", "Medio Ambiente", "Tráfico", "Sanidad", "Servicios Sociales", "General");
+
+    private static final List<String> DEFAULT_UNITS = List.of(
+            "Secretaría", "Tesorería", "Registro", "Urbanismo", "Personal", "Vía Pública", "Contratación");
+
+    @Transactional(readOnly = true)
+    public List<String> listCatalogCategories() {
+        Set<String> categories = new HashSet<>(DEFAULT_CATEGORIES);
+        procedureTypeRepository.findAll().forEach(entity -> {
+            if (entity.getTitle() != null && !entity.getTitle().isBlank()) {
+                categories.add(entity.getTitle());
+            }
+        });
+        return categories.stream().sorted().toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> listCatalogUnits() {
+        Set<String> units = new HashSet<>(DEFAULT_UNITS);
+        procedureTypeRepository.findAll().forEach(entity -> {
+            if (entity.getUnit() != null && !entity.getUnit().isBlank()) {
+                units.add(entity.getUnit());
+            }
+        });
+        return units.stream().sorted().toList();
+    }
+
     @Transactional(readOnly = true)
     public List<BackofficeDtos.ProcedureTranslation> listProcedureTranslations(UUID procedureTypeId) {
         ensureProcedureTypeExists(procedureTypeId);
@@ -868,7 +896,11 @@ public class BackofficeService {
     }
 
     private BackofficeDtos.ProcedureTaskConfig toTaskConfig(ProcedureTaskEntity task) {
-        return new BackofficeDtos.ProcedureTaskConfig(task.getId(), task.getTitle(), task.getType().name(), task.getDescription(), task.getOrderIndex(), "ROLE_TRAMITADOR");
+        List<BackofficeDtos.FormSchemaField> fields = List.of();
+        if (task.getType() == TaskType.FORM && task.getFormSchema() != null && !task.getFormSchema().isBlank()) {
+            fields = parseFormSchema(task.getFormSchema());
+        }
+        return new BackofficeDtos.ProcedureTaskConfig(task.getId(), task.getTitle(), task.getType().name(), task.getDescription(), task.getOrderIndex(), "ROLE_TRAMITADOR", fields);
     }
 
     private void applyProcedureRequest(ProcedureTypeEntity entity, BackofficeDtos.ProcedureRequest request) {
@@ -905,17 +937,16 @@ public class BackofficeService {
         if (tasks == null) {
             return;
         }
-        String serializedFormSchema = serializeFormSchema(formSchema);
         tasks.stream().sorted(Comparator.comparingInt(BackofficeDtos.ProcedureTaskConfig::orderIndex)).forEach(task -> {
             ProcedureTaskEntity entity = new ProcedureTaskEntity();
-            entity.setId(task.id() == null ? UUID.randomUUID() : task.id());
+            entity.setId(task.id() == null ? UUID.randomUUID() : parseTaskId(task.id().toString()));
             entity.setProcedureTypeId(procedureTypeId);
             entity.setTitle(task.title());
             entity.setDescription(task.description());
             entity.setOrderIndex(task.orderIndex());
             entity.setType(TaskType.valueOf(task.type()));
-            if (entity.getType() == TaskType.FORM && serializedFormSchema != null) {
-                entity.setFormSchema(serializedFormSchema);
+            if (entity.getType() == TaskType.FORM && task.fields() != null && !task.fields().isEmpty()) {
+                entity.setFormSchema(serializeFormSchema(task.fields()));
             }
             taskRepository.save(entity);
         });
@@ -937,6 +968,17 @@ public class BackofficeService {
             return objectMapper.writeValueAsString(formSchema);
         } catch (Exception ignored) {
             return null;
+        }
+    }
+
+    private UUID parseTaskId(String id) {
+        if (id == null || id.isBlank()) {
+            return UUID.randomUUID();
+        }
+        try {
+            return UUID.fromString(id);
+        } catch (IllegalArgumentException e) {
+            return UUID.randomUUID();
         }
     }
 

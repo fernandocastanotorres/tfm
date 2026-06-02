@@ -108,7 +108,7 @@ describe('PaymentsComponent', () => {
 
   it('toggleFilter should patch status and update pagination', () => {
     component.toggleFilter('pending');
-    expect(component.filterForm.value.status).toBe('pending');
+    expect(component.filterForm.value.status).toBe('PAYMENT_STATUS.PENDING');
   });
 
   it('pagedPayments should return correct slice', () => {

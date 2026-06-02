@@ -6,5 +6,15 @@ package es.tfg.records.domain.model;
 public enum TaskType {
     FORM,
     UPLOAD,
-    REVIEW
+    REVIEW,
+    SIGNATURE,
+    RESOLUTION;
+
+    public static TaskType fromString(String value) {
+        try {
+            return TaskType.valueOf(value);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid task type: " + value + ". Valid values: FORM, UPLOAD, REVIEW, SIGNATURE, RESOLUTION");
+        }
+    }
 }

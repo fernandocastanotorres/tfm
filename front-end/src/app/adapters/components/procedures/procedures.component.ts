@@ -37,7 +37,6 @@ export class ProceduresComponent implements OnInit, OnDestroy {
     this.localeSubscription = this.i18nService.getCurrentLocale$().subscribe(() => {
       this.loadProcedures();
     });
-    this.loadProcedures();
   }
 
   ngOnDestroy(): void {

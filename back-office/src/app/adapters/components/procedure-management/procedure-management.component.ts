@@ -23,6 +23,7 @@ export class ProcedureManagementComponent implements OnInit {
   private readonly confirmDialogService = inject(ConfirmDialogService);
   private readonly toastService = inject(ToastService);
   private readonly translateService = inject(TranslateService);
+  private readonly CONFIRM_ACTION_DELETE = 'Si, eliminar';
   readonly supportedLocales = ['es-ES', 'ca-ES', 'eu-ES', 'gl-ES', 'va-ES'];
 
   procedures: ManagedProcedure[] = [];
@@ -34,11 +35,36 @@ export class ProcedureManagementComponent implements OnInit {
   showForm = false;
   private lastFocusedElement: HTMLElement | null = null;
 
+  categories: string[] = [];
+  units: string[] = [];
+  customCategory = '';
+  customUnit = '';
+  showCustomCategoryInput = false;
+  showCustomUnitInput = false;
+  activeTaskIndex: number | null = null;
+
   form: ProcedureRequest = this.createEmptyForm();
   translationForm = this.createTranslationMap();
 
   ngOnInit(): void {
+    this.loadCatalog();
     this.loadProcedures();
+  }
+
+  private loadCatalog(): void {
+    forkJoin({
+      categories: this.procedureManagementService.listCategories(),
+      units: this.procedureManagementService.listUnits()
+    }).subscribe({
+      next: ({ categories, units }) => {
+        this.categories = categories;
+        this.units = units;
+      },
+      error: () => {
+        this.categories = ['Urbanismo', 'Padrón', 'Administración', 'General'];
+        this.units = ['Secretaría', 'Tesorería', 'Registro'];
+      }
+    });
   }
 
   get filteredProcedures(): ManagedProcedure[] {
@@ -49,6 +75,22 @@ export class ProcedureManagementComponent implements OnInit {
       procedure.category.toLowerCase().includes(term) ||
       procedure.assignedUnit.toLowerCase().includes(term)
     );
+  }
+
+  get formCategories(): string[] {
+    const base = [...this.categories];
+    if (this.customCategory && !base.includes(this.customCategory)) {
+      base.push(this.customCategory);
+    }
+    return base;
+  }
+
+  get formUnits(): string[] {
+    const base = [...this.units];
+    if (this.customUnit && !base.includes(this.customUnit)) {
+      base.push(this.customUnit);
+    }
+    return base;
   }
 
   loadProcedures(): void {
@@ -72,12 +114,27 @@ export class ProcedureManagementComponent implements OnInit {
     this.translationForm = this.createTranslationMap();
     this.selectedLocale = 'es-ES';
     this.syncSpanishFromBase();
+    this.customCategory = '';
+    this.customUnit = '';
+    this.showCustomCategoryInput = false;
+    this.showCustomUnitInput = false;
+    this.activeTaskIndex = null;
     this.showForm = true;
   }
 
   openEdit(procedure: ManagedProcedure): void {
     this.lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     this.selectedProcedure = procedure;
+    this.customCategory = '';
+    this.customUnit = '';
+    this.showCustomCategoryInput = !this.categories.includes(procedure.category);
+    this.showCustomUnitInput = !this.units.includes(procedure.assignedUnit);
+    if (this.showCustomCategoryInput) {
+      this.customCategory = procedure.category;
+    }
+    if (this.showCustomUnitInput) {
+      this.customUnit = procedure.assignedUnit;
+    }
     this.form = {
       title: procedure.title,
       description: procedure.description,
@@ -86,12 +143,16 @@ export class ProcedureManagementComponent implements OnInit {
       assignedUnit: procedure.assignedUnit,
       deadlineDays: procedure.deadlineDays,
       feeAmount: procedure.feeAmount,
-      tasks: procedure.tasks.map(task => ({ ...task })),
+      tasks: procedure.tasks.map(task => ({
+        ...task,
+        fields: task.fields ? [...task.fields] : []
+      })),
       formSchema: procedure.formSchema.map(field => ({ ...field, options: field.options ? [...field.options] : undefined }))
     };
     this.translationForm = this.createTranslationMap();
     this.selectedLocale = 'es-ES';
     this.syncSpanishFromBase();
+    this.activeTaskIndex = null;
     this.procedureManagementService.listTranslations(procedure.id).subscribe({
       next: (translations) => this.applyTranslations(translations),
       error: () => undefined
@@ -112,35 +173,83 @@ export class ProcedureManagementComponent implements OnInit {
       type: 'REVIEW',
       description: '',
       orderIndex: this.form.tasks.length,
-      assignedRole: 'ROLE_TRAMITADOR'
+      assignedRole: 'ROLE_TRAMITADOR',
+      fields: []
     };
     this.form.tasks = [...this.form.tasks, task];
+    this.activeTaskIndex = this.form.tasks.length - 1;
   }
 
   async removeTask(taskId: string): Promise<void> {
-    const confirmed = await this.confirmDialogService.confirm('Eliminar tarea', 'Esta accion eliminara la tarea del procedimiento.', 'Si, eliminar');
+    const confirmed = await this.confirmDialogService.confirm('Eliminar tarea', 'Esta accion eliminara la tarea del procedimiento.', this.CONFIRM_ACTION_DELETE);
     if (!confirmed) return;
+    const removedIndex = this.form.tasks.findIndex(t => t.id === taskId);
     this.form.tasks = this.form.tasks.filter(task => task.id !== taskId).map((task, index) => ({ ...task, orderIndex: index }));
+    if (this.activeTaskIndex === removedIndex) {
+      this.activeTaskIndex = null;
+    } else if (this.activeTaskIndex !== null && removedIndex < this.activeTaskIndex) {
+      this.activeTaskIndex--;
+    }
   }
 
-  addField(): void {
+  selectTask(index: number): void {
+    this.activeTaskIndex = this.activeTaskIndex === index ? null : index;
+  }
+
+  addFieldToTask(taskIndex: number): void {
+    const task = this.form.tasks[taskIndex];
+    if (!task.fields) {
+      task.fields = [];
+    }
     const field: FormSchemaField = {
       id: `field_${Date.now()}`,
       label: 'Nuevo campo',
       type: 'text',
       required: false
     };
-    this.form.formSchema = [...this.form.formSchema, field];
+    task.fields = [...task.fields, field];
+    this.activeTaskIndex = taskIndex;
   }
 
-  async removeField(fieldId: string): Promise<void> {
-    const confirmed = await this.confirmDialogService.confirm('Eliminar campo', 'Esta accion eliminara el campo del formulario dinamico.', 'Si, eliminar');
+  async removeFieldFromTask(taskIndex: number, fieldId: string): Promise<void> {
+    const confirmed = await this.confirmDialogService.confirm('Eliminar campo de tarea', 'Esta accion eliminara el campo de la tarea.', this.CONFIRM_ACTION_DELETE);
     if (!confirmed) return;
-    this.form.formSchema = this.form.formSchema.filter(field => field.id !== fieldId);
+    const task = this.form.tasks[taskIndex];
+    task.fields = [...(task.fields ?? []).filter(f => f.id !== fieldId)];
+  }
+
+
+  onCategoryChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    if (value === '__custom__') {
+      this.showCustomCategoryInput = true;
+      this.form.category = '';
+    } else {
+      this.form.category = value;
+      this.showCustomCategoryInput = false;
+    }
+  }
+
+  onUnitChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    if (value === '__custom__') {
+      this.showCustomUnitInput = true;
+      this.form.assignedUnit = '';
+    } else {
+      this.form.assignedUnit = value;
+      this.showCustomUnitInput = false;
+    }
   }
 
   async save(): Promise<void> {
-    if (!this.form.title || !this.form.assignedUnit) return;
+    if (!this.form.title) {
+      this.toastService.error(this.translateService.instant('BO.COMMON.VALIDATION_TITLE_REQUIRED') || 'El titulo es obligatorio');
+      return;
+    }
+    if (!this.form.assignedUnit) {
+      this.toastService.error(this.translateService.instant('BO.COMMON.VALIDATION_UNIT_REQUIRED') || 'La unidad es obligatoria');
+      return;
+    }
     const confirmed = await this.confirmDialogService.confirm('Guardar cambios', 'Se actualizara la definicion del procedimiento y sus tareas.', 'Si, guardar');
     if (!confirmed) return;
     this.isSaving = true;
@@ -183,6 +292,10 @@ export class ProcedureManagementComponent implements OnInit {
     return this.translationForm[this.selectedLocale];
   }
 
+  get formTasks(): ProcedureTaskConfig[] {
+    return this.form.tasks;
+  }
+
   async toggleStatus(procedure: ManagedProcedure): Promise<void> {
     const nextStatus = procedure.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
     const confirmed = await this.confirmDialogService.confirm('Cambiar estado', `El procedimiento pasara a estado ${nextStatus}.`, 'Si, continuar');
@@ -210,7 +323,7 @@ export class ProcedureManagementComponent implements OnInit {
     return {
       title: '',
       description: '',
-      category: 'Administrativo',
+      category: 'Administración',
       status: 'DRAFT',
       assignedUnit: '',
       deadlineDays: 10,

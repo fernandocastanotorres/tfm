@@ -26,7 +26,7 @@ describe('MockCitizenFlowService', () => {
   describe('getFormSchema', () => {
     it('should return form schema for known procedure', fakeAsync(() => {
       let result: any;
-      service.getFormSchema('licencia-obra-menor').subscribe(schema => { result = schema; });
+      service.getFormSchema('solicitud-de-licencia').subscribe(schema => { result = schema; });
       tick(180);
       expect(result.length).toBeGreaterThan(0);
     }));
@@ -42,10 +42,10 @@ describe('MockCitizenFlowService', () => {
   describe('getTaskSchema', () => {
     it('should return task schema for valid slug and taskId', fakeAsync(() => {
       let result: any;
-      service.getTaskSchema('licencia-obra-menor', 'task-datos-solicitante').subscribe(task => { result = task; });
+      service.getTaskSchema('solicitud-de-licencia', 'task-0-license').subscribe(task => { result = task; });
       tick(180);
       expect(result.name).toBeDefined();
-      expect(result.id).toBe('task-datos-solicitante');
+      expect(result.id).toBe('task-0-license');
     }));
 
     it('should throw error when task does not exist', fakeAsync(() => {
@@ -66,10 +66,10 @@ describe('MockCitizenFlowService', () => {
   describe('getProcedureBySlug', () => {
     it('should return procedure detail for valid slug', fakeAsync(() => {
       let result: any;
-      service.getProcedureBySlug('licencia-obra-menor').subscribe(proc => { result = proc; });
+      service.getProcedureBySlug('solicitud-de-licencia').subscribe(proc => { result = proc; });
       tick(180);
-      expect(result.id).toBe('proc-lic-obra-menor');
-      expect(result.slug).toBe('licencia-obra-menor');
+      expect(result.id).toBe('mock-license-application');
+      expect(result.slug).toBe('solicitud-de-licencia');
     }));
 
     it('should throw error when procedure is not found', fakeAsync(() => {
@@ -82,7 +82,7 @@ describe('MockCitizenFlowService', () => {
 
   describe('getCaseDetail', () => {
     it('should return case detail for existing case', fakeAsync(() => {
-      const req: CreateCaseRequest = { procedureId: 'proc-lic-obra-menor', title: 'Test Case', formData: {} };
+      const req: CreateCaseRequest = { procedureId: 'mock-license-application', title: 'Test Case', formData: {} };
       let createdCase: any;
       service.createCase(req).subscribe(c => { createdCase = c; });
       tick(180);
@@ -104,7 +104,7 @@ describe('MockCitizenFlowService', () => {
 
   describe('getCaseStatus', () => {
     it('should return case status for existing case', fakeAsync(() => {
-      const req: CreateCaseRequest = { procedureId: 'proc-lic-obra-menor', title: 'Status Test', formData: {} };
+      const req: CreateCaseRequest = { procedureId: 'mock-license-application', title: 'Status Test', formData: {} };
       let createdCase: any;
       service.createCase(req).subscribe(c => { createdCase = c; });
       tick(180);
@@ -126,7 +126,7 @@ describe('MockCitizenFlowService', () => {
 
   describe('submitCase', () => {
     it('should submit an existing case and change status to REVIEW', fakeAsync(() => {
-      const req: CreateCaseRequest = { procedureId: 'proc-lic-obra-menor', title: 'Submit Test', formData: {} };
+      const req: CreateCaseRequest = { procedureId: 'mock-license-application', title: 'Submit Test', formData: {} };
       let createdCase: any;
       service.createCase(req).subscribe(c => { createdCase = c; });
       tick(180);
@@ -148,7 +148,7 @@ describe('MockCitizenFlowService', () => {
 
   describe('amendCase', () => {
     it('should amend an existing case with reason', fakeAsync(() => {
-      const req: CreateCaseRequest = { procedureId: 'proc-lic-obra-menor', title: 'Amend Test', formData: {} };
+      const req: CreateCaseRequest = { procedureId: 'mock-license-application', title: 'Amend Test', formData: {} };
       let createdCase: any;
       service.createCase(req).subscribe(c => { createdCase = c; });
       tick(180);
@@ -165,7 +165,7 @@ describe('MockCitizenFlowService', () => {
     }));
 
     it('should amend case with default description when no formData provided', fakeAsync(() => {
-      const req: CreateCaseRequest = { procedureId: 'proc-lic-obra-menor', title: 'Amend Test 2', formData: {} };
+      const req: CreateCaseRequest = { procedureId: 'mock-license-application', title: 'Amend Test 2', formData: {} };
       let createdCase: any;
       service.createCase(req).subscribe(c => { createdCase = c; });
       tick(180);
@@ -190,7 +190,7 @@ describe('MockCitizenFlowService', () => {
 
   describe('createCase', () => {
     it('should create case with explicit title', fakeAsync(() => {
-      const req: CreateCaseRequest = { procedureId: 'proc-lic-obra-menor', title: 'My Custom Title', formData: {} };
+      const req: CreateCaseRequest = { procedureId: 'mock-license-application', title: 'My Custom Title', formData: {} };
       let result: any;
       service.createCase(req).subscribe(c => { result = c; });
       tick(180);
@@ -199,11 +199,11 @@ describe('MockCitizenFlowService', () => {
     }));
 
     it('should use procedure name as title when title is empty string', fakeAsync(() => {
-      const req: CreateCaseRequest = { procedureId: 'proc-lic-obra-menor', title: '', formData: {} };
+      const req: CreateCaseRequest = { procedureId: 'mock-license-application', title: '', formData: {} };
       let result: any;
       service.createCase(req).subscribe(c => { result = c; });
       tick(180);
-      expect(result.title).toBe('Solicitud de licencia de obra menor');
+      expect(result.title).toBe('Solicitud de Licencia');
     }));
 
     it('should use fallback title when no title and no procedure', fakeAsync(() => {
@@ -214,24 +214,24 @@ describe('MockCitizenFlowService', () => {
       expect(result.title).toBe('Nuevo expediente');
     }));
 
-    it('should use formData.description when available', fakeAsync(() => {
+    it('should use formData.applicationReason when available', fakeAsync(() => {
       const req: CreateCaseRequest = {
-        procedureId: 'proc-lic-obra-menor',
-        title: 'With Description',
-        formData: { description: 'Custom description from form' }
+        procedureId: 'mock-license-application',
+        title: 'With Reason',
+        formData: { applicationReason: 'Custom reason from form' }
       };
       let result: any;
       service.createCase(req).subscribe(c => { result = c; });
       tick(180);
-      expect(result.description).toBe('Custom description from form');
+      expect(result.description).toBe('Custom reason from form');
     }));
 
-    it('should use procedure description when formData has no description', fakeAsync(() => {
-      const req: CreateCaseRequest = { procedureId: 'proc-lic-obra-menor', title: 'No Desc', formData: { other: 'value' } };
+    it('should use procedure description when formData has no applicationReason', fakeAsync(() => {
+      const req: CreateCaseRequest = { procedureId: 'mock-license-application', title: 'No Desc', formData: { other: 'value' } };
       let result: any;
       service.createCase(req).subscribe(c => { result = c; });
       tick(180);
-      expect(result.description).toContain('reforma');
+      expect(result.description).toContain('actividad');
     }));
 
     it('should use fallback description when no procedure and no formData.description', fakeAsync(() => {
@@ -243,11 +243,11 @@ describe('MockCitizenFlowService', () => {
     }));
 
     it('should use procedure name for procedureType when found', fakeAsync(() => {
-      const req: CreateCaseRequest = { procedureId: 'proc-empadronamiento', title: 'Padron', formData: {} };
+      const req: CreateCaseRequest = { procedureId: 'mock-address-update', title: 'Address', formData: {} };
       let result: any;
       service.createCase(req).subscribe(c => { result = c; });
       tick(180);
-      expect(result.procedureType).toBe('Alta en padrón municipal');
+      expect(result.procedureType).toBe('Actualización de Domicilio');
     }));
 
     it('should use procedureId as procedureType when procedure not found', fakeAsync(() => {
@@ -259,11 +259,11 @@ describe('MockCitizenFlowService', () => {
     }));
 
     it('should use procedure category for assignedUnit when found', fakeAsync(() => {
-      const req: CreateCaseRequest = { procedureId: 'proc-lic-obra-menor', title: 'Unit Test', formData: {} };
+      const req: CreateCaseRequest = { procedureId: 'mock-license-application', title: 'Unit Test', formData: {} };
       let result: any;
       service.createCase(req).subscribe(c => { result = c; });
       tick(180);
-      expect(result.assignedUnit).toBe('Urbanismo');
+      expect(result.assignedUnit).toBe('Unidad de Licencias');
     }));
 
     it('should use fallback assignedUnit when procedure not found', fakeAsync(() => {
@@ -275,11 +275,11 @@ describe('MockCitizenFlowService', () => {
     }));
 
     it('should create case with slug as procedureId', fakeAsync(() => {
-      const req: CreateCaseRequest = { procedureId: 'licencia-obra-menor', title: 'By Slug', formData: {} };
+      const req: CreateCaseRequest = { procedureId: 'solicitud-de-licencia', title: 'By Slug', formData: {} };
       let result: any;
       service.createCase(req).subscribe(c => { result = c; });
       tick(180);
-      expect(result.procedureType).toBe('Solicitud de licencia de obra menor');
+      expect(result.procedureType).toBe('Solicitud de Licencia');
     }));
   });
 
@@ -294,10 +294,10 @@ describe('MockCitizenFlowService', () => {
     }));
 
     it('should return paginated cases sorted by createdAt descending', fakeAsync(() => {
-      const req1: CreateCaseRequest = { procedureId: 'proc-lic-obra-menor', title: 'First', formData: {} };
+      const req1: CreateCaseRequest = { procedureId: 'mock-license-application', title: 'First', formData: {} };
       service.createCase(req1).subscribe();
       tick(180);
-      const req2: CreateCaseRequest = { procedureId: 'proc-empadronamiento', title: 'Second', formData: {} };
+      const req2: CreateCaseRequest = { procedureId: 'mock-address-update', title: 'Second', formData: {} };
       service.createCase(req2).subscribe();
       tick(180);
 
@@ -311,7 +311,7 @@ describe('MockCitizenFlowService', () => {
 
     it('should respect page and size parameters', fakeAsync(() => {
       for (let i = 0; i < 5; i++) {
-        const req: CreateCaseRequest = { procedureId: 'proc-lic-obra-menor', title: `Case ${i}`, formData: {} };
+        const req: CreateCaseRequest = { procedureId: 'mock-license-application', title: `Case ${i}`, formData: {} };
         service.createCase(req).subscribe();
         tick(180);
       }
@@ -353,7 +353,7 @@ describe('MockCitizenFlowService', () => {
     }));
 
     it('should persist cases across listCases calls', fakeAsync(() => {
-      const req: CreateCaseRequest = { procedureId: 'proc-lic-obra-menor', title: 'Persisted Case', formData: {} };
+      const req: CreateCaseRequest = { procedureId: 'mock-license-application', title: 'Persisted Case', formData: {} };
       service.createCase(req).subscribe();
       tick(180);
 

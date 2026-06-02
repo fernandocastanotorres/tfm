@@ -569,4 +569,68 @@ class BackofficeControllerTest {
                         procId, "fullName", "ca-ES"))
                 .andExpect(status().isNoContent());
     }
+
+    // ===== Catalog (categories & units) =====
+
+    @Test
+    void listCatalogCategories_shouldReturnDefaultCategories() throws Exception {
+        when(backofficeService.listCatalogCategories()).thenReturn(
+                List.of("Urbanismo", "Padrón", "Administración", "Medio Ambiente", "Tráfico", "Sanidad", "Servicios Sociales", "General"));
+
+        mockMvc.perform(get("/admin/catalog/categories"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(8))
+                .andExpect(jsonPath("$[0]").value("Urbanismo"));
+    }
+
+    @Test
+    void listCatalogUnits_shouldReturnDefaultUnits() throws Exception {
+        when(backofficeService.listCatalogUnits()).thenReturn(
+                List.of("Secretaría", "Tesorería", "Registro", "Urbanismo", "Personal", "Vía Pública", "Contratación"));
+
+        mockMvc.perform(get("/admin/catalog/units"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(7))
+                .andExpect(jsonPath("$[0]").value("Secretaría"));
+    }
+
+    // ===== ProcedureTaskConfig.fields =====
+
+    @Test
+    void createProcedure_withFormTaskContainingFields_shouldPersist() throws Exception {
+        UUID procId = UUID.randomUUID();
+        BackofficeDtos.FormSchemaField field = new BackofficeDtos.FormSchemaField("f1", "Nombre", "text", true, List.of());
+        BackofficeDtos.ProcedureTaskConfig taskWithFields = new BackofficeDtos.ProcedureTaskConfig(
+                UUID.randomUUID(), "Datos solicitante", "FORM", "Completa tus datos", 0, "ROLE_TRAMITADOR", List.of(field));
+        BackofficeDtos.ProcedureRequest request = new BackofficeDtos.ProcedureRequest(
+                "Licencia Obra Menor", "Tramitación de licencia", "Urbanismo", "DRAFT", "simpleCitizenProcedure", "Urbanismo", null, 30, null, List.of(taskWithFields), List.of());
+        when(backofficeService.createProcedure(any())).thenReturn(
+                new BackofficeDtos.ManagedProcedure(procId, "Licencia Obra Menor", "Tramitación", "Urbanismo", "DRAFT", "simpleCitizenProcedure", "Urbanismo", null, 30, null, null, null, List.of(taskWithFields), List.of()));
+
+        mockMvc.perform(post("/admin/procedure-types")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.title").value("Licencia Obra Menor"));
+    }
+
+    @Test
+    void getProcedure_withFormTask_shouldReturnTaskFields() throws Exception {
+        UUID procId = UUID.randomUUID();
+        UUID taskId = UUID.randomUUID();
+        BackofficeDtos.FormSchemaField field = new BackofficeDtos.FormSchemaField("f1", "Nombre completo", "text", true, List.of());
+        BackofficeDtos.ProcedureTaskConfig taskWithFields = new BackofficeDtos.ProcedureTaskConfig(
+                taskId, "Datos solicitante", "FORM", "Completa tus datos", 0, "ROLE_TRAMITADOR", List.of(field));
+        BackofficeDtos.ManagedProcedure procedure = new BackofficeDtos.ManagedProcedure(
+                procId, "Licencia Obra Menor", "Tramitación", "Urbanismo", "DRAFT", "simpleCitizenProcedure", "Urbanismo", null, 30, null, null, null, List.of(taskWithFields), List.of());
+        when(backofficeService.listProcedures()).thenReturn(List.of(procedure));
+
+        mockMvc.perform(get("/admin/procedure-types"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].tasks[0].fields").isArray())
+                .andExpect(jsonPath("$[0].tasks[0].fields[0].id").value("f1"))
+                .andExpect(jsonPath("$[0].tasks[0].fields[0].label").value("Nombre completo"));
+    }
 }

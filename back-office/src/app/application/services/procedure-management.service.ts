@@ -16,9 +16,18 @@ import {
 export class ProcedureManagementService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiBaseUrl}/admin/procedure-types`;
+  private readonly catalogUrl = `${environment.apiBaseUrl}/admin/catalog`;
 
   list(): Observable<ManagedProcedure[]> {
     return this.http.get<ManagedProcedure[]>(this.baseUrl);
+  }
+
+  listCategories(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.catalogUrl}/categories`);
+  }
+
+  listUnits(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.catalogUrl}/units`);
   }
 
   create(request: ProcedureRequest): Observable<ManagedProcedure> {

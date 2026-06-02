@@ -219,7 +219,8 @@ public final class BackofficeDtos {
             String type,
             String description,
             int orderIndex,
-            String assignedRole
+            String assignedRole,
+            List<FormSchemaField> fields
     ) {}
 
     public record ProcedureTranslation(

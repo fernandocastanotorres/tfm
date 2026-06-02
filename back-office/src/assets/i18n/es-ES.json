@@ -328,7 +328,9 @@
       "ERROR_USER_SAVE": "No se pudo guardar el usuario",
       "ERROR_USER_CREATE": "No se pudo crear el usuario",
       "ERROR_PROCEDURE_UPDATE": "No se pudo actualizar el procedimiento",
-      "ERROR_PROCEDURE_CREATE": "No se pudo crear el procedimiento"
+      "ERROR_PROCEDURE_CREATE": "No se pudo crear el procedimiento",
+      "VALIDATION_TITLE_REQUIRED": "El titulo es obligatorio",
+      "VALIDATION_UNIT_REQUIRED": "La unidad es obligatoria"
     }
   }
 }
