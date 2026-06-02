@@ -35,7 +35,25 @@
     "TIMELINE_PAGE": "Página",
     "TIMELINE_PREVIOUS": "Anterior",
     "TIMELINE_NEXT": "Siguiente",
-    "TIMELINE_EMPTY": "No hay eventos para los filtros seleccionados."
+    "TIMELINE_EMPTY": "No hay eventos para los filtros seleccionados.",
+    "EXPORT_PDF": "Exportar resumen PDF",
+    "STATS_CASES": "Expedientes",
+    "STATS_UNREAD_MESSAGES": "Mensajes no leídos",
+    "STATS_PENDING_PAYMENTS": "Pagos pendientes",
+    "STATS_PENDING_APPOINTMENTS": "Citas pendientes",
+    "LATEST_CASES": "Últimos expedientes",
+    "LATEST_CASES_SUBTITLE": "Acceso rápido a tus trámites recientes.",
+    "LOADING": "Cargando...",
+    "CASES_EMPTY": "No hay expedientes disponibles.",
+    "OPEN": "Abrir",
+    "PDF_TITLE": "Carpeta Ciutadana - Resumen",
+    "PDF_DATE": "Fecha:",
+    "PDF_INDICATORS": "Indicadores",
+    "PDF_TIMELINE": "Timeline unificado (primeros 12 eventos)",
+    "TYPE_CASE": "Expediente",
+    "TYPE_MESSAGE": "Mensaje",
+    "TYPE_PAYMENT": "Pago",
+    "TYPE_APPOINTMENT": "Cita"
   },
   "COMMON": {
     "LOADING": "Cargando contenido"
