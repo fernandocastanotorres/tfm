@@ -231,7 +231,7 @@ export class CitizenFolderComponent implements OnInit {
       id: `case-${item.id}`,
       type: 'CASE',
       title: item.title,
-      detail: `Estado: ${item.status}`,
+      detail: `Estado: ${this.translate.instant('CASE_STATUS.' + item.status)}`,
       date: new Date(item.lastUpdated || item.createdAt),
       priority: this.casePriority(item.status),
       route: `/sede/expedientes/${item.id}/detalle`
@@ -254,7 +254,7 @@ export class CitizenFolderComponent implements OnInit {
     return items.map((item) => ({
       id: `pay-${item.id}`,
       type: 'PAYMENT',
-      title: item.conceptKey,
+      title: this.translate.instant(item.conceptKey),
       detail: `${item.amountLabel} · vencimiento ${item.dueDate}`,
       date: this.parseLocalDate(item.dueDate),
       priority: item.statusKey === 'PAYMENT_STATUS.PENDING' ? 'HIGH' : 'LOW',
@@ -266,7 +266,7 @@ export class CitizenFolderComponent implements OnInit {
     return items.map((item) => ({
       id: `app-${item.id}`,
       type: 'APPOINTMENT',
-      title: item.serviceKey,
+      title: this.translate.instant(item.serviceKey),
       detail: `${item.date} ${item.time}`,
       date: this.parseLocalDateTime(item.date, item.time),
       priority: item.statusKey === 'APPOINTMENT_STATUS.PENDING' ? 'MEDIUM' : 'LOW',
