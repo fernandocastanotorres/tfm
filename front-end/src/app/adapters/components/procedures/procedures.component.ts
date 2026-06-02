@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { ProceduresApiService } from '../../../application/services/procedures-api.service';
+import { I18nService } from '../../../application/services/i18n.service';
 import { ProcedureItem } from '../../../application/models/procedure.models';
 import { ToastService } from '../../../application/services/toast.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -16,20 +18,34 @@ import { TranslatePipe } from '@ngx-translate/core';
     styleUrls: [],
     imports: [RouterLink, NgIf, LoadingSkeletonComponent, NgFor, TranslatePipe]
 })
-export class ProceduresComponent implements OnInit {
+export class ProceduresComponent implements OnInit, OnDestroy {
   procedures: ProcedureItem[] = [];
   isLoading = true;
+  private localeSubscription: Subscription | null = null;
 
   protected readonly trackByIndex = trackByIndex;
 
   constructor(
     private readonly proceduresApiService: ProceduresApiService,
+    private readonly i18nService: I18nService,
     private readonly router: Router,
     private readonly toast: ToastService,
     private readonly translate: TranslateService
   ) {}
 
   ngOnInit(): void {
+    this.localeSubscription = this.i18nService.getCurrentLocale$().subscribe(() => {
+      this.loadProcedures();
+    });
+    this.loadProcedures();
+  }
+
+  ngOnDestroy(): void {
+    this.localeSubscription?.unsubscribe();
+  }
+
+  private loadProcedures(): void {
+    this.isLoading = true;
     this.proceduresApiService.listAll().subscribe({
       next: (data) => {
         this.procedures = data;

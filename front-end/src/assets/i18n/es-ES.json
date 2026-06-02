@@ -53,10 +53,30 @@
     "TYPE_CASE": "Expediente",
     "TYPE_MESSAGE": "Mensaje",
     "TYPE_PAYMENT": "Pago",
-    "TYPE_APPOINTMENT": "Cita"
+    "TYPE_APPOINTMENT": "Cita",
+    "PRIORITY_HIGH": "Alta",
+    "PRIORITY_MEDIUM": "Media",
+    "PRIORITY_LOW": "Baja"
   },
   "COMMON": {
     "LOADING": "Cargando contenido"
+  },
+  "DOCUMENT_VERIFICATION": {
+    "TITLE": "Validación de documentos firmados",
+    "SUBTITLE": "Puede validar por fichero firmado o por CSV.",
+    "FILE_SECTION_TITLE": "Validar por fichero",
+    "SELECT_FILE": "Seleccionar fichero",
+    "FILE_VERIFYING": "Validando fichero...",
+    "SIGNATURE_VALID": "Firma válida",
+    "SIGNATURE_INVALID": "Firma no válida",
+    "CSV_SECTION_TITLE": "Validar por CSV",
+    "CSV_INPUT_PLACEHOLDER": "Introduzca código CSV",
+    "CSV_BUTTON": "Validar CSV",
+    "CSV_CONSULTING": "Consultando CSV...",
+    "CSV_LABEL": "Código CSV:",
+    "CASE_LABEL": "Expediente:",
+    "DOC_LABEL": "Documento:",
+    "SIGN_LABEL": "Fecha firma:"
   },
   "APP": {
     "TAGLINE": "Portal ciudadano"

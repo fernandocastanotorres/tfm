@@ -53,7 +53,10 @@
     "TYPE_CASE": "Expedient",
     "TYPE_MESSAGE": "Missatge",
     "TYPE_PAYMENT": "Pagament",
-    "TYPE_APPOINTMENT": "Cita"
+    "TYPE_APPOINTMENT": "Cita",
+    "PRIORITY_HIGH": "Alta",
+    "PRIORITY_MEDIUM": "Mitjana",
+    "PRIORITY_LOW": "Baixa"
   },
   "COMMON": {
     "LOADING": "Carregant contingut",
@@ -1042,6 +1045,7 @@
     "TITLE": "Validació de documents signats",
     "SUBTITLE": "Podeu validar per fitxer signat o per CSV.",
     "FILE_SECTION_TITLE": "Validar per fitxer",
+    "SELECT_FILE": "Seleccionar fitxer",
     "FILE_VERIFYING": "Validant fitxer...",
     "SIGNATURE_VALID": "Signatura vàlida",
     "SIGNATURE_INVALID": "Signatura no vàlida",

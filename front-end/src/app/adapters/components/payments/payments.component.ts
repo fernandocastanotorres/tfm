@@ -140,7 +140,12 @@ export class PaymentsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   toggleFilter(filter: 'all' | 'pending' | 'paid'): void {
-    this.filterForm.patchValue({ status: filter });
+    const statusMap: Record<string, string> = {
+      all: 'all',
+      pending: 'PAYMENT_STATUS.PENDING',
+      paid: 'PAYMENT_STATUS.PAID'
+    };
+    this.filterForm.patchValue({ status: statusMap[filter] });
     this.paginationState = updatePageSize(this.filterForm, this.paginationState.pageSize, this.paginationState);
     this.updatePaginationState();
   }

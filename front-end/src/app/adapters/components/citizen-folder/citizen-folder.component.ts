@@ -191,6 +191,17 @@ export class CitizenFolderComponent implements OnInit {
     doc.save(`carpeta-ciudadana-${now.toISOString().slice(0, 10)}.pdf`);
   }
 
+  priorityLabel(priority: TimelinePriority): string {
+    switch (priority) {
+      case 'HIGH':
+        return 'CITIZEN_FOLDER.PRIORITY_HIGH';
+      case 'MEDIUM':
+        return 'CITIZEN_FOLDER.PRIORITY_MEDIUM';
+      default:
+        return 'CITIZEN_FOLDER.PRIORITY_LOW';
+    }
+  }
+
   priorityClass(priority: TimelinePriority): string {
     switch (priority) {
       case 'HIGH':

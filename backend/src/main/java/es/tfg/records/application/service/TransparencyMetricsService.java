@@ -37,7 +37,7 @@ public class TransparencyMetricsService {
 
         long total = allProcedures.size();
         long resolved = allProcedures.stream().filter(this::isResolved).count();
-        long pending = allProcedures.stream().filter(p -> p.getStatus() == CaseStatus.SUBMITTED).count();
+        long pending = allProcedures.stream().filter(p -> !isResolved(p)).count();
 
         List<Double> resolutionDays = allProcedures.stream()
                 .filter(this::isResolved)

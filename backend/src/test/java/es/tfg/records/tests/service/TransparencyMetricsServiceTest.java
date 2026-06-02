@@ -79,7 +79,8 @@ class TransparencyMetricsServiceTest {
         // Then
         assertThat(result.totalProcedures()).isEqualTo(4);
         assertThat(result.resolvedProcedures()).isEqualTo(2);
-        assertThat(result.pendingProcedures()).isEqualTo(1); // Only SUBMITTED counts as pending
+        // Pending counts ALL non-resolved: DRAFT + SUBMITTED + IN_REVIEW + AMENDMENT_REQUIRED + RESUBMITTED
+        assertThat(result.pendingProcedures()).isEqualTo(2); // SUBMITTED + IN_REVIEW
         assertThat(result.avgResolutionDays()).isGreaterThan(0);
         assertThat(result.slaComplianceRate()).isEqualTo(50.0); // 1 out of 2 resolved within SLA
         assertThat(result.digitalProceduresPct()).isEqualTo(100.0);
@@ -118,7 +119,7 @@ class TransparencyMetricsServiceTest {
         // Then
         assertThat(result.totalProcedures()).isEqualTo(2);
         assertThat(result.resolvedProcedures()).isEqualTo(0);
-        assertThat(result.pendingProcedures()).isEqualTo(1);
+        assertThat(result.pendingProcedures()).isEqualTo(2); // DRAFT + SUBMITTED (all non-resolved)
         assertThat(result.avgResolutionDays()).isEqualTo(0);
         assertThat(result.slaComplianceRate()).isEqualTo(0);
     }
@@ -266,7 +267,7 @@ class TransparencyMetricsServiceTest {
     }
 
     @Test
-    void computeMetrics_shouldCountOnlySubmittedAsPending() {
+    void computeMetrics_shouldCountAllNonResolvedAsPending() {
         // Given
         ProcedureEntity draft = buildProcedure(CaseStatus.DRAFT, Instant.now(), null);
         ProcedureEntity submitted = buildProcedure(CaseStatus.SUBMITTED, Instant.now(), null);
@@ -281,7 +282,7 @@ class TransparencyMetricsServiceTest {
         TransparencyDtos.TransparencyMetricsDto result = service.computeMetrics();
 
         // Then
-        assertThat(result.pendingProcedures()).isEqualTo(1); // Only SUBMITTED
+        assertThat(result.pendingProcedures()).isEqualTo(5); // All non-resolved: DRAFT + SUBMITTED + IN_REVIEW + AMENDMENT_REQUIRED + RESUBMITTED
     }
 
     @Test
