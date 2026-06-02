@@ -168,7 +168,7 @@ export class ProcedureManagementComponent implements OnInit {
 
   addTask(): void {
     const task: ProcedureTaskConfig = {
-      id: `task-${Date.now()}`,
+      id: crypto.randomUUID(),
       title: 'Nueva tarea',
       type: 'REVIEW',
       description: '',
