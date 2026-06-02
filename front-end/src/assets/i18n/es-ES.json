@@ -615,7 +615,15 @@
     "LOADING_MESSAGES": "Cargando mensajes...",
     "ENI_DOWNLOAD": "Descargar expediente ENI",
     "ENI_DOWNLOADING": "Descargando...",
-    "ENI_HINT": "Paquete electrónico conforme al Esquema Nacional de Interoperabilidad (NTI-2011). Contiene documentos, firmas y metadatos XML."
+    "ENI_HINT": "Paquete electrónico conforme al Esquema Nacional de Interoperabilidad (NTI-2011). Contiene documentos, firmas y metadatos XML.",
+    "MESSAGES_EMPTY": "No hay mensajes en este expediente.",
+    "REGISTRY_DOWNLOAD_RECEIPT": "Descargar justificante registral",
+    "REGISTRY_VERIFY_CSV": "Verificar CSV",
+    "ORIGINAL": "Original",
+    "SIGNED": "Firmado",
+    "ATTACHMENT_SIGNED_HINT": "Documento firmado electrónicamente",
+    "ATTACHMENT_SIGNED_BADGE": "Firmado",
+    "ATTACHMENT_SIGNED_SR": "Documento firmado"
   },
   "CASE_STATUS": {
     "DRAFT": "Borrador",
@@ -678,7 +686,8 @@
     "REMOVE_FILE": "Quitar",
     "REVIEW_HINT": "Revisa la información y los documentos antes de enviar la solicitud.",
     "UPLOAD_DROPZONE_TEXT": "Arrastra y suelta ficheros aqui o selecciona desde tu equipo.",
-    "UPLOAD_GENERIC_LABEL": "Documentacion"
+    "UPLOAD_GENERIC_LABEL": "Documentacion",
+    "SUBMITTING": "Enviando..."
   },
   "CASE_SEARCH": {
     "TITLE": "Buscador de expedientes",
