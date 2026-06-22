@@ -60,7 +60,8 @@ describe('ProcedureManagementComponent', () => {
   beforeEach(async () => {
     mockService = jasmine.createSpyObj('ProcedureManagementService', [
       'list', 'listCategories', 'listUnits', 'create', 'update',
-      'toggleStatus', 'listTranslations', 'upsertTranslation'
+      'toggleStatus', 'listTranslations', 'upsertTranslation',
+      'listTaskTranslations', 'upsertTaskTranslation'
     ]);
     mockService.list.and.returnValue(of(mockProcedures));
     mockService.listCategories.and.returnValue(of(mockCategories));
@@ -69,6 +70,8 @@ describe('ProcedureManagementComponent', () => {
     mockService.update.and.returnValue(of(mockProcedures[0]));
     mockService.listTranslations.and.returnValue(of([]));
     mockService.upsertTranslation.and.returnValue(of({} as any));
+    mockService.listTaskTranslations.and.returnValue(of([]));
+    mockService.upsertTaskTranslation.and.returnValue(of({} as any));
 
     mockConfirmDialog = jasmine.createSpyObj('ConfirmDialogService', ['confirm']);
     mockConfirmDialog.confirm.and.returnValue(Promise.resolve(true));

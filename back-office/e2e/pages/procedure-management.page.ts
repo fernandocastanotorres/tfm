@@ -60,6 +60,81 @@ export class ProcedureManagementPage {
   async getProcedureCount(): Promise<number> {
     return this.page.locator('.bg-white.rounded-lg.shadow.p-6').count();
   }
+
+  async openTranslationsSection() {
+    const translationsTab = this.page.locator('button:has-text("Traducciones")');
+    await translationsTab.waitFor({ state: 'visible' });
+    await translationsTab.click();
+    await this.page.waitForTimeout(200);
+  }
+
+  async addProcedureTranslation(locale: string, title: string, description: string) {
+    await this.page.locator('button:has-text("+ Nueva traduccion")').click();
+    await this.page.waitForTimeout(100);
+    
+    const localeInput = this.page.locator('select#locale-select, select[class*="locale"]').last();
+    await localeInput.selectOption(locale);
+    
+    const titleInput = this.page.locator('input[placeholder*="titulo"], input[class*="title"]').last();
+    await titleInput.fill(title);
+    
+    const descInput = this.page.locator('textarea[class*="description"], textarea').last();
+    await descInput.fill(description);
+  }
+
+  async getTranslationLocales(): Promise<string[]> {
+    const localeSelectors = this.page.locator('select#locale-select, select[class*="locale"]');
+    const count = await localeSelectors.count();
+    const locales: string[] = [];
+    for (let i = 0; i < count; i++) {
+      const value = await localeSelectors.nth(i).inputValue();
+      if (value) locales.push(value);
+    }
+    return locales;
+  }
+
+  async openTaskTranslations(taskIndex: number) {
+    const taskCard = this.page.locator('div.border.rounded-md.p-3').nth(taskIndex);
+    const translateBtn = taskCard.locator('button:has-text("Traducciones tarea")');
+    await translateBtn.click();
+    await this.page.waitForTimeout(200);
+  }
+
+  async addTaskTranslation(taskIndex: number, locale: string, title: string, description: string) {
+    await this.page.locator(`button:has-text("+ Traduccion tarea")`).click();
+    await this.page.waitForTimeout(100);
+    
+    const localeInput = this.page.locator('select#task-locale-select, select[class*="task-locale"]').last();
+    await localeInput.selectOption(locale);
+    
+    const titleInput = this.page.locator('input[placeholder*="titulo tarea"], input[class*="task-title"]').last();
+    await titleInput.fill(title);
+    
+    const descInput = this.page.locator('textarea[class*="task-description"], textarea').last();
+    await descInput.fill(description);
+  }
+
+  async openFieldTranslations(taskIndex: number, fieldIndex: number) {
+    await this.expandTask(taskIndex);
+    await this.page.waitForTimeout(100);
+    
+    const taskCard = this.page.locator('div.border.rounded-md.p-3').nth(taskIndex);
+    const fieldCard = taskCard.locator('div.border.rounded.p-2.bg-gray-50').nth(fieldIndex);
+    const translateBtn = fieldCard.locator('button:has-text("Traducciones campo")');
+    await translateBtn.click();
+    await this.page.waitForTimeout(200);
+  }
+
+  async addFieldTranslation(fieldIndex: number, locale: string, label: string) {
+    await this.page.locator('button:has-text("+ Traduccion")').click();
+    await this.page.waitForTimeout(100);
+    
+    const localeInput = this.page.locator('select#field-locale-select, select[class*="field-locale"]').last();
+    await localeInput.selectOption(locale);
+    
+    const labelInput = this.page.locator('input[placeholder*="etiqueta"], input[class*="field-label"]').last();
+    await labelInput.fill(label);
+  }
 }
 
 export class BackofficeLoginPage {

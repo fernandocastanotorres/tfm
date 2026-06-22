@@ -28,6 +28,7 @@ import org.springframework.data.domain.Pageable;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTaskEntity;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTypeEntity;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTaskFieldI18nEntity;
+import es.tfg.records.infrastructure.persistence.entity.ProcedureTaskI18nEntity;
 import es.tfg.records.infrastructure.persistence.entity.UserEntity;
 import es.tfg.records.infrastructure.persistence.entity.CaseTimelineEventEntity;
 import es.tfg.records.infrastructure.persistence.entity.DocumentEntity;
@@ -38,6 +39,7 @@ import es.tfg.records.infrastructure.persistence.repository.DocumentVerification
 import es.tfg.records.infrastructure.persistence.repository.ProcedureJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureTypeI18nJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureTaskFieldI18nJpaRepository;
+import es.tfg.records.infrastructure.persistence.repository.ProcedureTaskI18nJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureTaskJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureTypeJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.UserJpaRepository;
@@ -113,6 +115,7 @@ public class BackofficeService {
     private final ProcedureTypeJpaRepository procedureTypeRepository;
     private final ProcedureTypeI18nJpaRepository procedureTypeI18nRepository;
     private final ProcedureTaskFieldI18nJpaRepository fieldI18nRepository;
+    private final ProcedureTaskI18nJpaRepository taskI18nRepository;
     private final ProcedureTaskJpaRepository taskRepository;
     private final DocumentJpaRepository documentRepository;
     private final DocumentVerificationJpaRepository documentVerificationRepository;
@@ -129,6 +132,7 @@ public class BackofficeService {
                               ProcedureTypeJpaRepository procedureTypeRepository,
                                ProcedureTypeI18nJpaRepository procedureTypeI18nRepository,
                                ProcedureTaskFieldI18nJpaRepository fieldI18nRepository,
+                               ProcedureTaskI18nJpaRepository taskI18nRepository,
                                 ProcedureTaskJpaRepository taskRepository,
                                 DocumentJpaRepository documentRepository,
                                 DocumentVerificationJpaRepository documentVerificationRepository,
@@ -144,6 +148,7 @@ public class BackofficeService {
         this.procedureTypeRepository = procedureTypeRepository;
         this.procedureTypeI18nRepository = procedureTypeI18nRepository;
         this.fieldI18nRepository = fieldI18nRepository;
+        this.taskI18nRepository = taskI18nRepository;
         this.taskRepository = taskRepository;
         this.documentRepository = documentRepository;
         this.documentVerificationRepository = documentVerificationRepository;
@@ -1543,5 +1548,52 @@ public class BackofficeService {
                 .filter(t -> t.getFieldId().equals(fieldId) && t.getLocale().equals(locale))
                 .findFirst()
                 .ifPresent(fieldI18nRepository::delete);
+    }
+
+    @Transactional(readOnly = true)
+    public List<BackofficeDtos.ProcedureTaskTranslation> listTaskTranslations(UUID procedureTypeId) {
+        ensureProcedureTypeExists(procedureTypeId);
+        return taskI18nRepository.findByProcedureTypeId(procedureTypeId).stream()
+                .map(this::toProcedureTaskTranslation)
+                .toList();
+    }
+
+    @Transactional
+    public BackofficeDtos.ProcedureTaskTranslation upsertTaskTranslation(UUID procedureTypeId, int taskOrderIndex,
+                                                                         BackofficeDtos.ProcedureTaskTranslationRequest request) {
+        ensureProcedureTypeExists(procedureTypeId);
+        String locale = normalizeLocale(request.locale());
+        ProcedureTaskI18nEntity entity = taskI18nRepository
+                .findByProcedureTypeIdAndTaskOrderIndexAndLocale(procedureTypeId, taskOrderIndex, locale)
+                .orElseGet(() -> {
+                    ProcedureTaskI18nEntity created = new ProcedureTaskI18nEntity();
+                    created.setId(UUID.randomUUID());
+                    created.setProcedureTypeId(procedureTypeId);
+                    created.setTaskOrderIndex(taskOrderIndex);
+                    created.setLocale(locale);
+                    return created;
+                });
+
+        entity.setTitle(request.title());
+        entity.setDescription(request.description() != null ? request.description() : "");
+        return toProcedureTaskTranslation(taskI18nRepository.save(entity));
+    }
+
+    @Transactional
+    public void deleteTaskTranslation(UUID procedureTypeId, int taskOrderIndex, String locale) {
+        taskI18nRepository.deleteByProcedureTypeIdAndTaskOrderIndexAndLocale(procedureTypeId, taskOrderIndex, locale);
+    }
+
+    private BackofficeDtos.ProcedureTaskTranslation toProcedureTaskTranslation(ProcedureTaskI18nEntity entity) {
+        return new BackofficeDtos.ProcedureTaskTranslation(
+                entity.getId(),
+                entity.getProcedureTypeId(),
+                entity.getTaskOrderIndex(),
+                entity.getLocale(),
+                entity.getTitle(),
+                entity.getDescription(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
+        );
     }
 }

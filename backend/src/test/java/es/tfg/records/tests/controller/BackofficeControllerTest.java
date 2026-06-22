@@ -570,6 +570,53 @@ class BackofficeControllerTest {
                 .andExpect(status().isNoContent());
     }
 
+    // ===== Task I18n translations =====
+
+    @Test
+    void listTaskTranslations_shouldReturnTaskTranslations() throws Exception {
+        UUID procId = UUID.randomUUID();
+        BackofficeDtos.ProcedureTaskTranslation translation = new BackofficeDtos.ProcedureTaskTranslation(
+                UUID.randomUUID(), procId, 0, "ca-ES", "Dades sol·licitant", "Completa les teues dades",
+                null, null);
+
+        when(backofficeService.listTaskTranslations(procId)).thenReturn(List.of(translation));
+
+        mockMvc.perform(get("/admin/procedure-types/{id}/task-i18n", procId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$[0].locale").value("ca-ES"))
+                .andExpect(jsonPath("$[0].title").value("Dades sol·licitant"));
+    }
+
+    @Test
+    void upsertTaskTranslation_shouldCreateOrUpdateTranslation() throws Exception {
+        UUID procId = UUID.randomUUID();
+        BackofficeDtos.ProcedureTaskTranslationRequest request = new BackofficeDtos.ProcedureTaskTranslationRequest(
+                "ca-ES", "Dades del sol·licitant", "Completa la informació");
+
+        BackofficeDtos.ProcedureTaskTranslation result = new BackofficeDtos.ProcedureTaskTranslation(
+                UUID.randomUUID(), procId, 1, "ca-ES", "Dades del sol·licitant", "Completa la informació",
+                null, null);
+
+        when(backofficeService.upsertTaskTranslation(eq(procId), eq(1), any())).thenReturn(result);
+
+        mockMvc.perform(put("/admin/procedure-types/{id}/task-i18n/{taskOrderIndex}", procId, 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.locale").value("ca-ES"))
+                .andExpect(jsonPath("$.title").value("Dades del sol·licitant"));
+    }
+
+    @Test
+    void deleteTaskTranslation_shouldReturnNoContent() throws Exception {
+        UUID procId = UUID.randomUUID();
+
+        mockMvc.perform(delete("/admin/procedure-types/{id}/task-i18n/{taskOrderIndex}/{locale}",
+                        procId, 0, "ca-ES"))
+                .andExpect(status().isNoContent());
+    }
+
     // ===== Catalog (categories & units) =====
 
     @Test

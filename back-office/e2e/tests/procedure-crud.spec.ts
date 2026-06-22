@@ -1,11 +1,18 @@
 import { test, expect } from '../fixtures';
 import { ProcedureManagementPage, BackofficeLoginPage } from '../pages/procedure-management.page';
 
+const VALID_TOKEN = 'eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJlbWFpbCI6ImFkbWluQHRlc3QuY29tIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW5AdGVzdC5jb20iLCJyb2xlcyI6WyJST0xFX0FETUlOIl0sImV4cCI6MTc4MDQ3ODcyOH0.';
+
 test.describe('Procedure Management E2E', () => {
   let procedurePage: ProcedureManagementPage;
   let loginPage: BackofficeLoginPage;
 
   test.beforeEach(async ({ page }) => {
+    const context = page.context();
+    await context.addInitScript((token: string) => {
+      window.sessionStorage.setItem('bo_access_token', token);
+      window.sessionStorage.setItem('bo_user_profile', JSON.stringify({ id: 'user-1', email: 'admin@test.com', roles: ['ROLE_ADMIN'] }));
+    }, VALID_TOKEN);
     procedurePage = new ProcedureManagementPage(page);
     loginPage = new BackofficeLoginPage(page);
   });
@@ -32,15 +39,16 @@ test.describe('Procedure Management E2E', () => {
     await procedurePage.openNewProcedure();
 
     // Fill basic info
-    const titleInput = page.locator('input[(ngModel)]').first();
+    const titleInput = page.locator('input').first();
     await titleInput.fill('Licencia de Obra Menor');
 
     await page.selectOption('select#category-select', 'Urbanismo');
-    await page.selectOption('select#unit-select', 'Urbanismo');
+    await page.waitForTimeout(300);
+    await page.selectOption('select#unit-select', 'Secretaría');
 
     // Add a FORM task
     await page.locator('button:has-text("Anadir tarea")').click();
-    const taskSelect = page.locator('select').nth(2);
+    const taskSelect = page.locator('select').nth(3);
     await taskSelect.selectOption('FORM');
 
     // Expand task and add fields
@@ -66,7 +74,7 @@ test.describe('Procedure Management E2E', () => {
     await procedurePage.openNewProcedure();
 
     // Fill basic info
-    const titleInput = page.locator('input[(ngModel)]').first();
+    const titleInput = page.locator('input').first();
     await titleInput.fill('Solicitud de Certificados');
 
     await page.selectOption('select#category-select', 'Administración');
@@ -144,7 +152,7 @@ test.describe('Procedure Management E2E', () => {
     await customInput.fill('Mi categoría custom');
 
     // Fill other required fields
-    await page.locator('input[(ngModel)]').first().fill('Test Procedure');
+    await page.locator('input').first().fill('Test Procedure');
     await page.selectOption('select#unit-select', 'Secretaría');
 
     // Save
@@ -172,7 +180,7 @@ test.describe('Procedure Management E2E', () => {
     await procedurePage.openNewProcedure();
 
     // Fill some data
-    await page.locator('input[(ngModel)]').first().fill('Test Procedure');
+    await page.locator('input').first().fill('Test Procedure');
     await page.selectOption('select#category-select', 'Urbanismo');
 
     // Cancel

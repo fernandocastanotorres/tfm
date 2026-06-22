@@ -9,7 +9,9 @@ import {
   ProcedureTranslationRequest,
   FieldI18nGroup,
   FieldI18nEntry,
-  FieldI18nUpsertRequest
+  FieldI18nUpsertRequest,
+  ProcedureTaskTranslation,
+  ProcedureTaskTranslationRequest
 } from '../models/backoffice.models';
 
 @Injectable({ providedIn: 'root' })
@@ -60,5 +62,17 @@ export class ProcedureManagementService {
 
   deleteFieldTranslation(id: string, fieldId: string, locale: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}/field-i18n/${fieldId}/${locale}`);
+  }
+
+  listTaskTranslations(id: string): Observable<ProcedureTaskTranslation[]> {
+    return this.http.get<ProcedureTaskTranslation[]>(`${this.baseUrl}/${id}/task-i18n`);
+  }
+
+  upsertTaskTranslation(id: string, taskOrderIndex: number, request: ProcedureTaskTranslationRequest): Observable<ProcedureTaskTranslation> {
+    return this.http.put<ProcedureTaskTranslation>(`${this.baseUrl}/${id}/task-i18n/${taskOrderIndex}`, request);
+  }
+
+  deleteTaskTranslation(id: string, taskOrderIndex: number, locale: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}/task-i18n/${taskOrderIndex}/${locale}`);
   }
 }

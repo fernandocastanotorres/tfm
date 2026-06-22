@@ -457,6 +457,31 @@ public class BackofficeController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/procedure-types/{id}/task-i18n")
+    @Operation(summary = "List all task translations for a procedure type")
+    public ResponseEntity<List<BackofficeDtos.ProcedureTaskTranslation>> listTaskTranslations(@PathVariable UUID id) {
+        return ResponseEntity.ok(backofficeService.listTaskTranslations(id));
+    }
+
+    @PutMapping("/procedure-types/{id}/task-i18n/{taskOrderIndex}")
+    @Operation(summary = "Create or update a task translation")
+    public ResponseEntity<BackofficeDtos.ProcedureTaskTranslation> upsertTaskTranslation(
+            @PathVariable UUID id,
+            @PathVariable int taskOrderIndex,
+            @Valid @RequestBody BackofficeDtos.ProcedureTaskTranslationRequest request) {
+        return ResponseEntity.ok(backofficeService.upsertTaskTranslation(id, taskOrderIndex, request));
+    }
+
+    @DeleteMapping("/procedure-types/{id}/task-i18n/{taskOrderIndex}/{locale}")
+    @Operation(summary = "Delete a task translation")
+    public ResponseEntity<Void> deleteTaskTranslation(
+            @PathVariable UUID id,
+            @PathVariable int taskOrderIndex,
+            @PathVariable String locale) {
+        backofficeService.deleteTaskTranslation(id, taskOrderIndex, locale);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/catalog/categories")
     @Operation(summary = "List available procedure categories")
     public ResponseEntity<List<String>> listCatalogCategories() {

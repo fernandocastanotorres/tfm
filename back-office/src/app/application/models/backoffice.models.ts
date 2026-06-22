@@ -255,6 +255,23 @@ export interface ProcedureTranslationRequest {
   unit: string;
 }
 
+export interface ProcedureTaskTranslation {
+  id: string;
+  procedureTypeId: string;
+  taskOrderIndex: number;
+  locale: string;
+  title: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProcedureTaskTranslationRequest {
+  locale: string;
+  title: string;
+  description?: string;
+}
+
 export interface PublicLegislationEntry {
   id: string;
   locale: string;

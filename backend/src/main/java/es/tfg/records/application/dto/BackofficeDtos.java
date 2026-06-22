@@ -223,6 +223,23 @@ public final class BackofficeDtos {
             List<FormSchemaField> fields
     ) {}
 
+    public record ProcedureTaskTranslation(
+            UUID id,
+            UUID procedureTypeId,
+            int taskOrderIndex,
+            String locale,
+            String title,
+            String description,
+            Instant createdAt,
+            Instant updatedAt
+    ) {}
+
+    public record ProcedureTaskTranslationRequest(
+            String locale,
+            String title,
+            String description
+    ) {}
+
     public record ProcedureTranslation(
             UUID id,
             UUID procedureTypeId,

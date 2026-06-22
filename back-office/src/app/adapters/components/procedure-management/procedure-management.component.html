@@ -99,6 +99,22 @@
         </div>
       </section>
 
+      <section class="mb-6 border rounded-lg p-4">
+        <div class="flex items-center justify-between gap-3 mb-3">
+          <h4 class="font-semibold text-gray-900">Traducciones de tareas</h4>
+        </div>
+        <div *ngIf="form.tasks.length === 0" class="text-xs text-gray-500 text-center py-2">Anade tareas para traducir sus titulos</div>
+        <div *ngFor="let task of form.tasks; let taskIndex = index" class="border rounded p-3 mb-3 bg-gray-50">
+          <div class="font-medium text-sm mb-2">{{ taskIndex + 1 }}. {{ task.title || 'Sin titulo' }} ({{ task.type }})</div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div *ngFor="let locale of supportedLocales">
+                <label [for]="'task-translation-' + taskIndex + '-' + locale" class="text-xs text-gray-500 block mb-1">{{ locale }}</label>
+                <input [id]="'task-translation-' + taskIndex + '-' + locale" [(ngModel)]="taskTranslations[taskIndex][locale]" class="w-full border rounded px-2 py-1 text-xs" placeholder="Titulo de tarea" />
+              </div>
+          </div>
+        </div>
+      </section>
+
       <div class="grid grid-cols-1 lg:grid-cols-1 gap-6">
         <section>
           <div class="flex items-center justify-between mb-3"><h4 class="font-semibold text-gray-900">Tareas BPMN</h4><button type="button" (click)="addTask()" class="text-blue-600 text-sm font-medium">Anadir tarea</button></div>

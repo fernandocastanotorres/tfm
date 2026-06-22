@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { forkJoin, of, switchMap } from 'rxjs';
+import { forkJoin, map, of, switchMap } from 'rxjs';
 import {
   FormSchemaField,
   ManagedProcedure,
@@ -45,6 +45,7 @@ export class ProcedureManagementComponent implements OnInit {
 
   form: ProcedureRequest = this.createEmptyForm();
   translationForm = this.createTranslationMap();
+  taskTranslations: Record<number, Record<string, string>> = {};
 
   ngOnInit(): void {
     this.loadCatalog();
@@ -153,11 +154,36 @@ export class ProcedureManagementComponent implements OnInit {
     this.selectedLocale = 'es-ES';
     this.syncSpanishFromBase();
     this.activeTaskIndex = null;
+    this.initTaskTranslations();
     this.procedureManagementService.listTranslations(procedure.id).subscribe({
-      next: (translations) => this.applyTranslations(translations),
+      next: (translations) => {
+        this.applyTranslations(translations);
+        this.procedureManagementService.listTaskTranslations(procedure.id).subscribe({
+          next: (taskTranslations) => this.applyTaskTranslations(taskTranslations),
+          error: () => undefined
+        });
+      },
       error: () => undefined
     });
     this.showForm = true;
+  }
+
+  private initTaskTranslations(): void {
+    this.taskTranslations = {};
+    this.form.tasks.forEach((_, index) => {
+      this.taskTranslations[index] = {};
+      this.supportedLocales.forEach(locale => {
+        this.taskTranslations[index][locale] = '';
+      });
+    });
+  }
+
+  private applyTaskTranslations(translations: { taskOrderIndex: number; locale: string; title: string }[]): void {
+    translations.forEach(t => {
+      if (this.taskTranslations[t.taskOrderIndex]) {
+        this.taskTranslations[t.taskOrderIndex][t.locale] = t.title;
+      }
+    });
   }
 
   closeForm(): void {
@@ -254,26 +280,23 @@ export class ProcedureManagementComponent implements OnInit {
     if (!confirmed) return;
     this.isSaving = true;
 
-    if (this.selectedProcedure) {
-      this.procedureManagementService.update(this.selectedProcedure.id, this.form).pipe(
-        switchMap((saved) => this.persistTranslations(saved.id))
-      ).subscribe({
-        next: () => this.afterSave(),
-        error: () => {
-          this.isSaving = false;
-          this.toastService.error(this.translateService.instant('BO.COMMON.ERROR_PROCEDURE_UPDATE'));
-        }
-      });
-      return;
-    }
+    const procedureId = this.selectedProcedure?.id;
+    const saveObservable = this.selectedProcedure
+      ? this.procedureManagementService.update(procedureId!, this.form)
+      : this.procedureManagementService.create(this.form);
 
-    this.procedureManagementService.create(this.form).pipe(
-      switchMap((saved) => this.persistTranslations(saved.id))
+    saveObservable.pipe(
+      switchMap((saved) => this.persistTranslations(saved.id)),
+      switchMap(() => {
+        const idToUse = this.selectedProcedure?.id || (this.form as any).id;
+        return this.persistTaskTranslations(idToUse);
+      })
     ).subscribe({
       next: () => this.afterSave(),
       error: () => {
         this.isSaving = false;
-        this.toastService.error(this.translateService.instant('BO.COMMON.ERROR_PROCEDURE_CREATE'));
+        const errKey = this.selectedProcedure ? 'BO.COMMON.ERROR_PROCEDURE_UPDATE' : 'BO.COMMON.ERROR_PROCEDURE_CREATE';
+        this.toastService.error(this.translateService.instant(errKey));
       }
     });
   }
@@ -357,6 +380,16 @@ export class ProcedureManagementComponent implements OnInit {
     });
   }
 
+  private syncSpanishFromBase(): void {
+    const spanish = this.translationForm['es-ES'];
+    this.translationForm['es-ES'] = {
+      ...spanish,
+      title: this.form.title,
+      description: this.form.description,
+      unit: this.form.assignedUnit
+    };
+  }
+
   private persistTranslations(procedureId: string) {
     const requests = this.supportedLocales
       .map((locale) => {
@@ -376,17 +409,27 @@ export class ProcedureManagementComponent implements OnInit {
     if (requests.length === 0) {
       return of([]);
     }
-    return forkJoin(requests);
+return forkJoin(requests);
   }
 
-  private syncSpanishFromBase(): void {
-    const spanish = this.translationForm['es-ES'];
-    this.translationForm['es-ES'] = {
-      ...spanish,
-      title: this.form.title,
-      description: this.form.description,
-      unit: this.form.assignedUnit
-    };
+  private persistTaskTranslations(procedureId: string): import('rxjs').Observable<unknown> {
+    const requests: import('rxjs').Observable<import('../../../application/models/backoffice.models').ProcedureTaskTranslation>[] = [];
+    this.form.tasks.forEach((task, taskIndex) => {
+      this.supportedLocales.forEach(locale => {
+        const title = this.taskTranslations[taskIndex]?.[locale];
+        if (title && title.trim()) {
+          requests.push(this.procedureManagementService.upsertTaskTranslation(procedureId, taskIndex, {
+            locale,
+            title: title.trim(),
+            description: ''
+          }));
+        }
+      });
+    });
+    if (requests.length === 0) {
+      return of([]);
+    }
+    return forkJoin(requests);
   }
 
   private restoreFocus(): void {

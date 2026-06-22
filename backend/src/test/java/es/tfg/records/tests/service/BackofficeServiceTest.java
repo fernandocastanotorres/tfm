@@ -45,6 +45,7 @@ class BackofficeServiceTest {
     @Mock private ProcedureTypeJpaRepository procedureTypeRepository;
     @Mock private ProcedureTypeI18nJpaRepository procedureTypeI18nRepository;
     @Mock private ProcedureTaskFieldI18nJpaRepository fieldI18nRepository;
+    @Mock private ProcedureTaskI18nJpaRepository taskI18nRepository;
     @Mock private ProcedureTaskJpaRepository taskRepository;
     @Mock private DocumentJpaRepository documentRepository;
     @Mock private DocumentVerificationJpaRepository documentVerificationRepository;
@@ -62,7 +63,7 @@ class BackofficeServiceTest {
     @BeforeEach
     void setUp() {
         service = new BackofficeService(procedureRepository, procedureTypeRepository,
-                procedureTypeI18nRepository, fieldI18nRepository, taskRepository,
+                procedureTypeI18nRepository, fieldI18nRepository, taskI18nRepository, taskRepository,
                 documentRepository, documentVerificationRepository, timelineRepository, userRepository,
                 passwordEncoder, objectMapper, auditService,
                 historyService, repositoryService, taskService);

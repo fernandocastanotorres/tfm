@@ -57,7 +57,7 @@ Esperar ~30 segundos a que todos los servicios estén saludables.
 ### Diagrama rápido (si hay proyector)
 
 ```
-Ciudadano (Angular) ──┐
+Ciudadano (Angular)  ──┐
                        ├──► API REST (Spring Boot + Flowable) ──► PostgreSQL
 Backoffice (Angular) ──┘                                         │
                                                                  ├── Mailpit (email)

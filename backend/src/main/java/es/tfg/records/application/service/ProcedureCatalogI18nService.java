@@ -7,8 +7,10 @@ import es.tfg.records.application.dto.FormFieldDto;
 import es.tfg.records.domain.model.ProcedureTask;
 import es.tfg.records.domain.model.ProcedureType;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTaskFieldI18nEntity;
+import es.tfg.records.infrastructure.persistence.entity.ProcedureTaskI18nEntity;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTypeI18nEntity;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureTaskFieldI18nJpaRepository;
+import es.tfg.records.infrastructure.persistence.repository.ProcedureTaskI18nJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureTypeI18nJpaRepository;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -29,13 +31,16 @@ public class ProcedureCatalogI18nService {
     private final MessageSource messageSource;
     private final ProcedureTypeI18nJpaRepository procedureTypeI18nRepository;
     private final ProcedureTaskFieldI18nJpaRepository fieldI18nRepository;
+    private final ProcedureTaskI18nJpaRepository taskI18nRepository;
 
     public ProcedureCatalogI18nService(MessageSource messageSource,
                                        ProcedureTypeI18nJpaRepository procedureTypeI18nRepository,
-                                       ProcedureTaskFieldI18nJpaRepository fieldI18nRepository) {
+                                       ProcedureTaskFieldI18nJpaRepository fieldI18nRepository,
+                                       ProcedureTaskI18nJpaRepository taskI18nRepository) {
         this.messageSource = messageSource;
         this.procedureTypeI18nRepository = procedureTypeI18nRepository;
         this.fieldI18nRepository = fieldI18nRepository;
+        this.taskI18nRepository = taskI18nRepository;
     }
 
     public String localizeProcedureTitle(ProcedureType procedureType) {
@@ -66,12 +71,46 @@ public class ProcedureCatalogI18nService {
     }
 
     public String localizeTaskTitle(ProcedureType procedureType, ProcedureTask task) {
+        String localeTag = resolveLocaleTag();
+        String defaultLocaleTag = DEFAULT_LOCALE.toLanguageTag();
+
+        ProcedureTaskI18nEntity translation = taskI18nRepository
+                .findByProcedureTypeIdAndTaskOrderIndexAndLocale(procedureType.getId(), task.getOrderIndex(), localeTag)
+                .orElse(null);
+
+        if (translation == null) {
+            translation = taskI18nRepository
+                    .findByProcedureTypeIdAndTaskOrderIndexAndLocale(procedureType.getId(), task.getOrderIndex(), defaultLocaleTag)
+                    .orElse(null);
+        }
+
+        if (translation != null && translation.getTitle() != null && !translation.getTitle().isBlank()) {
+            return translation.getTitle();
+        }
+
         String key = "procedure." + toSlug(procedureType.getTitle()) + ".task." + task.getOrderIndex() + ".title";
         String genericKey = "procedure.task." + task.getOrderIndex() + ".title";
         return getMessageOrDefault(key, getMessageOrDefault(genericKey, task.getTitle()));
     }
 
     public String localizeTaskDescription(ProcedureType procedureType, ProcedureTask task) {
+        String localeTag = resolveLocaleTag();
+        String defaultLocaleTag = DEFAULT_LOCALE.toLanguageTag();
+
+        ProcedureTaskI18nEntity translation = taskI18nRepository
+                .findByProcedureTypeIdAndTaskOrderIndexAndLocale(procedureType.getId(), task.getOrderIndex(), localeTag)
+                .orElse(null);
+
+        if (translation == null) {
+            translation = taskI18nRepository
+                    .findByProcedureTypeIdAndTaskOrderIndexAndLocale(procedureType.getId(), task.getOrderIndex(), defaultLocaleTag)
+                    .orElse(null);
+        }
+
+        if (translation != null && translation.getDescription() != null && !translation.getDescription().isBlank()) {
+            return translation.getDescription();
+        }
+
         String key = "procedure." + toSlug(procedureType.getTitle()) + ".task." + task.getOrderIndex() + ".description";
         String genericKey = "procedure.task." + task.getOrderIndex() + ".description";
         return getMessageOrDefault(key, getMessageOrDefault(genericKey, task.getDescription()));
