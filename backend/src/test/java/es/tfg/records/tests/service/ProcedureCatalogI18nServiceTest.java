@@ -9,6 +9,7 @@ import es.tfg.records.domain.model.TaskType;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTaskFieldI18nEntity;
 import es.tfg.records.infrastructure.persistence.entity.ProcedureTypeI18nEntity;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureTaskFieldI18nJpaRepository;
+import es.tfg.records.infrastructure.persistence.repository.ProcedureTaskI18nJpaRepository;
 import es.tfg.records.infrastructure.persistence.repository.ProcedureTypeI18nJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,6 +44,9 @@ class ProcedureCatalogI18nServiceTest {
 
     @Mock
     private ProcedureTaskFieldI18nJpaRepository fieldI18nRepository;
+
+    @Mock
+    private ProcedureTaskI18nJpaRepository taskI18nRepository;
 
     @Mock
     private MessageSource messageSource;

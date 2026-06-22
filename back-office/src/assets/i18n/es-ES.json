@@ -62,7 +62,8 @@
       "TOP_PROCEDURES": "Top Procedimientos",
       "UNIT_LOAD": "Carga por Unidad",
       "CREATED": "C",
-      "RESOLVED_SHORT": "R"
+      "RESOLVED_SHORT": "R",
+      "VIEW_CASE": "Ver expediente"
     },
     "CASES": {
       "TITLE": "Expedientes",

@@ -16,13 +16,47 @@
     "PDF_DATE": "Data:",
     "PDF_INDICATORS": "Adierazleak",
     "PDF_TIMELINE": "Denbora-lerro bateratua (lehen 12 gertaerak)",
-"TYPE_CASE": "Espedientea",
+    "TYPE_CASE": "Espedientea",
     "TYPE_MESSAGE": "Mezua",
     "TYPE_PAYMENT": "Ordainketa",
     "TYPE_APPOINTMENT": "Hitzordua",
     "PRIORITY_HIGH": "Altua",
     "PRIORITY_MEDIUM": "Ertaina",
-    "PRIORITY_LOW": "Baxua"
+    "PRIORITY_LOW": "Baxua",
+    "SHORTCUT_CASES": "Espedienteak bilatu",
+    "SHORTCUT_NOTIFICATIONS": "Jakinarazpenak",
+    "SHORTCUT_DOCUMENTS": "Nire dokumentuak",
+    "SHORTCUT_PAYMENTS": "Ordainketak eta tasak",
+    "SHORTCUT_PROFILE": "Profila",
+    "LATEST_NOTIFICATION": "Azken jakinarazpena",
+    "NO_NOTIFICATIONS": "Ez dago jakinarazpenik.",
+    "QUICK_ACCESS": "Sarbide biziko",
+    "TIMELINE_TITLE": "Denbora-lerro bateratua",
+    "TIMELINE_SUBTITLE": "Espediente, mezu, ordainketa eta hitzorduen jarduera konbinatua.",
+    "TIMELINE_FILTER_TYPE": "Mota",
+    "TIMELINE_FILTER_PRIORITY": "Lehentasuna",
+    "TIMELINE_FILTER_PERIOD": "Aldia",
+    "TIMELINE_FILTER_SORT": "Ordenatu",
+    "TIMELINE_TYPE_ALL": "Mota guztiak",
+    "TIMELINE_TYPE_CASE": "Espedienteak",
+    "TIMELINE_TYPE_MESSAGE": "Mezuak",
+    "TIMELINE_TYPE_PAYMENT": "Ordainketak",
+    "TIMELINE_TYPE_APPOINTMENT": "Hitzorduak",
+    "TIMELINE_PRIORITY_ALL": "Lehentasun guztiak",
+    "TIMELINE_PRIORITY_HIGH": "Altu",
+    "TIMELINE_PRIORITY_MEDIUM": "Ertaina",
+    "TIMELINE_PRIORITY_LOW": "Baxua",
+    "TIMELINE_PERIOD_7D": "Azken 7 egun",
+    "TIMELINE_PERIOD_30D": "Azken 30 egun",
+    "TIMELINE_PERIOD_ALL": "Denek",
+    "TIMELINE_SORT_DATE_DESC": "Data (berrienak lehen)",
+    "TIMELINE_SORT_DATE_ASC": "Data (zaharrenak lehen)",
+    "TIMELINE_SORT_PRIORITY_DESC": "Lehentasuna (altuena lehen)",
+    "TIMELINE_SORT_PRIORITY_ASC": "Lehentasuna (baxuena lehen)",
+    "TIMELINE_PAGE": "Orrialdea",
+    "TIMELINE_PREVIOUS": "Aurrekoa",
+    "TIMELINE_NEXT": "Hurrengoa",
+    "TIMELINE_EMPTY": "Ez dago hautatutako iragazrientzako gertaerarik."
   },
   "COMMON": {
     "LOADING": "Edukia kargatzen",
@@ -326,7 +360,7 @@
     "ERROR_REJECT": "Ezin izan da jakinarazpena baztertu.",
     "ERROR_ACCEPT": "Ezin izan da jakinarazpena onartu.",
     "ERROR_DOWNLOAD": "Ezin izan da eranskina deskargatu.",
-    "CONFIRM_REJECT_PLACEHOLDER": "Adierazi baztertzeko arrazoia (aukerakoa)",
+    "CONFIRM_REJECT_PLACEHOLDER": "Adierazi erantzunaren arrazoia (aukerakoa)",
     "READ_SR": "leída",
     "NEW_SR": "no leída",
     "PAGE_ANNOUNCEMENT": "Página {{current}} de {{total}}"
@@ -658,7 +692,8 @@
     "CONFIRM_AMENDMENT_TITLE": "Argibidea eskatu",
     "CONFIRM_AMENDMENT_TEXT": "Argibide-eskaera bat bidaliko da espediente honetarako.",
     "CONFIRM_AMENDMENT_BUTTON": "Eskatu",
-    "TITLE": "Espedientearen xehetasuna"
+    "TITLE": "Espedientearen xehetasuna",
+    "ATTACHMENT_SIGNED_SR": "Sinatutako dokumentua"
   },
   "CASE_STATUS": {
     "DRAFT": "Zirriborroa",
@@ -721,7 +756,8 @@
     "REMOVE_FILE": "Kendu",
     "REVIEW_HINT": "Berrikusi informazioa eta dokumentuak eskaera bidali aurretik.",
     "UPLOAD_DROPZONE_TEXT": "Arrastatu eta jaregin fitxategiak hemen edo hautatu zure ekipamendutik.",
-    "UPLOAD_GENERIC_LABEL": "Dokumentazioa"
+    "UPLOAD_GENERIC_LABEL": "Dokumentazioa",
+    "SUBMITTING": "Bidaltzen..."
   },
   "CASE_SEARCH": {
     "TITLE": "Espediente-bilatzailea",
@@ -1007,7 +1043,9 @@
     "CULTURE": "Kultura arloa",
     "CULTURE_DESC": "Jarduera kulturalak, ondarea eta udal gertakizunak.",
     "INFRASTRUCTURE": "Azpiegitura arloa",
-    "INFRASTRUCTURE_DESC": "Bide publikoen, argiteriaren eta udal obren mantentzea."
+    "INFRASTRUCTURE_DESC": "Bide publikoen, argiteriaren eta udal obren mantentzea.",
+    "VIEW_WEBSITE_ARIA": "{{name}}(r)en webgunea ikusi",
+    "OPENS_NEW_WINDOW": "leiho berrian irekitzen du"
   },
   "TRANSPARENCY": {
     "EYEBROW": "Gardentasuna",

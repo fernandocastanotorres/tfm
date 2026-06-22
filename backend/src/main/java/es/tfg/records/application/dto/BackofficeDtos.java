@@ -82,6 +82,7 @@ public final class BackofficeDtos {
             String id,
             UUID caseId,
             String caseTitle,
+            String recordNumber,
             String taskName,
             String taskType,
             String assignedTo,

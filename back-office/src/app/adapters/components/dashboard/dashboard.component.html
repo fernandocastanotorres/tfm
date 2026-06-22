@@ -48,19 +48,24 @@
         </div>
         <ul class="space-y-3">
           <li *ngFor="let task of pendingTasks" class="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
-            <div>
-              <div class="font-medium text-gray-900">{{ task.caseTitle }}</div>
-              <div class="text-sm text-gray-500">{{ task.taskName }}</div>
-            </div>
-            <span
-              class="px-2 py-1 text-xs font-medium rounded-full"
-              [class.bg-yellow-100]="task.priority === 'normal'"
-              [class.text-yellow-800]="task.priority === 'normal'"
-              [class.bg-red-100]="task.priority === 'urgent'"
-              [class.text-red-800]="task.priority === 'urgent'"
-            >
-              {{ task.priority === 'urgent' ? ('BO.DASHBOARD.URGENT' | translate) : ('BO.DASHBOARD.NORMAL' | translate) }}
-            </span>
+            <a [routerLink]="['/cases', task.caseId]" class="flex-1 flex items-center justify-between hover:bg-gray-50 -my-2 py-2 px-1 rounded cursor-pointer">
+              <div>
+                <div class="font-medium text-gray-900">{{ task.caseTitle }}</div>
+                <div class="text-sm text-gray-500">{{ task.taskName }}<span *ngIf="task.recordNumber" class="ml-2 text-xs font-mono text-gray-400">{{ task.recordNumber }}</span></div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span
+                  class="px-2 py-1 text-xs font-medium rounded-full"
+                  [class.bg-yellow-100]="task.priority === 'normal'"
+                  [class.text-yellow-800]="task.priority === 'normal'"
+                  [class.bg-red-100]="task.priority === 'urgent'"
+                  [class.text-red-800]="task.priority === 'urgent'"
+                >
+                  {{ task.priority === 'urgent' ? ('BO.DASHBOARD.URGENT' | translate) : ('BO.DASHBOARD.NORMAL' | translate) }}
+                </span>
+                <span class="text-gray-400 text-xs" title="{{ 'BO.DASHBOARD.VIEW_CASE' | translate }}">&#8594;</span>
+              </div>
+            </a>
           </li>
         </ul>
       </div>

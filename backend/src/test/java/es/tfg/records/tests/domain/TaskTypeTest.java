@@ -10,7 +10,7 @@ class TaskTypeTest {
     @Test
     void taskType_shouldContainExpectedValues() {
         assertThat(TaskType.values()).extracting(TaskType::name)
-                .containsExactly("FORM", "UPLOAD", "REVIEW");
+                .containsExactly("FORM", "UPLOAD", "REVIEW", "SIGNATURE", "RESOLUTION");
     }
 
     @Test
@@ -18,5 +18,7 @@ class TaskTypeTest {
         assertThat(TaskType.valueOf("FORM")).isEqualTo(TaskType.FORM);
         assertThat(TaskType.valueOf("UPLOAD")).isEqualTo(TaskType.UPLOAD);
         assertThat(TaskType.valueOf("REVIEW")).isEqualTo(TaskType.REVIEW);
+        assertThat(TaskType.valueOf("SIGNATURE")).isEqualTo(TaskType.SIGNATURE);
+        assertThat(TaskType.valueOf("RESOLUTION")).isEqualTo(TaskType.RESOLUTION);
     }
 }

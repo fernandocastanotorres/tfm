@@ -62,7 +62,8 @@
       "TOP_PROCEDURES": "Prozedura Nagusiak",
       "UNIT_LOAD": "Unitatearen Karga",
       "CREATED": "S",
-      "RESOLVED_SHORT": "E"
+      "RESOLVED_SHORT": "E",
+      "VIEW_CASE": "Espedientea ikusi"
     },
     "CASES": {
       "TITLE": "Espedienteak",
@@ -328,7 +329,9 @@
       "ERROR_USER_SAVE": "Ezin izan da erabiltzailea gorde",
       "ERROR_USER_CREATE": "Ezin izan da erabiltzailea sortu",
       "ERROR_PROCEDURE_UPDATE": "Ezin izan da prozedura eguneratu",
-      "ERROR_PROCEDURE_CREATE": "Ezin izan da prozedura sortu"
+      "ERROR_PROCEDURE_CREATE": "Ezin izan da prozedura sortu",
+      "VALIDATION_TITLE_REQUIRED": "Izenburua beharrezkoa da",
+      "VALIDATION_UNIT_REQUIRED": "Unitatea beharrezkoa da"
     }
   }
 }

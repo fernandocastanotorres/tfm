@@ -62,7 +62,8 @@
       "TOP_PROCEDURES": "Top Procedementos",
       "UNIT_LOAD": "Carga por Unidade",
       "CREATED": "C",
-      "RESOLVED_SHORT": "R"
+      "RESOLVED_SHORT": "R",
+      "VIEW_CASE": "Ver expediente"
     },
     "CASES": {
       "TITLE": "Expedientes",
@@ -328,7 +329,9 @@
       "ERROR_USER_SAVE": "Non se puido gardar o usuario",
       "ERROR_USER_CREATE": "Non se puido crear o usuario",
       "ERROR_PROCEDURE_UPDATE": "Non se puido actualizar o procedemento",
-      "ERROR_PROCEDURE_CREATE": "Non se puido crear o procedemento"
+      "ERROR_PROCEDURE_CREATE": "Non se puido crear o procedemento",
+      "VALIDATION_TITLE_REQUIRED": "O título é obrigatorio",
+      "VALIDATION_UNIT_REQUIRED": "A unidade é obrigatoria"
     }
   }
 }

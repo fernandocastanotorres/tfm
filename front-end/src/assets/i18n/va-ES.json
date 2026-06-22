@@ -362,7 +362,8 @@
     "ERROR_DOWNLOAD": "No s'ha pogut baixar l'adjunt.",
     "READ_SR": "leída",
     "NEW_SR": "no leída",
-    "PAGE_ANNOUNCEMENT": "Página {{current}} de {{total}}"
+    "PAGE_ANNOUNCEMENT": "Página {{current}} de {{total}}",
+    "CONFIRM_REJECT_PLACEHOLDER": "Indiqueu el motiu del rebuig (opcional)"
   },
   "DOCUMENTS": {
     "EYEBROW": "Documents",
@@ -690,7 +691,9 @@
     "ENI_TITLE": "Expedient electrònic conforme a l'Esquema Nacional d'Interoperabilitat (NTI-2011)",
     "CONFIRM_AMENDMENT_TITLE": "Sol·licitar aclariment",
     "CONFIRM_AMENDMENT_TEXT": "S'enviarà una sol·licitud d'aclariment per a este expedient.",
-    "CONFIRM_AMENDMENT_BUTTON": "Sol·licitar"
+    "CONFIRM_AMENDMENT_BUTTON": "Sol·licitar",
+    "TITLE": "Detall de l'expedient",
+    "ATTACHMENT_SIGNED_SR": "Document signat"
   },
   "CASE_STATUS": {
     "DRAFT": "Esborrany",
@@ -753,7 +756,8 @@
     "REMOVE_FILE": "Eliminar",
     "REVIEW_HINT": "Revisa la informació i els documents abans d'enviar la sol·licitud.",
     "UPLOAD_DROPZONE_TEXT": "Arrossega i deixa anar fitxers aquí o selecciona des del teu equip.",
-    "UPLOAD_GENERIC_LABEL": "Documentació"
+    "UPLOAD_GENERIC_LABEL": "Documentació",
+    "SUBMITTING": "S'està enviant..."
   },
   "CASE_SEARCH": {
     "TITLE": "Cercador d'expedients",
@@ -1039,7 +1043,9 @@
     "CULTURE": "Àrea de Cultura",
     "CULTURE_DESC": "Activitats culturals, patrimoni i esdeveniments municipals.",
     "INFRASTRUCTURE": "Àrea d'Infraestructures",
-    "INFRASTRUCTURE_DESC": "Manteniment de vies públiques, enllumenat i obres municipals."
+    "INFRASTRUCTURE_DESC": "Manteniment de vies públiques, enllumenat i obres municipals.",
+    "VIEW_WEBSITE_ARIA": "Veure lloc web de {{name}}",
+    "OPENS_NEW_WINDOW": "obre en finestra nova"
   },
   "DOCUMENT_VERIFICATION": {
     "TITLE": "Validació de documents signats",

@@ -59,7 +59,41 @@
     "PRIORITY_LOW": "Baja"
   },
   "COMMON": {
-    "LOADING": "Cargando contenido"
+    "LOADING": "Cargando contenido",
+    "ERROR": "Error",
+    "ERROR_LOAD": "No se ha podido cargar.",
+    "ERROR_UPLOAD": "No se ha podido subir el documento.",
+    "ERROR_DOWNLOAD": "No se ha podido descargar el documento.",
+    "ERROR_SEND": "Error al enviar.",
+    "ERROR_SEND_MESSAGE": "Error al enviar el mensaje.",
+    "ERROR_DOWNLOAD_ATTACHMENT": "Error al descargar el adjunto.",
+    "ERROR_LOAD_PROFILE": "No se han podido cargar los datos del perfil.",
+    "ERROR_SAVE_PROFILE": "No se han podido guardar los cambios del perfil.",
+    "ERROR_PASSWORD": "No se ha podido cambiar la contraseña. Inténtalo de nuevo.",
+    "ERROR_PASSWORD_WRONG": "La contraseña actual es incorrecta.",
+    "ERROR_LOAD_CASES": "No se ha podido cargar el expediente.",
+    "ERROR_LOAD_NOTIFICATIONS": "No se han podido cargar las notificaciones.",
+    "ERROR_ACCESS_NOTIFICATION": "No se ha podido acceder a la notificación.",
+    "ERROR_REJECT_NOTIFICATION": "No se ha podido rechazar la notificación.",
+    "ERROR_ACCEPT_NOTIFICATION": "No se ha podido aceptar la notificación.",
+    "ERROR_DOWNLOAD_ATTACHMENT_NOTIF": "No se ha podido descargar el adjunto.",
+    "ERROR_LOAD_PROCEDURES": "No se han podido cargar los procedimientos.",
+    "ERROR_LOAD_PROCEDURE": "No se ha podido cargar el procedimiento.",
+    "ERROR_FOLDER": "No se ha podido cargar la carpeta ciudadana.",
+    "ERROR_DOCUMENT_UPLOAD": "No se ha podido subir el documento.",
+    "ERROR_DOCUMENT_DOWNLOAD": "No se ha podido descargar el documento.",
+    "ERROR_CASE_IDENTIFY": "No se ha podido identificar el expediente.",
+    "ERROR_RECEIPT_DOWNLOAD": "No se ha podido descargar el justificante.",
+    "ERROR_ENI_DOWNLOAD": "No se ha podido descargar el expediente electrónico ENI.",
+    "ERROR_CONTINUE_PROCESS": "No se ha podido continuar con el trámite.",
+    "ERROR_REQUEST_AMENDMENT": "No se ha podido solicitar el requerimiento.",
+    "SUCCESS": "Éxito",
+    "SUCCESS_MESSAGE_SENT": "Mensaje enviado correctamente",
+    "SUCCESS_PASSWORD_CHANGED": "Tu contraseña se ha cambiado correctamente.",
+    "CANCEL": "Cancelar",
+    "CONFIRM": "Confirmar",
+    "CONFIRM_CHANGES": "Confirmar cambios",
+    "PROFILE_SAVED": "Cambios guardados correctamente."
   },
   "DOCUMENT_VERIFICATION": {
     "TITLE": "Validación de documentos firmados",
@@ -76,7 +110,9 @@
     "CSV_LABEL": "Código CSV:",
     "CASE_LABEL": "Expediente:",
     "DOC_LABEL": "Documento:",
-    "SIGN_LABEL": "Fecha firma:"
+    "SIGN_LABEL": "Fecha firma:",
+    "ERROR_FILE": "No se ha podido validar la firma del fichero.",
+    "ERROR_CSV": "CSV no encontrado o no válido."
   },
   "APP": {
     "TAGLINE": "Portal ciudadano"
@@ -245,7 +281,15 @@
     "TOGGLE_PASSWORD_VISIBILITY": "Mostrar u ocultar contraseña",
     "REQUIRED_FIELD": "Campo obligatorio",
     "SAVE": "Guardar cambios",
-    "SAVED": "Cambios guardados (mock)."
+    "SAVED": "Cambios guardados (mock).",
+    "CONFIRM_CHANGES_TITLE": "Confirmar cambios",
+    "CONFIRM_CHANGES_TEXT": "Vas a actualizar tus datos personales. ¿Quieres continuar?",
+    "CONFIRM_UPDATE_BUTTON": "Sí, actualizar",
+    "WEAK_PASSWORD": "Contraseña débil",
+    "WEAK_PASSWORD_HINT": "La nueva contraseña no cumple todos los requisitos.",
+    "PASSWORDS_MISMATCH_HINT": "Las contraseñas no coinciden.",
+    "SUCCESS_PASSWORD_TITLE": "Contraseña actualizada",
+    "SUCCESS_PASSWORD_TEXT": "Tu contraseña se ha cambiado correctamente."
   },
   "LAYOUT": {
     "SKIP_LINK": "Saltar al contenido principal",
@@ -325,7 +369,13 @@
     "DOWNLOAD_ATTACHMENT": "Descargar {name}",
     "READ_SR": "leída",
     "NEW_SR": "no leída",
-    "PAGE_ANNOUNCEMENT": "Página {{current}} de {{total}}"
+    "PAGE_ANNOUNCEMENT": "Página {{current}} de {{total}}",
+    "ERROR_LOAD": "Error al cargar",
+    "ERROR_ACCESS": "No se ha podido acceder a la notificación.",
+    "ERROR_REJECT": "No se ha podido rechazar la notificación.",
+    "ERROR_ACCEPT": "No se ha podido aceptar la notificación.",
+    "ERROR_DOWNLOAD": "No se ha podido descargar el adjunto.",
+    "CONFIRM_REJECT_PLACEHOLDER": "Indica el motivo del rechazo (opcional)"
   },
   "DOCUMENTS": {
     "EYEBROW": "Documentos",
@@ -345,7 +395,26 @@
     "EMPTY": "No hay documentos para este filtro.",
     "PREVIOUS": "Anterior",
     "PAGE": "Página",
-    "NEXT": "Siguiente"
+    "NEXT": "Siguiente",
+    "SELECT_CASE": "Seleccionar expediente",
+    "NO_CASES": "No hay expedientes disponibles.",
+    "UPLOAD_LABEL": "Subir documento",
+    "ALLOWED_TYPES": "Tipos aceptados:",
+    "MAX_SIZE": "Tamaño máximo:",
+    "UPDATED": "Actualizado",
+    "SIZE": "Tamaño",
+    "SEARCH_LABEL": "Buscar documento",
+    "SEARCH_PLACEHOLDER": "Buscar por nombre o tipo",
+    "FILTER_STATUS": "Filtrar por estado",
+    "FILTER_TYPE": "Filtrar por tipo",
+    "FILTER_TYPE_ALL": "Todos los tipos",
+    "SORT_LABEL": "Ordenar por",
+    "SORT_UPDATED": "Última actualización",
+    "SORT_NAME": "Nombre",
+    "SORT_STATUS": "Estado",
+    "ORIGINAL": "Original",
+    "DOCUMENT_ARIA": "Documento: {{ name }}, {{ type }}",
+    "SIGNED_ELECTRONICALLY_TITLE": "Documento firmado electrónicamente"
   },
   "DOCUMENT_STATUS": {
     "PENDING": "Pendiente",
@@ -472,7 +541,8 @@
     "MOCK_SUBJECT_LICENSE": "Consulta sobre licencia",
     "MOCK_SUBJECT_DOCUMENTS": "Documentación pendiente",
     "MOCK_MESSAGE_RECEIVED": "Hemos recibido tu consulta y la estamos revisando.",
-    "MOCK_MESSAGE_PENDING": "Falta adjuntar el justificante de pago."
+    "MOCK_MESSAGE_PENDING": "Falta adjuntar el justificante de pago.",
+    "PAGE_ANNOUNCEMENT": "Página {{current}} de {{total}}"
   },
   "SECURE_HOME": {
     "TITLE": "Acceso concedido",
@@ -617,13 +687,32 @@
     "ENI_DOWNLOADING": "Descargando...",
     "ENI_HINT": "Paquete electrónico conforme al Esquema Nacional de Interoperabilidad (NTI-2011). Contiene documentos, firmas y metadatos XML.",
     "MESSAGES_EMPTY": "No hay mensajes en este expediente.",
+    "REGISTRY_TITLE": "Datos registrales electrónicos",
+    "REGISTRY_SUBTITLE": "Asiento formal de presentación generado por la sede electrónica.",
     "REGISTRY_DOWNLOAD_RECEIPT": "Descargar justificante registral",
     "REGISTRY_VERIFY_CSV": "Verificar CSV",
     "ORIGINAL": "Original",
     "SIGNED": "Firmado",
     "ATTACHMENT_SIGNED_HINT": "Documento firmado electrónicamente",
     "ATTACHMENT_SIGNED_BADGE": "Firmado",
-    "ATTACHMENT_SIGNED_SR": "Documento firmado"
+    "ATTACHMENT_SIGNED_SR": "Documento firmado",
+    "TITLE": "Detalle del expediente",
+    "ATTACHMENT_GENERATED_BADGE": "Generado",
+    "ATTACHMENT_EMPTY": "No hay documentos adjuntos todavía.",
+    "TIMELINE_EMPTY": "No hay eventos de historial disponibles.",
+    "MESSAGES_PAGE": "Página {{ messagePage }} de {{ messageTotalPages }}",
+    "UPLOADING": "Subiendo fichero: {{percent}}% completado",
+    "ENI_TITLE": "Expediente electrónico conforme al Esquema Nacional de Interoperabilidad (NTI-2011)",
+    "CONFIRM_AMENDMENT_TITLE": "Solicitar aclaración",
+    "CONFIRM_AMENDMENT_TEXT": "Se enviará una solicitud de aclaración para este expediente.",
+    "CONFIRM_AMENDMENT_BUTTON": "Solicitar"
+  },
+  "SITE_SEARCH": {
+    "TITLE": "Buscador de sede",
+    "SUBTITLE": "Encuentra rápidamente servicios, trámites y contenidos públicos.",
+    "SEARCH_LABEL": "Buscar",
+    "SEARCH_PLACEHOLDER": "Ejemplo: transparencia, cita, normativa, CSV",
+    "NO_RESULTS": "No se encontraron resultados para \"{{ query }}\"."
   },
   "CASE_STATUS": {
     "DRAFT": "Borrador",
@@ -801,7 +890,10 @@
     "ORDER_ELECTRONIC_INVOICE": "Orden de Facturación Electrónica",
     "ORDER_ELECTRONIC_INVOICE_DESC": "Regula la presentación de facturas electrónicas en el sector público.",
     "RESOLUTION_ACCESSIBILITY": "Resolución de Accesibilidad Web",
-    "RESOLUTION_ACCESSIBILITY_DESC": "Establece los requisitos de accesibilidad para los portales de las administraciones públicas."
+    "RESOLUTION_ACCESSIBILITY_DESC": "Establece los requisitos de accesibilidad para los portales de las administraciones públicas.",
+    "VIEW_EXTERNAL_ARIA": "Ver {{title}} (abre en ventana nueva)",
+    "DOWNLOAD_ARIA": "Descargar {{title}}",
+    "OPENS_NEW_WINDOW": "abre en ventana nueva"
   },
   "FAQ": {
     "EYEBROW": "Preguntas frecuentes",
@@ -970,7 +1062,9 @@
     "CULTURE": "Área de Cultura",
     "CULTURE_DESC": "Actividades culturales, patrimonio y eventos municipales.",
     "INFRASTRUCTURE": "Área de Infraestructuras",
-    "INFRASTRUCTURE_DESC": "Mantenimiento de vías públicas, alumbrado y obras municipales."
+    "INFRASTRUCTURE_DESC": "Mantenimiento de vías públicas, alumbrado y obras municipales.",
+    "VIEW_WEBSITE_ARIA": "Ver sitio web de {{name}}",
+    "OPENS_NEW_WINDOW": "abre en ventana nueva"
   },
   "TRANSPARENCY": {
     "EYEBROW": "Transparencia",
@@ -994,7 +1088,8 @@
     "REPORT_ANNUAL_2024": "Informe Anual 2024",
     "REPORT_QUARTERLY_Q1_2026": "Informe Trimestral Q1 2026",
     "REPORT_ANNUAL_DESC": "Resumen completo de la actividad administrativa y los indicadores de rendimiento del año.",
-    "REPORT_QUARTERLY_DESC": "Datos trimestrales sobre tramitación, plazos y satisfacción ciudadana."
+    "REPORT_QUARTERLY_DESC": "Datos trimestrales sobre tramitación, plazos y satisfacción ciudadana.",
+    "DOWNLOAD_REPORT_ARIA": "Descargar informe {{title}}"
   },
   "CALENDAR": {
     "EYEBROW": "Calendario",

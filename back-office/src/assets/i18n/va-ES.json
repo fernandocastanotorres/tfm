@@ -62,7 +62,8 @@
       "TOP_PROCEDURES": "Top Procediments",
       "UNIT_LOAD": "Carrega per Unitat",
       "CREATED": "C",
-      "RESOLVED_SHORT": "R"
+      "RESOLVED_SHORT": "R",
+      "VIEW_CASE": "Veure expedient"
     },
     "CASES": {
       "TITLE": "Expedients",
@@ -328,7 +329,9 @@
       "ERROR_USER_SAVE": "No s'ha pogut guardar l'usuari",
       "ERROR_USER_CREATE": "No s'ha pogut crear l'usuari",
       "ERROR_PROCEDURE_UPDATE": "No s'ha pogut actualitzar el procediment",
-      "ERROR_PROCEDURE_CREATE": "No s'ha pogut crear el procediment"
+      "ERROR_PROCEDURE_CREATE": "No s'ha pogut crear el procediment",
+      "VALIDATION_TITLE_REQUIRED": "El títol és obligatori",
+      "VALIDATION_UNIT_REQUIRED": "La unitat és obligatoria"
     }
   }
 }

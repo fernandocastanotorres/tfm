@@ -105,6 +105,7 @@ export interface PendingTask {
   id: string;
   caseId: string;
   caseTitle: string;
+  recordNumber: string;
   taskName: string;
   taskType: string;
   assignedTo: string | null;

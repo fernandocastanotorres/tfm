@@ -409,6 +409,7 @@ public class BackofficeService {
                             "task-" + procedure.getId(),
                             procedure.getId(),
                             procedure.getTitle(),
+                            procedure.getRecordNumber(),
                             currentTask(procedure, type),
                             "REVIEW",
                             null,
@@ -950,8 +951,12 @@ public class BackofficeService {
             entity.setDescription(task.description());
             entity.setOrderIndex(task.orderIndex());
             entity.setType(TaskType.valueOf(task.type()));
-            if (entity.getType() == TaskType.FORM && task.fields() != null && !task.fields().isEmpty()) {
-                entity.setFormSchema(serializeFormSchema(task.fields()));
+            if (entity.getType() == TaskType.FORM) {
+                List<BackofficeDtos.FormSchemaField> fieldsToUse =
+                        (formSchema != null && !formSchema.isEmpty()) ? formSchema : task.fields();
+                if (fieldsToUse != null && !fieldsToUse.isEmpty()) {
+                    entity.setFormSchema(serializeFormSchema(fieldsToUse));
+                }
             }
             taskRepository.save(entity);
         });

@@ -111,7 +111,7 @@ class BackofficeControllerTest {
     void pendingTasks_shouldReturnTasks() throws Exception {
         UUID caseId = UUID.randomUUID();
         when(backofficeService.pendingTasks()).thenReturn(List.of(
-                new BackofficeDtos.PendingTask("task-1", caseId, "Case 1", "Review", "REVIEW", null, null, null, "normal")
+                new BackofficeDtos.PendingTask("task-1", caseId, "Case 1", "REC-001", "Review", "REVIEW", null, null, null, "normal")
         ));
 
         mockMvc.perform(get("/admin/tasks/pending"))
