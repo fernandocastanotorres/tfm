@@ -1,0 +1,8 @@
+# Docker Compose Override — DEVELOPMENT MODE
+# Auto-applied when running `docker compose up`
+# Uses nginx-dev.conf with self-signed localhost certificate
+
+services:
+  nginx:
+    volumes:
+      - ./infrastructure/nginx/nginx-dev.conf:/etc/nginx/conf.d/default.conf:ro

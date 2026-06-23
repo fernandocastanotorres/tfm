@@ -364,7 +364,7 @@ jobs:
           context: ./backend
           push: false
           load: true
-          tags: tfg-backend:ci
+          tags: tfm-backend:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -375,7 +375,7 @@ jobs:
           context: ./front-end
           push: false
           load: true
-          tags: tfg-frontend:ci
+          tags: tfm-frontend:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -386,7 +386,7 @@ jobs:
           context: ./back-office
           push: false
           load: true
-          tags: tfg-backoffice:ci
+          tags: tfm-backoffice:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -407,9 +407,9 @@ jobs:
 
       - name: Build all images
         run: |
-          docker build -t tfg-backend:ci ./backend
-          docker build -t tfg-frontend:ci ./front-end
-          docker build -t tfg-backoffice:ci ./back-office
+          docker build -t tfm-backend:ci ./backend
+          docker build -t tfm-frontend:ci ./front-end
+          docker build -t tfm-backoffice:ci ./back-office
 
       - name: Start stack with Docker Compose
         env:
@@ -417,9 +417,9 @@ jobs:
           JWT_SECRET: dGVzdC1zZWNyZXQta2V5LWZvci1jaS1waXBlbGluZS1tdXN0LWJlLWxvbmc=
           SPRING_PROFILES_ACTIVE: dev
         run: |
-          sed -i 's|build:.*context:.*|image: tfg-backend:ci|' docker-compose.yml
-          sed -i 's|build:.*context:.*|image: tfg-frontend:ci|' docker-compose.yml
-          sed -i 's|build:.*context:.*|image: tfg-backoffice:ci|' docker-compose.yml
+          sed -i 's|build:.*context:.*|image: tfm-backend:ci|' docker-compose.yml
+          sed -i 's|build:.*context:.*|image: tfm-frontend:ci|' docker-compose.yml
+          sed -i 's|build:.*context:.*|image: tfm-backoffice:ci|' docker-compose.yml
           docker compose up -d postgres mailpit
           docker compose up -d backend
           sleep 30

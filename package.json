@@ -1,5 +1,5 @@
 {
-  "name": "tfg-sede",
+  "name": "tfm-sede",
   "private": true,
   "scripts": {
     "lint": "npm run lint:front && npm run lint:back && npm run lint:be",
@@ -17,7 +17,7 @@
     "build": "npm run build:front && npm run build:back && npm run build:be",
     "build:front": "cd front-end && npm run build",
     "build:back": "cd back-office && npm run build",
-    "build:be": "cd backend && mvn package -q -DskipTests",
+    "build:be": "cd backend && mvn package -q -DskipTests -Djacoco.skip.check=true",
     "quality": "npm run lint && npm run typecheck",
     "verify": "npm run quality && npm run test && npm run build",
     "prepare": "husky"

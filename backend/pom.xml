@@ -11,7 +11,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>es.tfg</groupId>
+    <groupId>es.tfm</groupId>
     <artifactId>records-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>records-api</name>

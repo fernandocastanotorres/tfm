@@ -17,8 +17,8 @@ RUN apk add --no-cache curl && \
 
 COPY --from=build /app/dist/back-office/ /usr/share/nginx/html/
 COPY back-office/nginx.conf /etc/nginx/conf.d/default.conf
-COPY certs/tfg-selfsigned.crt /etc/nginx/certs/
-COPY certs/tfg-selfsigned.key /etc/nginx/certs/
+COPY certs/tfm-selfsigned.crt /etc/nginx/certs/
+COPY certs/tfm-selfsigned.key /etc/nginx/certs/
 
 RUN chmod 644 /etc/nginx/certs/* && \
     chown -R appuser:appgroup /usr/share/nginx/html && \

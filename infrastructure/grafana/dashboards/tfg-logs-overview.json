@@ -1911,15 +1911,15 @@
     "loki",
     "prometheus",
     "docker",
-    "tfg"
+    "tfm"
   ],
   "templating": {
     "list": [
       {
         "current": {
           "selected": true,
-          "text": "tfg",
-          "value": "tfg"
+          "text": "tfm",
+          "value": "tfm"
         },
         "hide": 0,
         "includeAll": false,
@@ -1929,11 +1929,11 @@
         "options": [
           {
             "selected": true,
-            "text": "tfg",
-            "value": "tfg"
+            "text": "tfm",
+            "value": "tfm"
           }
         ],
-        "query": "tfg",
+        "query": "tfm",
         "type": "constant"
       },
       {
@@ -2098,7 +2098,7 @@
   },
   "timezone": "",
   "title": "TFG Observability Overview",
-  "uid": "tfg-logs-overview",
+  "uid": "tfm-logs-overview",
   "version": 4,
   "weekStart": ""
 }

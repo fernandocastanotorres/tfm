@@ -10,6 +10,7 @@
 - [ADR-0007](../adr/0007-architectural-style-hexagonal-boundaries.md) — hexagonal/clean boundary model.
 - [ADR-0008](../adr/0008-select-flowable-as-bpmn-engine.md) — BPM engine standardization.
 - [ADR-0009](../adr/0009-stable-procedure-id-and-db-backed-catalog-i18n.md) — procedure start and localization persistence model.
+- [ADR-0018](../adr/0018-nginx-reverse-proxy-ssl-termination.md) — centralized reverse proxy with SSL termination.
 
 ## How to Propose Architecture Changes
 

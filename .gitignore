@@ -42,5 +42,11 @@ bun-debug.log*
 
 # Local generated backend files
 backend/data/
+
 # Local AI runtime state
 .atl/
+
+# Production secrets and certificates
+infrastructure/nginx/certs/
+infrastructure/nginx/www/
+.env.production

@@ -19,6 +19,7 @@
 | [ADR-0015](./0015-in-memory-caching-with-caffeine.md) | In-Memory Caching with Caffeine for Read-Heavy Endpoints | Accepted | 2026-05-21 |
 | [ADR-0016](./0016-npm-audit-devdependencies-risk-acceptance.md) | npm Audit DevDependencies — Risk Acceptance Through Multi-Stage Build Isolation | Accepted | 2026-05-25 |
 | [ADR-0017](./0017-select-loki-grafana-for-container-log-observability.md) | Select Loki + Grafana (with Promtail) for Container Log Observability | Accepted | 2026-05-25 |
+| [ADR-0018](./0018-nginx-reverse-proxy-ssl-termination.md) | Nginx as Centralized Reverse Proxy with SSL Termination | Accepted | 2026-06-23 |
 
 ## Supporting Files
 - [ADR Guidelines](./README.md)

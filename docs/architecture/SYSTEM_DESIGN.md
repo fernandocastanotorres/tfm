@@ -21,11 +21,13 @@ The system is developed with H2 in dev/test and prepared for PostgreSQL in produ
 
 | Layer | Module | Main Responsibilities |
 |---|---|---|
+| Gateway | Nginx (Reverse Proxy) | SSL termination, subdomain routing, static asset caching |
 | Presentation | Citizen UI | Public catalog, authentication, procedure start, case wizard |
 | Presentation | Backoffice UI | Dashboard, tasks, users, procedure management, i18n management |
 | Application/Core | Backend API | JWT auth, RBAC, case/procedure logic, catalog i18n, BPM integration |
 | Data | PostgreSQL/H2 | Domain persistence + `procedure_type_i18n` translations |
 | Messaging | SMTP + Mailpit | Local transactional email delivery and inspection |
+| Observability | Loki + Grafana + Prometheus | Log aggregation, dashboards, metrics collection |
 
 ## Key Flows
 
