@@ -9,12 +9,12 @@ SUBJECT="${SUBJECT:-/CN=localhost/O=TFG/O=Self-Signed/OU=Development}"
 mkdir -p "$CERTS_DIR"
 
 openssl req -x509 -nodes -days "$DAYS" -newkey rsa:"$RSA_BITS" \
-    -keyout "$CERTS_DIR/tfg-selfsigned.key" \
-    -out "$CERTS_DIR/tfg-selfsigned.crt" \
+    -keyout "$CERTS_DIR/tfm-selfsigned.key" \
+    -out "$CERTS_DIR/tfm-selfsigned.crt" \
     -subj "$SUBJECT"
 
-chmod 644 "$CERTS_DIR/tfg-selfsigned.crt" "$CERTS_DIR/tfg-selfsigned.key"
+chmod 644 "$CERTS_DIR/tfm-selfsigned.crt" "$CERTS_DIR/tfm-selfsigned.key"
 
 echo "Self-signed certificates generated in $CERTS_DIR/"
-echo "  crt: $CERTS_DIR/tfg-selfsigned.crt"
-echo "  key: $CERTS_DIR/tfg-selfsigned.key"
+echo "  crt: $CERTS_DIR/tfm-selfsigned.crt"
+echo "  key: $CERTS_DIR/tfm-selfsigned.key"
