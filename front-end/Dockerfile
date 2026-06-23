@@ -15,10 +15,14 @@ FROM nginx:1.25-alpine
 RUN apk add --no-cache curl && \
     addgroup -S appgroup && adduser -S appuser -G appgroup
 
+RUN mkdir -p /certs && \
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout /certs/tfm-selfsigned.key \
+    -out /certs/tfm-selfsigned.crt \
+    -subj "/CN=tfm.nbpdev.com" 2>/dev/null
+
 COPY --from=build /app/dist/front-end/browser/ /usr/share/nginx/html/
 COPY front-end/nginx.conf /etc/nginx/conf.d/default.conf
-COPY certs/tfm-selfsigned.crt /etc/nginx/certs/
-COPY certs/tfm-selfsigned.key /etc/nginx/certs/
 
 RUN chmod 644 /etc/nginx/certs/* && \
     chown -R appuser:appgroup /usr/share/nginx/html && \

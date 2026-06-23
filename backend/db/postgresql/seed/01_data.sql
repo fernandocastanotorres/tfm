@@ -17,18 +17,6 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Data for Name: act_evt_log; Type: TABLE DATA; Schema: public; Owner: records_user
---
-
-SET SESSION AUTHORIZATION DEFAULT;
-
-ALTER TABLE public.act_evt_log DISABLE TRIGGER ALL;
-
-
-
-ALTER TABLE public.act_evt_log ENABLE TRIGGER ALL;
-
---
 -- Data for Name: act_re_deployment; Type: TABLE DATA; Schema: public; Owner: records_user
 --
 
@@ -2491,13 +2479,6 @@ INSERT INTO public.user_roles (user_id, role) VALUES ('4a83bdd8-e96c-48e8-9b86-e
 
 
 ALTER TABLE public.user_roles ENABLE TRIGGER ALL;
-
---
--- Name: act_evt_log_log_nr__seq; Type: SEQUENCE SET; Schema: public; Owner: records_user
---
-
-SELECT pg_catalog.setval('public.act_evt_log_log_nr__seq', 1, false);
-
 
 --
 -- Name: act_hi_tsk_log_id__seq; Type: SEQUENCE SET; Schema: public; Owner: records_user
