@@ -12,7 +12,7 @@ RUN npx ng build --configuration=production --output-hashing=all
 # ── Runtime stage ────────────────────────────
 FROM nginx:1.25-alpine
 
-RUN apk add --no-cache curl && \
+RUN apk add --no-cache curl openssl && \
     addgroup -S appgroup && adduser -S appuser -G appgroup
 
 RUN mkdir -p /certs && \
