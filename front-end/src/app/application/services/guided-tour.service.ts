@@ -49,8 +49,8 @@ export class GuidedTourService {
       introJs().setOptions({
         steps,
         showProgress: true,
-        tooltipClass: 'tfg-tour-tooltip',
-        highlightClass: 'tfg-tour-highlight',
+        tooltipClass: 'tfm-tour-tooltip',
+        highlightClass: 'tfm-tour-highlight',
         nextLabel: this.t('NEXT'),
         prevLabel: this.t('PREV'),
         doneLabel: this.t('DONE'),

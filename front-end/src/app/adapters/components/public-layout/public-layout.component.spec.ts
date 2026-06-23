@@ -149,14 +149,14 @@ describe('PublicLayoutComponent', () => {
       spyOn(localStorage, 'setItem');
 
       component.toggleTheme();
-      expect(localStorage.setItem).toHaveBeenCalledWith('tfg.theme', 'dark');
+      expect(localStorage.setItem).toHaveBeenCalledWith('tfm.theme', 'dark');
 
       component.toggleTheme();
-      expect(localStorage.setItem).toHaveBeenCalledWith('tfg.theme', 'light');
+      expect(localStorage.setItem).toHaveBeenCalledWith('tfm.theme', 'light');
     });
 
     it('initTheme should read dark theme from localStorage', () => {
-      localStorage.setItem('tfg.theme', 'dark');
+      localStorage.setItem('tfm.theme', 'dark');
       spyOn(document.body.classList, 'add');
 
       // Recreate component to trigger initTheme with stored value
@@ -399,7 +399,7 @@ describe('PublicLayoutComponent', () => {
     });
 
     it('initTheme should not set dark mode when localStorage is light', () => {
-      localStorage.setItem('tfg.theme', 'light');
+      localStorage.setItem('tfm.theme', 'light');
       spyOn(document.body.classList, 'add');
 
       (component as any).initTheme();

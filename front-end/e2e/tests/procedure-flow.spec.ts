@@ -39,9 +39,9 @@ test.describe('Procedure submission flow', () => {
 
   test('should complete full procedure submission flow when authenticated', async ({ page }) => {
     await page.context().addInitScript((token: string) => {
-      window.sessionStorage.setItem('tfg.access_token', token);
-      window.sessionStorage.setItem('tfg.refresh_token', 'mock-refresh-token');
-      window.sessionStorage.setItem('tfg.authenticated', 'true');
+      window.sessionStorage.setItem('tfm.access_token', token);
+      window.sessionStorage.setItem('tfm.refresh_token', 'mock-refresh-token');
+      window.sessionStorage.setItem('tfm.authenticated', 'true');
     }, mockAuthState.token);
 
     await procedureFlow.navigateToWizard('proc-lic-obra-menor');
@@ -52,9 +52,9 @@ test.describe('Procedure submission flow', () => {
 
   test('should show wizard navigation between steps', async ({ page }) => {
     await page.context().addInitScript((token: string) => {
-      window.sessionStorage.setItem('tfg.access_token', token);
-      window.sessionStorage.setItem('tfg.refresh_token', 'mock-refresh-token');
-      window.sessionStorage.setItem('tfg.authenticated', 'true');
+      window.sessionStorage.setItem('tfm.access_token', token);
+      window.sessionStorage.setItem('tfm.refresh_token', 'mock-refresh-token');
+      window.sessionStorage.setItem('tfm.authenticated', 'true');
     }, mockAuthState.token);
 
     await procedureFlow.navigateToWizard('proc-lic-obra-menor');

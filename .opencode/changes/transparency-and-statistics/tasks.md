@@ -41,7 +41,7 @@ CREATE INDEX idx_transparency_reports_year
 
 **Description**: Create the JPA entity mapping to the `transparency_reports` table, following the existing entity pattern (see `PublicContentEntryEntity`).
 
-**File to create**: `backend/src/main/java/es/tfg/records/infrastructure/persistence/entity/TransparencyReportEntity.java`
+**File to create**: `backend/src/main/java/es/tfm/records/infrastructure/persistence/entity/TransparencyReportEntity.java`
 
 **Key details**:
 - `@Entity`, `@Table(name = "transparency_reports")`
@@ -60,7 +60,7 @@ CREATE INDEX idx_transparency_reports_year
 
 **Description**: Create the Spring Data JPA repository interface with custom query methods.
 
-**File to create**: `backend/src/main/java/es/tfg/records/infrastructure/persistence/repository/TransparencyReportJpaRepository.java`
+**File to create**: `backend/src/main/java/es/tfm/records/infrastructure/persistence/repository/TransparencyReportJpaRepository.java`
 
 **Method signatures**:
 ```java
@@ -78,7 +78,7 @@ public interface TransparencyReportJpaRepository extends JpaRepository<Transpare
 
 **Description**: Create a new DTO file containing all transparency and analytics DTO records.
 
-**File to create**: `backend/src/main/java/es/tfg/records/application/dto/TransparencyDtos.java`
+**File to create**: `backend/src/main/java/es/tfm/records/application/dto/TransparencyDtos.java`
 
 **Records to define**:
 ```java
@@ -157,7 +157,7 @@ public final class TransparencyDtos {
 
 **Description**: Add overloaded methods to `FileStorageService` that accept a subdirectory parameter instead of a case UUID.
 
-**File to modify**: `backend/src/main/java/es/tfg/records/infrastructure/storage/FileStorageService.java`
+**File to modify**: `backend/src/main/java/es/tfm/records/infrastructure/storage/FileStorageService.java`
 
 **Methods to add**:
 ```java
@@ -209,7 +209,7 @@ spring.servlet.multipart:
 
 **Description**: Create the application service handling CRUD operations and file management for transparency reports.
 
-**File to create**: `backend/src/main/java/es/tfg/records/application/service/TransparencyReportService.java`
+**File to create**: `backend/src/main/java/es/tfm/records/application/service/TransparencyReportService.java`
 
 **Method signatures**:
 ```java
@@ -259,7 +259,7 @@ public class TransparencyReportService {
 
 **Description**: Create the service that computes live transparency metrics from the `procedures` table.
 
-**File to create**: `backend/src/main/java/es/tfg/records/application/service/TransparencyMetricsService.java`
+**File to create**: `backend/src/main/java/es/tfm/records/application/service/TransparencyMetricsService.java`
 
 **Method signature**:
 ```java
@@ -289,7 +289,7 @@ public class TransparencyMetricsService {
 
 **Description**: Add a new method to `BackofficeService` that extends `dashboardReport()` with monthly aggregation, procedure type metrics, and unit SLA breakdown.
 
-**File to modify**: `backend/src/main/java/es/tfg/records/application/service/BackofficeService.java`
+**File to modify**: `backend/src/main/java/es/tfm/records/application/service/BackofficeService.java`
 
 **Method signature**:
 ```java
@@ -320,7 +320,7 @@ public TransparencyDtos.AnalyticsReport analyticsReport(LocalDate from, LocalDat
 
 **Description**: Create a new REST controller for admin transparency report management.
 
-**File to create**: `backend/src/main/java/es/tfg/records/entrypoints/controller/TransparencyController.java`
+**File to create**: `backend/src/main/java/es/tfm/records/entrypoints/controller/TransparencyController.java`
 
 **Endpoints**:
 ```java
@@ -380,7 +380,7 @@ public class TransparencyController {
 
 **Description**: Add public read endpoints for transparency reports and metrics to the existing `PublicContentController`.
 
-**File to modify**: `backend/src/main/java/es/tfg/records/entrypoints/controller/PublicContentController.java`
+**File to modify**: `backend/src/main/java/es/tfm/records/entrypoints/controller/PublicContentController.java`
 
 **Endpoints to add**:
 ```java
@@ -409,7 +409,7 @@ ResponseEntity<TransparencyMetricsDto> getMetrics();
 
 **Description**: Add analytics report and PDF export endpoints to the existing `BackofficeController`.
 
-**File to modify**: `backend/src/main/java/es/tfg/records/entrypoints/controller/BackofficeController.java`
+**File to modify**: `backend/src/main/java/es/tfm/records/entrypoints/controller/BackofficeController.java`
 
 **Endpoints to add**:
 ```java
@@ -438,7 +438,7 @@ ResponseEntity<byte[]> exportAnalyticsPdf(
 
 **Description**: Add a handler for Spring's `MaxUploadSizeExceededException` to return a proper error response when file uploads exceed the limit.
 
-**File to modify**: `backend/src/main/java/es/tfg/records/entrypoints/advice/GlobalExceptionHandler.java`
+**File to modify**: `backend/src/main/java/es/tfm/records/entrypoints/advice/GlobalExceptionHandler.java`
 
 **Handler to add**:
 ```java
@@ -464,7 +464,7 @@ public ResponseEntity<ErrorResponse> handleMaxUploadSize(HttpServletRequest requ
 
 **Description**: Add defense-in-depth explicit permit rule for public transparency endpoints.
 
-**File to modify**: `backend/src/main/java/es/tfg/records/infrastructure/config/SecurityConfig.java`
+**File to modify**: `backend/src/main/java/es/tfm/records/infrastructure/config/SecurityConfig.java`
 
 **Change**: The existing `.requestMatchers(HttpMethod.GET, "/citizen/public-content/**").permitAll()` already covers this. No change needed, but verify the rule exists (it does at line 90).
 
@@ -935,7 +935,7 @@ exportPdf(): void {
 
 **Description**: Write JUnit 5 unit tests for the transparency report CRUD service.
 
-**File to create**: `backend/src/test/java/es/tfg/records/tests/service/TransparencyReportServiceTest.java`
+**File to create**: `backend/src/test/java/es/tfm/records/tests/service/TransparencyReportServiceTest.java`
 
 **Test cases**:
 - `createReport_shouldStoreFileAndReturnDto` — mock MultipartFile (PDF), verify store called, entity saved
@@ -955,7 +955,7 @@ exportPdf(): void {
 
 **Description**: Write JUnit 5 unit tests for the metrics computation service.
 
-**File to create**: `backend/src/test/java/es/tfg/records/tests/service/TransparencyMetricsServiceTest.java`
+**File to create**: `backend/src/test/java/es/tfm/records/tests/service/TransparencyMetricsServiceTest.java`
 
 **Test cases**:
 - `computeMetrics_shouldReturnCorrectCounts` — mock procedures with various statuses, verify counts
@@ -970,7 +970,7 @@ exportPdf(): void {
 
 **Description**: Write JUnit 5 unit tests for the analytics extension method.
 
-**File to create**: `backend/src/test/java/es/tfg/records/tests/service/BackofficeServiceAnalyticsTest.java`
+**File to create**: `backend/src/test/java/es/tfm/records/tests/service/BackofficeServiceAnalyticsTest.java`
 
 **Test cases**:
 - `analyticsReport_shouldIncludeMonthlyTrend` — verify monthly aggregation
@@ -987,7 +987,7 @@ exportPdf(): void {
 
 **Description**: Write `@WebMvcTest` integration tests for the transparency admin endpoints.
 
-**File to create**: `backend/src/test/java/es/tfg/records/tests/controller/TransparencyControllerTest.java`
+**File to create**: `backend/src/test/java/es/tfm/records/tests/controller/TransparencyControllerTest.java`
 
 **Test cases**:
 - `createReport_shouldReturn201` — multipart POST with mock PDF
@@ -1005,7 +1005,7 @@ exportPdf(): void {
 
 **Description**: Write `@WebMvcTest` tests for public transparency endpoints.
 
-**File to create**: `backend/src/test/java/es/tfg/records/tests/controller/PublicTransparencyControllerTest.java`
+**File to create**: `backend/src/test/java/es/tfm/records/tests/controller/PublicTransparencyControllerTest.java`
 
 **Test cases**:
 - `listPublishedReports_shouldReturn200` — GET public reports

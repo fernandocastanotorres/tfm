@@ -181,7 +181,7 @@ b296b38d-9b12-48bf-97b3-cd5805eacef4	Unidad de Licencias	2026-05-26 18:03:59.357
 1a454588-af2b-43a5-a1aa-78955d719015	Unidad de Licencias	2026-05-26 18:04:20.898939+00	{"applicantFullName":"Fernando Castaño","applicantEmail":"fcastano.tsol@gmail.com","applicationReason":"dfgdgdfg","businessName":"Experience","premisesAddress":"Esta misma"}	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c	a98135be-77fc-43f5-a6bf-e85ec5633ba5	DRAFT	\N	Solicitud de Licencia	2026-05-26 18:04:20.898939+00	\N	UNIDADDE	\N	\N
 304de5b2-de6a-40a3-8bbb-4918f2447fe4	Unidad de Licencias	2026-05-26 18:04:25.984526+00	{"applicantFullName":"Fernando Castaño","applicantEmail":"fcastano.tsol@gmail.com","applicationReason":"dfgdgdfg","businessName":"Experience","premisesAddress":"Esta misma"}	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c	a98135be-77fc-43f5-a6bf-e85ec5633ba5	DRAFT	\N	Solicitud de Licencia	2026-05-26 18:04:25.984526+00	\N	UNIDADDE	\N	\N
 86803896-20ff-4a32-bc58-4c34cb41bdf8	Unidad de Licencias	2026-05-26 18:05:51.620105+00	{"applicantFullName":"Fernando Castaño","applicantEmail":"fcastano.tsol@gmail.com","applicationReason":"dfgdgdfg","businessName":"Experience","premisesAddress":"Esta misma"}	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c	a98135be-77fc-43f5-a6bf-e85ec5633ba5	DRAFT	\N	Solicitud de Licencia	2026-05-26 18:05:51.620105+00	\N	UNIDADDE	\N	\N
-cfbf69e4-0c83-4028-bf61-c2d6c1042ef7	Unidad de Licencias	2026-05-25 20:27:49.472525+00	{"applicantFullName":"Test Citizen","applicantEmail":"citizen@tfg.es","applicationReason":"Prueba numeracion expediente"}	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c	a98135be-77fc-43f5-a6bf-e85ec5633ba5	SUBMITTED	2026-05-25 20:27:49.637917+00	Solicitud de Licencia	2026-05-25 20:27:49.974431+00	32e1e239-5878-11f1-8c14-0242ac130004	UNIDADDE	EXP/UNIDADDE/2026/000001	EXP/UNIDADDE/2026/000001
+cfbf69e4-0c83-4028-bf61-c2d6c1042ef7	Unidad de Licencias	2026-05-25 20:27:49.472525+00	{"applicantFullName":"Test Citizen","applicantEmail":"citizen@tfm.es","applicationReason":"Prueba numeracion expediente"}	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c	a98135be-77fc-43f5-a6bf-e85ec5633ba5	SUBMITTED	2026-05-25 20:27:49.637917+00	Solicitud de Licencia	2026-05-25 20:27:49.974431+00	32e1e239-5878-11f1-8c14-0242ac130004	UNIDADDE	EXP/UNIDADDE/2026/000001	EXP/UNIDADDE/2026/000001
 64829354-ccc2-4c14-b4a0-76b639eb6a24	Unidad de Licencias	2026-05-26 18:09:42.119371+00	{"applicantFullName":"Fernando Castaño","applicantEmail":"fcastano.tsol@gmail.com","applicationReason":"sdfsdf","businessName":"Experience","premisesAddress":"Esta misma"}	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c	a98135be-77fc-43f5-a6bf-e85ec5633ba5	SUBMITTED	2026-05-26 18:16:53.301674+00	Solicitud de Licencia	2026-05-26 18:16:53.867402+00	129b52a3-592f-11f1-bc76-0242ac130005	UNIDADDE	EXP/UNIDADDE/2026/000002	EXP/UNIDADDE/2026/000002
 66294f37-ef97-497a-b172-68a072249bef	Unidad de Licencias	2026-05-26 18:19:22.76581+00	{"applicantFullName":"Fernando Castaño","applicantEmail":"fcastano.tsol@gmail.com","applicationReason":"fghfgh","businessName":"Experience","premisesAddress":"Esta misma"}	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c	a98135be-77fc-43f5-a6bf-e85ec5633ba5	SUBMITTED	2026-05-26 18:19:23.356693+00	Solicitud de Licencia	2026-05-26 18:19:23.413145+00	6be439df-592f-11f1-bc76-0242ac130005	UNIDADDE	EXP/UNIDADDE/2026/000003	EXP/UNIDADDE/2026/000003
 d217bfc8-c5fa-46fd-bed8-6997d63edf8c	Contratación	2026-06-02 22:01:35.254549+00	{"field_1780437414784":"asdasd","field_1780437414960":"asdasd","field_1780437415144":"asdasd","field_1780437415329":"asdasd"}	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c	2f829662-5031-4501-bfd3-b6e5d3f17224	SUBMITTED	2026-06-02 22:01:35.529249+00	asd	2026-06-02 22:01:36.168495+00	9fac5091-5ece-11f1-8117-0242ac170006	CONTRATA	EXP/CONTRATA/2026/000001	RE/CONTRATA/2026/000001
@@ -458,8 +458,8 @@ c0f909dd-f96b-4f75-80e2-c947dee7ce7b	f	\N	2026-05-20 16:38:30.416431+00	Fernando
 ab3122ba-ab30-40b1-9c6e-15f23ac30b96	f	Test Street 1	2026-05-20 16:57:19.542571+00	Mailpit Test	mailpit-test-1779296237@example.com	2026-05-20 16:57:19.440328+00	12345678Z	193411	2026-05-21 16:57:19.440312+00	$2a$12$AW/fVY0liTByr6qH5xJLpekTO.Eyyo6EbI8b0nvRYH7atk0B2gfoy	600123456	2026-05-20 16:57:19.542571+00	\N	\N	\N	\N	\N	\N
 3068c439-cf23-4919-8be3-401d6e764bc4	f	Test Street 3	2026-05-20 17:03:39.531922+00	Mailpit Test	mailpit-test-1779296618@example.com	2026-05-20 17:03:39.426774+00	12345677Y	087928	2026-05-21 17:03:39.426758+00	$2a$12$anQXrYn8/2PPos9QzspSHeVG14kxT2Th25WpCvWtg0d1UUesj09Y6	600123456	2026-05-20 17:03:39.531922+00	\N	\N	\N	\N	\N	\N
 4a83bdd8-e96c-48e8-9b86-e2a872fc7747	t	Esta misma	2026-05-20 17:12:32.080678+00	Fernando Castaño	fcastano.tsol.1@gmail.com	2026-05-20 17:12:32.044731+00	00000000T	\N	\N	$2a$12$g50mWS0n6chq0Ah27z/I5ugUCutMCFWr4E6GkMWDA2EBSvMvBmnV2	672220391	2026-05-21 17:37:31.070094+00	2026-05-21 17:37:31.064267+00	\N	\N	\N	\N	\N
-81151e14-514b-4b0e-8afb-d9353a48807a	t	\N	2026-05-19 20:03:59.716458+00	Test Admin	admin@tfg.es	\N	\N	\N	\N	$2a$12$PfPQ8NEmk2yAcdZYuw2K2OFJBsygVRiDIlMhGOsV.rm8z91qUYkqW	\N	2026-06-22 17:37:12.861645+00	2026-06-22 14:06:56.317197+00	\N	\N	\N	\N	5c828713e8aa6ce470c5dcb7a38a839efe48130e9362bc4da477cfd615e98a6c
-3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c	t	Esta misma, 234, 234	2026-05-19 20:03:59.022147+00	Test Citizen	citizen@tfg.es	\N	28640477A	\N	\N	$2a$12$umoka3/BKvNUGcLiMFg4SeRtYo4JmwRh7v6mtR.1DzKKx31nLHxWG	666998855	2026-06-23 17:41:30.561601+00	2026-06-23 17:41:30.349605+00	\N	\N	\N	\N	840b07f560aab2a3f97f51f9b251b043d23daa837e665f6f2065606dfc26cf5f
+81151e14-514b-4b0e-8afb-d9353a48807a	t	\N	2026-05-19 20:03:59.716458+00	Test Admin	admin@tfm.es	\N	\N	\N	\N	$2a$12$PfPQ8NEmk2yAcdZYuw2K2OFJBsygVRiDIlMhGOsV.rm8z91qUYkqW	\N	2026-06-22 17:37:12.861645+00	2026-06-22 14:06:56.317197+00	\N	\N	\N	\N	5c828713e8aa6ce470c5dcb7a38a839efe48130e9362bc4da477cfd615e98a6c
+3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c	t	Esta misma, 234, 234	2026-05-19 20:03:59.022147+00	Test Citizen	citizen@tfm.es	\N	28640477A	\N	\N	$2a$12$umoka3/BKvNUGcLiMFg4SeRtYo4JmwRh7v6mtR.1DzKKx31nLHxWG	666998855	2026-06-23 17:41:30.561601+00	2026-06-23 17:41:30.349605+00	\N	\N	\N	\N	840b07f560aab2a3f97f51f9b251b043d23daa837e665f6f2065606dfc26cf5f
 \.
 
 
@@ -514,17 +514,17 @@ ALTER TABLE public.message_threads ENABLE TRIGGER ALL;
 ALTER TABLE public.messages DISABLE TRIGGER ALL;
 
 COPY public.messages (id, attachment_count, content, created_at, is_read, read_at, sender_email, sender_name, sender_role, template_key, thread_id) FROM stdin;
-dcae844d-4732-46bd-a7da-b1d62c35e836	0	sadsda	2026-05-20 06:36:15.885048+00	f	\N	admin@tfg.es	Test Admin	ADMIN	\N	60b3362d-b8cb-4a2a-9d3f-3208b8cc7951
-bf978506-8dca-483b-b217-a226a0add468	0	adadasd	2026-05-20 06:36:31.111329+00	f	\N	citizen@tfg.es	Test Citizen	CITIZEN	\N	60b3362d-b8cb-4a2a-9d3f-3208b8cc7951
-62ce607a-5c7d-4eb1-899e-6ea7fa62c25d	0	hola	2026-05-20 06:47:52.169356+00	f	\N	citizen@tfg.es	Test Citizen	CITIZEN	\N	60b3362d-b8cb-4a2a-9d3f-3208b8cc7951
-3faf5130-32d4-42cd-aa26-0a851af71a56	0	aaaaaaaaa	2026-05-20 07:05:54.27771+00	f	\N	admin@tfg.es	Test Admin	ADMIN	\N	60b3362d-b8cb-4a2a-9d3f-3208b8cc7951
-07c4a20d-d8d0-48db-8fc4-80f5dfd8c229	0	werwerwer	2026-05-20 07:30:49.94343+00	f	\N	citizen@tfg.es	Test Citizen	CITIZEN	\N	60b3362d-b8cb-4a2a-9d3f-3208b8cc7951
-62ff1b87-1a30-4c83-9bd8-0e697cd87b26	0	aaaaaaaaaaaaaaaaaaaaaaaaaaaaa	2026-05-20 07:33:53.438192+00	f	\N	citizen@tfg.es	Test Citizen	CITIZEN	\N	60b3362d-b8cb-4a2a-9d3f-3208b8cc7951
-677998d0-02b3-4947-b22f-5a8490923320	0	sssssssssssssss	2026-05-20 07:36:50.905498+00	f	\N	citizen@tfg.es	Test Citizen	CITIZEN	\N	60b3362d-b8cb-4a2a-9d3f-3208b8cc7951
-9d6b7c54-504d-41dc-a0c5-be5a92559c95	0	Prueba	2026-05-20 14:35:01.934128+00	f	\N	citizen@tfg.es	Test Citizen	CITIZEN	\N	87f937d1-bf03-44e6-8eb7-543fb0f84240
-11860ada-10c5-4693-9ff2-bb13bfb2b3a7	0	sdfsdfsdfsdf	2026-05-20 14:36:04.684568+00	f	\N	admin@tfg.es	Test Admin	ADMIN	\N	87f937d1-bf03-44e6-8eb7-543fb0f84240
-6211926d-5640-461f-a187-012f22535cd8	0	aaaaaaaaaa	2026-05-21 21:12:37.299146+00	f	\N	citizen@tfg.es	Test Citizen	CITIZEN	\N	4de18341-a4eb-4189-9176-35512a7ecda1
-468797ff-47bb-442c-b67f-a98255b0f2de	0	asdasdasd	2026-05-21 21:12:54.98068+00	f	\N	admin@tfg.es	Test Admin	ADMIN	\N	4de18341-a4eb-4189-9176-35512a7ecda1
+dcae844d-4732-46bd-a7da-b1d62c35e836	0	sadsda	2026-05-20 06:36:15.885048+00	f	\N	admin@tfm.es	Test Admin	ADMIN	\N	60b3362d-b8cb-4a2a-9d3f-3208b8cc7951
+bf978506-8dca-483b-b217-a226a0add468	0	adadasd	2026-05-20 06:36:31.111329+00	f	\N	citizen@tfm.es	Test Citizen	CITIZEN	\N	60b3362d-b8cb-4a2a-9d3f-3208b8cc7951
+62ce607a-5c7d-4eb1-899e-6ea7fa62c25d	0	hola	2026-05-20 06:47:52.169356+00	f	\N	citizen@tfm.es	Test Citizen	CITIZEN	\N	60b3362d-b8cb-4a2a-9d3f-3208b8cc7951
+3faf5130-32d4-42cd-aa26-0a851af71a56	0	aaaaaaaaa	2026-05-20 07:05:54.27771+00	f	\N	admin@tfm.es	Test Admin	ADMIN	\N	60b3362d-b8cb-4a2a-9d3f-3208b8cc7951
+07c4a20d-d8d0-48db-8fc4-80f5dfd8c229	0	werwerwer	2026-05-20 07:30:49.94343+00	f	\N	citizen@tfm.es	Test Citizen	CITIZEN	\N	60b3362d-b8cb-4a2a-9d3f-3208b8cc7951
+62ff1b87-1a30-4c83-9bd8-0e697cd87b26	0	aaaaaaaaaaaaaaaaaaaaaaaaaaaaa	2026-05-20 07:33:53.438192+00	f	\N	citizen@tfm.es	Test Citizen	CITIZEN	\N	60b3362d-b8cb-4a2a-9d3f-3208b8cc7951
+677998d0-02b3-4947-b22f-5a8490923320	0	sssssssssssssss	2026-05-20 07:36:50.905498+00	f	\N	citizen@tfm.es	Test Citizen	CITIZEN	\N	60b3362d-b8cb-4a2a-9d3f-3208b8cc7951
+9d6b7c54-504d-41dc-a0c5-be5a92559c95	0	Prueba	2026-05-20 14:35:01.934128+00	f	\N	citizen@tfm.es	Test Citizen	CITIZEN	\N	87f937d1-bf03-44e6-8eb7-543fb0f84240
+11860ada-10c5-4693-9ff2-bb13bfb2b3a7	0	sdfsdfsdfsdf	2026-05-20 14:36:04.684568+00	f	\N	admin@tfm.es	Test Admin	ADMIN	\N	87f937d1-bf03-44e6-8eb7-543fb0f84240
+6211926d-5640-461f-a187-012f22535cd8	0	aaaaaaaaaa	2026-05-21 21:12:37.299146+00	f	\N	citizen@tfm.es	Test Citizen	CITIZEN	\N	4de18341-a4eb-4189-9176-35512a7ecda1
+468797ff-47bb-442c-b67f-a98255b0f2de	0	asdasdasd	2026-05-21 21:12:54.98068+00	f	\N	admin@tfm.es	Test Admin	ADMIN	\N	4de18341-a4eb-4189-9176-35512a7ecda1
 \.
 
 
@@ -1312,84 +1312,84 @@ ALTER TABLE public.public_content_entries ENABLE TRIGGER ALL;
 ALTER TABLE public.security_audit_log DISABLE TRIGGER ALL;
 
 COPY public.security_audit_log (id, action, app_context, client_ip, details, resource_type, resource_uuid, result, "timestamp", user_id) FROM stdin;
-b7a4d4ae-ddd5-4728-9ae9-1f55427e48bd	LOGIN	API	172.21.0.1	User not found: admin@tfg.es	USER	\N	FAILURE	2026-05-19 19:56:46.507137+00	\N
-9d30f4ec-7779-4a7f-8ad2-5af27db6f301	LOGIN	API	172.21.0.1	User not found: admin@tfg.es	USER	\N	FAILURE	2026-05-19 19:56:51.076547+00	\N
-6b69b9e7-1f1d-496d-bcbd-ccac97323692	LOGIN	API	172.21.0.1	User not found: admin@tfg.es	USER	\N	FAILURE	2026-05-19 19:58:26.720277+00	\N
-64bd89dc-0b75-4fab-a8a8-6e6d4ffb7b92	LOGIN	API	172.21.0.1	User not found: citizen@tfg.es	USER	\N	FAILURE	2026-05-19 19:58:31.132483+00	\N
+b7a4d4ae-ddd5-4728-9ae9-1f55427e48bd	LOGIN	API	172.21.0.1	User not found: admin@tfm.es	USER	\N	FAILURE	2026-05-19 19:56:46.507137+00	\N
+9d30f4ec-7779-4a7f-8ad2-5af27db6f301	LOGIN	API	172.21.0.1	User not found: admin@tfm.es	USER	\N	FAILURE	2026-05-19 19:56:51.076547+00	\N
+6b69b9e7-1f1d-496d-bcbd-ccac97323692	LOGIN	API	172.21.0.1	User not found: admin@tfm.es	USER	\N	FAILURE	2026-05-19 19:58:26.720277+00	\N
+64bd89dc-0b75-4fab-a8a8-6e6d4ffb7b92	LOGIN	API	172.21.0.1	User not found: citizen@tfm.es	USER	\N	FAILURE	2026-05-19 19:58:31.132483+00	\N
 931f883e-35df-4621-9160-8cf29a59baf7	LOGIN	API	172.21.0.1	Token refresh failed - invalid token	USER	\N	FAILURE	2026-05-19 19:58:31.144311+00	\N
-87e26664-601d-4a36-b422-bcdc1117bc56	LOGIN	API	172.21.0.1	User not found: citizen@tfg.es	USER	\N	FAILURE	2026-05-19 19:58:31.159606+00	\N
-544ded92-bc48-4ee4-9b4d-8338e3b31042	LOGIN	API	172.21.0.1	User not found: admin@tfg.es	USER	\N	FAILURE	2026-05-19 19:58:52.327005+00	\N
-1e4520b3-fa32-4a3e-8e3f-8eb7de9878c5	LOGIN	API	172.21.0.1	User not found: admin@tfg.es	USER	\N	FAILURE	2026-05-19 19:59:32.04515+00	\N
+87e26664-601d-4a36-b422-bcdc1117bc56	LOGIN	API	172.21.0.1	User not found: citizen@tfm.es	USER	\N	FAILURE	2026-05-19 19:58:31.159606+00	\N
+544ded92-bc48-4ee4-9b4d-8338e3b31042	LOGIN	API	172.21.0.1	User not found: admin@tfm.es	USER	\N	FAILURE	2026-05-19 19:58:52.327005+00	\N
+1e4520b3-fa32-4a3e-8e3f-8eb7de9878c5	LOGIN	API	172.21.0.1	User not found: admin@tfm.es	USER	\N	FAILURE	2026-05-19 19:59:32.04515+00	\N
 97131d36-e336-4e13-a90c-1a7f6d0d0e18	LOGIN	API	172.21.0.1	Token refresh failed - invalid token	USER	\N	FAILURE	2026-05-19 19:56:46.507137+00	\N
-56fd45b3-dfc5-4fff-aa56-3da1ff3389fb	LOGIN	API	172.21.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-19 20:04:23.432463+00	\N
-f192ea41-e72d-4ae7-ace6-7c33203819bf	LOGIN	API	172.21.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-19 20:04:32.181689+00	\N
-91a3a39e-f77d-45f2-8e2c-4d88a12f37c8	LOGIN	API	172.21.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-19 20:04:34.248293+00	\N
+56fd45b3-dfc5-4fff-aa56-3da1ff3389fb	LOGIN	API	172.21.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-19 20:04:23.432463+00	\N
+f192ea41-e72d-4ae7-ace6-7c33203819bf	LOGIN	API	172.21.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-19 20:04:32.181689+00	\N
+91a3a39e-f77d-45f2-8e2c-4d88a12f37c8	LOGIN	API	172.21.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-19 20:04:34.248293+00	\N
 b1c8eb9a-55d3-4819-835d-a3ea5108f122	LOGIN	API	172.21.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-19 20:19:58.06602+00	\N
-9cefd8ad-ec0d-4788-95cf-cae68125cad6	LOGIN	API	172.21.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-19 20:21:15.363915+00	\N
-d344c04e-8b06-4a8b-b8f5-844c3d0408da	LOGIN	API	172.21.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-19 20:21:24.484016+00	\N
+9cefd8ad-ec0d-4788-95cf-cae68125cad6	LOGIN	API	172.21.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-19 20:21:15.363915+00	\N
+d344c04e-8b06-4a8b-b8f5-844c3d0408da	LOGIN	API	172.21.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-19 20:21:24.484016+00	\N
 1f43ef1b-3bba-4c1f-a315-72d3bf550f33	LOGIN	API	172.21.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-19 20:37:39.768314+00	\N
-5f3fe569-8b32-43e1-ad79-eff11ae15734	LOGIN	API	172.21.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-19 20:37:41.602265+00	\N
-d7eee67f-ea95-4244-9e2e-38c885a3ea5a	LOGIN	API	172.21.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-19 20:37:52.072516+00	\N
-84ca6405-5574-43dc-8f7d-975f602a2542	LOGIN	API	172.21.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-19 20:57:19.653925+00	\N
-a78bbd5f-5a87-40b5-b6ff-5c1d1d89081f	LOGIN	API	172.21.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-19 20:58:32.635166+00	\N
-d0f6bf9d-cae7-41d9-b027-b6d67a6c1b1b	LOGIN	API	172.21.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-19 21:15:05.378054+00	\N
-caccce5f-253c-49aa-a0f7-8ef901710ae2	LOGIN	API	172.21.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-19 21:29:12.619839+00	\N
+5f3fe569-8b32-43e1-ad79-eff11ae15734	LOGIN	API	172.21.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-19 20:37:41.602265+00	\N
+d7eee67f-ea95-4244-9e2e-38c885a3ea5a	LOGIN	API	172.21.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-19 20:37:52.072516+00	\N
+84ca6405-5574-43dc-8f7d-975f602a2542	LOGIN	API	172.21.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-19 20:57:19.653925+00	\N
+a78bbd5f-5a87-40b5-b6ff-5c1d1d89081f	LOGIN	API	172.21.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-19 20:58:32.635166+00	\N
+d0f6bf9d-cae7-41d9-b027-b6d67a6c1b1b	LOGIN	API	172.21.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-19 21:15:05.378054+00	\N
+caccce5f-253c-49aa-a0f7-8ef901710ae2	LOGIN	API	172.21.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-19 21:29:12.619839+00	\N
 cd361540-c82a-43e7-9b80-f2d22a2995bd	LOGIN	API	172.21.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-19 21:30:26.862438+00	\N
-4a2afa59-3423-4973-aecd-2468c18ec25e	LOGIN	API	172.21.0.1	Invalid password for citizen@tfg.es	USER	\N	FAILURE	2026-05-19 21:36:08.66524+00	\N
-a4f98f85-b2ea-4734-b731-4e8c5dc51763	LOGIN	API	172.21.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-19 21:36:27.925783+00	\N
+4a2afa59-3423-4973-aecd-2468c18ec25e	LOGIN	API	172.21.0.1	Invalid password for citizen@tfm.es	USER	\N	FAILURE	2026-05-19 21:36:08.66524+00	\N
+a4f98f85-b2ea-4734-b731-4e8c5dc51763	LOGIN	API	172.21.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-19 21:36:27.925783+00	\N
 e83fd7cf-3e00-45fa-8450-f35b3ae6a64e	LOGIN	API	172.21.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-19 21:51:56.052398+00	\N
-09a3f82a-694f-476c-a994-41c5c68076ab	LOGIN	API	172.21.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-19 21:56:42.549901+00	\N
+09a3f82a-694f-476c-a994-41c5c68076ab	LOGIN	API	172.21.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-19 21:56:42.549901+00	\N
 348c8c35-912a-4354-8b25-703265806708	LOGIN	API	172.21.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-19 21:57:39.274097+00	\N
-8103c64c-01a3-4718-9faf-51fb5cd1557c	LOGIN	API	172.21.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-19 21:57:45.779364+00	\N
+8103c64c-01a3-4718-9faf-51fb5cd1557c	LOGIN	API	172.21.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-19 21:57:45.779364+00	\N
 8ce1f7d7-c6f3-4879-ad7a-6cc50f34b1c3	LOGIN	API	172.21.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-20 04:45:32.897503+00	\N
-d9dd7b37-6f85-4fa0-bb57-e328d4d72194	LOGIN	API	172.21.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-20 04:45:47.361888+00	\N
-25cce6fb-1992-416a-a9b0-29f29bfb3a74	LOGIN	API	172.21.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-20 04:47:47.139148+00	\N
-4f61f8b2-35e7-40ac-aa5c-5c833f28e4e0	LOGIN	API	172.21.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-20 06:18:51.049447+00	\N
-c1fe4d3a-2b4e-4f96-b665-f4559d4b4192	LOGIN	API	172.21.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-20 06:19:10.55492+00	\N
-fbda3ed4-43ac-471b-b966-7a0bc08802d6	LOGIN	API	172.21.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-20 06:35:57.70211+00	\N
-a2be8998-79c9-4ab1-82d5-c20774adacc8	LOGIN	API	172.21.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-20 06:36:05.537658+00	\N
+d9dd7b37-6f85-4fa0-bb57-e328d4d72194	LOGIN	API	172.21.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-20 04:45:47.361888+00	\N
+25cce6fb-1992-416a-a9b0-29f29bfb3a74	LOGIN	API	172.21.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-20 04:47:47.139148+00	\N
+4f61f8b2-35e7-40ac-aa5c-5c833f28e4e0	LOGIN	API	172.21.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-20 06:18:51.049447+00	\N
+c1fe4d3a-2b4e-4f96-b665-f4559d4b4192	LOGIN	API	172.21.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-20 06:19:10.55492+00	\N
+fbda3ed4-43ac-471b-b966-7a0bc08802d6	LOGIN	API	172.21.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-20 06:35:57.70211+00	\N
+a2be8998-79c9-4ab1-82d5-c20774adacc8	LOGIN	API	172.21.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-20 06:36:05.537658+00	\N
 6ca36c4e-c695-474d-8556-45e64cab2ab9	LOGIN	API	172.21.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-20 06:51:07.011849+00	\N
 6bef9398-5c13-4cb1-a09c-7ed16c23517b	LOGIN	API	172.21.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-20 06:51:26.847387+00	\N
-c6e87c27-c725-4419-abd4-fe8895a63946	LOGIN	API	172.21.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-20 07:04:44.00228+00	\N
-4b55003c-1484-4ea6-af33-b7ebfd136e38	LOGIN	API	172.21.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-20 07:04:49.54843+00	\N
-64cae602-815e-471f-98ba-da1c65e8935b	LOGIN	API	172.21.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-20 07:19:44.871854+00	\N
-4a1a544e-7b2a-4c71-80f9-02c5368f8b4b	LOGIN	API	172.21.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-20 07:20:44.850226+00	\N
-777b1f8e-39d2-4328-879c-79404a09ad57	LOGIN	API	172.21.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-20 07:36:30.209594+00	\N
-d40e7290-0278-4062-b45f-7aa4640aa236	LOGIN	API	172.21.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-20 07:36:44.340171+00	\N
+c6e87c27-c725-4419-abd4-fe8895a63946	LOGIN	API	172.21.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-20 07:04:44.00228+00	\N
+4b55003c-1484-4ea6-af33-b7ebfd136e38	LOGIN	API	172.21.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-20 07:04:49.54843+00	\N
+64cae602-815e-471f-98ba-da1c65e8935b	LOGIN	API	172.21.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-20 07:19:44.871854+00	\N
+4a1a544e-7b2a-4c71-80f9-02c5368f8b4b	LOGIN	API	172.21.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-20 07:20:44.850226+00	\N
+777b1f8e-39d2-4328-879c-79404a09ad57	LOGIN	API	172.21.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-20 07:36:30.209594+00	\N
+d40e7290-0278-4062-b45f-7aa4640aa236	LOGIN	API	172.21.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-20 07:36:44.340171+00	\N
 ffeff2e8-62c0-4de1-b380-dca9ae772acf	LOGIN	API	172.21.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-20 07:51:40.905845+00	\N
 8c0d0b3b-1828-433f-883d-0b04f9e7e4df	LOGIN	API	172.21.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-20 07:51:59.15106+00	\N
-ce0a1383-3aa3-46c2-8ede-9e3681c5603d	LOGIN	API	172.21.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-20 11:27:33.156954+00	\N
-bcdef84a-7f99-41fb-9596-aba2d98d3ed7	LOGIN	API	172.21.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-20 11:28:03.140786+00	\N
-7a09b638-598e-44e1-a94c-37999dca8ea6	LOGIN	API	172.21.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-20 13:53:09.485506+00	\N
-a1f26fb1-6603-4b44-855c-ce8dda73abdb	LOGIN	API	172.21.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-20 13:53:18.663996+00	\N
-540f323f-2b1f-4fca-a84a-e681b27c4347	LOGIN	API	172.21.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-20 13:54:27.199283+00	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c
-c8e89fcc-172b-4609-930f-f8c013cf41aa	LOGIN	API	172.21.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-20 14:08:18.775693+00	\N
-d97cc65b-e3bd-4153-a846-8e1b7b906f7e	LOGIN	API	172.21.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-20 14:09:44.829753+00	\N
-7ba64802-c81d-4683-82e2-e87e71c507d4	LOGIN	API	172.21.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-20 14:23:44.829393+00	\N
-743a3be0-f6e0-40c0-8440-b445e89bd25e	LOGIN	API	172.21.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-20 14:25:00.868928+00	\N
+ce0a1383-3aa3-46c2-8ede-9e3681c5603d	LOGIN	API	172.21.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-20 11:27:33.156954+00	\N
+bcdef84a-7f99-41fb-9596-aba2d98d3ed7	LOGIN	API	172.21.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-20 11:28:03.140786+00	\N
+7a09b638-598e-44e1-a94c-37999dca8ea6	LOGIN	API	172.21.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-20 13:53:09.485506+00	\N
+a1f26fb1-6603-4b44-855c-ce8dda73abdb	LOGIN	API	172.21.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-20 13:53:18.663996+00	\N
+540f323f-2b1f-4fca-a84a-e681b27c4347	LOGIN	API	172.21.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-20 13:54:27.199283+00	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c
+c8e89fcc-172b-4609-930f-f8c013cf41aa	LOGIN	API	172.21.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-20 14:08:18.775693+00	\N
+d97cc65b-e3bd-4153-a846-8e1b7b906f7e	LOGIN	API	172.21.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-20 14:09:44.829753+00	\N
+7ba64802-c81d-4683-82e2-e87e71c507d4	LOGIN	API	172.21.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-20 14:23:44.829393+00	\N
+743a3be0-f6e0-40c0-8440-b445e89bd25e	LOGIN	API	172.21.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-20 14:25:00.868928+00	\N
 ddd95c29-3041-4d85-80d6-53ece155db9d	LOGIN	API	172.21.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-20 14:39:10.900762+00	\N
 aaa7f9f9-5e5c-486c-9491-415eefa17945	LOGIN	API	172.21.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-20 14:40:29.053073+00	\N
-c7be7c67-9a73-4406-8e11-7c4256fdd2c7	LOGIN	API	172.21.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-20 14:40:31.555529+00	\N
+c7be7c67-9a73-4406-8e11-7c4256fdd2c7	LOGIN	API	172.21.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-20 14:40:31.555529+00	\N
 a41a7edf-5b7b-455e-9abd-de84702cd005	LOGIN	API	172.21.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-20 14:55:34.291572+00	\N
-e18b24f4-577c-452b-82d1-b34222291b70	LOGIN	API	172.21.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-20 14:58:27.406195+00	\N
-c58995d0-856a-4a4a-a87b-eca6a22d42d3	LOGIN	API	172.21.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-20 14:58:38.887197+00	\N
-5adbedb7-2729-4a28-9bd6-581a9546a854	LOGIN	API	172.21.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-20 15:13:44.837702+00	\N
+e18b24f4-577c-452b-82d1-b34222291b70	LOGIN	API	172.21.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-20 14:58:27.406195+00	\N
+c58995d0-856a-4a4a-a87b-eca6a22d42d3	LOGIN	API	172.21.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-20 14:58:38.887197+00	\N
+5adbedb7-2729-4a28-9bd6-581a9546a854	LOGIN	API	172.21.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-20 15:13:44.837702+00	\N
 fc3de4ae-d8c0-46d4-b56c-dad99887face	LOGIN	API	172.21.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-20 15:19:56.885305+00	\N
-f02a1a40-da33-4678-84bd-44564c38279d	LOGIN	API	172.21.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-20 15:19:59.115503+00	\N
-8f5e6981-f79b-4ecb-a524-335ae271ba2d	LOGIN	API	172.21.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-20 15:20:26.847111+00	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c
-738ac736-1f5f-4306-9422-d12ae179b25f	LOGIN	API	172.21.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-20 15:21:29.826059+00	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c
-0ae763e2-e581-4a3f-b4e5-1f5847271677	LOGIN	API	172.21.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-20 15:21:29.943192+00	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c
-ecef8300-5806-4eaa-a31d-071a3c41bab1	LOGIN	API	172.21.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-20 15:22:29.895511+00	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c
+f02a1a40-da33-4678-84bd-44564c38279d	LOGIN	API	172.21.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-20 15:19:59.115503+00	\N
+8f5e6981-f79b-4ecb-a524-335ae271ba2d	LOGIN	API	172.21.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-20 15:20:26.847111+00	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c
+738ac736-1f5f-4306-9422-d12ae179b25f	LOGIN	API	172.21.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-20 15:21:29.826059+00	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c
+0ae763e2-e581-4a3f-b4e5-1f5847271677	LOGIN	API	172.21.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-20 15:21:29.943192+00	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c
+ecef8300-5806-4eaa-a31d-071a3c41bab1	LOGIN	API	172.21.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-20 15:22:29.895511+00	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c
 a228ca3d-44b3-48bf-9ec8-6e97d98ad1bb	LOGIN	API	172.21.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-20 15:28:44.856351+00	\N
-600c6fa7-3328-4018-8b07-c34fcfdcc293	LOGIN	API	172.21.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-20 15:31:27.473773+00	\N
+600c6fa7-3328-4018-8b07-c34fcfdcc293	LOGIN	API	172.21.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-20 15:31:27.473773+00	\N
 e0b8bd23-ed61-4e27-b3c4-64dde909ba3c	LOGIN	API	172.21.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-20 15:37:44.843862+00	\N
-6611cf8a-1a92-415c-8e81-39cb95bd3f89	LOGIN	API	172.21.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-20 15:39:04.535141+00	\N
+6611cf8a-1a92-415c-8e81-39cb95bd3f89	LOGIN	API	172.21.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-20 15:39:04.535141+00	\N
 1078f21a-e348-4068-b974-6d8e1ed59fb6	LOGIN	API	172.21.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-20 15:46:52.97793+00	\N
-b728ed54-185b-47d5-9a76-65eeb0d4ceea	LOGIN	API	172.21.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-20 15:48:26.690737+00	\N
-478da2d2-0c35-4d9d-a5a3-b90f9668b1df	LOGIN	API	172.21.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-20 16:03:26.722955+00	\N
-be303009-17f8-47c1-91ea-6f39760bb2b1	LOGIN	API	172.21.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-20 16:18:26.722733+00	\N
-43e73be9-59aa-4d2f-ac75-3400c3dba716	LOGIN	API	172.21.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-20 16:33:26.738486+00	\N
-37a1e371-cae5-4707-8cad-ef2605618784	LOGIN	API	172.21.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-20 16:37:27.937428+00	\N
+b728ed54-185b-47d5-9a76-65eeb0d4ceea	LOGIN	API	172.21.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-20 15:48:26.690737+00	\N
+478da2d2-0c35-4d9d-a5a3-b90f9668b1df	LOGIN	API	172.21.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-20 16:03:26.722955+00	\N
+be303009-17f8-47c1-91ea-6f39760bb2b1	LOGIN	API	172.21.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-20 16:18:26.722733+00	\N
+43e73be9-59aa-4d2f-ac75-3400c3dba716	LOGIN	API	172.21.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-20 16:33:26.738486+00	\N
+37a1e371-cae5-4707-8cad-ef2605618784	LOGIN	API	172.21.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-20 16:37:27.937428+00	\N
 15ec73b3-009b-48a5-88ca-ed39ba839b49	LOGOUT	API	172.21.0.1	User logout	USER	\N	SUCCESS	2026-05-20 16:37:47.7247+00	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c
 bfe510ce-d7b2-4ce0-9cff-f5f31755663f	CREATE	API	172.21.0.1	New user registered: fcastano.tsol@gmail.com	USER	\N	SUCCESS	2026-05-20 16:38:30.818478+00	\N
 e0689094-9013-4a4b-a9ec-38bfd7019870	LOGIN	API	172.21.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-20 16:48:44.856667+00	\N
@@ -1400,303 +1400,303 @@ b258b379-f476-4a2f-bc8f-e979cd1addb5	CREATE	API	172.21.0.1	New user registered: 
 a44dda93-6616-4ba8-b0de-8d11d5534adb	CREATE	API	172.21.0.1	Email verified via token for: fcastano.tsol.1@gmail.com	USER	\N	SUCCESS	2026-05-20 17:12:42.766235+00	\N
 1db7a2f5-5d22-43f4-9f4f-979466b097e1	LOGIN	API	172.21.0.1	Login successful for fcastano.tsol.1@gmail.com	USER	\N	SUCCESS	2026-05-20 17:12:58.441162+00	\N
 37bccff7-857a-4bcc-a0af-31196ee06fcf	UPDATE	API	172.21.0.1	Profile updated for user: fcastano.tsol.1@gmail.com	USER	\N	SUCCESS	2026-05-20 17:13:13.18169+00	4a83bdd8-e96c-48e8-9b86-e2a872fc7747
-4a35525f-983b-4d75-b64c-1fbdedb6c1c7	LOGIN	API	172.21.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-20 17:17:51.528552+00	\N
+4a35525f-983b-4d75-b64c-1fbdedb6c1c7	LOGIN	API	172.21.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-20 17:17:51.528552+00	\N
 72c38bd3-8e57-46c9-ab6d-279af2930077	LOGIN	API	172.21.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-20 17:33:18.124562+00	\N
-5b635ed6-0b01-4cf6-8eeb-a9c0047d213a	LOGIN	API	172.21.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-20 17:44:57.133655+00	\N
-9ebb2185-b9e1-4857-89cf-952621c52d34	LOGIN	API	172.21.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-21 17:31:41.75148+00	\N
+5b635ed6-0b01-4cf6-8eeb-a9c0047d213a	LOGIN	API	172.21.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-20 17:44:57.133655+00	\N
+9ebb2185-b9e1-4857-89cf-952621c52d34	LOGIN	API	172.21.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-21 17:31:41.75148+00	\N
 a02ee701-2d6e-4999-90cc-f6c5950d1e6b	LOGIN	API	172.21.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-21 17:31:55.396248+00	\N
-7f0352ba-6a6b-4003-8680-6234edf025c4	LOGIN	API	172.21.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-21 17:32:32.668959+00	\N
+7f0352ba-6a6b-4003-8680-6234edf025c4	LOGIN	API	172.21.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-21 17:32:32.668959+00	\N
 257c1d0c-b25c-469b-9ea3-3c94fb0a6dc3	LOGOUT	API	172.21.0.1	User logout	USER	\N	SUCCESS	2026-05-21 17:37:15.580622+00	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c
 f094d044-22ef-434a-b7a7-2bb1c78ad209	LOGIN	API	172.21.0.1	Login successful for fcastano.tsol.1@gmail.com	USER	\N	SUCCESS	2026-05-21 17:37:31.079267+00	\N
-8f98282d-9999-42c3-866e-90f829ea7c72	LOGIN	API	172.21.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-21 17:46:42.395721+00	\N
+8f98282d-9999-42c3-866e-90f829ea7c72	LOGIN	API	172.21.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-21 17:46:42.395721+00	\N
 dab07ec8-5463-4d90-a4a4-f76f36ccfda6	LOGIN	API	172.21.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-21 17:56:22.950949+00	\N
-d41e0ba2-cf0e-44be-ade7-9ffe7489e61d	LOGIN	API	172.21.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-21 17:56:25.817715+00	\N
-950e6224-efd5-4918-9ac4-9d4fac026a99	LOGIN	API	172.21.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-21 18:07:03.695901+00	\N
+d41e0ba2-cf0e-44be-ade7-9ffe7489e61d	LOGIN	API	172.21.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-21 17:56:25.817715+00	\N
+950e6224-efd5-4918-9ac4-9d4fac026a99	LOGIN	API	172.21.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-21 18:07:03.695901+00	\N
 6225aeff-ac43-4127-ad30-69f10283cbd0	LOGIN	API	172.21.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-21 18:12:08.421956+00	\N
-22ab6921-5438-4f9b-a9f1-aeade3f02152	LOGIN	API	172.18.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-21 18:22:13.904779+00	\N
+22ab6921-5438-4f9b-a9f1-aeade3f02152	LOGIN	API	172.18.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-21 18:22:13.904779+00	\N
 fac74b23-1561-47d1-af63-61f26eda02cf	LOGIN	API	172.18.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-21 18:24:50.646961+00	\N
-cee93af8-fdd2-4326-8aed-d8f334e8a29c	LOGIN	API	172.18.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-21 18:24:57.069013+00	\N
-617924e3-6241-475b-a3c5-b2953e13d07d	LOGIN	API	172.18.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-21 18:50:38.085773+00	\N
+cee93af8-fdd2-4326-8aed-d8f334e8a29c	LOGIN	API	172.18.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-21 18:24:57.069013+00	\N
+617924e3-6241-475b-a3c5-b2953e13d07d	LOGIN	API	172.18.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-21 18:50:38.085773+00	\N
 3f619479-c26f-4057-8745-17026e7f3a0a	LOGIN	API	172.18.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-21 18:52:36.440428+00	\N
-11c41ed0-9a2e-47c4-b837-c1330570bd82	LOGIN	API	172.18.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-21 18:52:42.321908+00	\N
-7c09a097-a4eb-4774-be65-f929b2560733	LOGIN	API	172.18.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-21 19:06:06.683414+00	\N
-6c2d30ea-7ca2-4ca5-8b24-798f1d274711	LOGIN	API	172.18.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-21 19:13:38.78813+00	\N
+11c41ed0-9a2e-47c4-b837-c1330570bd82	LOGIN	API	172.18.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-21 18:52:42.321908+00	\N
+7c09a097-a4eb-4774-be65-f929b2560733	LOGIN	API	172.18.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-21 19:06:06.683414+00	\N
+6c2d30ea-7ca2-4ca5-8b24-798f1d274711	LOGIN	API	172.18.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-21 19:13:38.78813+00	\N
 f6452c4a-6142-4e0f-a988-75315f51e7a8	LOGIN	API	172.18.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-21 19:21:08.401257+00	\N
-8f831ab1-b572-4835-9965-0489ab5c1c87	LOGIN	API	172.18.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-21 19:27:42.03518+00	\N
-f4dd9ba6-b5d9-497f-be75-f2d79d618aef	LOGIN	API	172.18.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-21 19:28:39.38647+00	\N
+8f831ab1-b572-4835-9965-0489ab5c1c87	LOGIN	API	172.18.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-21 19:27:42.03518+00	\N
+f4dd9ba6-b5d9-497f-be75-f2d79d618aef	LOGIN	API	172.18.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-21 19:28:39.38647+00	\N
 9f431191-d60c-4805-b2db-5beb17bb7fd9	LOGIN	API	172.18.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-21 19:42:47.67331+00	\N
 0f85a69c-1c0d-4f99-909c-c2c39fab0727	LOGIN	API	172.18.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-21 19:44:08.397546+00	\N
-29b4b3cf-a4df-4ccc-b4e6-4259c5fd0590	LOGIN	API	172.18.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-21 19:53:39.375088+00	\N
-b1a3badd-d2f5-48e7-a943-e1d0731dfa3a	LOGIN	API	172.18.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-21 20:09:08.410001+00	\N
-4d962b71-720e-4e4f-82fc-31a35ed9f514	LOGIN	API	172.18.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-21 20:24:31.837787+00	\N
+29b4b3cf-a4df-4ccc-b4e6-4259c5fd0590	LOGIN	API	172.18.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-21 19:53:39.375088+00	\N
+b1a3badd-d2f5-48e7-a943-e1d0731dfa3a	LOGIN	API	172.18.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-21 20:09:08.410001+00	\N
+4d962b71-720e-4e4f-82fc-31a35ed9f514	LOGIN	API	172.18.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-21 20:24:31.837787+00	\N
 2525f144-0cff-4e6e-a168-65ac44c1e8b4	LOGIN	API	172.18.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-21 20:39:48.010453+00	\N
-34ff80d4-6c4c-450b-a068-26674809bb8a	LOGIN	API	172.18.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-21 20:39:54.487611+00	\N
+34ff80d4-6c4c-450b-a068-26674809bb8a	LOGIN	API	172.18.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-21 20:39:54.487611+00	\N
 c127539c-9323-4d60-b560-db955642bed5	LOGIN	API	172.18.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-21 20:56:49.372758+00	\N
-9994f542-00be-40b3-935b-acbdb6f0c7c2	LOGIN	API	172.18.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-21 20:58:20.258874+00	\N
-4d414b75-f317-4256-acb1-19ab70f43d8e	LOGIN	API	172.18.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-21 21:00:54.694181+00	\N
-43ac00df-ba69-4e87-81ff-05693bb185c9	LOGIN	API	172.18.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-21 21:11:10.325485+00	\N
+9994f542-00be-40b3-935b-acbdb6f0c7c2	LOGIN	API	172.18.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-21 20:58:20.258874+00	\N
+4d414b75-f317-4256-acb1-19ab70f43d8e	LOGIN	API	172.18.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-21 21:00:54.694181+00	\N
+43ac00df-ba69-4e87-81ff-05693bb185c9	LOGIN	API	172.18.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-21 21:11:10.325485+00	\N
 36aa5ff8-a527-4726-b170-d4241ed51343	LOGIN	API	172.18.0.1	Token refresh failed - token already rotated	USER	\N	FAILURE	2026-05-21 21:16:00.404033+00	\N
-5fcc4f02-f883-4dc8-917f-13e4b03e700a	LOGIN	API	172.18.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-21 21:21:49.735217+00	\N
-fe68aaa7-1d63-4c35-a89b-0c0da84788f9	LOGIN	API	172.18.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-22 10:03:57.719323+00	\N
-f0215f4b-3f24-4458-bf8d-6c7c5f33ef99	LOGIN	API	172.18.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-22 10:06:30.048274+00	\N
-5782ece3-9c11-4849-8d57-3f93b2709333	LOGIN	API	172.18.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-22 12:07:23.755439+00	\N
-7bc59c07-3be6-47ad-abd3-d6a60ecdd8be	LOGIN	API	172.18.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-22 12:07:38.768015+00	\N
-a98cb688-b882-4ba0-b16e-e8c4db79b0c6	LOGIN	API	172.18.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-22 12:07:58.998741+00	\N
-3e6e484c-f7ae-4ff7-9318-518437da5a4b	LOGIN	API	172.18.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-22 12:08:57.854206+00	\N
-2c497eba-248f-4b7d-88fb-957c9d779c60	LOGIN	API	172.18.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-22 12:08:57.860092+00	\N
-42aafada-052e-450a-9430-380fff2820ae	LOGIN	API	172.18.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-22 12:08:58.217733+00	\N
-6e138a86-b3d8-4f1f-b632-ec7e011a15e7	LOGIN	API	172.18.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-22 12:08:58.287223+00	\N
-eaa8b14a-ad2f-427f-b852-cdc680f89871	LOGIN	API	172.18.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-22 12:29:37.872259+00	\N
-56b642e9-d97e-47b5-8dd2-71a387189962	LOGIN	API	172.18.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-22 13:10:04.329598+00	\N
-d844bbf8-2575-4596-8d6e-732daaa1a0fc	LOGIN	API	172.18.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-22 13:10:05.623558+00	\N
-a2519612-9012-43b5-828f-2739c4dabcee	LOGIN	API	172.18.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-22 13:21:53.418227+00	\N
-f8bfda66-5f77-4ad3-8bfc-be542544d256	LOGIN	API	172.18.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-22 13:32:40.185005+00	\N
-5e13bf92-1ba7-454c-b8c1-39c6205a69f9	LOGIN	API	172.18.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-22 13:37:00.750355+00	\N
-e679ec2a-43c1-4159-b06a-cfb3fa02f689	LOGIN	API	172.18.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-22 13:48:08.387365+00	\N
-7ebdfd4a-8fe0-4d15-9011-e4b6e738327d	LOGIN	API	172.18.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-22 13:52:14.307499+00	\N
-05fc2f5b-c087-483b-8a26-c3f9c8303ab2	LOGIN	API	172.18.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-22 14:07:17.422283+00	\N
-1ba46865-d65d-4740-998b-2ac25320f5bb	LOGIN	API	172.18.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-22 14:08:00.651331+00	\N
-15ed5fbb-f04b-468a-9dec-9725e88c1def	LOGIN	API	172.18.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-22 14:22:35.292124+00	\N
-d604f7f8-b72a-4ec9-ba11-ca8b6682b7e3	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-22 14:38:27.710383+00	\N
-d3ccd0aa-7860-4d80-8e6c-24c6497fc2aa	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-22 14:41:50.653555+00	\N
-cbbd1b28-f65b-4142-b0c1-6526d867aef7	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-22 14:47:19.498203+00	\N
-384ec28f-31a2-4d6a-8a63-cd4f2ae10de4	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-22 14:54:00.10817+00	\N
-6f021d2c-6925-45bb-8dcd-905c6b93dab5	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-22 14:55:50.196307+00	\N
-e773629f-238b-4128-a910-d339fc8eed0e	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-22 15:00:39.22947+00	\N
-79e53857-a373-4806-85fa-73377e331bb5	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-22 15:04:29.14285+00	\N
-bcd8fc94-5b1a-47b5-9378-e60280d69c13	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-22 15:07:35.618624+00	\N
-2dd926e1-d0a3-49b1-93c9-55bcf332de46	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-22 15:12:01.811268+00	\N
-0387c793-2c7e-4be2-86b0-81b2c5205b69	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-22 15:15:09.493878+00	\N
-9279acd0-4fd7-4984-977d-afaf757839c3	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-22 15:17:45.097986+00	\N
-e838d241-f859-4cf8-bf36-7bfa718593a9	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-22 15:22:31.922985+00	\N
-5deeb9b8-892e-4dce-b8da-eed3040bed33	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-22 15:28:05.616728+00	\N
-f716fe89-e7ac-4de7-a534-b8986420368a	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-22 15:34:21.677736+00	\N
-9dde79d7-42a6-4242-a95b-0b928e230003	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-22 15:39:36.633683+00	\N
-d669044c-6f83-4047-aa47-b493b2f1ba7c	LOGIN	API	172.19.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-22 15:40:31.317502+00	\N
-67c2180d-69ff-4818-9372-3f61121774c2	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-24 22:07:33.041097+00	\N
-f4876255-ec20-42da-afd7-6e0e5fc683dc	LOGIN	API	172.19.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-24 22:08:11.388324+00	\N
-a209a298-e35d-4a3c-b2f9-9968c95f75d9	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-24 22:22:54.078595+00	\N
-ee9c87a1-76b3-4b93-be4e-b6951803b22a	LOGIN	API	172.19.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-24 22:26:43.429475+00	\N
-9f87a205-3509-4bec-a9a6-fd2f58a340ba	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-25 19:24:36.439529+00	\N
-bcac6665-6f95-4c54-a53e-58c455fca897	LOGIN	API	172.19.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-25 19:36:55.978867+00	\N
-06c5ad3a-d0d0-4a13-a79b-0a5520ff98cc	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-25 19:40:02.517408+00	\N
-5528e035-590c-4364-8802-4cfe8e0b3892	LOGIN	API	172.19.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-25 19:52:14.161227+00	\N
-0e2a5469-8579-4365-b925-7f233b8e3f32	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-25 19:55:13.851382+00	\N
-932e6897-438e-4556-87da-ee7b5acd5903	LOGIN	API	172.19.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-25 20:08:46.901571+00	\N
-ce43949f-1665-4723-b8e6-9d974016cff1	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-25 20:10:26.307553+00	\N
-8b3f6d46-7695-4dc9-aaba-f15e91fe269a	LOGIN	API	172.19.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-25 20:23:46.493901+00	\N
-57afd1c1-c793-49c0-95ea-c8dc8e61a714	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-25 20:27:16.322242+00	\N
-b54d981b-d2fd-429c-bfc9-240ed74fae00	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-25 20:27:49.376592+00	\N
-62d9ea07-1b88-45a8-a3af-1459fe3bf2f5	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-25 20:33:01.861763+00	\N
-e87e1464-e852-49a8-9349-92aa3c2f0ea9	LOGIN	API	172.19.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-25 20:38:50.165781+00	\N
-d8f0b0f7-0645-4d10-b193-d74871a7e910	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-25 20:48:13.873351+00	\N
-7d3497ed-5f7d-4a1c-a065-6da958fe3637	LOGIN	API	172.19.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-25 20:53:50.106556+00	\N
-1dd66ba0-a5ab-429f-8820-84a480b9f5b1	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-25 21:03:13.889831+00	\N
-5e43ac97-6d68-40b6-a903-533a3c338112	LOGIN	API	172.19.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-25 21:10:31.380351+00	\N
-55d8fde2-903b-43a0-b3a0-ce234c85804e	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-25 21:24:57.435959+00	\N
-1b3ca875-adcd-4545-8e1e-8eefb1a33667	LOGIN	API	172.19.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-25 21:25:31.440942+00	\N
-a88b4c21-df92-49c0-a6e2-fa4ce974dc6c	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-26 18:03:35.03321+00	\N
-5fb55330-5f3c-4e83-b3f8-c70c5c6541c2	LOGIN	API	172.19.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-26 18:14:46.276289+00	\N
-37fa558c-4b95-4426-a837-fecc34aeac05	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-26 18:19:01.777364+00	\N
-c9a86911-6eae-43fa-ab15-842f0bd462d4	LOGIN	API	172.19.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-26 18:30:25.871007+00	\N
-11a335fb-5b8b-4edb-9304-868f7f33f613	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-26 18:34:23.516332+00	\N
-8c2ccbcd-1709-4463-8b14-8089bd2647ee	LOGIN	API	172.19.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-26 18:45:25.863702+00	\N
-8da44f53-50d0-4d8d-9f3b-185af186ea5a	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-26 18:49:23.506806+00	\N
-8e257e17-6046-48d4-80f0-9e5659c78312	LOGIN	API	172.19.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-26 19:00:25.838497+00	\N
-b699a40b-7917-4693-b069-a3715db6763c	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-26 19:04:23.466082+00	\N
-8ab3b603-8671-4ee1-b079-887b05b44850	LOGIN	API	172.19.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-26 19:15:25.873018+00	\N
-f5ed86e7-91d2-4fa9-80bc-6f73c29b8345	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-26 19:19:23.474787+00	\N
-4512a107-b92d-49ca-9ba1-5e78cab919a5	LOGIN	API	172.19.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-26 19:30:46.422082+00	\N
-2ab8bc9a-4c9b-4b15-856c-ca960edda4d3	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-26 19:34:25.861343+00	\N
-32dea4e5-87db-4262-aae5-d2e980f3d743	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-26 19:49:41.063945+00	\N
-1fd0f782-cab0-4c86-9e64-fcb3c417ab69	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-26 20:04:46.477633+00	\N
-74214b5a-3b27-4871-be75-c61ee4ffd535	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-26 20:19:46.505602+00	\N
-a8828dde-d7b6-4b4d-ab41-bac0c219c63f	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-26 20:34:51.878812+00	\N
-e326f1f0-dc3c-4612-bc0f-4afe3153fb34	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-26 20:50:00.673415+00	\N
-1d928370-5dea-4895-97af-088482f5fa3a	LOGIN	API	172.19.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-26 20:54:08.49069+00	\N
-8a42c62e-df33-4575-b5eb-3cadcf9f452e	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-26 21:05:00.254901+00	\N
-8e8f1b59-aaa0-49e1-b52f-6fc71c6e904a	LOGIN	API	172.19.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-26 21:09:25.85539+00	\N
-6bca35fe-4bb9-4267-93ec-a472223a6d2b	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-26 21:20:00.239581+00	\N
-d3b36596-1323-4cdd-a4a2-cb0c571054b3	LOGIN	API	172.19.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-26 21:24:25.84399+00	\N
-5fc1601f-e539-4dec-aa42-08e278265d3b	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-26 21:35:00.232691+00	\N
-47011b5d-dc73-4e53-988e-0e6fb092f6cd	LOGIN	API	172.19.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-26 21:39:25.822819+00	\N
-0c0d1b6a-5a83-4754-b52f-f63839428441	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-26 21:50:00.240074+00	\N
-9d53c7ef-2a04-4376-8096-be3b93d45e71	LOGIN	API	172.19.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-26 21:54:38.550242+00	\N
-502ecccb-6ebf-44d7-9e94-d602a02e7164	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-26 22:05:25.8341+00	\N
-afce3f84-b7f1-4cac-95d5-a27d973699fd	LOGIN	API	172.19.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-26 22:09:38.577571+00	\N
-7f63f2e5-0c3a-4ebc-9af8-663efc6a19c0	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-26 22:20:25.862648+00	\N
-74676243-16b1-456e-b18c-1fd5c175ce6d	LOGIN	API	172.19.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-26 22:24:38.565203+00	\N
-885c7b96-80c8-4804-8856-f1755f813674	LOGIN	API	172.22.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-27 20:31:01.576335+00	\N
-8a067a9d-8d3e-4ff1-9c3b-28ce0af2a877	LOGIN	API	172.23.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-27 20:40:25.393345+00	\N
-a22e0b80-39b7-49dc-af95-fb827a7e86ad	LOGIN	API	172.23.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-27 20:46:05.86551+00	\N
-1ae6a751-9856-4e8a-9669-73eb05d4810b	LOGIN	API	172.23.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-27 20:56:08.81971+00	\N
-b6da3735-2567-4965-93b7-cb1f46c8fedb	LOGIN	API	172.25.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-28 06:06:18.751042+00	\N
+5fcc4f02-f883-4dc8-917f-13e4b03e700a	LOGIN	API	172.18.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-21 21:21:49.735217+00	\N
+fe68aaa7-1d63-4c35-a89b-0c0da84788f9	LOGIN	API	172.18.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-22 10:03:57.719323+00	\N
+f0215f4b-3f24-4458-bf8d-6c7c5f33ef99	LOGIN	API	172.18.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-22 10:06:30.048274+00	\N
+5782ece3-9c11-4849-8d57-3f93b2709333	LOGIN	API	172.18.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-22 12:07:23.755439+00	\N
+7bc59c07-3be6-47ad-abd3-d6a60ecdd8be	LOGIN	API	172.18.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-22 12:07:38.768015+00	\N
+a98cb688-b882-4ba0-b16e-e8c4db79b0c6	LOGIN	API	172.18.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-22 12:07:58.998741+00	\N
+3e6e484c-f7ae-4ff7-9318-518437da5a4b	LOGIN	API	172.18.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-22 12:08:57.854206+00	\N
+2c497eba-248f-4b7d-88fb-957c9d779c60	LOGIN	API	172.18.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-22 12:08:57.860092+00	\N
+42aafada-052e-450a-9430-380fff2820ae	LOGIN	API	172.18.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-22 12:08:58.217733+00	\N
+6e138a86-b3d8-4f1f-b632-ec7e011a15e7	LOGIN	API	172.18.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-22 12:08:58.287223+00	\N
+eaa8b14a-ad2f-427f-b852-cdc680f89871	LOGIN	API	172.18.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-22 12:29:37.872259+00	\N
+56b642e9-d97e-47b5-8dd2-71a387189962	LOGIN	API	172.18.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-22 13:10:04.329598+00	\N
+d844bbf8-2575-4596-8d6e-732daaa1a0fc	LOGIN	API	172.18.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-22 13:10:05.623558+00	\N
+a2519612-9012-43b5-828f-2739c4dabcee	LOGIN	API	172.18.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-22 13:21:53.418227+00	\N
+f8bfda66-5f77-4ad3-8bfc-be542544d256	LOGIN	API	172.18.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-22 13:32:40.185005+00	\N
+5e13bf92-1ba7-454c-b8c1-39c6205a69f9	LOGIN	API	172.18.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-22 13:37:00.750355+00	\N
+e679ec2a-43c1-4159-b06a-cfb3fa02f689	LOGIN	API	172.18.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-22 13:48:08.387365+00	\N
+7ebdfd4a-8fe0-4d15-9011-e4b6e738327d	LOGIN	API	172.18.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-22 13:52:14.307499+00	\N
+05fc2f5b-c087-483b-8a26-c3f9c8303ab2	LOGIN	API	172.18.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-22 14:07:17.422283+00	\N
+1ba46865-d65d-4740-998b-2ac25320f5bb	LOGIN	API	172.18.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-22 14:08:00.651331+00	\N
+15ed5fbb-f04b-468a-9dec-9725e88c1def	LOGIN	API	172.18.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-22 14:22:35.292124+00	\N
+d604f7f8-b72a-4ec9-ba11-ca8b6682b7e3	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-22 14:38:27.710383+00	\N
+d3ccd0aa-7860-4d80-8e6c-24c6497fc2aa	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-22 14:41:50.653555+00	\N
+cbbd1b28-f65b-4142-b0c1-6526d867aef7	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-22 14:47:19.498203+00	\N
+384ec28f-31a2-4d6a-8a63-cd4f2ae10de4	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-22 14:54:00.10817+00	\N
+6f021d2c-6925-45bb-8dcd-905c6b93dab5	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-22 14:55:50.196307+00	\N
+e773629f-238b-4128-a910-d339fc8eed0e	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-22 15:00:39.22947+00	\N
+79e53857-a373-4806-85fa-73377e331bb5	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-22 15:04:29.14285+00	\N
+bcd8fc94-5b1a-47b5-9378-e60280d69c13	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-22 15:07:35.618624+00	\N
+2dd926e1-d0a3-49b1-93c9-55bcf332de46	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-22 15:12:01.811268+00	\N
+0387c793-2c7e-4be2-86b0-81b2c5205b69	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-22 15:15:09.493878+00	\N
+9279acd0-4fd7-4984-977d-afaf757839c3	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-22 15:17:45.097986+00	\N
+e838d241-f859-4cf8-bf36-7bfa718593a9	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-22 15:22:31.922985+00	\N
+5deeb9b8-892e-4dce-b8da-eed3040bed33	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-22 15:28:05.616728+00	\N
+f716fe89-e7ac-4de7-a534-b8986420368a	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-22 15:34:21.677736+00	\N
+9dde79d7-42a6-4242-a95b-0b928e230003	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-22 15:39:36.633683+00	\N
+d669044c-6f83-4047-aa47-b493b2f1ba7c	LOGIN	API	172.19.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-22 15:40:31.317502+00	\N
+67c2180d-69ff-4818-9372-3f61121774c2	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-24 22:07:33.041097+00	\N
+f4876255-ec20-42da-afd7-6e0e5fc683dc	LOGIN	API	172.19.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-24 22:08:11.388324+00	\N
+a209a298-e35d-4a3c-b2f9-9968c95f75d9	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-24 22:22:54.078595+00	\N
+ee9c87a1-76b3-4b93-be4e-b6951803b22a	LOGIN	API	172.19.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-24 22:26:43.429475+00	\N
+9f87a205-3509-4bec-a9a6-fd2f58a340ba	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-25 19:24:36.439529+00	\N
+bcac6665-6f95-4c54-a53e-58c455fca897	LOGIN	API	172.19.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-25 19:36:55.978867+00	\N
+06c5ad3a-d0d0-4a13-a79b-0a5520ff98cc	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-25 19:40:02.517408+00	\N
+5528e035-590c-4364-8802-4cfe8e0b3892	LOGIN	API	172.19.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-25 19:52:14.161227+00	\N
+0e2a5469-8579-4365-b925-7f233b8e3f32	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-25 19:55:13.851382+00	\N
+932e6897-438e-4556-87da-ee7b5acd5903	LOGIN	API	172.19.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-25 20:08:46.901571+00	\N
+ce43949f-1665-4723-b8e6-9d974016cff1	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-25 20:10:26.307553+00	\N
+8b3f6d46-7695-4dc9-aaba-f15e91fe269a	LOGIN	API	172.19.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-25 20:23:46.493901+00	\N
+57afd1c1-c793-49c0-95ea-c8dc8e61a714	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-25 20:27:16.322242+00	\N
+b54d981b-d2fd-429c-bfc9-240ed74fae00	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-25 20:27:49.376592+00	\N
+62d9ea07-1b88-45a8-a3af-1459fe3bf2f5	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-25 20:33:01.861763+00	\N
+e87e1464-e852-49a8-9349-92aa3c2f0ea9	LOGIN	API	172.19.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-25 20:38:50.165781+00	\N
+d8f0b0f7-0645-4d10-b193-d74871a7e910	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-25 20:48:13.873351+00	\N
+7d3497ed-5f7d-4a1c-a065-6da958fe3637	LOGIN	API	172.19.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-25 20:53:50.106556+00	\N
+1dd66ba0-a5ab-429f-8820-84a480b9f5b1	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-25 21:03:13.889831+00	\N
+5e43ac97-6d68-40b6-a903-533a3c338112	LOGIN	API	172.19.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-25 21:10:31.380351+00	\N
+55d8fde2-903b-43a0-b3a0-ce234c85804e	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-25 21:24:57.435959+00	\N
+1b3ca875-adcd-4545-8e1e-8eefb1a33667	LOGIN	API	172.19.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-25 21:25:31.440942+00	\N
+a88b4c21-df92-49c0-a6e2-fa4ce974dc6c	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-26 18:03:35.03321+00	\N
+5fb55330-5f3c-4e83-b3f8-c70c5c6541c2	LOGIN	API	172.19.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-26 18:14:46.276289+00	\N
+37fa558c-4b95-4426-a837-fecc34aeac05	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-26 18:19:01.777364+00	\N
+c9a86911-6eae-43fa-ab15-842f0bd462d4	LOGIN	API	172.19.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-26 18:30:25.871007+00	\N
+11a335fb-5b8b-4edb-9304-868f7f33f613	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-26 18:34:23.516332+00	\N
+8c2ccbcd-1709-4463-8b14-8089bd2647ee	LOGIN	API	172.19.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-26 18:45:25.863702+00	\N
+8da44f53-50d0-4d8d-9f3b-185af186ea5a	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-26 18:49:23.506806+00	\N
+8e257e17-6046-48d4-80f0-9e5659c78312	LOGIN	API	172.19.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-26 19:00:25.838497+00	\N
+b699a40b-7917-4693-b069-a3715db6763c	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-26 19:04:23.466082+00	\N
+8ab3b603-8671-4ee1-b079-887b05b44850	LOGIN	API	172.19.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-26 19:15:25.873018+00	\N
+f5ed86e7-91d2-4fa9-80bc-6f73c29b8345	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-26 19:19:23.474787+00	\N
+4512a107-b92d-49ca-9ba1-5e78cab919a5	LOGIN	API	172.19.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-26 19:30:46.422082+00	\N
+2ab8bc9a-4c9b-4b15-856c-ca960edda4d3	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-26 19:34:25.861343+00	\N
+32dea4e5-87db-4262-aae5-d2e980f3d743	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-26 19:49:41.063945+00	\N
+1fd0f782-cab0-4c86-9e64-fcb3c417ab69	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-26 20:04:46.477633+00	\N
+74214b5a-3b27-4871-be75-c61ee4ffd535	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-26 20:19:46.505602+00	\N
+a8828dde-d7b6-4b4d-ab41-bac0c219c63f	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-26 20:34:51.878812+00	\N
+e326f1f0-dc3c-4612-bc0f-4afe3153fb34	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-26 20:50:00.673415+00	\N
+1d928370-5dea-4895-97af-088482f5fa3a	LOGIN	API	172.19.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-26 20:54:08.49069+00	\N
+8a42c62e-df33-4575-b5eb-3cadcf9f452e	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-26 21:05:00.254901+00	\N
+8e8f1b59-aaa0-49e1-b52f-6fc71c6e904a	LOGIN	API	172.19.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-26 21:09:25.85539+00	\N
+6bca35fe-4bb9-4267-93ec-a472223a6d2b	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-26 21:20:00.239581+00	\N
+d3b36596-1323-4cdd-a4a2-cb0c571054b3	LOGIN	API	172.19.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-26 21:24:25.84399+00	\N
+5fc1601f-e539-4dec-aa42-08e278265d3b	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-26 21:35:00.232691+00	\N
+47011b5d-dc73-4e53-988e-0e6fb092f6cd	LOGIN	API	172.19.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-26 21:39:25.822819+00	\N
+0c0d1b6a-5a83-4754-b52f-f63839428441	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-26 21:50:00.240074+00	\N
+9d53c7ef-2a04-4376-8096-be3b93d45e71	LOGIN	API	172.19.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-26 21:54:38.550242+00	\N
+502ecccb-6ebf-44d7-9e94-d602a02e7164	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-26 22:05:25.8341+00	\N
+afce3f84-b7f1-4cac-95d5-a27d973699fd	LOGIN	API	172.19.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-26 22:09:38.577571+00	\N
+7f63f2e5-0c3a-4ebc-9af8-663efc6a19c0	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-26 22:20:25.862648+00	\N
+74676243-16b1-456e-b18c-1fd5c175ce6d	LOGIN	API	172.19.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-26 22:24:38.565203+00	\N
+885c7b96-80c8-4804-8856-f1755f813674	LOGIN	API	172.22.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-27 20:31:01.576335+00	\N
+8a067a9d-8d3e-4ff1-9c3b-28ce0af2a877	LOGIN	API	172.23.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-27 20:40:25.393345+00	\N
+a22e0b80-39b7-49dc-af95-fb827a7e86ad	LOGIN	API	172.23.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-27 20:46:05.86551+00	\N
+1ae6a751-9856-4e8a-9669-73eb05d4810b	LOGIN	API	172.23.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-27 20:56:08.81971+00	\N
+b6da3735-2567-4965-93b7-cb1f46c8fedb	LOGIN	API	172.25.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-28 06:06:18.751042+00	\N
 7f9f78ff-1b10-4d9b-9a5b-c1497fc2c0c7	LOGOUT	API	172.25.0.1	User logout	USER	\N	SUCCESS	2026-05-28 06:07:19.993877+00	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c
-fff89111-11c3-4947-96a8-efa8e1d14990	LOGIN	API	172.25.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 06:10:04.692871+00	\N
-81d728a5-1dc1-4524-96e0-46821856bd2a	LOGIN	API	172.25.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-28 06:12:10.515895+00	\N
-2c63d86a-aa13-44cf-97a6-f5de7202c287	LOGIN	API	172.25.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 06:25:08.806442+00	\N
-b80c45e7-74a2-4ab7-8e7e-ea93578b460e	LOGIN	API	172.25.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 06:40:08.829381+00	\N
-562079df-c214-4a69-bd58-d6017f674805	LOGIN	API	172.26.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 12:14:26.546733+00	\N
-63e6e115-359c-4655-ae82-3dfb470e3d8d	LOGIN	API	172.27.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 12:42:51.836861+00	\N
-6f52e9fe-4ee1-4263-acbc-77362b349045	LOGIN	API	172.27.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 12:58:09.274414+00	\N
-a7b17d52-244d-4b0c-aec6-1e4b25d0e37a	LOGIN	API	172.27.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 13:13:08.804747+00	\N
-a0d08cfb-085f-4c7d-a5f7-0d97f23ccfbf	LOGIN	API	172.27.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 13:28:08.803171+00	\N
-0fd735f6-106a-413b-95ec-ccb259e1eebc	LOGIN	API	172.27.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 13:43:08.854505+00	\N
-b9ba739e-9d12-499b-a72e-444bd4b03eec	LOGIN	API	172.27.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 13:58:08.830778+00	\N
-237c0fbb-f1aa-4429-bbb1-3a50b3691a46	LOGIN	API	172.27.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 14:13:08.83355+00	\N
-7b1cadfe-f5bd-43e9-8a1a-9e6d9118e67a	LOGIN	API	172.27.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 14:28:08.809629+00	\N
-52c814c9-603e-48c1-b29e-b59f461a7d85	LOGIN	API	172.27.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 14:43:08.839255+00	\N
-69803c30-2776-48ea-b697-9d220b1407c1	LOGIN	API	172.27.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 14:58:08.844355+00	\N
-bd9efa09-7386-4a7e-b207-79624c7ef9c6	LOGIN	API	172.27.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 15:13:08.827089+00	\N
-9bafdea5-750e-4174-9f35-581e3c3ff890	LOGIN	API	172.27.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 15:28:08.854978+00	\N
-1743b9b0-5766-4d15-831b-a89860e5df4e	LOGIN	API	172.27.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 15:43:08.841919+00	\N
-ce11b138-34c9-46e9-9247-59e2204de824	LOGIN	API	172.27.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 15:58:08.834735+00	\N
-4c2c3ee1-7fc0-4b10-9cad-3d69c7c2f981	LOGIN	API	172.27.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 16:13:08.827777+00	\N
-c8fc1cfa-aee3-4751-9b36-e859920b941f	LOGIN	API	172.27.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 16:28:08.833787+00	\N
-55ca79c0-e869-4532-8590-76697d46a406	LOGIN	API	172.27.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 16:43:08.830566+00	\N
-d044f0da-ba71-4c4c-a9c2-6555b490d59a	LOGIN	API	172.27.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 16:58:08.842001+00	\N
-2971ed63-9142-4af2-889d-be5a1bb3b232	LOGIN	API	172.27.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 17:13:08.828266+00	\N
-d49c0729-b0c4-4f71-94bd-21cd1c274883	LOGIN	API	172.27.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 17:28:08.811083+00	\N
-97c68c8d-b37f-42b2-8ccf-891c9051ebf1	LOGIN	API	172.30.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-28 19:52:59.251395+00	\N
-2ddc9481-52b7-4708-98ff-c182505dc76a	LOGIN	API	172.30.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 19:56:49.005573+00	\N
-2a4cdf2c-5393-4075-a6f1-b1f2f0f46d8a	UPDATE	API	172.30.0.1	Profile updated for user: citizen@tfg.es	USER	\N	SUCCESS	2026-05-28 19:59:30.844757+00	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c
-a235b5dd-f5b6-42f6-a180-e9eb1e3664fc	LOGIN	API	172.31.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-28 20:09:09.426824+00	\N
-414fe1da-6152-4d84-96d5-fc5d85c23896	LOGIN	API	172.31.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 20:11:49.841169+00	\N
+fff89111-11c3-4947-96a8-efa8e1d14990	LOGIN	API	172.25.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 06:10:04.692871+00	\N
+81d728a5-1dc1-4524-96e0-46821856bd2a	LOGIN	API	172.25.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-28 06:12:10.515895+00	\N
+2c63d86a-aa13-44cf-97a6-f5de7202c287	LOGIN	API	172.25.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 06:25:08.806442+00	\N
+b80c45e7-74a2-4ab7-8e7e-ea93578b460e	LOGIN	API	172.25.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 06:40:08.829381+00	\N
+562079df-c214-4a69-bd58-d6017f674805	LOGIN	API	172.26.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 12:14:26.546733+00	\N
+63e6e115-359c-4655-ae82-3dfb470e3d8d	LOGIN	API	172.27.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 12:42:51.836861+00	\N
+6f52e9fe-4ee1-4263-acbc-77362b349045	LOGIN	API	172.27.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 12:58:09.274414+00	\N
+a7b17d52-244d-4b0c-aec6-1e4b25d0e37a	LOGIN	API	172.27.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 13:13:08.804747+00	\N
+a0d08cfb-085f-4c7d-a5f7-0d97f23ccfbf	LOGIN	API	172.27.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 13:28:08.803171+00	\N
+0fd735f6-106a-413b-95ec-ccb259e1eebc	LOGIN	API	172.27.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 13:43:08.854505+00	\N
+b9ba739e-9d12-499b-a72e-444bd4b03eec	LOGIN	API	172.27.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 13:58:08.830778+00	\N
+237c0fbb-f1aa-4429-bbb1-3a50b3691a46	LOGIN	API	172.27.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 14:13:08.83355+00	\N
+7b1cadfe-f5bd-43e9-8a1a-9e6d9118e67a	LOGIN	API	172.27.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 14:28:08.809629+00	\N
+52c814c9-603e-48c1-b29e-b59f461a7d85	LOGIN	API	172.27.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 14:43:08.839255+00	\N
+69803c30-2776-48ea-b697-9d220b1407c1	LOGIN	API	172.27.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 14:58:08.844355+00	\N
+bd9efa09-7386-4a7e-b207-79624c7ef9c6	LOGIN	API	172.27.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 15:13:08.827089+00	\N
+9bafdea5-750e-4174-9f35-581e3c3ff890	LOGIN	API	172.27.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 15:28:08.854978+00	\N
+1743b9b0-5766-4d15-831b-a89860e5df4e	LOGIN	API	172.27.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 15:43:08.841919+00	\N
+ce11b138-34c9-46e9-9247-59e2204de824	LOGIN	API	172.27.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 15:58:08.834735+00	\N
+4c2c3ee1-7fc0-4b10-9cad-3d69c7c2f981	LOGIN	API	172.27.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 16:13:08.827777+00	\N
+c8fc1cfa-aee3-4751-9b36-e859920b941f	LOGIN	API	172.27.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 16:28:08.833787+00	\N
+55ca79c0-e869-4532-8590-76697d46a406	LOGIN	API	172.27.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 16:43:08.830566+00	\N
+d044f0da-ba71-4c4c-a9c2-6555b490d59a	LOGIN	API	172.27.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 16:58:08.842001+00	\N
+2971ed63-9142-4af2-889d-be5a1bb3b232	LOGIN	API	172.27.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 17:13:08.828266+00	\N
+d49c0729-b0c4-4f71-94bd-21cd1c274883	LOGIN	API	172.27.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 17:28:08.811083+00	\N
+97c68c8d-b37f-42b2-8ccf-891c9051ebf1	LOGIN	API	172.30.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-28 19:52:59.251395+00	\N
+2ddc9481-52b7-4708-98ff-c182505dc76a	LOGIN	API	172.30.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 19:56:49.005573+00	\N
+2a4cdf2c-5393-4075-a6f1-b1f2f0f46d8a	UPDATE	API	172.30.0.1	Profile updated for user: citizen@tfm.es	USER	\N	SUCCESS	2026-05-28 19:59:30.844757+00	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c
+a235b5dd-f5b6-42f6-a180-e9eb1e3664fc	LOGIN	API	172.31.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-28 20:09:09.426824+00	\N
+414fe1da-6152-4d84-96d5-fc5d85c23896	LOGIN	API	172.31.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 20:11:49.841169+00	\N
 6d3f2ee9-5c90-4a63-b0c9-0866f68280e6	CREATE	BACKOFFICE	192.168.16.1	Issued formal notification with status AVAILABLE	FORMAL_NOTIFICATION	5b4cfb8f-dbc0-4454-b35b-83dd67dad256	SUCCESS	2026-05-28 20:17:53.601284+00	81151e14-514b-4b0e-8afb-d9353a48807a
-f0721ca1-a25e-4b6f-9234-63545e43eac4	LOGIN	API	192.168.16.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-28 20:24:13.496054+00	\N
-d9dc1adb-0697-4b78-948d-d2af3074a813	LOGIN	API	192.168.16.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 20:27:08.84078+00	\N
+f0721ca1-a25e-4b6f-9234-63545e43eac4	LOGIN	API	192.168.16.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-28 20:24:13.496054+00	\N
+d9dc1adb-0697-4b78-948d-d2af3074a813	LOGIN	API	192.168.16.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 20:27:08.84078+00	\N
 d43d5417-a4fd-4ab4-898a-853c9a619560	UPDATE	CITIZEN	192.168.16.1	Citizen resolved formal notification with status ACCEPTED	FORMAL_NOTIFICATION	5b4cfb8f-dbc0-4454-b35b-83dd67dad256	SUCCESS	2026-05-28 20:30:47.619937+00	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c
-2b7cc604-8178-488d-a691-6173e54aad47	LOGIN	API	192.168.16.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-28 20:39:13.555214+00	\N
-9353d5fc-109b-499d-87d3-2694cc57ee1c	LOGIN	API	192.168.16.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 20:42:08.849501+00	\N
-c06e47c6-8fb3-4c9d-ac2a-e13c03a9ea42	LOGIN	API	192.168.64.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-28 21:34:38.14576+00	\N
-1f58fb11-6ec6-4fe2-bee7-bb097d22d147	LOGIN	API	192.168.64.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 21:38:23.624869+00	\N
+2b7cc604-8178-488d-a691-6173e54aad47	LOGIN	API	192.168.16.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-28 20:39:13.555214+00	\N
+9353d5fc-109b-499d-87d3-2694cc57ee1c	LOGIN	API	192.168.16.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 20:42:08.849501+00	\N
+c06e47c6-8fb3-4c9d-ac2a-e13c03a9ea42	LOGIN	API	192.168.64.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-28 21:34:38.14576+00	\N
+1f58fb11-6ec6-4fe2-bee7-bb097d22d147	LOGIN	API	192.168.64.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 21:38:23.624869+00	\N
 703035d0-0c99-4a75-9d48-2d6dd85d8db4	CREATE	BACKOFFICE	192.168.64.1	Issued formal notification with status AVAILABLE	FORMAL_NOTIFICATION	5c96d3a7-48b4-4fcd-ba04-0d6924defcee	SUCCESS	2026-05-28 21:38:49.485681+00	81151e14-514b-4b0e-8afb-d9353a48807a
 26cb57a1-ce2b-4f04-86d8-aad5236e7a55	UPDATE	CITIZEN	192.168.64.1	Citizen accessed formal notification	FORMAL_NOTIFICATION	5c96d3a7-48b4-4fcd-ba04-0d6924defcee	SUCCESS	2026-05-28 21:39:04.767328+00	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c
-487f3e09-5664-467a-86b2-f0c98c7c4233	LOGIN	API	192.168.64.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-28 21:41:13.809399+00	\N
-a210b6eb-22cc-4d31-925a-10d611715e80	LOGIN	API	192.168.64.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-28 21:41:17.827725+00	\N
-4a164a3a-3768-4f72-a749-60ef9bc6cf35	LOGIN	API	192.168.64.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-28 21:41:22.943934+00	\N
-94d76c23-0a43-423c-86d1-6572e25b382c	LOGIN	API	192.168.64.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-28 21:41:28.131666+00	\N
-bc313b2a-b1ff-4cf8-88ea-928c7aebd38a	LOGIN	API	192.168.64.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-28 21:41:35.95924+00	\N
-ca404da1-36fe-4efa-a492-9fb29b5a2922	LOGIN	API	192.168.64.1	Token refresh failed - token hash mismatch for citizen@tfg.es	USER	\N	FAILURE	2026-05-28 21:49:38.202547+00	\N
-33b35795-ef0c-47ea-ba17-1c12bc77008c	LOGIN	API	192.168.64.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 21:53:57.825087+00	\N
-a4a43d1d-c1ca-4bad-9939-a2e2b48e622c	LOGIN	API	192.168.80.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-28 22:02:48.930399+00	\N
-bf2a20ce-7ab6-49b7-82b7-b37bc0369eff	LOGIN	API	192.168.96.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-28 22:17:36.155569+00	\N
-6f8ff0de-d6b1-4371-b634-350172b6bfa6	LOGIN	API	192.168.128.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-28 22:32:36.833227+00	\N
-f3966555-f9f7-425d-b8c1-49715c2f28a5	LOGIN	API	192.168.128.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-28 22:33:09.3586+00	\N
-8767e7ff-cab9-4ff1-ab72-2581afccd0eb	LOGIN	API	192.168.128.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-29 05:29:05.04417+00	\N
-2ed828e8-eba1-4335-94e4-a3cb82a7b9c0	LOGIN	API	192.168.128.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-29 05:30:19.789202+00	\N
-44cbd275-7ed1-4ad9-b041-b3f3dc1ad24f	LOGIN	API	192.168.128.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-29 05:44:08.815641+00	\N
-ecfec06a-0849-43d1-bb3d-2288b6f3ae1f	LOGIN	API	192.168.128.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-29 05:45:19.865149+00	\N
-61fbb2fb-928e-4689-a80f-6850157b9f93	LOGIN	API	192.168.128.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-29 05:59:08.907726+00	\N
-f8da49f8-91d7-4192-adfc-591f401a930c	LOGIN	API	192.168.128.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-29 06:01:08.953721+00	\N
-d7a83f3f-c12c-40f5-8204-f88d5f91aeed	LOGIN	API	192.168.128.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-29 06:14:08.914347+00	\N
-b0dc3029-a031-4aa9-a26e-8c2e073b45bf	LOGIN	API	192.168.128.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-29 06:16:08.984968+00	\N
-c7839581-3f03-48cb-bed6-6dd15962ac15	LOGIN	API	192.168.128.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-29 06:29:08.842746+00	\N
-92d4033a-965b-4534-8b4d-9640a88f213b	LOGIN	API	192.168.128.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-29 06:31:09.042785+00	\N
-6f5b8782-f168-4013-a283-309f6888c81a	LOGIN	API	192.168.144.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-29 13:03:54.793865+00	\N
-5ae77b88-4ef2-4779-8ca4-cb5dd10f2ccc	LOGIN	API	192.168.144.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-05-29 13:04:10.613631+00	\N
-90a174ca-3ead-435a-9391-f3315c8b785c	LOGIN	API	192.168.144.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-29 13:18:54.869436+00	\N
-8ffa7c15-8b38-4b0b-aa14-3988672159e2	LOGIN	API	192.168.144.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-29 13:20:08.807744+00	\N
-14ec6f80-08d0-4e56-862a-5de809f4d285	LOGIN	API	192.168.144.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-29 13:33:54.882694+00	\N
-20c93476-fe15-483d-b327-b45b0e8000c4	LOGIN	API	192.168.144.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-29 13:35:08.811889+00	\N
-12a9d47f-7573-4199-acb2-98892990d86e	LOGIN	API	192.168.144.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-29 13:48:54.849383+00	\N
-b092fb12-c407-420e-bbab-14f6aa124db4	LOGIN	API	192.168.144.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-29 13:50:08.82581+00	\N
-96cbd0ee-4eda-4cfd-9e0a-d4afe6d5569a	LOGIN	API	192.168.144.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-29 14:03:54.825048+00	\N
-6abbbc22-2aa7-462f-8cda-ea3fc4cbb461	LOGIN	API	192.168.144.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-29 14:05:08.812954+00	\N
-1d01e6be-0e5b-40b5-be24-55ccd77cbebf	LOGIN	API	192.168.144.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-29 14:18:54.824076+00	\N
-6c733c8f-c559-4bc9-bbce-95811b03363c	LOGIN	API	192.168.144.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-29 14:20:08.798486+00	\N
-a70f300f-5e01-47e5-9f2c-2ad4fce46efc	LOGIN	API	192.168.144.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-29 14:33:54.870481+00	\N
-16846dc4-aa2d-46d0-8f7e-a133b21b02ad	LOGIN	API	192.168.160.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-05-29 14:37:47.605654+00	\N
-17ca2fb8-e63c-42ff-8307-f7c8fe8c879e	LOGIN	API	192.168.176.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-05-29 14:49:04.904266+00	\N
+487f3e09-5664-467a-86b2-f0c98c7c4233	LOGIN	API	192.168.64.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-28 21:41:13.809399+00	\N
+a210b6eb-22cc-4d31-925a-10d611715e80	LOGIN	API	192.168.64.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-28 21:41:17.827725+00	\N
+4a164a3a-3768-4f72-a749-60ef9bc6cf35	LOGIN	API	192.168.64.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-28 21:41:22.943934+00	\N
+94d76c23-0a43-423c-86d1-6572e25b382c	LOGIN	API	192.168.64.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-28 21:41:28.131666+00	\N
+bc313b2a-b1ff-4cf8-88ea-928c7aebd38a	LOGIN	API	192.168.64.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-28 21:41:35.95924+00	\N
+ca404da1-36fe-4efa-a492-9fb29b5a2922	LOGIN	API	192.168.64.1	Token refresh failed - token hash mismatch for citizen@tfm.es	USER	\N	FAILURE	2026-05-28 21:49:38.202547+00	\N
+33b35795-ef0c-47ea-ba17-1c12bc77008c	LOGIN	API	192.168.64.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 21:53:57.825087+00	\N
+a4a43d1d-c1ca-4bad-9939-a2e2b48e622c	LOGIN	API	192.168.80.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-28 22:02:48.930399+00	\N
+bf2a20ce-7ab6-49b7-82b7-b37bc0369eff	LOGIN	API	192.168.96.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-28 22:17:36.155569+00	\N
+6f8ff0de-d6b1-4371-b634-350172b6bfa6	LOGIN	API	192.168.128.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-28 22:32:36.833227+00	\N
+f3966555-f9f7-425d-b8c1-49715c2f28a5	LOGIN	API	192.168.128.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-28 22:33:09.3586+00	\N
+8767e7ff-cab9-4ff1-ab72-2581afccd0eb	LOGIN	API	192.168.128.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-29 05:29:05.04417+00	\N
+2ed828e8-eba1-4335-94e4-a3cb82a7b9c0	LOGIN	API	192.168.128.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-29 05:30:19.789202+00	\N
+44cbd275-7ed1-4ad9-b041-b3f3dc1ad24f	LOGIN	API	192.168.128.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-29 05:44:08.815641+00	\N
+ecfec06a-0849-43d1-bb3d-2288b6f3ae1f	LOGIN	API	192.168.128.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-29 05:45:19.865149+00	\N
+61fbb2fb-928e-4689-a80f-6850157b9f93	LOGIN	API	192.168.128.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-29 05:59:08.907726+00	\N
+f8da49f8-91d7-4192-adfc-591f401a930c	LOGIN	API	192.168.128.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-29 06:01:08.953721+00	\N
+d7a83f3f-c12c-40f5-8204-f88d5f91aeed	LOGIN	API	192.168.128.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-29 06:14:08.914347+00	\N
+b0dc3029-a031-4aa9-a26e-8c2e073b45bf	LOGIN	API	192.168.128.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-29 06:16:08.984968+00	\N
+c7839581-3f03-48cb-bed6-6dd15962ac15	LOGIN	API	192.168.128.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-29 06:29:08.842746+00	\N
+92d4033a-965b-4534-8b4d-9640a88f213b	LOGIN	API	192.168.128.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-29 06:31:09.042785+00	\N
+6f5b8782-f168-4013-a283-309f6888c81a	LOGIN	API	192.168.144.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-29 13:03:54.793865+00	\N
+5ae77b88-4ef2-4779-8ca4-cb5dd10f2ccc	LOGIN	API	192.168.144.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-05-29 13:04:10.613631+00	\N
+90a174ca-3ead-435a-9391-f3315c8b785c	LOGIN	API	192.168.144.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-29 13:18:54.869436+00	\N
+8ffa7c15-8b38-4b0b-aa14-3988672159e2	LOGIN	API	192.168.144.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-29 13:20:08.807744+00	\N
+14ec6f80-08d0-4e56-862a-5de809f4d285	LOGIN	API	192.168.144.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-29 13:33:54.882694+00	\N
+20c93476-fe15-483d-b327-b45b0e8000c4	LOGIN	API	192.168.144.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-29 13:35:08.811889+00	\N
+12a9d47f-7573-4199-acb2-98892990d86e	LOGIN	API	192.168.144.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-29 13:48:54.849383+00	\N
+b092fb12-c407-420e-bbab-14f6aa124db4	LOGIN	API	192.168.144.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-29 13:50:08.82581+00	\N
+96cbd0ee-4eda-4cfd-9e0a-d4afe6d5569a	LOGIN	API	192.168.144.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-29 14:03:54.825048+00	\N
+6abbbc22-2aa7-462f-8cda-ea3fc4cbb461	LOGIN	API	192.168.144.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-29 14:05:08.812954+00	\N
+1d01e6be-0e5b-40b5-be24-55ccd77cbebf	LOGIN	API	192.168.144.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-29 14:18:54.824076+00	\N
+6c733c8f-c559-4bc9-bbce-95811b03363c	LOGIN	API	192.168.144.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-29 14:20:08.798486+00	\N
+a70f300f-5e01-47e5-9f2c-2ad4fce46efc	LOGIN	API	192.168.144.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-29 14:33:54.870481+00	\N
+16846dc4-aa2d-46d0-8f7e-a133b21b02ad	LOGIN	API	192.168.160.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-05-29 14:37:47.605654+00	\N
+17ca2fb8-e63c-42ff-8307-f7c8fe8c879e	LOGIN	API	192.168.176.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-05-29 14:49:04.904266+00	\N
 9fbf948e-092c-40c7-98a7-ebf9266910dd	UPDATE	CITIZEN	192.168.176.1	Citizen resolved formal notification with status ACCEPTED	FORMAL_NOTIFICATION	5c96d3a7-48b4-4fcd-ba04-0d6924defcee	SUCCESS	2026-05-29 14:49:04.951134+00	3ca3f719-8e80-4e77-b9a0-f8d2a5fc262c
-ae931022-b9ed-4117-86eb-c1bc615cdd0d	LOGIN	API	192.168.176.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-05-29 14:49:57.300931+00	\N
-48e44e14-c594-4945-82ad-3019ce204426	LOGIN	API	172.19.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-06-01 06:25:46.338273+00	\N
-8aaed918-d584-4863-b349-45a5a9181af4	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-01 06:41:26.278447+00	\N
-964fcda7-3fa1-42e2-819c-0783b360b097	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-01 06:56:26.347755+00	\N
-7ab98310-5a08-442c-9707-c63d3ffe0855	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-01 07:11:43.506802+00	\N
-2c413423-b827-491d-b584-306644ecb6b8	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-01 07:26:43.504353+00	\N
-abcabd20-6e1e-4a92-82b2-04aeb9a8a828	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-01 07:41:43.506616+00	\N
-06571816-aaf9-42ae-9314-d8a8107e9b04	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-01 07:56:43.529035+00	\N
-d8cea819-d109-4149-8523-60d79acd370f	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-01 08:11:43.50728+00	\N
-2fd6a39b-2eb4-4702-8366-39c38f1411a0	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-01 08:26:43.516975+00	\N
-6b5a89af-1842-47ad-8c13-ceb80a4c1433	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-01 08:41:43.503559+00	\N
-9a5b49d2-1def-475c-a626-9402ebbd9713	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-01 08:56:43.509785+00	\N
-34bd58b7-dabc-4c8e-8acf-101b68dae68d	LOGIN	API	172.20.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-06-01 09:41:24.205156+00	\N
-5222e941-e339-4d4b-87b4-e5a2edb5668c	LOGIN	API	172.21.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-01 09:56:45.436648+00	\N
-4a1b0a42-5ad0-4cb9-b514-7bd7d1e5485f	LOGIN	API	172.18.0.1	Invalid password for admin@tfg.es	USER	\N	FAILURE	2026-06-01 20:41:04.244217+00	\N
-c7c4548e-0553-40c3-a27d-cd2e422b0ad0	LOGIN	API	172.18.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-06-01 20:41:09.180682+00	\N
-009967af-cbeb-4e63-bda6-eaf1af0ae509	LOGIN	API	172.18.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-01 20:56:37.881415+00	\N
-6fb9dbf2-1990-4d87-91c9-501007e00451	LOGIN	API	172.18.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-01 21:11:37.852283+00	\N
-fe6ccd0f-6e78-490d-a01e-daf5ccd792d4	LOGIN	API	172.20.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-06-02 08:14:59.583799+00	\N
-7d875d3b-bb99-4a41-a25f-12b23b896bc0	LOGIN	API	172.20.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-02 08:29:59.801953+00	\N
-4287d625-a097-4f68-ab3f-53c3a138d79b	LOGIN	API	172.20.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-02 08:44:59.623655+00	\N
-54fe00ba-44a3-47ca-8bf8-7a6ae5f12310	LOGIN	API	172.20.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-02 09:00:26.837928+00	\N
-085716d5-002d-48cc-ac4e-b1b1941ef3d0	LOGIN	API	172.20.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-02 09:15:26.863397+00	\N
-7a1760bf-996f-4667-8bb4-d85a17b1eee2	LOGIN	API	172.20.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-02 09:30:26.841509+00	\N
-f2a4529a-443a-4c81-8123-4a6c08846ec2	LOGIN	API	172.18.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-06-02 18:04:51.633941+00	\N
-aabee383-c4d5-4c57-85d1-5f1f97cd58da	LOGIN	API	172.18.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-06-02 18:13:13.774271+00	\N
-9cc2734b-7946-4384-8d41-3d475741f7b1	LOGIN	API	172.18.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-02 18:19:52.519685+00	\N
-5c78de1d-1dbe-43f5-aa8b-c734071dbc92	LOGIN	API	172.18.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-02 18:28:22.057702+00	\N
-f9c596ce-c626-4c04-aa3c-88ddefef9a24	LOGIN	API	172.18.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-02 18:35:21.771273+00	\N
-21f87359-8b9a-4f57-8085-ea5f87593faa	LOGIN	API	172.18.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-02 18:43:52.564136+00	\N
-91d20517-e1ae-47b9-a8c3-7c91d809f2dc	LOGIN	API	172.18.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-02 18:50:21.769202+00	\N
-92613ad8-e7d1-429d-9de5-99a8836fbf77	LOGIN	API	172.18.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-02 18:58:52.459403+00	\N
-4169c3f5-715b-470b-9a31-50b88975cc8d	LOGIN	API	172.18.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-02 19:05:21.824055+00	\N
-556e3e7b-b5e0-44ca-8b57-b80242db5141	LOGIN	API	172.18.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-02 19:13:52.560598+00	\N
-fe1d96df-d255-45d6-ab05-b6aec50d5cc7	LOGIN	API	172.18.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-02 19:20:21.848708+00	\N
-a214d05d-0176-4a38-b883-99540d60a86b	LOGIN	API	172.19.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-06-02 20:20:04.064648+00	\N
-158c1720-0bd3-4475-8419-5912392a35ee	LOGIN	API	172.20.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-02 20:36:51.427714+00	\N
+ae931022-b9ed-4117-86eb-c1bc615cdd0d	LOGIN	API	192.168.176.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-05-29 14:49:57.300931+00	\N
+48e44e14-c594-4945-82ad-3019ce204426	LOGIN	API	172.19.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-06-01 06:25:46.338273+00	\N
+8aaed918-d584-4863-b349-45a5a9181af4	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-01 06:41:26.278447+00	\N
+964fcda7-3fa1-42e2-819c-0783b360b097	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-01 06:56:26.347755+00	\N
+7ab98310-5a08-442c-9707-c63d3ffe0855	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-01 07:11:43.506802+00	\N
+2c413423-b827-491d-b584-306644ecb6b8	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-01 07:26:43.504353+00	\N
+abcabd20-6e1e-4a92-82b2-04aeb9a8a828	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-01 07:41:43.506616+00	\N
+06571816-aaf9-42ae-9314-d8a8107e9b04	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-01 07:56:43.529035+00	\N
+d8cea819-d109-4149-8523-60d79acd370f	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-01 08:11:43.50728+00	\N
+2fd6a39b-2eb4-4702-8366-39c38f1411a0	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-01 08:26:43.516975+00	\N
+6b5a89af-1842-47ad-8c13-ceb80a4c1433	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-01 08:41:43.503559+00	\N
+9a5b49d2-1def-475c-a626-9402ebbd9713	LOGIN	API	172.19.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-01 08:56:43.509785+00	\N
+34bd58b7-dabc-4c8e-8acf-101b68dae68d	LOGIN	API	172.20.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-06-01 09:41:24.205156+00	\N
+5222e941-e339-4d4b-87b4-e5a2edb5668c	LOGIN	API	172.21.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-01 09:56:45.436648+00	\N
+4a1b0a42-5ad0-4cb9-b514-7bd7d1e5485f	LOGIN	API	172.18.0.1	Invalid password for admin@tfm.es	USER	\N	FAILURE	2026-06-01 20:41:04.244217+00	\N
+c7c4548e-0553-40c3-a27d-cd2e422b0ad0	LOGIN	API	172.18.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-06-01 20:41:09.180682+00	\N
+009967af-cbeb-4e63-bda6-eaf1af0ae509	LOGIN	API	172.18.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-01 20:56:37.881415+00	\N
+6fb9dbf2-1990-4d87-91c9-501007e00451	LOGIN	API	172.18.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-01 21:11:37.852283+00	\N
+fe6ccd0f-6e78-490d-a01e-daf5ccd792d4	LOGIN	API	172.20.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-06-02 08:14:59.583799+00	\N
+7d875d3b-bb99-4a41-a25f-12b23b896bc0	LOGIN	API	172.20.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-02 08:29:59.801953+00	\N
+4287d625-a097-4f68-ab3f-53c3a138d79b	LOGIN	API	172.20.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-02 08:44:59.623655+00	\N
+54fe00ba-44a3-47ca-8bf8-7a6ae5f12310	LOGIN	API	172.20.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-02 09:00:26.837928+00	\N
+085716d5-002d-48cc-ac4e-b1b1941ef3d0	LOGIN	API	172.20.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-02 09:15:26.863397+00	\N
+7a1760bf-996f-4667-8bb4-d85a17b1eee2	LOGIN	API	172.20.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-02 09:30:26.841509+00	\N
+f2a4529a-443a-4c81-8123-4a6c08846ec2	LOGIN	API	172.18.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-06-02 18:04:51.633941+00	\N
+aabee383-c4d5-4c57-85d1-5f1f97cd58da	LOGIN	API	172.18.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-06-02 18:13:13.774271+00	\N
+9cc2734b-7946-4384-8d41-3d475741f7b1	LOGIN	API	172.18.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-02 18:19:52.519685+00	\N
+5c78de1d-1dbe-43f5-aa8b-c734071dbc92	LOGIN	API	172.18.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-02 18:28:22.057702+00	\N
+f9c596ce-c626-4c04-aa3c-88ddefef9a24	LOGIN	API	172.18.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-02 18:35:21.771273+00	\N
+21f87359-8b9a-4f57-8085-ea5f87593faa	LOGIN	API	172.18.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-02 18:43:52.564136+00	\N
+91d20517-e1ae-47b9-a8c3-7c91d809f2dc	LOGIN	API	172.18.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-02 18:50:21.769202+00	\N
+92613ad8-e7d1-429d-9de5-99a8836fbf77	LOGIN	API	172.18.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-02 18:58:52.459403+00	\N
+4169c3f5-715b-470b-9a31-50b88975cc8d	LOGIN	API	172.18.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-02 19:05:21.824055+00	\N
+556e3e7b-b5e0-44ca-8b57-b80242db5141	LOGIN	API	172.18.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-02 19:13:52.560598+00	\N
+fe1d96df-d255-45d6-ab05-b6aec50d5cc7	LOGIN	API	172.18.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-02 19:20:21.848708+00	\N
+a214d05d-0176-4a38-b883-99540d60a86b	LOGIN	API	172.19.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-06-02 20:20:04.064648+00	\N
+158c1720-0bd3-4475-8419-5912392a35ee	LOGIN	API	172.20.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-02 20:36:51.427714+00	\N
 d91ba94f-d681-45e7-89b5-98fdef394661	LOGOUT	API	172.20.0.1	User logout	USER	\N	SUCCESS	2026-06-02 20:36:52.040286+00	81151e14-514b-4b0e-8afb-d9353a48807a
-d0226bad-29d1-49cd-b547-6d1434ffc018	LOGIN	API	172.20.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-06-02 20:37:07.413263+00	\N
-970ddd60-775b-41e4-bafd-ee1247bfbc64	LOGIN	API	172.20.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-06-02 20:41:16.218386+00	\N
-ca983a7e-27a4-48ad-af04-ec9a39432380	LOGIN	API	172.20.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-02 20:52:08.025922+00	\N
+d0226bad-29d1-49cd-b547-6d1434ffc018	LOGIN	API	172.20.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-06-02 20:37:07.413263+00	\N
+970ddd60-775b-41e4-bafd-ee1247bfbc64	LOGIN	API	172.20.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-06-02 20:41:16.218386+00	\N
+ca983a7e-27a4-48ad-af04-ec9a39432380	LOGIN	API	172.20.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-02 20:52:08.025922+00	\N
 c58c044b-f134-4d52-bced-a8088da683c3	LOGOUT	API	172.20.0.1	User logout	USER	\N	SUCCESS	2026-06-02 20:52:08.423786+00	81151e14-514b-4b0e-8afb-d9353a48807a
-e3a35ec7-8f00-4d46-8116-fbeb5fc218a8	LOGIN	API	172.20.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-06-02 20:52:47.78559+00	\N
-deef1ab6-3db9-4c1d-a201-35f737b19920	LOGIN	API	172.20.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-02 20:56:52.728994+00	\N
-ea049341-8454-47c1-9742-174bdf4398ea	LOGIN	API	172.20.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-02 21:07:47.962455+00	\N
-f8faac4e-2d46-4e8c-a7db-53e03f0bd296	LOGIN	API	172.20.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-02 21:11:52.842546+00	\N
-cf53cfe7-d320-4ef3-ac31-bed3a89b3c04	LOGIN	API	172.21.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-02 21:28:16.758367+00	\N
-3149ab5b-0ddb-4327-a21a-b7a1db245ca0	LOGIN	API	172.21.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-06-02 21:31:09.965321+00	\N
-8d3354da-9e1e-444e-8a26-8a5e96f841bf	LOGIN	API	172.23.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-06-02 21:56:10.709721+00	\N
-f40b7eeb-4d88-4120-b911-2343a9ccb03b	LOGIN	API	172.23.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-06-02 22:01:07.414153+00	\N
-de2c1a81-b6bb-4cf1-bdb4-6aa345176d8d	LOGIN	API	172.23.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-06-02 22:04:30.05736+00	\N
-5b2c734b-185f-48fe-9651-09c45067559d	LOGIN	API	172.23.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-02 22:11:10.93231+00	\N
-cd0ec6ff-0650-4048-9b87-90788b48974d	LOGIN	API	172.23.0.1	Token refresh failed - token hash mismatch for citizen@tfg.es	USER	\N	FAILURE	2026-06-02 22:16:07.468895+00	\N
-86ebb472-9ed1-42dd-8fcf-59639c58e987	LOGIN	API	172.23.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-02 22:19:52.45484+00	\N
-e5e0b1bc-8375-4f82-b572-39d2adbbc88e	LOGIN	API	172.23.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-02 22:26:10.794799+00	\N
-995ab2e9-79a6-442c-9f36-969f99b59bae	LOGIN	API	172.24.0.1	Invalid password for admin@tfg.es	USER	\N	FAILURE	2026-06-03 11:37:03.194125+00	\N
-19fc85ea-964c-4cd7-8a23-37a0ca5537cd	LOGIN	API	172.24.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-06-22 13:59:22.139177+00	\N
-1f355174-2226-459f-af61-9f53843283e7	LOGIN	API	172.24.0.1	Invalid password for admin@tfg.es	USER	\N	FAILURE	2026-06-22 14:06:18.860284+00	\N
-3b80c214-fd78-42c8-bb1a-fa054123166e	LOGIN	API	172.24.0.1	Login successful for admin@tfg.es	USER	\N	SUCCESS	2026-06-22 14:06:56.333798+00	\N
-78181872-0c5b-4483-a75d-2d4428557f33	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-22 14:14:21.093256+00	\N
-7845dcd0-8cf1-4cb1-b142-bd3871eed556	LOGIN	API	172.24.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-22 14:22:12.838301+00	\N
-de58bcb7-69a4-4781-848b-fac8ad2dbb4c	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-22 14:29:21.073136+00	\N
-3ec7a47c-7b2f-478e-bf98-38c5fa8e4553	LOGIN	API	172.24.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-22 14:37:12.894581+00	\N
-7b53a8fd-c9ec-480b-a037-1e090834f94f	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-22 14:44:21.084278+00	\N
-66ee4908-043b-4c4c-810c-6ab349dd979d	LOGIN	API	172.24.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-22 14:52:12.871525+00	\N
-dce20f57-0d9b-4093-a268-c8df207a1f4e	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-22 14:59:21.112222+00	\N
-ebe1b58f-7c51-4d64-88cc-d176b929f07e	LOGIN	API	172.24.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-22 15:07:12.866714+00	\N
-40bd54c0-d52f-454f-a906-fbe32b5a40dd	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-22 15:14:21.084697+00	\N
-f374094a-89af-49b3-a32f-cb72a0891abe	LOGIN	API	172.24.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-22 15:22:12.871285+00	\N
-b411943e-613f-400e-b035-c1c7f1a4f179	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-22 15:29:21.121018+00	\N
-a596f3f7-2c7d-4e39-8c62-7a821f05e697	LOGIN	API	172.24.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-22 15:37:12.835055+00	\N
-101736e1-643d-480e-8ed7-8bf74778719a	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-22 15:44:21.108174+00	\N
-a194cefe-492d-4473-932c-d866ffd12b3a	LOGIN	API	172.24.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-22 15:52:12.834513+00	\N
-87bd3ea0-336c-43e2-8339-0f8178bc87f5	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-22 15:59:21.123733+00	\N
-5476644c-bbb3-41cf-b45d-648eec19c581	LOGIN	API	172.24.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-22 16:07:12.842435+00	\N
-8006a729-be83-43a0-a048-3742cf26f412	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-22 16:14:21.06386+00	\N
-1eed6b03-7de7-4b95-867f-69442f090632	LOGIN	API	172.24.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-22 16:22:12.832218+00	\N
-d623bb9b-8b8b-4ba3-a961-f2f9e85d7c4f	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-22 16:29:21.115798+00	\N
-f842a91d-666c-4d38-9f4d-82f92131e011	LOGIN	API	172.24.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-22 16:37:12.863609+00	\N
-c723b837-1011-4f55-9706-f9d3609dd421	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-22 16:44:21.072766+00	\N
-febd3b94-11db-49ea-b3ab-43bfe1d38d14	LOGIN	API	172.24.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-22 16:52:12.844286+00	\N
-1ac7259f-2973-478f-8359-4f05f3a4ebc5	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-22 16:59:21.122421+00	\N
-82c0a8c2-a4d0-40a5-b6d6-d5b3665a919e	LOGIN	API	172.24.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-22 17:07:12.860036+00	\N
-48dc50db-cc49-4af6-9f8c-6bd289e1082f	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-22 17:15:12.86276+00	\N
-da31d71f-5c16-46bd-820d-4ec7bf25e13d	LOGIN	API	172.24.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-22 17:22:12.835803+00	\N
-529c19b3-8b98-4d5f-a8c5-fb2a00868567	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfg.es	USER	\N	SUCCESS	2026-06-22 17:30:13.000074+00	\N
-066ea8dd-c199-46d7-bb75-55a999b5f0e8	LOGIN	API	172.24.0.1	Token refreshed for admin@tfg.es	USER	\N	SUCCESS	2026-06-22 17:37:12.874315+00	\N
-d668e244-5bfd-4f20-9633-e5db3cc44eb8	LOGIN	API	172.18.0.1	Login successful for citizen@tfg.es	USER	\N	SUCCESS	2026-06-23 17:41:30.573725+00	\N
+e3a35ec7-8f00-4d46-8116-fbeb5fc218a8	LOGIN	API	172.20.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-06-02 20:52:47.78559+00	\N
+deef1ab6-3db9-4c1d-a201-35f737b19920	LOGIN	API	172.20.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-02 20:56:52.728994+00	\N
+ea049341-8454-47c1-9742-174bdf4398ea	LOGIN	API	172.20.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-02 21:07:47.962455+00	\N
+f8faac4e-2d46-4e8c-a7db-53e03f0bd296	LOGIN	API	172.20.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-02 21:11:52.842546+00	\N
+cf53cfe7-d320-4ef3-ac31-bed3a89b3c04	LOGIN	API	172.21.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-02 21:28:16.758367+00	\N
+3149ab5b-0ddb-4327-a21a-b7a1db245ca0	LOGIN	API	172.21.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-06-02 21:31:09.965321+00	\N
+8d3354da-9e1e-444e-8a26-8a5e96f841bf	LOGIN	API	172.23.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-06-02 21:56:10.709721+00	\N
+f40b7eeb-4d88-4120-b911-2343a9ccb03b	LOGIN	API	172.23.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-06-02 22:01:07.414153+00	\N
+de2c1a81-b6bb-4cf1-bdb4-6aa345176d8d	LOGIN	API	172.23.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-06-02 22:04:30.05736+00	\N
+5b2c734b-185f-48fe-9651-09c45067559d	LOGIN	API	172.23.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-02 22:11:10.93231+00	\N
+cd0ec6ff-0650-4048-9b87-90788b48974d	LOGIN	API	172.23.0.1	Token refresh failed - token hash mismatch for citizen@tfm.es	USER	\N	FAILURE	2026-06-02 22:16:07.468895+00	\N
+86ebb472-9ed1-42dd-8fcf-59639c58e987	LOGIN	API	172.23.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-02 22:19:52.45484+00	\N
+e5e0b1bc-8375-4f82-b572-39d2adbbc88e	LOGIN	API	172.23.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-02 22:26:10.794799+00	\N
+995ab2e9-79a6-442c-9f36-969f99b59bae	LOGIN	API	172.24.0.1	Invalid password for admin@tfm.es	USER	\N	FAILURE	2026-06-03 11:37:03.194125+00	\N
+19fc85ea-964c-4cd7-8a23-37a0ca5537cd	LOGIN	API	172.24.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-06-22 13:59:22.139177+00	\N
+1f355174-2226-459f-af61-9f53843283e7	LOGIN	API	172.24.0.1	Invalid password for admin@tfm.es	USER	\N	FAILURE	2026-06-22 14:06:18.860284+00	\N
+3b80c214-fd78-42c8-bb1a-fa054123166e	LOGIN	API	172.24.0.1	Login successful for admin@tfm.es	USER	\N	SUCCESS	2026-06-22 14:06:56.333798+00	\N
+78181872-0c5b-4483-a75d-2d4428557f33	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-22 14:14:21.093256+00	\N
+7845dcd0-8cf1-4cb1-b142-bd3871eed556	LOGIN	API	172.24.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-22 14:22:12.838301+00	\N
+de58bcb7-69a4-4781-848b-fac8ad2dbb4c	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-22 14:29:21.073136+00	\N
+3ec7a47c-7b2f-478e-bf98-38c5fa8e4553	LOGIN	API	172.24.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-22 14:37:12.894581+00	\N
+7b53a8fd-c9ec-480b-a037-1e090834f94f	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-22 14:44:21.084278+00	\N
+66ee4908-043b-4c4c-810c-6ab349dd979d	LOGIN	API	172.24.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-22 14:52:12.871525+00	\N
+dce20f57-0d9b-4093-a268-c8df207a1f4e	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-22 14:59:21.112222+00	\N
+ebe1b58f-7c51-4d64-88cc-d176b929f07e	LOGIN	API	172.24.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-22 15:07:12.866714+00	\N
+40bd54c0-d52f-454f-a906-fbe32b5a40dd	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-22 15:14:21.084697+00	\N
+f374094a-89af-49b3-a32f-cb72a0891abe	LOGIN	API	172.24.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-22 15:22:12.871285+00	\N
+b411943e-613f-400e-b035-c1c7f1a4f179	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-22 15:29:21.121018+00	\N
+a596f3f7-2c7d-4e39-8c62-7a821f05e697	LOGIN	API	172.24.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-22 15:37:12.835055+00	\N
+101736e1-643d-480e-8ed7-8bf74778719a	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-22 15:44:21.108174+00	\N
+a194cefe-492d-4473-932c-d866ffd12b3a	LOGIN	API	172.24.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-22 15:52:12.834513+00	\N
+87bd3ea0-336c-43e2-8339-0f8178bc87f5	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-22 15:59:21.123733+00	\N
+5476644c-bbb3-41cf-b45d-648eec19c581	LOGIN	API	172.24.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-22 16:07:12.842435+00	\N
+8006a729-be83-43a0-a048-3742cf26f412	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-22 16:14:21.06386+00	\N
+1eed6b03-7de7-4b95-867f-69442f090632	LOGIN	API	172.24.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-22 16:22:12.832218+00	\N
+d623bb9b-8b8b-4ba3-a961-f2f9e85d7c4f	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-22 16:29:21.115798+00	\N
+f842a91d-666c-4d38-9f4d-82f92131e011	LOGIN	API	172.24.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-22 16:37:12.863609+00	\N
+c723b837-1011-4f55-9706-f9d3609dd421	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-22 16:44:21.072766+00	\N
+febd3b94-11db-49ea-b3ab-43bfe1d38d14	LOGIN	API	172.24.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-22 16:52:12.844286+00	\N
+1ac7259f-2973-478f-8359-4f05f3a4ebc5	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-22 16:59:21.122421+00	\N
+82c0a8c2-a4d0-40a5-b6d6-d5b3665a919e	LOGIN	API	172.24.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-22 17:07:12.860036+00	\N
+48dc50db-cc49-4af6-9f8c-6bd289e1082f	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-22 17:15:12.86276+00	\N
+da31d71f-5c16-46bd-820d-4ec7bf25e13d	LOGIN	API	172.24.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-22 17:22:12.835803+00	\N
+529c19b3-8b98-4d5f-a8c5-fb2a00868567	LOGIN	API	172.24.0.1	Token refreshed for citizen@tfm.es	USER	\N	SUCCESS	2026-06-22 17:30:13.000074+00	\N
+066ea8dd-c199-46d7-bb75-55a999b5f0e8	LOGIN	API	172.24.0.1	Token refreshed for admin@tfm.es	USER	\N	SUCCESS	2026-06-22 17:37:12.874315+00	\N
+d668e244-5bfd-4f20-9633-e5db3cc44eb8	LOGIN	API	172.18.0.1	Login successful for citizen@tfm.es	USER	\N	SUCCESS	2026-06-23 17:41:30.573725+00	\N
 \.
 
 

@@ -208,8 +208,8 @@ npx ng serve --configuration development --port 4300
 ```
 
 **Dev Users:**
-- Admin: `admin@tfg.es / Admin1234`
-- Citizen: `citizen@tfg.es / Citizen1`
+- Admin: `admin@tfm.es / Admin1234`
+- Citizen: `citizen@tfm.es / Citizen1`
 
 ### Production Mode (PostgreSQL)
 
@@ -258,7 +258,7 @@ brew install k6  # macOS
 
 # Run load tests
 cd performance
-BASE_URL=http://localhost:8080/api/v1 EMAIL=citizen@tfg.es PASSWORD=Citizen1 k6 run api-load-test.js
+BASE_URL=http://localhost:8080/api/v1 EMAIL=citizen@tfm.es PASSWORD=Citizen1 k6 run api-load-test.js
 ```
 
 **Load Profile:**
@@ -311,7 +311,7 @@ BASE_URL=http://localhost:8080/api/v1 EMAIL=citizen@tfg.es PASSWORD=Citizen1 k6 
 ```
 TFG/
 ├── backend/                 # Spring Boot API
-│   ├── src/main/java/es/tfg/records/
+│   ├── src/main/java/es/tfm/records/
 │   │   ├── domain/          # Domain entities and ports
 │   │   ├── application/     # Use case services
 │   │   ├── infrastructure/  # JPA, security, config

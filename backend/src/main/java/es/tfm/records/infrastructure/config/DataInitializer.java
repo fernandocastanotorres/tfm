@@ -37,7 +37,7 @@ import java.util.UUID;
  * Data initializer for development seeding.
  *
  * Seeds:
- * - Test users: citizen (citizen@tfg.es / Citizen1) and admin (admin@tfg.es / Admin1234)
+ * - Test users: citizen (citizen@tfm.es / Citizen1) and admin (admin@tfm.es / Admin1234)
  * - Procedure types with form schemas and tasks
  * - Sample cases for the citizen user
  * - Public content (FAQ, calendar, organisms, legislation)
@@ -254,24 +254,24 @@ public class DataInitializer {
             UUID citizenId = UUID.randomUUID();
             User citizen = new User();
             citizen.setId(citizenId);
-            citizen.setEmail("citizen@tfg.es");
+            citizen.setEmail("citizen@tfm.es");
             citizen.setPasswordHash(passwordEncoder.encode("Citizen1"));
             citizen.setDisplayName("Test Citizen");
             citizen.setRoles(Set.of("ROLE_CITIZEN"));
             citizen.setActive(true);
             userRepository.save(citizen);
-            log.info("Created citizen user: citizen@tfg.es");
+            log.info("Created citizen user: citizen@tfm.es");
 
             UUID adminId = UUID.randomUUID();
             User admin = new User();
             admin.setId(adminId);
-            admin.setEmail("admin@tfg.es");
+            admin.setEmail("admin@tfm.es");
             admin.setPasswordHash(passwordEncoder.encode("Admin1234"));
             admin.setDisplayName("Test Admin");
             admin.setRoles(Set.of("ROLE_ADMIN", "ROLE_CITIZEN"));
             admin.setActive(true);
             userRepository.save(admin);
-            log.info("Created admin user: admin@tfg.es");
+            log.info("Created admin user: admin@tfm.es");
 
             // --- Seed procedure types ---
             List<UUID> seededProcedureTypeIds = new ArrayList<>();

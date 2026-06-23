@@ -2,7 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:flowable="http://flowable.org/bpmn"
-             targetNamespace="http://tfg.es/workflow">
+             targetNamespace="http://tfm.es/workflow">
 
   <process id="realisticCitizenProcedure" name="Realistic Citizen Procedure" isExecutable="true">
     <startEvent id="startEvent" name="Start"/>

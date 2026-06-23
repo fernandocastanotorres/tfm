@@ -24,7 +24,7 @@ export class I18nService {
   }
 
   init(): void {
-    const stored = localStorage.getItem('tfg.locale') as SupportedLocale | null;
+    const stored = localStorage.getItem('tfm.locale') as SupportedLocale | null;
     const browser = this.translate.getBrowserCultureLang() as SupportedLocale | null;
 
     let initial: SupportedLocale = 'es-ES';
@@ -41,7 +41,7 @@ export class I18nService {
   }
 
   setLocale(locale: SupportedLocale): void {
-    localStorage.setItem('tfg.locale', locale);
+    localStorage.setItem('tfm.locale', locale);
     this.translate.use(locale);
   }
 

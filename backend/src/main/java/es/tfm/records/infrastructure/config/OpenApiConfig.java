@@ -33,7 +33,7 @@ public class OpenApiConfig {
                         .version("v1.0.0")
                         .contact(new Contact()
                                 .name("TFG Team")
-                                .email("support@tfg.es"))
+                                .email("support@tfm.es"))
                         .license(new License()
                                 .name("Apache 2.0")
                                 .url("https://www.apache.org/licenses/LICENSE-2.0")))

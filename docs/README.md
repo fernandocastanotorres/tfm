@@ -84,8 +84,8 @@ Backoffice dev server uses proxy to backend API (`/api/v1 -> http://localhost:80
 - Backend health: `http://localhost:8080/api/v1/health/live`
 - Sede app: `http://localhost:4200`
 - Backoffice app: `http://localhost:4300`
-- Dev admin user: `admin@tfg.es / Admin1234`
-- Dev citizen user: `citizen@tfg.es / Citizen1`
+- Dev admin user: `admin@tfm.es / Admin1234`
+- Dev citizen user: `citizen@tfm.es / Citizen1`
 
 ### Important
 

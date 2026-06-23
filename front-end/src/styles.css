@@ -339,7 +339,7 @@ a {
 }
 
 /* Guided tour styles aligned with Sede visual language */
-.introjs-tooltip.tfg-tour-tooltip {
+.introjs-tooltip.tfm-tour-tooltip {
   border-radius: 16px;
   border: 1px solid #dbe3ef;
   box-shadow: 0 20px 45px rgba(15, 23, 42, 0.22);
@@ -350,22 +350,22 @@ a {
   line-height: 1.45;
 }
 
-.introjs-tooltip.tfg-tour-tooltip .introjs-tooltip-header {
+.introjs-tooltip.tfm-tour-tooltip .introjs-tooltip-header {
   min-height: auto;
   padding: 0 0 8px 0;
 }
 
-.introjs-tooltip.tfg-tour-tooltip .introjs-tooltip-title {
+.introjs-tooltip.tfm-tour-tooltip .introjs-tooltip-title {
   font-size: 15px;
   font-weight: 700;
   color: #0b3a82;
 }
 
-.introjs-tooltip.tfg-tour-tooltip .introjs-tooltiptext {
+.introjs-tooltip.tfm-tour-tooltip .introjs-tooltiptext {
   padding: 0;
 }
 
-.introjs-tooltip.tfg-tour-tooltip .introjs-button {
+.introjs-tooltip.tfm-tour-tooltip .introjs-button {
   border-radius: 10px;
   border: 1px solid #dbe3ef;
   text-shadow: none;
@@ -375,41 +375,41 @@ a {
   padding: 6px 12px;
 }
 
-.introjs-tooltip.tfg-tour-tooltip .introjs-nextbutton {
+.introjs-tooltip.tfm-tour-tooltip .introjs-nextbutton {
   background: #0b5fff;
   border-color: #0b5fff;
   color: #ffffff;
 }
 
-.introjs-tooltip.tfg-tour-tooltip .introjs-prevbutton,
-.introjs-tooltip.tfg-tour-tooltip .introjs-skipbutton,
-.introjs-tooltip.tfg-tour-tooltip .introjs-donebutton {
+.introjs-tooltip.tfm-tour-tooltip .introjs-prevbutton,
+.introjs-tooltip.tfm-tour-tooltip .introjs-skipbutton,
+.introjs-tooltip.tfm-tour-tooltip .introjs-donebutton {
   background: #f8fafc;
   color: #0f172a;
 }
 
-.introjs-helperLayer.tfg-tour-highlight {
+.introjs-helperLayer.tfm-tour-highlight {
   border-radius: 14px;
   box-shadow: 0 0 0 3px rgba(11, 95, 255, 0.25), 0 12px 30px rgba(11, 95, 255, 0.25);
 }
 
-body.theme-dark .introjs-tooltip.tfg-tour-tooltip {
+body.theme-dark .introjs-tooltip.tfm-tour-tooltip {
   background: #0f172a;
   border-color: #334155;
   color: #e2e8f0;
 }
 
-body.theme-dark .introjs-tooltip.tfg-tour-tooltip .introjs-tooltip-title {
+body.theme-dark .introjs-tooltip.tfm-tour-tooltip .introjs-tooltip-title {
   color: #93c5fd;
 }
 
-body.theme-dark .introjs-tooltip.tfg-tour-tooltip .introjs-button {
+body.theme-dark .introjs-tooltip.tfm-tour-tooltip .introjs-button {
   border-color: #334155;
 }
 
-body.theme-dark .introjs-tooltip.tfg-tour-tooltip .introjs-prevbutton,
-body.theme-dark .introjs-tooltip.tfg-tour-tooltip .introjs-skipbutton,
-body.theme-dark .introjs-tooltip.tfg-tour-tooltip .introjs-donebutton {
+body.theme-dark .introjs-tooltip.tfm-tour-tooltip .introjs-prevbutton,
+body.theme-dark .introjs-tooltip.tfm-tour-tooltip .introjs-skipbutton,
+body.theme-dark .introjs-tooltip.tfm-tour-tooltip .introjs-donebutton {
   background: #1e293b;
   color: #e2e8f0;
 }

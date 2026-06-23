@@ -58,10 +58,10 @@ The transparency page (`/sede/transparencia`) currently displays 100% mock data,
 
 | Area | Impact | Description |
 |------|--------|-------------|
-| `backend/src/main/java/es/tfg/records/...` | New | TransparencyReportService, TransparencyMetricsService, TransparencyController, DTOs, entity, repository |
+| `backend/src/main/java/es/tfm/records/...` | New | TransparencyReportService, TransparencyMetricsService, TransparencyController, DTOs, entity, repository |
 | `backend/src/main/resources/db/migration/` | New | Flyway migration for `transparency_reports` table |
-| `backend/src/main/java/es/tfg/records/application/service/BackofficeService.java` | Modified | Add `analyticsReport()` method with monthly aggregation |
-| `backend/src/main/java/es/tfg/records/entrypoints/controller/BackofficeController.java` | Modified | Add analytics export endpoint |
+| `backend/src/main/java/es/tfm/records/application/service/BackofficeService.java` | Modified | Add `analyticsReport()` method with monthly aggregation |
+| `backend/src/main/java/es/tfm/records/entrypoints/controller/BackofficeController.java` | Modified | Add analytics export endpoint |
 | `front-end/src/app/application/services/transparency.service.ts` | Modified | Replace mock data with HttpClient calls |
 | `front-end/src/app/adapters/components/transparency/` | Modified | Update component to handle real API responses |
 | `front-end/src/app/adapters/components/statistics/` | New | Statistics component with charts |

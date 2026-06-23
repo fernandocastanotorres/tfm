@@ -71,7 +71,7 @@ describe('AuthService', () => {
       sessionStorage.setItem('bo_access_token', fakeToken);
       sessionStorage.setItem('bo_user_profile', JSON.stringify({
         id: 'user-1',
-        email: 'admin@tfg.es',
+        email: 'admin@tfm.es',
         roles: ['ROLE_ADMIN', 'ROLE_CITIZEN']
       }));
 
@@ -88,7 +88,7 @@ describe('AuthService', () => {
       sessionStorage.setItem('bo_access_token', fakeToken);
       sessionStorage.setItem('bo_user_profile', JSON.stringify({
         id: 'user-1',
-        email: 'tramitador@tfg.es',
+        email: 'tramitador@tfm.es',
         roles: ['ROLE_TRAMITADOR']
       }));
 
@@ -105,7 +105,7 @@ describe('AuthService', () => {
       sessionStorage.setItem('bo_access_token', fakeToken);
       sessionStorage.setItem('bo_user_profile', JSON.stringify({
         id: 'user-1',
-        email: 'tramitador@tfg.es',
+        email: 'tramitador@tfm.es',
         roles: ['ROLE_TRAMITADOR']
       }));
 
@@ -124,7 +124,7 @@ describe('AuthService', () => {
       sessionStorage.setItem('bo_access_token', fakeToken);
       sessionStorage.setItem('bo_user_profile', JSON.stringify({
         id: 'user-1',
-        email: 'tramitador@tfg.es',
+        email: 'tramitador@tfm.es',
         roles: ['ROLE_TRAMITADOR']
       }));
 
@@ -141,7 +141,7 @@ describe('AuthService', () => {
       sessionStorage.setItem('bo_access_token', fakeToken);
       sessionStorage.setItem('bo_user_profile', JSON.stringify({
         id: 'user-1',
-        email: 'admin@tfg.es',
+        email: 'admin@tfm.es',
         roles: ['ROLE_ADMIN']
       }));
 
@@ -160,7 +160,7 @@ describe('AuthService', () => {
       sessionStorage.setItem('bo_access_token', fakeToken);
       sessionStorage.setItem('bo_user_profile', JSON.stringify({
         id: 'user-1',
-        email: 'admin@tfg.es',
+        email: 'admin@tfm.es',
         roles: ['ROLE_ADMIN']
       }));
 
@@ -177,7 +177,7 @@ describe('AuthService', () => {
       sessionStorage.setItem('bo_access_token', fakeToken);
       sessionStorage.setItem('bo_user_profile', JSON.stringify({
         id: 'user-1',
-        email: 'tramitador@tfg.es',
+        email: 'tramitador@tfm.es',
         roles: ['ROLE_TRAMITADOR']
       }));
 
@@ -240,11 +240,11 @@ describe('AuthService', () => {
     beforeEach(() => setupService());
 
     it('should send POST to /auth/login and store tokens and user', (done) => {
-      const loginRequest = { email: 'admin@tfg.es', password: 'pass123' };
+      const loginRequest = { email: 'admin@tfm.es', password: 'pass123' };
       const mockResponse = {
         accessToken: 'fake.access.token',
         refreshToken: 'fake.refresh.token',
-        user: { id: 'user-1', email: 'admin@tfg.es', roles: ['ROLE_ADMIN'] }
+        user: { id: 'user-1', email: 'admin@tfm.es', roles: ['ROLE_ADMIN'] }
       };
 
       service.login(loginRequest).subscribe({
@@ -253,7 +253,7 @@ describe('AuthService', () => {
           expect(sessionStorage.getItem('bo_access_token')).toBe('fake.access.token');
           expect(sessionStorage.getItem('bo_refresh_token')).toBe('fake.refresh.token');
           expect(service.currentUser).toBeTruthy();
-          expect(service.currentUser?.email).toBe('admin@tfg.es');
+          expect(service.currentUser?.email).toBe('admin@tfm.es');
           done();
         }
       });
@@ -269,7 +269,7 @@ describe('AuthService', () => {
 
     it('should clear all stored tokens and user without calling server when no refresh token', () => {
       sessionStorage.setItem('bo_access_token', 'some-token');
-      sessionStorage.setItem('bo_user_profile', JSON.stringify({ id: 'user-1', email: 'admin@tfg.es', roles: ['ROLE_ADMIN'] }));
+      sessionStorage.setItem('bo_user_profile', JSON.stringify({ id: 'user-1', email: 'admin@tfm.es', roles: ['ROLE_ADMIN'] }));
 
       service.logout();
 
@@ -282,7 +282,7 @@ describe('AuthService', () => {
     it('should call server logout when refresh token exists', () => {
       sessionStorage.setItem('bo_access_token', 'some-token');
       sessionStorage.setItem('bo_refresh_token', 'some-refresh');
-      sessionStorage.setItem('bo_user_profile', JSON.stringify({ id: 'user-1', email: 'admin@tfg.es', roles: ['ROLE_ADMIN'] }));
+      sessionStorage.setItem('bo_user_profile', JSON.stringify({ id: 'user-1', email: 'admin@tfm.es', roles: ['ROLE_ADMIN'] }));
 
       service.logout();
 

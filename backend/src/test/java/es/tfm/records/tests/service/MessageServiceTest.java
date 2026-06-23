@@ -103,7 +103,7 @@ class MessageServiceTest {
         when(messageRepository.save(any(MessageEntity.class))).thenReturn(savedMessage);
 
         MessageDto result = messageService.sendMessage(
-                procedureId, MessageSenderRole.CITIZEN, "Citizen One", "citizen@tfg.es",
+                procedureId, MessageSenderRole.CITIZEN, "Citizen One", "citizen@tfm.es",
                 content, null, false, null);
 
         assertThat(result).isNotNull();
@@ -124,7 +124,7 @@ class MessageServiceTest {
         when(messageRepository.save(any(MessageEntity.class))).thenReturn(savedMessage);
 
         MessageDto result = messageService.sendMessage(
-                procedureId, MessageSenderRole.ADMIN, "Admin One", "admin@tfg.es",
+                procedureId, MessageSenderRole.ADMIN, "Admin One", "admin@tfm.es",
                 "Admin reply", null, false, null);
 
         assertThat(result).isNotNull();
@@ -142,7 +142,7 @@ class MessageServiceTest {
         when(messageRepository.save(any(MessageEntity.class))).thenReturn(createMessage(messageId, threadId, MessageSenderRole.ADMIN, "Reply"));
 
         messageService.sendMessage(
-                procedureId, MessageSenderRole.ADMIN, "Admin", "admin@tfg.es",
+                procedureId, MessageSenderRole.ADMIN, "Admin", "admin@tfm.es",
                 "Reply", null, false, null);
 
         verify(threadRepository).save(argThat(t -> t.getUnreadCountCitizen() == 1));
@@ -158,7 +158,7 @@ class MessageServiceTest {
         when(messageRepository.save(any(MessageEntity.class))).thenReturn(createMessage(messageId, threadId, MessageSenderRole.CITIZEN, "Question"));
 
         messageService.sendMessage(
-                procedureId, MessageSenderRole.CITIZEN, "Citizen", "citizen@tfg.es",
+                procedureId, MessageSenderRole.CITIZEN, "Citizen", "citizen@tfm.es",
                 "Question", null, false, null);
 
         verify(threadRepository).save(argThat(t -> t.getUnreadCountAdmin() == 1));
@@ -176,7 +176,7 @@ class MessageServiceTest {
         MockMultipartFile file = new MockMultipartFile("files", "doc.pdf", "application/pdf", "content".getBytes());
 
         MessageDto result = messageService.sendMessage(
-                procedureId, MessageSenderRole.CITIZEN, "Citizen", "citizen@tfg.es",
+                procedureId, MessageSenderRole.CITIZEN, "Citizen", "citizen@tfm.es",
                 "With attachment", null, false, List.of(file));
 
         assertThat(result.attachmentCount()).isEqualTo(1);
@@ -188,17 +188,17 @@ class MessageServiceTest {
     void sendMessage_shouldSendEmailNotificationWhenAdminSendsWithNotify() {
         ProcedureEntity procedure = createProcedure(procedureId, citizenId);
         MessageThreadEntity thread = createThread(threadId, procedure);
-        UserEntity citizen = createUser(citizenId, "citizen@tfg.es", "Citizen One");
+        UserEntity citizen = createUser(citizenId, "citizen@tfm.es", "Citizen One");
         when(procedureJpaRepository.findById(procedureId)).thenReturn(Optional.of(procedure));
         when(threadRepository.findByProcedureId(procedureId)).thenReturn(Optional.of(thread));
         when(userJpaRepository.findById(citizenId)).thenReturn(Optional.of(citizen));
         when(messageRepository.save(any(MessageEntity.class))).thenReturn(createMessage(messageId, threadId, MessageSenderRole.ADMIN, "Reply"));
 
         messageService.sendMessage(
-                procedureId, MessageSenderRole.ADMIN, "Admin", "admin@tfg.es",
+                procedureId, MessageSenderRole.ADMIN, "Admin", "admin@tfm.es",
                 "Reply", null, true, null);
 
-        verify(emailGateway).sendNewMessageNotification("citizen@tfg.es", "Admin", "Reply", procedureId.toString());
+        verify(emailGateway).sendNewMessageNotification("citizen@tfm.es", "Admin", "Reply", procedureId.toString());
     }
 
     @Test
@@ -210,17 +210,17 @@ class MessageServiceTest {
         when(messageRepository.save(any(MessageEntity.class))).thenReturn(createMessage(messageId, threadId, MessageSenderRole.CITIZEN, "Question"));
 
         messageService.sendMessage(
-                procedureId, MessageSenderRole.CITIZEN, "Citizen", "citizen@tfg.es",
+                procedureId, MessageSenderRole.CITIZEN, "Citizen", "citizen@tfm.es",
                 "Question", null, true, null);
 
-        verify(emailGateway).sendNewMessageNotification("admin@tfg.es", "Citizen", "Question", procedureId.toString());
+        verify(emailGateway).sendNewMessageNotification("admin@tfm.es", "Citizen", "Question", procedureId.toString());
     }
 
     @Test
     void sendMessage_shouldNotFailWhenEmailNotificationThrows() {
         ProcedureEntity procedure = createProcedure(procedureId, citizenId);
         MessageThreadEntity thread = createThread(threadId, procedure);
-        UserEntity citizen = createUser(citizenId, "citizen@tfg.es", "Citizen One");
+        UserEntity citizen = createUser(citizenId, "citizen@tfm.es", "Citizen One");
         when(procedureJpaRepository.findById(procedureId)).thenReturn(Optional.of(procedure));
         when(threadRepository.findByProcedureId(procedureId)).thenReturn(Optional.of(thread));
         when(userJpaRepository.findById(citizenId)).thenReturn(Optional.of(citizen));
@@ -228,7 +228,7 @@ class MessageServiceTest {
         doThrow(new RuntimeException("Email service down")).when(emailGateway).sendNewMessageNotification(any(), any(), any(), any());
 
         MessageDto result = messageService.sendMessage(
-                procedureId, MessageSenderRole.ADMIN, "Admin", "admin@tfg.es",
+                procedureId, MessageSenderRole.ADMIN, "Admin", "admin@tfm.es",
                 "Reply", null, true, null);
 
         assertThat(result).isNotNull();
@@ -239,7 +239,7 @@ class MessageServiceTest {
         when(procedureJpaRepository.findById(procedureId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> messageService.sendMessage(
-                procedureId, MessageSenderRole.CITIZEN, "Citizen", "citizen@tfg.es",
+                procedureId, MessageSenderRole.CITIZEN, "Citizen", "citizen@tfm.es",
                 "Hello", null, false, null))
                 .isInstanceOf(es.tfm.records.application.exception.ResourceNotFoundException.class);
     }
@@ -256,7 +256,7 @@ class MessageServiceTest {
         MockMultipartFile validFile = new MockMultipartFile("files", "doc.pdf", "application/pdf", "content".getBytes());
 
         MessageDto result = messageService.sendMessage(
-                procedureId, MessageSenderRole.CITIZEN, "Citizen", "citizen@tfg.es",
+                procedureId, MessageSenderRole.CITIZEN, "Citizen", "citizen@tfm.es",
                 "Content", null, false, List.of(emptyFile, validFile));
 
         assertThat(result.attachmentCount()).isEqualTo(1);
@@ -535,7 +535,7 @@ class MessageServiceTest {
         message.setThread(thread);
         message.setSenderRole(role);
         message.setSenderName("Test User");
-        message.setSenderEmail("test@tfg.es");
+        message.setSenderEmail("test@tfm.es");
         message.setContent(content);
         message.setCreatedAt(Instant.now());
         return message;

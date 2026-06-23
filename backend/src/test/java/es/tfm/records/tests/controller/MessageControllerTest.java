@@ -47,7 +47,7 @@ class MessageControllerTest {
     void sendMessageAsCitizen_shouldReturn200() throws Exception {
         UUID citizenId = UUID.randomUUID();
         UUID procedureId = UUID.randomUUID();
-        UserEntity citizen = createUser(citizenId, "citizen@tfg.es", "Citizen One");
+        UserEntity citizen = createUser(citizenId, "citizen@tfm.es", "Citizen One");
         MessageDto messageDto = createMessageDto("CITIZEN", "Hello");
 
         when(userJpaRepository.findById(citizenId)).thenReturn(java.util.Optional.of(citizen));
@@ -66,7 +66,7 @@ class MessageControllerTest {
     void sendMessageAsAdmin_shouldReturn200() throws Exception {
         UUID adminId = UUID.randomUUID();
         UUID procedureId = UUID.randomUUID();
-        UserEntity admin = createUser(adminId, "admin@tfg.es", "Admin One");
+        UserEntity admin = createUser(adminId, "admin@tfm.es", "Admin One");
         MessageDto messageDto = createMessageDto("ADMIN", "Reply");
 
         when(userJpaRepository.findById(adminId)).thenReturn(java.util.Optional.of(admin));
@@ -218,7 +218,7 @@ class MessageControllerTest {
     private MessageDto createMessageDto(String senderRole, String content) {
         return new MessageDto(
                 UUID.randomUUID(), UUID.randomUUID(), senderRole, "Test User",
-                "test@tfg.es", content, null, false, null, 0, List.of(), Instant.now());
+                "test@tfm.es", content, null, false, null, 0, List.of(), Instant.now());
     }
 
     private UserEntity createUser(UUID id, String email, String displayName) {

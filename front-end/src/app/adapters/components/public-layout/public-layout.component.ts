@@ -190,7 +190,7 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
   toggleTheme(): void {
     this.isDarkMode = !this.isDarkMode;
     this.applyTheme(this.isDarkMode);
-    localStorage.setItem('tfg.theme', this.isDarkMode ? 'dark' : 'light');
+    localStorage.setItem('tfm.theme', this.isDarkMode ? 'dark' : 'light');
   }
 
   toggleDropdown(groupLabel: string): void {
@@ -393,7 +393,7 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
   }
 
   private initTheme(): void {
-    const storedTheme = localStorage.getItem('tfg.theme');
+    const storedTheme = localStorage.getItem('tfm.theme');
     this.isDarkMode = storedTheme === 'dark';
     this.applyTheme(this.isDarkMode);
   }

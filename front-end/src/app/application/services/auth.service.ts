@@ -21,9 +21,9 @@ export interface AuthResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly tokenKey = 'tfg.access_token';
-  private readonly refreshKey = 'tfg.refresh_token';
-  private readonly storageKey = 'tfg.authenticated';
+  private readonly tokenKey = 'tfm.access_token';
+  private readonly refreshKey = 'tfm.refresh_token';
+  private readonly storageKey = 'tfm.authenticated';
 
   private readonly apiUrl = environment.apiBaseUrl;
 

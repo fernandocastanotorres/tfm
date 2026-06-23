@@ -34,9 +34,9 @@ test.describe('Citizen dashboard', () => {
 
   test('should display dashboard layout after authentication', async ({ page }) => {
     await page.context().addInitScript((token: string) => {
-      window.sessionStorage.setItem('tfg.access_token', token);
-      window.sessionStorage.setItem('tfg.refresh_token', 'mock-refresh-token');
-      window.sessionStorage.setItem('tfg.authenticated', 'true');
+      window.sessionStorage.setItem('tfm.access_token', token);
+      window.sessionStorage.setItem('tfm.refresh_token', 'mock-refresh-token');
+      window.sessionStorage.setItem('tfm.authenticated', 'true');
     }, mockAuthState.token);
 
     await dashboardPage.navigate();
@@ -50,9 +50,9 @@ test.describe('Citizen dashboard', () => {
 
   test('should show cases list or empty state', async ({ page }) => {
     await page.context().addInitScript((token: string) => {
-      window.sessionStorage.setItem('tfg.access_token', token);
-      window.sessionStorage.setItem('tfg.refresh_token', 'mock-refresh-token');
-      window.sessionStorage.setItem('tfg.authenticated', 'true');
+      window.sessionStorage.setItem('tfm.access_token', token);
+      window.sessionStorage.setItem('tfm.refresh_token', 'mock-refresh-token');
+      window.sessionStorage.setItem('tfm.authenticated', 'true');
     }, mockAuthState.token);
 
     await dashboardPage.navigate();
@@ -63,9 +63,9 @@ test.describe('Citizen dashboard', () => {
 
   test('should show empty state when no cases exist', async ({ page }) => {
     await page.context().addInitScript((token: string) => {
-      window.sessionStorage.setItem('tfg.access_token', token);
-      window.sessionStorage.setItem('tfg.refresh_token', 'mock-refresh-token');
-      window.sessionStorage.setItem('tfg.authenticated', 'true');
+      window.sessionStorage.setItem('tfm.access_token', token);
+      window.sessionStorage.setItem('tfm.refresh_token', 'mock-refresh-token');
+      window.sessionStorage.setItem('tfm.authenticated', 'true');
     }, mockAuthState.token);
 
     await dashboardPage.navigate();
@@ -76,9 +76,9 @@ test.describe('Citizen dashboard', () => {
 
   test('should filter cases by status', async ({ page }) => {
     await page.context().addInitScript((token: string) => {
-      window.sessionStorage.setItem('tfg.access_token', token);
-      window.sessionStorage.setItem('tfg.refresh_token', 'mock-refresh-token');
-      window.sessionStorage.setItem('tfg.authenticated', 'true');
+      window.sessionStorage.setItem('tfm.access_token', token);
+      window.sessionStorage.setItem('tfm.refresh_token', 'mock-refresh-token');
+      window.sessionStorage.setItem('tfm.authenticated', 'true');
     }, mockAuthState.token);
 
     await dashboardPage.navigate();
@@ -99,9 +99,9 @@ test.describe('Citizen dashboard', () => {
 
   test('should search cases by text', async ({ page }) => {
     await page.context().addInitScript((token: string) => {
-      window.sessionStorage.setItem('tfg.access_token', token);
-      window.sessionStorage.setItem('tfg.refresh_token', 'mock-refresh-token');
-      window.sessionStorage.setItem('tfg.authenticated', 'true');
+      window.sessionStorage.setItem('tfm.access_token', token);
+      window.sessionStorage.setItem('tfm.refresh_token', 'mock-refresh-token');
+      window.sessionStorage.setItem('tfm.authenticated', 'true');
     }, mockAuthState.token);
 
     await dashboardPage.navigate();
@@ -122,9 +122,9 @@ test.describe('Citizen dashboard', () => {
 
   test('should display detail panel when selecting a case', async ({ page }) => {
     await page.context().addInitScript((token: string) => {
-      window.sessionStorage.setItem('tfg.access_token', token);
-      window.sessionStorage.setItem('tfg.refresh_token', 'mock-refresh-token');
-      window.sessionStorage.setItem('tfg.authenticated', 'true');
+      window.sessionStorage.setItem('tfm.access_token', token);
+      window.sessionStorage.setItem('tfm.refresh_token', 'mock-refresh-token');
+      window.sessionStorage.setItem('tfm.authenticated', 'true');
     }, mockAuthState.token);
 
     await dashboardPage.navigate();
@@ -144,9 +144,9 @@ test.describe('Citizen dashboard', () => {
 
   test('should display summary statistics', async ({ page }) => {
     await page.context().addInitScript((token: string) => {
-      window.sessionStorage.setItem('tfg.access_token', token);
-      window.sessionStorage.setItem('tfg.refresh_token', 'mock-refresh-token');
-      window.sessionStorage.setItem('tfg.authenticated', 'true');
+      window.sessionStorage.setItem('tfm.access_token', token);
+      window.sessionStorage.setItem('tfm.refresh_token', 'mock-refresh-token');
+      window.sessionStorage.setItem('tfm.authenticated', 'true');
     }, mockAuthState.token);
   
     await dashboardPage.navigate();

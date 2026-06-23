@@ -7,5 +7,5 @@ springdoc:
 logging:
   level:
     root: WARN
-    es.tfg.records: INFO
+    es.tfm.records: INFO
     org.springframework.security: WARN

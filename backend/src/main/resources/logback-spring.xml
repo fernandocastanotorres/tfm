@@ -36,6 +36,6 @@
         <appender-ref ref="JSON_CONSOLE"/>
     </root>
 
-    <logger name="es.tfg.records" level="DEBUG"/>
+    <logger name="es.tfm.records" level="DEBUG"/>
     <logger name="org.springframework.security" level="WARN"/>
 </configuration>

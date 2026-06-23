@@ -80,7 +80,7 @@ describe('I18nService', () => {
     }));
 
     it('should use stored locale from localStorage', fakeAsync(() => {
-      localStorage.setItem('tfg.locale', 'ca-ES');
+      localStorage.setItem('tfm.locale', 'ca-ES');
       i18nService.init();
       tick();
 
@@ -96,7 +96,7 @@ describe('I18nService', () => {
     }));
 
     it('should fallback to es-ES if stored locale is not supported', fakeAsync(() => {
-      localStorage.setItem('tfg.locale', 'fr-FR' as any);
+      localStorage.setItem('tfm.locale', 'fr-FR' as any);
       i18nService.init();
       tick();
 
@@ -129,7 +129,7 @@ describe('I18nService', () => {
 
       i18nService.setLocale('gl-ES');
 
-      expect(localStorage.getItem('tfg.locale')).toBe('gl-ES');
+      expect(localStorage.getItem('tfm.locale')).toBe('gl-ES');
     }));
 
     it('should emit new locale via currentLocale$ observable', fakeAsync(() => {

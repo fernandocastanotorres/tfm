@@ -79,7 +79,7 @@ The project follows **Hexagonal Architecture** (Ports & Adapters) with four logi
 ### Package Structure
 
 ```
-backend/src/main/java/es/tfg/records/
+backend/src/main/java/es/tfm/records/
 ├── RecordsApiApplication.java          # Spring Boot entry point
 ├── domain/
 │   ├── model/                          # Domain entities (Procedure, Document, User, etc.)
@@ -137,8 +137,8 @@ Quick checks:
 
 Dev users seeded by profile `dev`:
 
-- Admin: `admin@tfg.es / Admin1234`
-- Citizen: `citizen@tfg.es / Citizen1`
+- Admin: `admin@tfm.es / Admin1234`
+- Citizen: `citizen@tfm.es / Citizen1`
 
 ### Prerequisites
 

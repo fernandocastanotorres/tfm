@@ -36,7 +36,7 @@ describe('AcceptLanguageInterceptor', () => {
   });
 
   it('should add Accept-Language header with the stored locale', () => {
-    localStorage.setItem('tfg.locale', 'en-US');
+    localStorage.setItem('tfm.locale', 'en-US');
 
     httpClient.get('/test').subscribe();
 
@@ -45,7 +45,7 @@ describe('AcceptLanguageInterceptor', () => {
   });
 
   it('should add Accept-Language header with ca-ES locale', () => {
-    localStorage.setItem('tfg.locale', 'ca-ES');
+    localStorage.setItem('tfm.locale', 'ca-ES');
 
     httpClient.get('/test').subscribe();
 
@@ -54,7 +54,7 @@ describe('AcceptLanguageInterceptor', () => {
   });
 
   it('should preserve existing headers when adding Accept-Language', () => {
-    localStorage.setItem('tfg.locale', 'fr-FR');
+    localStorage.setItem('tfm.locale', 'fr-FR');
 
     httpClient.get('/test', { headers: { 'X-Custom': 'value' } }).subscribe();
 

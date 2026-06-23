@@ -35,9 +35,9 @@ Email verification became part of citizen registration lifecycle. Sending verifi
 
 ## Implementation Notes
 - Migration: `backend/db/postgresql/003_add_resend_verification_throttle.sql`
-- Producer: `backend/src/main/java/es/tfg/records/infrastructure/mailing/QueuedEmailGateway.java`
-- Consumer: `backend/src/main/java/es/tfg/records/infrastructure/mailing/VerificationEmailConsumer.java`
-- Queue config: `backend/src/main/java/es/tfg/records/infrastructure/config/MailQueueConfig.java`
+- Producer: `backend/src/main/java/es/tfm/records/infrastructure/mailing/QueuedEmailGateway.java`
+- Consumer: `backend/src/main/java/es/tfm/records/infrastructure/mailing/VerificationEmailConsumer.java`
+- Queue config: `backend/src/main/java/es/tfm/records/infrastructure/config/MailQueueConfig.java`
 - Runtime config: `backend/src/main/resources/application.yml`, `backend/src/main/resources/application-dev.yml`
 
 ## Revisit Criteria

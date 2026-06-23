@@ -26,7 +26,7 @@ interface StoredMockCase {
 
 @Injectable({ providedIn: 'root' })
 export class MockCitizenFlowService {
-  private readonly casesKey = 'tfg.mock.cases';
+  private readonly casesKey = 'tfm.mock.cases';
   private readonly latencyMs = 180;
 
   private static formField(id: string, name: string, type: string, placeholder: string, required: boolean = true, options?: FormFieldDto['options']): FormFieldDto {

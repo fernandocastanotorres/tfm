@@ -95,7 +95,7 @@ describe('MessagesService', () => {
         threadId: 't1',
         senderRole: 'CITIZEN',
         senderName: 'Test User',
-        senderEmail: 'test@tfg.es',
+        senderEmail: 'test@tfm.es',
         content: 'Hello',
         templateKey: null,
         read: false,

@@ -84,7 +84,7 @@ springdoc:
     enabled: ${SPRINGDOC_ENABLED:true}
     operations-sorter: method
     tags-sorter: alpha
-  packages-to-scan: es.tfg.records.entrypoints
+  packages-to-scan: es.tfm.records.entrypoints
 
 # Actuator
 management:
@@ -100,7 +100,7 @@ management:
 logging:
   level:
     root: INFO
-    es.tfg.records: DEBUG
+    es.tfm.records: DEBUG
     org.springframework.security: WARN
 
 # CORS

@@ -53,7 +53,7 @@ CREATE INDEX idx_transparency_reports_year
 ### Entity: `TransparencyReportEntity`
 
 ```
-File: backend/src/main/java/es/tfg/records/infrastructure/persistence/entity/TransparencyReportEntity.java
+File: backend/src/main/java/es/tfm/records/infrastructure/persistence/entity/TransparencyReportEntity.java
 ```
 
 - JPA entity with `@Entity`, `@Table(name = "transparency_reports")`
@@ -64,7 +64,7 @@ File: backend/src/main/java/es/tfg/records/infrastructure/persistence/entity/Tra
 ### Repository: `TransparencyReportJpaRepository`
 
 ```
-File: backend/src/main/java/es/tfg/records/infrastructure/persistence/repository/TransparencyReportJpaRepository.java
+File: backend/src/main/java/es/tfm/records/infrastructure/persistence/repository/TransparencyReportJpaRepository.java
 ```
 
 ```java
@@ -342,7 +342,7 @@ back-office/src/app/
 ### Backend
 
 ```
-backend/src/main/java/es/tfg/records/
+backend/src/main/java/es/tfm/records/
 ├── application/
 │   ├── dto/
 │   │   └── TransparencyDtos.java              # New: All transparency + analytics DTOs

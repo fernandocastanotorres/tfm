@@ -141,12 +141,12 @@ Constraints:
 ## Traceability
 
 Implementation touchpoints:
-- `backend/src/main/java/es/tfg/records/application/service/ProcedureCatalogI18nService.java`
-- `backend/src/main/java/es/tfg/records/application/service/BackofficeService.java`
-- `backend/src/main/java/es/tfg/records/application/service/RegistryService.java`
-- `backend/src/main/java/es/tfg/records/application/service/SummaryDocumentService.java`
-- `backend/src/main/java/es/tfg/records/application/service/CaseServiceImpl.java` — `submitCase()` flow
-- `backend/src/main/java/es/tfg/records/infrastructure/config/SecurityConfig.java`
+- `backend/src/main/java/es/tfm/records/application/service/ProcedureCatalogI18nService.java`
+- `backend/src/main/java/es/tfm/records/application/service/BackofficeService.java`
+- `backend/src/main/java/es/tfm/records/application/service/RegistryService.java`
+- `backend/src/main/java/es/tfm/records/application/service/SummaryDocumentService.java`
+- `backend/src/main/java/es/tfm/records/application/service/CaseServiceImpl.java` — `submitCase()` flow
+- `backend/src/main/java/es/tfm/records/infrastructure/config/SecurityConfig.java`
 - `front-end/src/app/application/guards/auth.guard.ts`
 - `back-office/src/app/application/interceptors/jwt-auth.interceptor.ts`
 

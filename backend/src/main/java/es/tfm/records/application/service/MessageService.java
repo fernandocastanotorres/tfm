@@ -127,7 +127,7 @@ public class MessageService {
                         emailGateway.sendNewMessageNotification(user.getEmail(), senderName, content, procedureId.toString());
                     });
                 } else {
-                    emailGateway.sendNewMessageNotification("admin@tfg.es", senderName, content, procedureId.toString());
+                    emailGateway.sendNewMessageNotification("admin@tfm.es", senderName, content, procedureId.toString());
                 }
             } catch (Exception e) {
                 log.warn("Failed to send email notification for message: {}", e.getMessage());

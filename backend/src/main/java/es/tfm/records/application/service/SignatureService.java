@@ -343,7 +343,7 @@ public class SignatureService {
                     + "/M (D:" + new java.text.SimpleDateFormat("yyyyMMddHHmmssZ").format(new java.util.Date()) + ") "
                     + "/Reason (TFG Electronic Signature) "
                     + "/Location (TFG Records Platform) "
-                    + "/ContactInfo (tfg@records.local) >>\n"
+                    + "/ContactInfo (tfm@records.local) >>\n"
                     + "endobj\n";
 
             // Build result: original content (up to and including %%EOF) + new sig object

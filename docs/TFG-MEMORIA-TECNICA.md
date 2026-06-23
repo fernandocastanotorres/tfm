@@ -269,7 +269,7 @@ Al presentar un expediente, el sistema genera automáticamente un documento resu
 ### 5.1. Estructura del Código
 
 ```
-backend/src/main/java/es/tfg/records/
+backend/src/main/java/es/tfm/records/
 ├── domain/
 │   ├── model/          # Entidades de dominio puras
 │   └── port/           # Interfaces de repositorio (ports)

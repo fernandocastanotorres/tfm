@@ -40,7 +40,7 @@ describe('AcceptLanguageInterceptor', () => {
   });
 
   it('should add Accept-Language header with stored locale', (done) => {
-    localStorage.setItem('tfg.locale', 'ca-ES');
+    localStorage.setItem('tfm.locale', 'ca-ES');
 
     http.get('/api/test').subscribe((response) => {
       done();
@@ -55,7 +55,7 @@ describe('AcceptLanguageInterceptor', () => {
     const locales = ['es-ES', 'ca-ES', 'eu-ES', 'gl-ES', 'va-ES'];
 
     locales.forEach((locale, index) => {
-      localStorage.setItem('tfg.locale', locale);
+      localStorage.setItem('tfm.locale', locale);
 
       http.get(`/api/test-${index}`).subscribe();
 

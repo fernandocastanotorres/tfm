@@ -5,7 +5,7 @@
 set -e
 
 BASE_URL="http://localhost:8080/api/v1"
-EMAIL="admin@tfg.es"
+EMAIL="admin@tfm.es"
 PASSWORD="Admin1234"
 
 echo "=== E2E TEST: Public Content Management ==="

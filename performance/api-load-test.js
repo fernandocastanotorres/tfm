@@ -23,7 +23,7 @@ export const options = {
 
 // Environment configuration
 const BASE_URL = __ENV.BASE_URL || 'http://localhost:8080/api/v1';
-const EMAIL = __ENV.EMAIL || 'citizen@tfg.es';
+const EMAIL = __ENV.EMAIL || 'citizen@tfm.es';
 const PASSWORD = __ENV.PASSWORD || 'Citizen1';
 
 let authToken = '';

@@ -19,9 +19,9 @@ export const test = base.extend<CustomFixtures>({
       await page.context().addInitScript(
         (state: AuthState) => {
           // AuthService stores tokens in sessionStorage.
-          window.sessionStorage.setItem('tfg.access_token', state.token);
-          window.sessionStorage.setItem('tfg.refresh_token', 'mock-refresh-token');
-          window.sessionStorage.setItem('tfg.authenticated', 'true');
+          window.sessionStorage.setItem('tfm.access_token', state.token);
+          window.sessionStorage.setItem('tfm.refresh_token', 'mock-refresh-token');
+          window.sessionStorage.setItem('tfm.authenticated', 'true');
         },
         authState,
       );

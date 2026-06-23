@@ -2,9 +2,9 @@ apiVersion: 1
 
 contactPoints:
   - orgId: 1
-    name: tfg-observability-webhook
+    name: tfm-observability-webhook
     receivers:
-      - uid: tfg-observability-webhook
+      - uid: tfm-observability-webhook
         type: webhook
         settings:
           url: ${GRAFANA_ALERT_WEBHOOK_URL}
@@ -14,9 +14,9 @@ contactPoints:
         disableResolveMessage: false
 
   - orgId: 1
-    name: tfg-observability-telegram
+    name: tfm-observability-telegram
     receivers:
-      - uid: tfg-observability-telegram
+      - uid: tfm-observability-telegram
         type: telegram
         settings:
           bottoken: "${GRAFANA_TELEGRAM_BOT_TOKEN}"

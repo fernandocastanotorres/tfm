@@ -337,7 +337,7 @@ describe('MockCitizenFlowService', () => {
     }));
 
     it('should handle invalid JSON in localStorage gracefully', fakeAsync(() => {
-      localStorage.setItem('tfg.mock.cases', 'not valid json{{{');
+      localStorage.setItem('tfm.mock.cases', 'not valid json{{{');
       let result: any;
       service.listCases().subscribe(r => { result = r; });
       tick(180);
@@ -345,7 +345,7 @@ describe('MockCitizenFlowService', () => {
     }));
 
     it('should handle non-array JSON in localStorage gracefully', fakeAsync(() => {
-      localStorage.setItem('tfg.mock.cases', JSON.stringify({ notAnArray: true }));
+      localStorage.setItem('tfm.mock.cases', JSON.stringify({ notAnArray: true }));
       let result: any;
       service.listCases().subscribe(r => { result = r; });
       tick(180);

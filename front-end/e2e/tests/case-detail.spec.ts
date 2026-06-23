@@ -20,9 +20,9 @@ test.describe('Citizen case detail and messages', () => {
 
   test('should display case detail with timeline and attachments', async ({ page }) => {
     await page.context().addInitScript((token: string) => {
-      window.sessionStorage.setItem('tfg.access_token', token);
-      window.sessionStorage.setItem('tfg.refresh_token', 'mock-refresh-token');
-      window.sessionStorage.setItem('tfg.authenticated', 'true');
+      window.sessionStorage.setItem('tfm.access_token', token);
+      window.sessionStorage.setItem('tfm.refresh_token', 'mock-refresh-token');
+      window.sessionStorage.setItem('tfm.authenticated', 'true');
     }, mockAuthState.token);
 
     // Backend data may vary; we just assert the page renders a title or shows an alert.
@@ -32,9 +32,9 @@ test.describe('Citizen case detail and messages', () => {
 
   test('should send a message from the case detail page', async ({ page }) => {
     await page.context().addInitScript((token: string) => {
-      window.sessionStorage.setItem('tfg.access_token', token);
-      window.sessionStorage.setItem('tfg.refresh_token', 'mock-refresh-token');
-      window.sessionStorage.setItem('tfg.authenticated', 'true');
+      window.sessionStorage.setItem('tfm.access_token', token);
+      window.sessionStorage.setItem('tfm.refresh_token', 'mock-refresh-token');
+      window.sessionStorage.setItem('tfm.authenticated', 'true');
     }, mockAuthState.token);
 
     await caseDetail.navigateTo('TEST-001');
@@ -49,9 +49,9 @@ test.describe('Citizen case detail and messages', () => {
 
   test('should display message thread on secure messaging page', async ({ page }) => {
     await page.context().addInitScript((token: string) => {
-      window.sessionStorage.setItem('tfg.access_token', token);
-      window.sessionStorage.setItem('tfg.refresh_token', 'mock-refresh-token');
-      window.sessionStorage.setItem('tfg.authenticated', 'true');
+      window.sessionStorage.setItem('tfm.access_token', token);
+      window.sessionStorage.setItem('tfm.refresh_token', 'mock-refresh-token');
+      window.sessionStorage.setItem('tfm.authenticated', 'true');
     }, mockAuthState.token);
 
     await messagesPage.navigateTo();
