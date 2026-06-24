@@ -28,6 +28,7 @@ RUN chown -R appuser:appgroup /usr/share/nginx/html && \
     chown -R appuser:appgroup /var/cache/nginx && \
     chown -R appuser:appgroup /var/log/nginx && \
     chown -R appuser:appgroup /etc/nginx/conf.d && \
+    chown -R appuser:appgroup /etc/nginx/certs && \
     touch /var/run/nginx.pid && \
     chown -R appuser:appgroup /var/run/nginx.pid
 
