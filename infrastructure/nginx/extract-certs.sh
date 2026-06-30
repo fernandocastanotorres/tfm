@@ -39,6 +39,9 @@ extract_domain() {
         -nocerts -nodes -legacy 2>/dev/null | \
         openssl pkey -out "${live}/privkey.pem"
 
+    chmod 644 "${live}/fullchain.pem" "${live}/chain.pem" 2>/dev/null || true
+    chmod 600 "${live}/privkey.pem"
+
     # Download Sectigo intermediate CA chain (cached after first run)
     if [ ! -f "${live}/chain.pem" ]; then
         curl -sL "http://crt.sectigo.com/SectigoPublicServerAuthenticationCADVR36.crt" \
