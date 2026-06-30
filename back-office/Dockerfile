@@ -12,13 +12,17 @@ RUN npx ng build --configuration=production --output-hashing=all
 # ── Runtime stage ────────────────────────────
 FROM nginx:1.25-alpine
 
-RUN apk add --no-cache curl && \
+RUN apk add --no-cache curl openssl && \
     addgroup -S appgroup && adduser -S appuser -G appgroup
+
+RUN mkdir -p /etc/nginx/certs && \
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout /etc/nginx/certs/tfm-selfsigned.key \
+    -out /etc/nginx/certs/tfm-selfsigned.crt \
+    -subj "/CN=tfm.nbpdev.es" 2>/dev/null
 
 COPY --from=build /app/dist/back-office/ /usr/share/nginx/html/
 COPY back-office/nginx.conf /etc/nginx/conf.d/default.conf
-COPY certs/tfm-selfsigned.crt /etc/nginx/certs/
-COPY certs/tfm-selfsigned.key /etc/nginx/certs/
 
 RUN chmod 644 /etc/nginx/certs/* && \
     chown -R appuser:appgroup /usr/share/nginx/html && \
