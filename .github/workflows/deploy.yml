@@ -44,13 +44,13 @@ jobs:
             bash infrastructure/nginx/extract-certs.sh
 
             echo "=== Building Docker images ==="
-            docker compose build --pull
+            docker compose -f docker-compose.yml build --pull
 
             echo "=== Pulling base images ==="
-            docker compose pull
+            docker compose -f docker-compose.yml pull
 
             echo "=== Starting services ==="
-            docker compose up -d
+            docker compose -f docker-compose.yml up -d
 
             echo "=== Cleaning old images ==="
             docker image prune -f
