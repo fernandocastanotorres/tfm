@@ -50,3 +50,8 @@ backend/data/
 infrastructure/nginx/certs/
 infrastructure/nginx/www/
 .env.production
+
+# SSL certificate files (secrets — never commit)
+certs/*.p12
+certs/*.pfx
+certs/*.zip
