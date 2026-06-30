@@ -8,6 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: arsys
     steps:
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.3
@@ -58,6 +59,7 @@ jobs:
 
   certbot:
     runs-on: ubuntu-latest
+    environment: arsys
     needs: deploy
     steps:
       - name: Generate/renew Let's Encrypt certificates
