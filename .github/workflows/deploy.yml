@@ -16,7 +16,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_KEY }}
-          envs: SERVER_HOST,SERVER_USER
+          envs: SERVER_HOST,SERVER_USER,CERT_PASSWORD
           script: |
             set -e
 
@@ -37,8 +37,11 @@ jobs:
               git pull origin main
             fi
 
-            echo "=== Building Docker images ==="
+            echo "=== Extracting SSL certificates ==="
             cd "$APP_DIR"
+            bash infrastructure/nginx/extract-certs.sh
+
+            echo "=== Building Docker images ==="
             docker compose build --pull
 
             echo "=== Pulling base images ==="
