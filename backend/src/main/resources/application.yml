@@ -21,7 +21,8 @@ spring:
   flyway:
     enabled: true
     baseline-on-migrate: true
-    baseline-version: 0
+    baseline-version: 3
+    out-of-order: true
     locations: classpath:db/migration
   jpa:
     hibernate:
