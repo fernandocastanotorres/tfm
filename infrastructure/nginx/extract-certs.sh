@@ -7,7 +7,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CERT_DIR="${SCRIPT_DIR}"
-CERTS_SRC="${SCRIPT_DIR}/../../../certs"
+CERTS_SRC="${SCRIPT_DIR}/../../certs"
 LIVE_DIR="${CERT_DIR}/live"
 PASS="${CERT_PASSWORD:-}"
 
