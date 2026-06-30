@@ -42,10 +42,12 @@ extract_domain() {
     chmod 644 "${live}/fullchain.pem" "${live}/chain.pem" 2>/dev/null || true
     chmod 600 "${live}/privkey.pem"
 
-    # Download Sectigo intermediate CA chain (cached after first run)
-    if [ ! -f "${live}/chain.pem" ]; then
-        curl -sL "http://crt.sectigo.com/SectigoPublicServerAuthenticationCADVR36.crt" \
+    # Download Sectigo intermediate CA chain
+    if ! openssl x509 -in "${live}/chain.pem" -noout 2>/dev/null; then
+        echo "  Downloading Sectigo CA chain..."
+        curl -fsSL "http://crt.sectigo.com/SectigoPublicServerAuthenticationCADVR36.crt" \
             -o "${live}/chain.pem"
+        chmod 644 "${live}/chain.pem"
     fi
 
     echo "  ${domain} done ($(openssl x509 -in "${live}/fullchain.pem" -noout -dates 2>/dev/null | grep notAfter | cut -d= -f2))"
