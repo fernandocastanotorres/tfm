@@ -30,17 +30,18 @@ Introduce **nginx:1.25-alpine** as the sole entry point for all HTTP/HTTPS traff
 
 | Subdomain | Target Service | Internal Port | Purpose |
 |---|---|---|---|
-| `sede.nbpdev.com` | frontend | 80 | Citizen-facing portal |
-| `tramitador.nbpdev.com` | backoffice | 80 | Internal tramitador interface |
-| `api.nbpdev.com` | backend | 8080 | REST API for integrations |
-| `grafana.nbpdev.com` | grafana | 3000 | Observability dashboards |
-| `prometheus.nbpdev.com` | prometheus | 9090 | Metrics collection |
-| `loki.nbpdev.com` | loki | 3100 | Log aggregation |
-| `mail.nbpdev.com` | mailpit | 8025 | Email inspection UI |
+| `sede.nbpdev.es` | frontend | 80 | Citizen-facing portal |
+| `tramitador.nbpdev.es` | backoffice | 80 | Internal tramitador interface |
+| `api.nbpdev.es` | backend | 8080 | REST API for integrations |
+| `grafana.nbpdev.es` | grafana | 3000 | Observability dashboards |
+| `prometheus.nbpdev.es` | prometheus | 9090 | Metrics collection |
+| `loki.nbpdev.es` | loki | 3100 | Log aggregation |
+| `mail.nbpdev.es` | mailpit | 8025 | Email inspection UI |
 
 **SSL/TLS:**
-- Let's Encrypt with certbot for certificate generation and renewal
-- Port 80 only for initial certificate fetch (standalone mode)
+- Arsys Sectigo certificates for `sede.nbpdev.es` and `tramitador.nbpdev.es` (PKCS#12, extracted to PEM)
+- Let's Encrypt with certbot for remaining subdomains (`api`, `grafana`, `prometheus`, `loki`, `mail`)
+- Port 80 only for Let's Encrypt ACME challenge
 - Port 443 is the only publicly exposed port for HTTPS
 - Certificates stored in `infrastructure/nginx/certs/`
 
@@ -63,7 +64,7 @@ Introduce **nginx:1.25-alpine** as the sole entry point for all HTTP/HTTPS traff
 **Why subdomains instead of path-based routing?**
 - Subdomains provide natural isolation between citizen-facing and internal tools
 - Easier SSL certificate assignment per domain
-- Cleaner URL structure (`sede.nbpdev.com` vs `nbpdev.com/sede`)
+- Cleaner URL structure (`sede.nbpdev.es` vs `nbpdev.es/sede`)
 - Internal tools (Grafana, Prometheus) get dedicated domains without path conflicts
 
 **Why not OAuth2 Proxy or similar?**
@@ -76,7 +77,7 @@ Introduce **nginx:1.25-alpine** as the sole entry point for all HTTP/HTTPS traff
 ### Positive
 - Single SSL endpoint simplifies certificate management
 - Centralized audit log at nginx level for ENS compliance
-- CORS configuration simplified — backend only needs to allow `api.nbpdev.com`
+- CORS configuration simplified — backend only needs to allow `api.nbpdev.es`
 - Static asset caching reduces backend load
 - Internal services no longer have public attack surface
 - Human-readable URLs improve UX

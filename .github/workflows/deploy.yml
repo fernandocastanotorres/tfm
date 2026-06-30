@@ -73,13 +73,11 @@ jobs:
             cd "$APP_DIR"
 
             DOMAINS=(
-              "sede.nbpdev.com"
-              "tramitador.nbpdev.com"
-              "api.nbpdev.com"
-              "grafana.nbpdev.com"
-              "prometheus.nbpdev.com"
-              "loki.nbpdev.com"
-              "mail.nbpdev.com"
+              "api.nbpdev.es"
+              "grafana.nbpdev.es"
+              "prometheus.nbpdev.es"
+              "loki.nbpdev.es"
+              "mail.nbpdev.es"
             )
 
             for domain in "${DOMAINS[@]}"; do
@@ -90,7 +88,7 @@ jobs:
                 certbot/certbot certonly --webroot \
                 --webroot-path /var/www/letsencrypt \
                 --domain "$domain" \
-                --email admin@nbpdev.com \
+                --email admin@nbpdev.es \
                 --agree-tos --non-interactive --expand --keep-until-expiring \
                 || echo "Certificate for $domain already exists or failed, skipping"
             done

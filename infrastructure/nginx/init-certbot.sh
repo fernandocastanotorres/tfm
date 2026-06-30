@@ -1,6 +1,6 @@
 #!/bin/bash
-# Certbot certificate generation script
-# Run this once per domain to generate initial certificates
+# Certbot certificate generation script — Let's Encrypt for non-Arsys domains
+# sede and tramitador use Arsys Sectigo certificates (not managed here)
 
 set -e
 
@@ -24,7 +24,7 @@ generate_cert() {
         --webroot \
         --webroot-path /var/www/letsencrypt \
         --domain "$domain" \
-        --email "admin@nbpdev.com" \
+        --email "admin@nbpdev.es" \
         --agree-tos \
         --non-interactive \
         --expand \
@@ -32,36 +32,28 @@ generate_cert() {
 }
 
 case "${1:-}" in
-    sede|Sede)
-        generate_cert "sede.nbpdev.com"
-        ;;
-    tramitador|Tramitador)
-        generate_cert "tramitador.nbpdev.com"
-        ;;
     api|Api)
-        generate_cert "api.nbpdev.com"
+        generate_cert "api.nbpdev.es"
         ;;
     grafana|Grafana)
-        generate_cert "grafana.nbpdev.com"
+        generate_cert "grafana.nbpdev.es"
         ;;
     prometheus|Prometheus)
-        generate_cert "prometheus.nbpdev.com"
+        generate_cert "prometheus.nbpdev.es"
         ;;
     loki|Loki)
-        generate_cert "loki.nbpdev.com"
+        generate_cert "loki.nbpdev.es"
         ;;
     mail|Mail)
-        generate_cert "mail.nbpdev.com"
+        generate_cert "mail.nbpdev.es"
         ;;
     all|All)
         for domain in \
-            "sede.nbpdev.com" \
-            "tramitador.nbpdev.com" \
-            "api.nbpdev.com" \
-            "grafana.nbpdev.com" \
-            "prometheus.nbpdev.com" \
-            "loki.nbpdev.com" \
-            "mail.nbpdev.com"
+            "api.nbpdev.es" \
+            "grafana.nbpdev.es" \
+            "prometheus.nbpdev.es" \
+            "loki.nbpdev.es" \
+            "mail.nbpdev.es"
         do
             generate_cert "$domain"
         done
@@ -75,11 +67,13 @@ case "${1:-}" in
             --post-hook "docker exec tfm-nginx nginx -s reload"
         ;;
     *)
-        echo "Usage: $0 {sede|tramitador|api|grafana|prometheus|loki|mail|all|renew}"
-        echo "  sede, tramitador, api, grafana, prometheus, loki, mail"
-        echo "       Generate certificate for specific domain"
+        echo "Usage: $0 {api|grafana|prometheus|loki|mail|all|renew}"
+        echo "  api, grafana, prometheus, loki, mail"
+        echo "       Generate Let's Encrypt certificate for specific domain"
         echo "  all   Generate certificates for all domains"
         echo "  renew Renew all existing certificates"
+        echo ""
+        echo "  Note: sede and tramitador use Arsys Sectigo certs (not managed here)"
         exit 1
         ;;
 esac

@@ -19,7 +19,7 @@ RUN mkdir -p /etc/nginx/certs && \
     openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
     -keyout /etc/nginx/certs/tfm-selfsigned.key \
     -out /etc/nginx/certs/tfm-selfsigned.crt \
-    -subj "/CN=tfm.nbpdev.com" 2>/dev/null
+    -subj "/CN=tfm.nbpdev.es" 2>/dev/null
 
 COPY --from=build /app/dist/front-end/browser/ /usr/share/nginx/html/
 COPY front-end/nginx.conf /etc/nginx/conf.d/default.conf
