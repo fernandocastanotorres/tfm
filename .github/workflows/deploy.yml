@@ -20,8 +20,8 @@ jobs:
           script: |
             set -e
 
-            APP_DIR="/opt/tfm-records"
-            BACKUP_DIR="/opt/tfm-records-backup-$(date +%Y%m%d%H%M%S)"
+            APP_DIR="/opt/tfm"
+            BACKUP_DIR="/opt/tfm-backup-$(date +%Y%m%d%H%M%S)"
 
             echo "=== Stopping current deployment ==="
             if [ -d "$APP_DIR" ]; then
@@ -69,7 +69,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            APP_DIR="/opt/tfm-records"
+            APP_DIR="/opt/tfm"
             cd "$APP_DIR"
 
             DOMAINS=(
