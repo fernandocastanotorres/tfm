@@ -28,8 +28,8 @@ jobs:
             echo "=== Stopping current deployment ==="
             if [ -d "$APP_DIR" ]; then
               cp -r "$APP_DIR" "$BACKUP_DIR"
-              docker compose -f "$APP_DIR/docker-compose.yml" down --remove-orphans || true
-              docker rm -f tfm-promtail tfm-nginx tfm-grafana tfm-postgres tfm-mailpit tfm-loki tfm-cadvisor tfm-prometheus tfm-frontend tfm-backoffice tfm-backend 2>/dev/null || true
+              docker compose --project-name tfm -f "$APP_DIR/docker-compose.yml" down --remove-orphans 2>/dev/null || true
+              docker rm -f $(docker ps -aq --filter "name=tfm-" 2>/dev/null) 2>/dev/null || true
               docker network rm tfm_tfm-network 2>/dev/null || true
             fi
 
@@ -46,13 +46,13 @@ jobs:
             bash infrastructure/nginx/extract-certs.sh
 
             echo "=== Building Docker images ==="
-            docker compose -f docker-compose.yml build --no-cache
+            docker compose --project-name tfm -f docker-compose.yml build --no-cache
 
             echo "=== Pulling base images ==="
-            docker compose -f docker-compose.yml pull
+            docker compose --project-name tfm -f docker-compose.yml pull
 
             echo "=== Starting services ==="
-            docker compose -f docker-compose.yml up -d
+            docker compose --project-name tfm -f docker-compose.yml up -d
 
             echo "=== Cleaning old images ==="
             docker image prune -f
