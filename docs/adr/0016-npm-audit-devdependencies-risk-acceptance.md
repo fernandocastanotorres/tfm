@@ -4,7 +4,7 @@
 Accepted
 
 ## Date
-2026-05-25
+2026-05-25 (updated 2026-07-01 after Angular 20 upgrade)
 
 ## Context
 `npm audit` on both Angular frontends (`front-end/`, `back-office/`) reports vulnerabilities in **npm packages** used during the build process. These are not runtime dependencies — they are development tools used by the Angular CLI, webpack dev server, and Karma test runner.
@@ -14,11 +14,12 @@ After running `npm audit fix` and upgrading `@angular/cli` from 19 → 21 (ADR-0
 | Package | Severity | CVE / Advisory | Fix Available |
 |---------|----------|----------------|---------------|
 | `serialize-javascript` (&le;7.0.4) | HIGH | RCE via `RegExp.flags` + CPU exhaustion DoS | **No** (pinned by `copy-webpack-plugin`, itself pinned by `@angular-devkit/build-angular`) |
-| `uuid` (&lt;11.1.1) | MODERATE | Missing buffer bounds check in v3/v5/v6 | **No** (pinned by `sockjs` → `webpack-dev-server`) |
+| `uuid` (&lt;11.1.1) | MODERATE | Missing buffer bounds check in v3/v5/v6 | **No** (pinned by `sockjs` → `webpack-dev-server`) || `tmp` (&lt;0.2.7) | HIGH | Prototype pollution via crafted temporary file paths | **No** (pinned by `karma` → `@angular-devkit/build-angular`, `karma-jasmine`, `karma-jasmine-html-reporter`) |
 
 These propagate through the dependency chain:
 - `serialize-javascript` → `copy-webpack-plugin` → `@angular-devkit/build-angular`
 - `uuid` → `sockjs` → `webpack-dev-server`
+- `tmp` → `karma` → `@angular-devkit/build-angular` / `karma-jasmine` / `karma-jasmine-html-reporter`
 
 All affected packages are **build-time devDependencies** installed via `npm ci` during the Docker build stage. Neither the Angular compiled bundles nor the production nginx image contain any of these packages.
 
