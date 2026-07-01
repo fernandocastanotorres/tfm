@@ -60,6 +60,9 @@
   "overrides": {
     "@angular-devkit/build-angular": {
       "http-proxy-middleware": "3.0.7"
-    }
+    },
+    "shell-quote": "1.8.4",
+    "ws": "8.21.0",
+    "tmp": "0.2.6"
   }
 }
