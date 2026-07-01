@@ -355,8 +355,7 @@ jobs:
       - name: Build backend image
         uses: docker/build-push-action@v6
         with:
-          context: .
-          file: ./backend/Dockerfile
+          context: ./backend
           push: false
           load: true
           tags: tfm-backend:ci
