@@ -388,12 +388,6 @@ jobs:
           path: .artifacts/backoffice
         continue-on-error: true
 
-      - name: Debug JaCoCo XML
-        run: |
-          find .artifacts -name "jacoco.xml" -exec grep "counter type=" {} \; 2>/dev/null | head -10
-          echo "---"
-          find .artifacts -name "jacoco.xml" -exec head -50 {} \; 2>/dev/null
-
       - name: Run coverage gate checks
         run: bash scripts/check-coverage.sh
         env:
