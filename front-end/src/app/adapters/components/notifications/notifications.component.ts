@@ -72,8 +72,6 @@ export class NotificationsComponent implements OnInit, AfterViewInit, OnDestroy 
     this.notificationsService.getInbox().subscribe({
       next: (items) => {
         this.inbox = items;
-        this.selectedItem = this.inbox[0] ?? null;
-        this.activeItemId = this.selectedItem?.id ?? null;
         this.updatePaginationState();
       },
       error: () => {
