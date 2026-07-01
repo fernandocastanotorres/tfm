@@ -1,4 +1,5 @@
 node_modules/
+**/node_modules/
 .git/
 .gitignore
 *.md
@@ -11,4 +12,17 @@ scripts/
 .idea/
 *.log
 dist/
+**/dist/
 target/
+**/target/
+.angular/
+**/.angular/
+coverage/
+**/coverage/
+.opencode/
+.atl/
+.agents/
+.artifacts/
+.cache/
+**/playwright-report/
+**/test-results/
