@@ -56,7 +56,8 @@
     "TIMELINE_PAGE": "Orrialdea",
     "TIMELINE_PREVIOUS": "Aurrekoa",
     "TIMELINE_NEXT": "Hurrengoa",
-    "TIMELINE_EMPTY": "Ez dago hautatutako iragazrientzako gertaerarik."
+    "TIMELINE_EMPTY": "Ez dago hautatutako iragazrientzako gertaerarik.",
+    "TIMELINE_PAGE_ANNOUNCEMENT": "{{page}} orria {{total}}-tik"
   },
   "COMMON": {
     "LOADING": "Edukia kargatzen",
@@ -233,7 +234,9 @@
     "MOCK_QUICK_PROFILE": "Nire profila",
     "MOCK_QUICK_PROFILE_DESC": "Eguneratu zure datu pertsonalak.",
     "MOCK_QUICK_PAYMENTS": "Ordainketak eta tasak",
-    "MOCK_QUICK_PAYMENTS_DESC": "Kontsultatu eta ordaindu zure agiriak."
+    "MOCK_QUICK_PAYMENTS_DESC": "Kontsultatu eta ordaindu zure agiriak.",
+    "LOADING": "Dashboard kargatzen...",
+    "STATUS_OF": "Espedienteen egoera"
   },
   "PROFILE": {
     "EYEBROW": "Nire profila",
@@ -277,7 +280,8 @@
     "WEAK_PASSWORD_HINT": "Pasahitz berriak ez ditu bete bete betekizun guztiak.",
     "PASSWORDS_MISMATCH_HINT": "Pasahitzak ez datoz bat.",
     "SUCCESS_PASSWORD_TITLE": "Pasahitza eguneratuta",
-    "SUCCESS_PASSWORD_TEXT": "Zure pasahitza zuzen aldatu da."
+    "SUCCESS_PASSWORD_TEXT": "Zure pasahitza zuzen aldatu da.",
+    "SAVING": "Gordetzen..."
   },
   "LAYOUT": {
     "SKIP_LINK": "Salto egin eduki nagusira",
@@ -402,7 +406,17 @@
     "SORT_STATUS": "Egoera",
     "ORIGINAL": "Jatorrizkoa",
     "DOCUMENT_ARIA": "Dokumentua: {{ name }}, {{ type }}",
-    "SIGNED_ELECTRONICALLY_TITLE": "Dokumentua elektronikoki sinatuta"
+    "SIGNED_ELECTRONICALLY_TITLE": "Dokumentua elektronikoki sinatuta",
+    "DELETE_ACTION": "Ezabatu",
+    "DOWNLOAD_ACTION": "Deskargatu",
+    "DOWNLOAD_ORIGINAL_ACTION": "Jatorrizkoa deskargatu",
+    "DOWNLOAD_SIGNED_ACTION": "Sinatutakoa deskargatu",
+    "PAGE_ANNOUNCEMENT": "{{page}} orria {{total}}-tik",
+    "PAGE_SIZE_LABEL": "{{size}} orrialdeko",
+    "SIGN_ACTION": "Sinatu",
+    "SYSTEM_GENERATED_TITLE": "Sistemak sortua",
+    "UPLOADING": "Igotzen...",
+    "VERIFY_ACTION": "Egiaztatu"
   },
   "DOCUMENT_STATUS": {
     "PENDING": "Zain",
@@ -491,7 +505,8 @@
     "LOCATION_NORTH": "Iparraldeko bulegoa",
     "MOCK_URBANISM_SERVICE": "Hirigintza arreta",
     "MOCK_REGISTRY_SERVICE": "Errolda arreta",
-    "MOCK_GENERAL_SERVICE": "Arreta orokorra"
+    "MOCK_GENERAL_SERVICE": "Arreta orokorra",
+    "PAGE_ANNOUNCEMENT": "{{page}} orria {{total}}-tik"
   },
   "APPOINTMENT_STATUS": {
     "CONFIRMED": "Berretsita",
@@ -530,7 +545,8 @@
     "MOCK_SUBJECT_LICENSE": "Lizentziari buruzko kontsulta",
     "MOCK_SUBJECT_DOCUMENTS": "Egiteke dagoen dokumentazioa",
     "MOCK_MESSAGE_RECEIVED": "Zure kontsulta jaso dugu eta berrikusten ari gara.",
-    "MOCK_MESSAGE_PENDING": "Ordainketa-justifikantea erantsi gabe dago."
+    "MOCK_MESSAGE_PENDING": "Ordainketa-justifikantea erantsi gabe dago.",
+    "DOWNLOAD_ATTACHMENT": "Eranskin deskargatu {{name}}"
   },
   "SECURE_HOME": {
     "TITLE": "Sarbidea onartuta",
@@ -559,7 +575,8 @@
     "UNIT_REGISTRY": "Errolda unitatea",
     "UNIT_GENERAL": "Unitate orokorra",
     "FOOTER": "Atal hau backendetik beteko da prozedura aktibo, betebeharrak eta inprimakiekin.",
-    "VIEW_DETAILS": "Fitxa ikusi"
+    "VIEW_DETAILS": "Fitxa ikusi",
+    "LOADING": "Prozedurak kargatzen..."
   },
   "TOUR": {
     "NEXT": "Hurrengoa",
@@ -757,7 +774,8 @@
     "REVIEW_HINT": "Berrikusi informazioa eta dokumentuak eskaera bidali aurretik.",
     "UPLOAD_DROPZONE_TEXT": "Arrastatu eta jaregin fitxategiak hemen edo hautatu zure ekipamendutik.",
     "UPLOAD_GENERIC_LABEL": "Dokumentazioa",
-    "SUBMITTING": "Bidaltzen..."
+    "SUBMITTING": "Bidaltzen...",
+    "LOADING": "Kargatzen..."
   },
   "CASE_SEARCH": {
     "TITLE": "Espediente-bilatzailea",
@@ -826,7 +844,9 @@
     "UPCOMING_EVENTS": "Hurrengo epeak eta gertakizunak",
     "SEE_ALL_PROCEDURES": "Prozedura guztiak ikusi",
     "SEE_CALENDAR": "Egutegi osoa ikusi",
-    "LOADING": "Kargatzen..."
+    "LOADING": "Kargatzen...",
+    "NO_EVENTS": "Ez dago datozen ekitaldirik",
+    "NO_PROCEDURES": "Ez dago prozedura nabarmenik"
   },
   "INSTITUTIONAL": {
     "EYEBROW": "Informazio instituzionala",
@@ -1196,5 +1216,15 @@
     "LINK_PAYMENTS": "Ordainketak eta tasak",
     "LINK_APPOINTMENTS": "Aurreko hitzorduak",
     "LINK_MESSAGES": "Mezularitza segurua"
+  },
+  "NOTIFICATION_STATUS": {
+    "AVAILABLE": "Eskuragarri",
+    "ACCESSED": "Sartu da",
+    "ACCEPTED": "Onartua",
+    "REJECTED": "Ezeztatua",
+    "EXPIRED": "Iraungita"
+  },
+  "NOTIFICATION_TYPE": {
+    "FORMAL_NOTICE": "Jakinarazpen formala"
   }
 }

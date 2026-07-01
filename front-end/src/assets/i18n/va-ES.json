@@ -56,7 +56,8 @@
     "TYPE_APPOINTMENT": "Cita",
     "PRIORITY_HIGH": "Alta",
     "PRIORITY_MEDIUM": "Mitjana",
-    "PRIORITY_LOW": "Baixa"
+    "PRIORITY_LOW": "Baixa",
+    "TIMELINE_PAGE_ANNOUNCEMENT": "Pàgina {{page}} de {{total}}"
   },
   "COMMON": {
     "LOADING": "Carregant contingut",
@@ -233,7 +234,9 @@
     "MOCK_QUICK_PROFILE": "El meu perfil",
     "MOCK_QUICK_PROFILE_DESC": "Actualitza les teues dades personals.",
     "MOCK_QUICK_PAYMENTS": "Pagaments i taxes",
-    "MOCK_QUICK_PAYMENTS_DESC": "Consulta i paga els teus rebuts."
+    "MOCK_QUICK_PAYMENTS_DESC": "Consulta i paga els teus rebuts.",
+    "LOADING": "Carregant dashboard...",
+    "STATUS_OF": "Estat d'expedients"
   },
   "PROFILE": {
     "EYEBROW": "El meu perfil",
@@ -277,7 +280,8 @@
     "WEAK_PASSWORD_HINT": "La nova contrasenya no complix tots els requisits.",
     "PASSWORDS_MISMATCH_HINT": "Les contrasenyes no coincidisquen.",
     "SUCCESS_PASSWORD_TITLE": "Contrasenya actualitzada",
-    "SUCCESS_PASSWORD_TEXT": "La teua contrasenya s'ha canviat correctament."
+    "SUCCESS_PASSWORD_TEXT": "La teua contrasenya s'ha canviat correctament.",
+    "SAVING": "Guardant..."
   },
   "LAYOUT": {
     "SKIP_LINK": "Saltar al contingut principal",
@@ -402,7 +406,17 @@
     "SORT_STATUS": "Estat",
     "ORIGINAL": "Original",
     "DOCUMENT_ARIA": "Document: {{ name }}, {{ type }}",
-    "SIGNED_ELECTRONICALLY_TITLE": "Document signat electrònicament"
+    "SIGNED_ELECTRONICALLY_TITLE": "Document signat electrònicament",
+    "DELETE_ACTION": "Eliminar",
+    "DOWNLOAD_ACTION": "Descarregar",
+    "DOWNLOAD_ORIGINAL_ACTION": "Descarregar original",
+    "DOWNLOAD_SIGNED_ACTION": "Descarregar signat",
+    "PAGE_ANNOUNCEMENT": "Pàgina {{page}} de {{total}}",
+    "PAGE_SIZE_LABEL": "{{size}} per pàgina",
+    "SIGN_ACTION": "Signar",
+    "SYSTEM_GENERATED_TITLE": "Generat pel sistema",
+    "UPLOADING": "Pujant...",
+    "VERIFY_ACTION": "Verificar"
   },
   "DOCUMENT_STATUS": {
     "PENDING": "Pendent",
@@ -491,7 +505,8 @@
     "LOCATION_NORTH": "Oficina nord",
     "MOCK_URBANISM_SERVICE": "Atenció urbanisme",
     "MOCK_REGISTRY_SERVICE": "Atenció padró",
-    "MOCK_GENERAL_SERVICE": "Atenció general"
+    "MOCK_GENERAL_SERVICE": "Atenció general",
+    "PAGE_ANNOUNCEMENT": "Pàgina {{page}} de {{total}}"
   },
   "APPOINTMENT_STATUS": {
     "CONFIRMED": "Confirmada",
@@ -530,7 +545,8 @@
     "MOCK_SUBJECT_LICENSE": "Consulta sobre llicència",
     "MOCK_SUBJECT_DOCUMENTS": "Documentació pendent",
     "MOCK_MESSAGE_RECEIVED": "Hem rebut la teua consulta i l'estem revisant.",
-    "MOCK_MESSAGE_PENDING": "Falta adjuntar el justificant de pagament."
+    "MOCK_MESSAGE_PENDING": "Falta adjuntar el justificant de pagament.",
+    "DOWNLOAD_ATTACHMENT": "Descarregar adjunt {{name}}"
   },
   "SECURE_HOME": {
     "TITLE": "Accés concedit",
@@ -559,7 +575,8 @@
     "UNIT_REGISTRY": "Unitat de Padró",
     "UNIT_GENERAL": "Unitat General",
     "FOOTER": "Esta secció s'omplirà des del backend amb procediments actius, requisits i formularis.",
-    "VIEW_DETAILS": "Veure fitxa"
+    "VIEW_DETAILS": "Veure fitxa",
+    "LOADING": "Carregant procediments..."
   },
   "TOUR": {
     "NEXT": "Següent",
@@ -757,7 +774,8 @@
     "REVIEW_HINT": "Revisa la informació i els documents abans d'enviar la sol·licitud.",
     "UPLOAD_DROPZONE_TEXT": "Arrossega i deixa anar fitxers aquí o selecciona des del teu equip.",
     "UPLOAD_GENERIC_LABEL": "Documentació",
-    "SUBMITTING": "S'està enviant..."
+    "SUBMITTING": "S'està enviant...",
+    "LOADING": "Carregant..."
   },
   "CASE_SEARCH": {
     "TITLE": "Cercador d'expedients",
@@ -826,7 +844,9 @@
     "UPCOMING_EVENTS": "Pròxims terminis i esdeveniments",
     "SEE_ALL_PROCEDURES": "Vore tots els procediments",
     "SEE_CALENDAR": "Vore calendari complet",
-    "LOADING": "Carregant..."
+    "LOADING": "Carregant...",
+    "NO_EVENTS": "No hi ha esdeveniments pròxims",
+    "NO_PROCEDURES": "No hi ha procediments destacats"
   },
   "INSTITUTIONAL": {
     "EYEBROW": "Informació institucional",
@@ -1196,5 +1216,15 @@
     "LINK_PAYMENTS": "Pagaments i taxes",
     "LINK_APPOINTMENTS": "Cites prèvies",
     "LINK_MESSAGES": "Missatgeria segura"
+  },
+  "NOTIFICATION_STATUS": {
+    "AVAILABLE": "Disponible",
+    "ACCESSED": "Accedida",
+    "ACCEPTED": "Acceptada",
+    "REJECTED": "Rebutjada",
+    "EXPIRED": "Expirada"
+  },
+  "NOTIFICATION_TYPE": {
+    "FORMAL_NOTICE": "Notificació formal"
   }
 }

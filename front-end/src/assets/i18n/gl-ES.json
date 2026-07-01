@@ -56,7 +56,8 @@
     "TIMELINE_PAGE": "Páxina",
     "TIMELINE_PREVIOUS": "Anterior",
     "TIMELINE_NEXT": "Seguinte",
-    "TIMELINE_EMPTY": "Non hai eventos para os filtros seleccionados."
+    "TIMELINE_EMPTY": "Non hai eventos para os filtros seleccionados.",
+    "TIMELINE_PAGE_ANNOUNCEMENT": "Páxina {{page}} de {{total}}"
   },
   "COMMON": {
     "LOADING": "Cargando contido",
@@ -233,7 +234,9 @@
     "MOCK_QUICK_PROFILE": "O meu perfil",
     "MOCK_QUICK_PROFILE_DESC": "Actualiza os teus datos persoais.",
     "MOCK_QUICK_PAYMENTS": "Pagos e taxas",
-    "MOCK_QUICK_PAYMENTS_DESC": "Consulta e paga os teus recibos."
+    "MOCK_QUICK_PAYMENTS_DESC": "Consulta e paga os teus recibos.",
+    "LOADING": "Cargando dashboard...",
+    "STATUS_OF": "Estado de expedientes"
   },
   "PROFILE": {
     "EYEBROW": "O meu perfil",
@@ -277,7 +280,8 @@
     "WEAK_PASSWORD_HINT": "O novo contrasinal non cumpre todos os requisitos.",
     "PASSWORDS_MISMATCH_HINT": "Os contrasinais non coinciden.",
     "SUCCESS_PASSWORD_TITLE": "Contrasinal actualizado",
-    "SUCCESS_PASSWORD_TEXT": "O teu contrasinal cambiouse correctamente."
+    "SUCCESS_PASSWORD_TEXT": "O teu contrasinal cambiouse correctamente.",
+    "SAVING": "Gardando..."
   },
   "LAYOUT": {
     "SKIP_LINK": "Saltar ao contido principal",
@@ -402,7 +406,17 @@
     "SORT_STATUS": "Estado",
     "ORIGINAL": "Orixinal",
     "DOCUMENT_ARIA": "Documento: {{ name }}, {{ type }}",
-    "SIGNED_ELECTRONICALLY_TITLE": "Documento asinado electronicamente"
+    "SIGNED_ELECTRONICALLY_TITLE": "Documento asinado electronicamente",
+    "DELETE_ACTION": "Eliminar",
+    "DOWNLOAD_ACTION": "Descargar",
+    "DOWNLOAD_ORIGINAL_ACTION": "Descargar orixinal",
+    "DOWNLOAD_SIGNED_ACTION": "Descargar asinado",
+    "PAGE_ANNOUNCEMENT": "Páxina {{page}} de {{total}}",
+    "PAGE_SIZE_LABEL": "{{size}} por páxina",
+    "SIGN_ACTION": "Asinar",
+    "SYSTEM_GENERATED_TITLE": "Xerado polo sistema",
+    "UPLOADING": "Subindo...",
+    "VERIFY_ACTION": "Verificar"
   },
   "DOCUMENT_STATUS": {
     "PENDING": "Pendente",
@@ -491,7 +505,8 @@
     "LOCATION_NORTH": "Oficina norte",
     "MOCK_URBANISM_SERVICE": "Atención urbanismo",
     "MOCK_REGISTRY_SERVICE": "Atención padrón",
-    "MOCK_GENERAL_SERVICE": "Atención xeral"
+    "MOCK_GENERAL_SERVICE": "Atención xeral",
+    "PAGE_ANNOUNCEMENT": "Páxina {{page}} de {{total}}"
   },
   "APPOINTMENT_STATUS": {
     "CONFIRMED": "Confirmada",
@@ -530,7 +545,8 @@
     "MOCK_SUBJECT_LICENSE": "Consulta sobre licenza",
     "MOCK_SUBJECT_DOCUMENTS": "Documentación pendente",
     "MOCK_MESSAGE_RECEIVED": "Recibimos a túa consulta e estámola a revisar.",
-    "MOCK_MESSAGE_PENDING": "Falta adxuntar o xustificante de pago."
+    "MOCK_MESSAGE_PENDING": "Falta adxuntar o xustificante de pago.",
+    "DOWNLOAD_ATTACHMENT": "Descargar adxunto {{name}}"
   },
   "SECURE_HOME": {
     "TITLE": "Acceso concedido",
@@ -559,7 +575,8 @@
     "UNIT_REGISTRY": "Unidade de Padrón",
     "UNIT_GENERAL": "Unidade Xeral",
     "FOOTER": "Esta sección poboarase desde o backend con procedementos activos, requisitos e formularios.",
-    "VIEW_DETAILS": "Ver ficha"
+    "VIEW_DETAILS": "Ver ficha",
+    "LOADING": "Cargando procedementos..."
   },
   "TOUR": {
     "NEXT": "Seguinte",
@@ -757,7 +774,8 @@
     "REVIEW_HINT": "Revisa a información e os documentos antes de enviar a solicitude.",
     "UPLOAD_DROPZONE_TEXT": "Arrastra e solta ficheiros aquí ou selecciona desde o teu equipo.",
     "UPLOAD_GENERIC_LABEL": "Documentación",
-    "SUBMITTING": "Enviando..."
+    "SUBMITTING": "Enviando...",
+    "LOADING": "Cargando..."
   },
   "CASE_SEARCH": {
     "TITLE": "Buscador de expedientes",
@@ -1074,7 +1092,9 @@
     "UPCOMING_EVENTS": "Próximos prazos e eventos",
     "SEE_ALL_PROCEDURES": "Ver todos os procedementos",
     "SEE_CALENDAR": "Ver calendario completo",
-    "LOADING": "Cargando..."
+    "LOADING": "Cargando...",
+    "NO_EVENTS": "Non hai eventos próximos",
+    "NO_PROCEDURES": "Non hai procedementos destacados"
   },
   "BACKOFFICE": {
     "TITLE": "Panel de administración",
@@ -1196,5 +1216,15 @@
     "FORM_SUBMIT": "Enviar missatge",
     "FORM_SUBMITTING": "Enviant...",
     "FORM_SUCCESS": "Missatge enviat correctament. Et respondrem el més aviat possible."
+  },
+  "NOTIFICATION_STATUS": {
+    "AVAILABLE": "Dispoñible",
+    "ACCESSED": "Accedida",
+    "ACCEPTED": "Aceptada",
+    "REJECTED": "Rexeitada",
+    "EXPIRED": "Expirada"
+  },
+  "NOTIFICATION_TYPE": {
+    "FORMAL_NOTICE": "Notificación formal"
   }
 }

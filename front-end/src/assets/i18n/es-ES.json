@@ -56,7 +56,8 @@
     "TYPE_APPOINTMENT": "Cita",
     "PRIORITY_HIGH": "Alta",
     "PRIORITY_MEDIUM": "Media",
-    "PRIORITY_LOW": "Baja"
+    "PRIORITY_LOW": "Baja",
+    "TIMELINE_PAGE_ANNOUNCEMENT": "Página {{page}} de {{total}}"
   },
   "COMMON": {
     "LOADING": "Cargando contenido",
@@ -245,7 +246,9 @@
     "MOCK_QUICK_PROFILE": "Mi perfil",
     "MOCK_QUICK_PROFILE_DESC": "Actualiza tus datos personales.",
     "MOCK_QUICK_PAYMENTS": "Pagos y tasas",
-    "MOCK_QUICK_PAYMENTS_DESC": "Consulta y paga tus recibos."
+    "MOCK_QUICK_PAYMENTS_DESC": "Consulta y paga tus recibos.",
+    "LOADING": "Cargando dashboard...",
+    "STATUS_OF": "Estado de expedientes"
   },
   "PROFILE": {
     "EYEBROW": "Mi perfil",
@@ -289,7 +292,8 @@
     "WEAK_PASSWORD_HINT": "La nueva contraseña no cumple todos los requisitos.",
     "PASSWORDS_MISMATCH_HINT": "Las contraseñas no coinciden.",
     "SUCCESS_PASSWORD_TITLE": "Contraseña actualizada",
-    "SUCCESS_PASSWORD_TEXT": "Tu contraseña se ha cambiado correctamente."
+    "SUCCESS_PASSWORD_TEXT": "Tu contraseña se ha cambiado correctamente.",
+    "SAVING": "Guardando..."
   },
   "LAYOUT": {
     "SKIP_LINK": "Saltar al contenido principal",
@@ -414,7 +418,17 @@
     "SORT_STATUS": "Estado",
     "ORIGINAL": "Original",
     "DOCUMENT_ARIA": "Documento: {{ name }}, {{ type }}",
-    "SIGNED_ELECTRONICALLY_TITLE": "Documento firmado electrónicamente"
+    "SIGNED_ELECTRONICALLY_TITLE": "Documento firmado electrónicamente",
+    "DELETE_ACTION": "Eliminar",
+    "DOWNLOAD_ACTION": "Descargar",
+    "DOWNLOAD_ORIGINAL_ACTION": "Descargar original",
+    "DOWNLOAD_SIGNED_ACTION": "Descargar firmado",
+    "PAGE_ANNOUNCEMENT": "Página {{page}} de {{total}}",
+    "PAGE_SIZE_LABEL": "{{size}} por página",
+    "SIGN_ACTION": "Firmar",
+    "SYSTEM_GENERATED_TITLE": "Generado por el sistema",
+    "UPLOADING": "Subiendo...",
+    "VERIFY_ACTION": "Verificar"
   },
   "DOCUMENT_STATUS": {
     "PENDING": "Pendiente",
@@ -503,7 +517,8 @@
     "LOCATION_NORTH": "Oficina norte",
     "MOCK_URBANISM_SERVICE": "Atención urbanismo",
     "MOCK_REGISTRY_SERVICE": "Atención padrón",
-    "MOCK_GENERAL_SERVICE": "Atención general"
+    "MOCK_GENERAL_SERVICE": "Atención general",
+    "PAGE_ANNOUNCEMENT": "Página {{page}} de {{total}}"
   },
   "APPOINTMENT_STATUS": {
     "CONFIRMED": "Confirmada",
@@ -542,7 +557,8 @@
     "MOCK_SUBJECT_DOCUMENTS": "Documentación pendiente",
     "MOCK_MESSAGE_RECEIVED": "Hemos recibido tu consulta y la estamos revisando.",
     "MOCK_MESSAGE_PENDING": "Falta adjuntar el justificante de pago.",
-    "PAGE_ANNOUNCEMENT": "Página {{current}} de {{total}}"
+    "PAGE_ANNOUNCEMENT": "Página {{current}} de {{total}}",
+    "DOWNLOAD_ATTACHMENT": "Descargar adjunto {{name}}"
   },
   "SECURE_HOME": {
     "TITLE": "Acceso concedido",
@@ -571,7 +587,8 @@
     "UNIT_REGISTRY": "Unidad de Padrón",
     "UNIT_GENERAL": "Unidad General",
     "FOOTER": "Esta sección se poblará desde el backend con procedimientos activos, requisitos y formularios.",
-    "VIEW_DETAILS": "Ver ficha"
+    "VIEW_DETAILS": "Ver ficha",
+    "LOADING": "Cargando procedimientos..."
   },
   "TOUR": {
     "NEXT": "Siguiente",
@@ -776,7 +793,8 @@
     "REVIEW_HINT": "Revisa la información y los documentos antes de enviar la solicitud.",
     "UPLOAD_DROPZONE_TEXT": "Arrastra y suelta ficheros aqui o selecciona desde tu equipo.",
     "UPLOAD_GENERIC_LABEL": "Documentacion",
-    "SUBMITTING": "Enviando..."
+    "SUBMITTING": "Enviando...",
+    "LOADING": "Cargando..."
   },
   "CASE_SEARCH": {
     "TITLE": "Buscador de expedientes",
@@ -845,7 +863,9 @@
     "UPCOMING_EVENTS": "Próximos plazos y eventos",
     "SEE_ALL_PROCEDURES": "Ver todos los procedimientos",
     "SEE_CALENDAR": "Ver calendario completo",
-    "LOADING": "Cargando..."
+    "LOADING": "Cargando...",
+    "NO_EVENTS": "No hay eventos próximos",
+    "NO_PROCEDURES": "No hay procedimientos destacados"
   },
   "INSTITUTIONAL": {
     "EYEBROW": "Información institucional",
@@ -1196,5 +1216,15 @@
     "LINK_PAYMENTS": "Pagos y tasas",
     "LINK_APPOINTMENTS": "Citas previas",
     "LINK_MESSAGES": "Mensajería segura"
+  },
+  "NOTIFICATION_STATUS": {
+    "AVAILABLE": "Disponible",
+    "ACCESSED": "Accedida",
+    "ACCEPTED": "Aceptada",
+    "REJECTED": "Rechazada",
+    "EXPIRED": "Expirada"
+  },
+  "NOTIFICATION_TYPE": {
+    "FORMAL_NOTICE": "Notificación formal"
   }
 }
