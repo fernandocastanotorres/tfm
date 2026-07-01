@@ -22,7 +22,7 @@ RUN mkdir -p /etc/nginx/certs && \
     -subj "/CN=tfm.nbpdev.es" 2>/dev/null
 
 COPY --from=build /app/dist/back-office/ /usr/share/nginx/html/
-COPY back-office/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/nginx.conf /etc/nginx/conf.d/default.conf
 
 RUN chmod 644 /etc/nginx/certs/* && \
     chown -R appuser:appgroup /usr/share/nginx/html && \

@@ -9,6 +9,8 @@ RUN npm install --ignore-scripts --legacy-peer-deps
 COPY front-end/ .
 RUN npx ng build --configuration=production --output-hashing=all
 
+# nginx.conf is at /app/nginx.conf after COPY front-end/ .
+
 # ── Runtime stage ────────────────────────────
 FROM nginx:1.25-alpine
 
@@ -22,7 +24,7 @@ RUN mkdir -p /etc/nginx/certs && \
     -subj "/CN=tfm.nbpdev.es" 2>/dev/null
 
 COPY --from=build /app/dist/front-end/browser/ /usr/share/nginx/html/
-COPY front-end/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/nginx.conf /etc/nginx/conf.d/default.conf
 
 RUN chown -R appuser:appgroup /usr/share/nginx/html && \
     chown -R appuser:appgroup /var/cache/nginx && \
