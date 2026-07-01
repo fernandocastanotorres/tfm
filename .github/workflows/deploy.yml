@@ -46,7 +46,8 @@ jobs:
             bash infrastructure/nginx/extract-certs.sh
 
             echo "=== Building Docker images ==="
-            docker compose --project-name tfm -f docker-compose.yml build --no-cache
+            docker builder prune -f 2>/dev/null || true
+            docker compose --project-name tfm -f docker-compose.yml build --no-cache --pull
 
             echo "=== Pulling base images ==="
             docker compose --project-name tfm -f docker-compose.yml pull
