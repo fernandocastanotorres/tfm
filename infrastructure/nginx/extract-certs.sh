@@ -50,6 +50,9 @@ extract_domain() {
         chmod 644 "${live}/chain.pem"
     fi
 
+    # Concatenate server cert + intermediate CA for full chain
+    cat "${live}/chain.pem" >> "${live}/fullchain.pem"
+
     echo "  ${domain} done ($(openssl x509 -in "${live}/fullchain.pem" -noout -dates 2>/dev/null | grep notAfter | cut -d= -f2))"
 }
 
