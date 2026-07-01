@@ -14,7 +14,7 @@ After running `npm audit fix` and upgrading `@angular/cli` from 19 → 21 (ADR-0
 | Package | Severity | CVE / Advisory | Fix Available |
 |---------|----------|----------------|---------------|
 | `serialize-javascript` (&le;7.0.4) | HIGH | RCE via `RegExp.flags` + CPU exhaustion DoS | **No** (pinned by `copy-webpack-plugin`, itself pinned by `@angular-devkit/build-angular`) |
-| `uuid` (&lt;11.1.1) | MODERATE | Missing buffer bounds check in v3/v5/v6 | **No** (pinned by `sockjs` → `webpack-dev-server`) || `tmp` (&lt;0.2.7) | HIGH | Prototype pollution via crafted temporary file paths | **No** (pinned by `karma` → `@angular-devkit/build-angular`, `karma-jasmine`, `karma-jasmine-html-reporter`) |
+| `uuid` (&lt;11.1.1) | MODERATE | Missing buffer bounds check in v3/v5/v6 | **No** (pinned by `sockjs@0.3.24` → `webpack-dev-server`. Latest sockjs still requires `uuid@^8.3.2`, no patched v8/v9 version exists. Overriding to uuid@14 breaks sockjs API.) || `tmp` (&lt;0.2.7) | HIGH | Prototype pollution via crafted temporary file paths | **No** (pinned by `karma` → `@angular-devkit/build-angular`, `karma-jasmine`, `karma-jasmine-html-reporter`) |
 
 These propagate through the dependency chain:
 - `serialize-javascript` → `copy-webpack-plugin` → `@angular-devkit/build-angular`
