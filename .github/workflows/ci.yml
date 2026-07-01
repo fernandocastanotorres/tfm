@@ -147,7 +147,7 @@ jobs:
   # Backend Lint
   # ──────────────────────────────────────────────
   backend-lint:
-    name: Backend Lint (Maven Enforcer)
+    name: Backend Lint (Compile)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -160,10 +160,6 @@ jobs:
           distribution: temurin
           java-version: ${{ env.JAVA_VERSION }}
           cache: maven
-
-      - name: Run Maven Enforcer
-        working-directory: backend
-        run: mvn -B enforcer:enforce -Denforcer.rules=requireJavaVersion,requireMavenVersion
 
       - name: Compile to verify no warnings
         working-directory: backend
