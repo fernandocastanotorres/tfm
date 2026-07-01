@@ -36,7 +36,15 @@
               "src/styles.css"
             ],
             "scripts": [],
-            "allowedCommonJsDependencies": ["sweetalert2", "canvg", "html2canvas", "jspdf", "raf", "rgbcolor", "core-js"]
+            "allowedCommonJsDependencies": [
+              "sweetalert2",
+              "canvg",
+              "html2canvas",
+              "jspdf",
+              "raf",
+              "rgbcolor",
+              "core-js"
+            ]
           },
           "configurations": {
             "production": {
@@ -102,6 +110,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
+            "codeCoverage": true,
             "polyfills": [
               "zone.js",
               "zone.js/testing"
