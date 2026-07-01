@@ -358,9 +358,8 @@ jobs:
           context: ./backend
           push: false
           load: true
+          no-cache: true
           tags: tfm-backend:ci
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Build front-end image
         uses: docker/build-push-action@v6
@@ -369,9 +368,8 @@ jobs:
           file: ./front-end/Dockerfile
           push: false
           load: true
+          no-cache: true
           tags: tfm-frontend:ci
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Build back-office image
         uses: docker/build-push-action@v6
@@ -380,9 +378,8 @@ jobs:
           file: ./back-office/Dockerfile
           push: false
           load: true
+          no-cache: true
           tags: tfm-backoffice:ci
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
   # ──────────────────────────────────────────────
   # Docker Compose Smoke Test
