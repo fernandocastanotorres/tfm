@@ -83,7 +83,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: front-end
-        run: npm ci
+        run: npm install --legacy-peer-deps
 
       - name: Run tests with coverage
         working-directory: front-end
@@ -127,7 +127,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: back-office
-        run: npm ci
+        run: npm install --legacy-peer-deps
 
       - name: Run tests with coverage
         working-directory: back-office
@@ -189,7 +189,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: front-end
-        run: npm ci
+        run: npm install --legacy-peer-deps
 
       - name: Verify TypeScript compilation
         working-directory: front-end
@@ -219,7 +219,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: back-office
-        run: npm ci
+        run: npm install --legacy-peer-deps
 
       - name: Verify TypeScript compilation
         working-directory: back-office
@@ -249,7 +249,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: front-end
-        run: npm ci
+        run: npm install --legacy-peer-deps
 
       - name: Cache Playwright browsers
         uses: actions/cache@v4
