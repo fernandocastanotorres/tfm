@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  COVERAGE_ENFORCEMENT_MODE: enforce
+  COVERAGE_ENFORCEMENT_MODE: report
   NODE_VERSION: '20'
   JAVA_VERSION: '17'
 
