@@ -46,8 +46,12 @@ extract_domain() {
     if ! openssl x509 -in "${live}/chain.pem" -noout 2>/dev/null; then
         echo "  Downloading Sectigo CA chain..."
         curl -fsSL "http://crt.sectigo.com/SectigoPublicServerAuthenticationCADVR36.crt" \
-            -o "${live}/chain.pem"
-        chmod 644 "${live}/chain.pem"
+            -o "${live}/chain.pem" 2>/dev/null || true
+        # Convert from DER to PEM if needed
+        if ! openssl x509 -in "${live}/chain.pem" -noout 2>/dev/null; then
+            openssl x509 -inform DER -in "${live}/chain.pem" -out "${live}/chain.pem" 2>/dev/null || true
+        fi
+        chmod 644 "${live}/chain.pem" 2>/dev/null || true
     fi
 
     # Concatenate server cert + intermediate CA for full chain (idempotent)
