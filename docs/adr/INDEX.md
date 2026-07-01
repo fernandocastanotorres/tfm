@@ -20,6 +20,7 @@
 | [ADR-0016](./0016-npm-audit-devdependencies-risk-acceptance.md) | npm Audit DevDependencies — Risk Acceptance Through Multi-Stage Build Isolation | Accepted | 2026-05-25 |
 | [ADR-0017](./0017-select-loki-grafana-for-container-log-observability.md) | Select Loki + Grafana (with Promtail) for Container Log Observability | Accepted | 2026-05-25 |
 | [ADR-0018](./0018-nginx-reverse-proxy-ssl-termination.md) | Nginx as Centralized Reverse Proxy with SSL Termination | Accepted | 2026-06-23 |
+| [ADR-0019](./0019-angular-19.2.25-runtime-vulnerabilities-risk-acceptance.md) | Angular 19.2.25 Runtime Vulnerabilities — Risk Acceptance Pending Upstream Release | Accepted | 2026-07-01 |
 
 ## Supporting Files
 - [ADR Guidelines](./README.md)
