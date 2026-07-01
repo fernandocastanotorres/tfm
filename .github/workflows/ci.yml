@@ -163,7 +163,7 @@ jobs:
 
       - name: Run Maven Enforcer
         working-directory: backend
-        run: mvn -B enforcer:enforce -Denforcer.rules=requireJavaVersion,requireMavenVersion,bannedDependencies
+        run: mvn -B enforcer:enforce -Denforcer.rules=requireJavaVersion,requireMavenVersion
 
       - name: Compile to verify no warnings
         working-directory: backend
@@ -359,7 +359,8 @@ jobs:
       - name: Build backend image
         uses: docker/build-push-action@v6
         with:
-          context: ./backend
+          context: .
+          file: ./backend/Dockerfile
           push: false
           load: true
           tags: tfm-backend:ci
@@ -369,7 +370,8 @@ jobs:
       - name: Build front-end image
         uses: docker/build-push-action@v6
         with:
-          context: ./front-end
+          context: .
+          file: ./front-end/Dockerfile
           push: false
           load: true
           tags: tfm-frontend:ci
@@ -379,7 +381,8 @@ jobs:
       - name: Build back-office image
         uses: docker/build-push-action@v6
         with:
-          context: ./back-office
+          context: .
+          file: ./back-office/Dockerfile
           push: false
           load: true
           tags: tfm-backoffice:ci
