@@ -39,7 +39,9 @@
       "PASSWORD_PLACEHOLDER": "Introduce o teu contrasinal",
       "SUBMIT": "Iniciar sesión",
       "LOADING": "Cargando...",
-      "INVALID_CREDENTIALS": "Credenciais inválidas"
+      "INVALID_CREDENTIALS": "Credenciais inválidas",
+      "EMAIL_ERROR": "O email non é válido",
+      "PASSWORD_ERROR": "O contrasinal é obrigatorio"
     },
     "DASHBOARD": {
       "LOADING": "Cargando dashboard...",
@@ -114,7 +116,8 @@
       "NO_TASKS": "Non hai tarefas para o filtro seleccionado",
       "URGENT_LABEL": "Urgente",
       "NORMAL_LABEL": "Normal",
-      "NOT_ASSIGNED": "Sin asignar"
+      "NOT_ASSIGNED": "Sin asignar",
+      "FILTER_LABEL": "Filtrar tarefas"
     },
     "CASE_DETAIL": {
       "MESSAGES": {

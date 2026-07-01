@@ -39,7 +39,9 @@
       "PASSWORD_PLACEHOLDER": "Introduïx la teva contrasenya",
       "SUBMIT": "Iniciar sessió",
       "LOADING": "Carregant...",
-      "INVALID_CREDENTIALS": "Credencials no vàlides"
+      "INVALID_CREDENTIALS": "Credencials no vàlides",
+      "EMAIL_ERROR": "El correu electrònic no és vàlid",
+      "PASSWORD_ERROR": "La contrasenya és obligatòria"
     },
     "DASHBOARD": {
       "LOADING": "Carregant dashboard...",
@@ -114,7 +116,8 @@
       "NO_TASKS": "No hi ha tasques per al filtre seleccionat",
       "URGENT_LABEL": "Urgent",
       "NORMAL_LABEL": "Normal",
-      "NOT_ASSIGNED": "Sense assignar"
+      "NOT_ASSIGNED": "Sense assignar",
+      "FILTER_LABEL": "Filtrar tasques"
     },
     "CASE_DETAIL": {
       "MESSAGES": {

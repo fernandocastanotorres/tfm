@@ -39,7 +39,9 @@
       "PASSWORD_PLACEHOLDER": "Sartu zure pasahitza",
       "SUBMIT": "Sartu",
       "LOADING": "Kargatzen...",
-      "INVALID_CREDENTIALS": "Kredentzialak baliogabeak"
+      "INVALID_CREDENTIALS": "Kredentzialak baliogabeak",
+      "EMAIL_ERROR": "Emaila ez da baliozkoa",
+      "PASSWORD_ERROR": "Pasahitza derrigorrezkoa da"
     },
     "DASHBOARD": {
       "LOADING": "Dashboard kargatzen...",
@@ -114,7 +116,8 @@
       "NO_TASKS": "Ez dago atazarik filtro honetarako",
       "URGENT_LABEL": "Urgente",
       "NORMAL_LABEL": "Normal",
-      "NOT_ASSIGNED": "Sin asignar"
+      "NOT_ASSIGNED": "Sin asignar",
+      "FILTER_LABEL": "Atazak iragazi"
     },
     "CASE_DETAIL": {
       "MESSAGES": {
