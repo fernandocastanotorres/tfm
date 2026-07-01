@@ -349,7 +349,6 @@ jobs:
     name: Docker Build
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    if: ${{ hashFiles('backend/Dockerfile') != '' || hashFiles('front-end/Dockerfile') != '' || hashFiles('back-office/Dockerfile') != '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -358,7 +357,6 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build backend image
-        if: ${{ hashFiles('backend/Dockerfile') != '' }}
         uses: docker/build-push-action@v6
         with:
           context: ./backend
@@ -369,7 +367,6 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Build front-end image
-        if: ${{ hashFiles('front-end/Dockerfile') != '' }}
         uses: docker/build-push-action@v6
         with:
           context: ./front-end
@@ -380,7 +377,6 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Build back-office image
-        if: ${{ hashFiles('back-office/Dockerfile') != '' }}
         uses: docker/build-push-action@v6
         with:
           context: ./back-office
