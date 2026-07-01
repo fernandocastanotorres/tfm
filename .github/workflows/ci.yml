@@ -89,13 +89,17 @@ jobs:
         working-directory: front-end
         run: npm test -- --no-watch --browsers=ChromeHeadlessNoSandbox --code-coverage
 
+      - name: Debug coverage output
+        if: always()
+        run: find . -name "lcov.info" -o -name "coverage-final.json" 2>/dev/null | head -20 || echo "No coverage files found"
+
       - name: Upload frontend coverage
         uses: actions/upload-artifact@v4
         with:
           name: frontend-coverage
           path: |
-            front-end/coverage/**/lcov.info
-            front-end/coverage/**/coverage-final.json
+            **/lcov.info
+            **/coverage-final.json
           if-no-files-found: warn
           retention-days: 5
 
@@ -133,13 +137,17 @@ jobs:
         working-directory: back-office
         run: npm test -- --no-watch --browsers=ChromeHeadlessNoSandbox --code-coverage
 
+      - name: Debug coverage output
+        if: always()
+        run: find . -name "lcov.info" -o -name "coverage-final.json" 2>/dev/null | head -20 || echo "No coverage files found"
+
       - name: Upload backoffice coverage
         uses: actions/upload-artifact@v4
         with:
           name: backoffice-coverage
           path: |
-            coverage/back-office/**/lcov.info
-            coverage/back-office/**/coverage-final.json
+            **/lcov.info
+            **/coverage-final.json
           if-no-files-found: warn
           retention-days: 5
 
