@@ -28,7 +28,8 @@ jobs:
             echo "=== Stopping current deployment ==="
             if [ -d "$APP_DIR" ]; then
               cp -r "$APP_DIR" "$BACKUP_DIR"
-              docker compose -f "$APP_DIR/docker-compose.yml" down || true
+              docker compose -f "$APP_DIR/docker-compose.yml" down --remove-orphans || true
+              docker rm -f tfm-promtail tfm-nginx tfm-grafana tfm-postgres tfm-mailpit tfm-loki tfm-cadvisor tfm-prometheus tfm-frontend tfm-backoffice tfm-backend 2>/dev/null || true
             fi
 
             echo "=== Pulling latest code ==="
