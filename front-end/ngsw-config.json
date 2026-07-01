@@ -4,11 +4,11 @@
   "assetGroups": [
     {
       "name": "app",
-      "installMode": "prefetch",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
       "resources": {
         "files": [
           "/favicon.ico",
-          "/index.html",
           "/*.css",
           "/*.js"
         ]
@@ -22,18 +22,6 @@
         "files": [
           "/assets/**"
         ]
-      }
-    }
-  ],
-  "dataGroups": [
-    {
-      "name": "api-fresh",
-      "urls": ["/api/v1/**"],
-      "cacheConfig": {
-        "strategy": "freshness",
-        "maxSize": 100,
-        "maxAge": "1h",
-        "timeout": "10s"
       }
     }
   ]
