@@ -108,6 +108,7 @@ logging:
 app:
   cors:
     allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:4200,http://localhost:4300}
+  public-sede-base-url: ${APP_PUBLIC_SEDE_BASE_URL:https://sede.nbpdev.es/sede}
 
 # File Storage
 storage:

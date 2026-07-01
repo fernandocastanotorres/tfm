@@ -165,6 +165,7 @@ services:
       MANAGEMENT_ENDPOINTS_WEB_EXPOSURE: ${MANAGEMENT_ENDPOINTS_WEB_EXPOSURE:-health,info,metrics,prometheus}
       MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS: ${MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS:-when_authorized}
       APP_CORS_ALLOWED_ORIGINS: ${APP_CORS_ALLOWED_ORIGINS:-http://localhost:4200,http://localhost:4300,https://sede.nbpdev.es,https://tramitador.nbpdev.es}
+      APP_PUBLIC_SEDE_BASE_URL: ${APP_PUBLIC_SEDE_BASE_URL:-https://sede.nbpdev.es/sede}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       MAILING_ENABLED: ${MAILING_ENABLED:-true}
       MAILING_QUEUE_ENABLED: ${MAILING_QUEUE_ENABLED:-false}
@@ -174,8 +175,8 @@ services:
       MAIL_PORT: ${MAIL_PORT:-1025}
       MAIL_SMTP_AUTH: ${MAIL_SMTP_AUTH:-false}
       MAIL_SMTP_STARTTLS: ${MAIL_SMTP_STARTTLS:-false}
-      MAILING_VERIFICATION_BASE_URL: ${MAILING_VERIFICATION_BASE_URL:-http://localhost:4200/sede/verificar-email}
-      MAILING_PASSWORD_RESET_BASE_URL: ${MAILING_PASSWORD_RESET_BASE_URL:-http://localhost:4200/sede/restablecer-contrasena}
+      MAILING_VERIFICATION_BASE_URL: ${MAILING_VERIFICATION_BASE_URL:-https://sede.nbpdev.es/sede/verificar-email}
+      MAILING_PASSWORD_RESET_BASE_URL: ${MAILING_PASSWORD_RESET_BASE_URL:-https://sede.nbpdev.es/sede/restablecer-contrasena}
       SIGNING_KEYSTORE_PASSWORD: ${SIGNING_KEYSTORE_PASSWORD:-changeit}
       STORAGE_DOCUMENTS_PATH: ${STORAGE_DOCUMENTS_PATH:-/app/data/documents}
     labels:
