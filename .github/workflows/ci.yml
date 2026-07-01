@@ -163,7 +163,7 @@ jobs:
 
       - name: Run Maven Enforcer
         working-directory: backend
-        run: mvn -B enforcer:enforce -Drules=requireJavaVersion,requireMavenVersion,bannedDependencies
+        run: mvn -B enforcer:enforce -Denforcer.rules=requireJavaVersion,requireMavenVersion,bannedDependencies
 
       - name: Compile to verify no warnings
         working-directory: backend
