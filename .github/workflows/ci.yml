@@ -45,6 +45,12 @@ jobs:
         working-directory: backend
         run: mvn -B test jacoco:report
 
+      - name: Debug JaCoCo XML counters
+        run: |
+          XML="backend/target/site/jacoco/jacoco.xml"
+          echo "=== File exists: $(test -f "$XML" && echo yes || echo no) ==="
+          test -f "$XML" && grep -n 'counter' "$XML" || echo "No counter lines found"
+
       - name: Upload backend coverage
         uses: actions/upload-artifact@v4
         with:
@@ -91,15 +97,23 @@ jobs:
 
       - name: Debug coverage output
         if: always()
-        run: find . -name "lcov.info" -o -name "coverage-final.json" 2>/dev/null | head -20 || echo "No coverage files found"
+        run: |
+          echo "=== Coverage dirs ==="
+          find . -type d -name "coverage" 2>/dev/null | head -20 || echo "No coverage dirs"
+          echo ""
+          echo "=== lcov.info files ==="
+          find . -name "lcov.info" 2>/dev/null | head -20 || echo "No lcov.info files"
+          echo ""
+          echo "=== Front-end coverage tree ==="
+          find front-end/coverage -type f 2>/dev/null | head -20 || echo "No front-end/coverage/"
 
       - name: Upload frontend coverage
         uses: actions/upload-artifact@v4
         with:
           name: frontend-coverage
           path: |
+            front-end/coverage/**/lcov.info
             **/lcov.info
-            **/coverage-final.json
           if-no-files-found: warn
           retention-days: 5
 
@@ -139,15 +153,26 @@ jobs:
 
       - name: Debug coverage output
         if: always()
-        run: find . -name "lcov.info" -o -name "coverage-final.json" 2>/dev/null | head -20 || echo "No coverage files found"
+        run: |
+          echo "=== Coverage dirs ==="
+          find . -type d -name "coverage" 2>/dev/null | head -20 || echo "No coverage dirs"
+          echo ""
+          echo "=== lcov.info files ==="
+          find . -name "lcov.info" 2>/dev/null | head -20 || echo "No lcov.info files"
+          echo ""
+          echo "=== Back-office coverage tree ==="
+          find back-office/coverage -type f 2>/dev/null | head -20 || echo "No back-office/coverage/"
+          echo ""
+          echo "=== Root coverage tree ==="
+          find coverage -type f 2>/dev/null | head -20 || echo "No coverage/"
 
       - name: Upload backoffice coverage
         uses: actions/upload-artifact@v4
         with:
           name: backoffice-coverage
           path: |
+            back-office/coverage/**/lcov.info
             **/lcov.info
-            **/coverage-final.json
           if-no-files-found: warn
           retention-days: 5
 

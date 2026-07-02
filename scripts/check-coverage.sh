@@ -39,10 +39,14 @@ parse_jacoco() {
 
   local instr_missed instr_covered branch_missed branch_covered
 
-  instr_missed=$(grep -oP 'counter type="INSTRUCTION" missed="\K[0-9]+' "$file" | paste -sd+ | bc 2>/dev/null || echo "0")
-  instr_covered=$(grep -oP 'counter type="INSTRUCTION" covered="\K[0-9]+' "$file" | paste -sd+ | bc 2>/dev/null || echo "0")
-  branch_missed=$(grep -oP 'counter type="BRANCH" missed="\K[0-9]+' "$file" | paste -sd+ | bc 2>/dev/null || echo "0")
-  branch_covered=$(grep -oP 'counter type="BRANCH" covered="\K[0-9]+' "$file" | paste -sd+ | bc 2>/dev/null || echo "0")
+  instr_missed=$(grep -oP 'counter[^>]*type="INSTRUCTION"[^>]*missed="\K[0-9]+' "$file" | head -1)
+  instr_missed=${instr_missed:-0}
+  instr_covered=$(grep -oP 'counter[^>]*type="INSTRUCTION"[^>]*covered="\K[0-9]+' "$file" | head -1)
+  instr_covered=${instr_covered:-0}
+  branch_missed=$(grep -oP 'counter[^>]*type="BRANCH"[^>]*missed="\K[0-9]+' "$file" | head -1)
+  branch_missed=${branch_missed:-0}
+  branch_covered=$(grep -oP 'counter[^>]*type="BRANCH"[^>]*covered="\K[0-9]+' "$file" | head -1)
+  branch_covered=${branch_covered:-0}
 
   local instr_total=$((instr_missed + instr_covered))
   local branch_total=$((branch_missed + branch_covered))
