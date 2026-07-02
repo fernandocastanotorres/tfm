@@ -1,10 +1,10 @@
-# TFG Records — Plataforma de Gestión de Expedientes Electrónicos
+# TFM Records — Plataforma de Gestión de Expedientes Electrónicos
 
 Plataforma completa de administración electrónica para la tramitación de expedientes, cumpliendo con el **Esquema Nacional de Seguridad (ENS) Nivel Medio** y el **Esquema Nacional de Interoperabilidad (ENI)**.
 
 ## a. Descripción general
 
-TFG Records permite a los ciudadanos iniciar, firmar y hacer seguimiento de trámites administrativos desde una sede electrónica accesible 24/7. Los tramitadores gestionan los expedientes desde un backoffice unificado, con flujos de trabajo automatizados mediante BPMN.
+TFM Records permite a los ciudadanos iniciar, firmar y hacer seguimiento de trámites administrativos desde una sede electrónica accesible 24/7. Los tramitadores gestionan los expedientes desde un backoffice unificado, con flujos de trabajo automatizados mediante BPMN.
 
 **Marco normativo:**
 
