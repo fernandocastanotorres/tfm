@@ -345,7 +345,8 @@ jobs:
             -DfailBuildOnCVSS=7 \
             -Dformat=HTML \
             -DnvdApiKey=${{ secrets.NVD_API_KEY }} \
-            -DdataDirectory=${{ github.workspace }}/.owasp-nvd-cache
+            -DdataDirectory=${{ github.workspace }}/.owasp-nvd-cache \
+            -DnvdValidForHours=72
         continue-on-error: true
 
       - name: Upload OWASP report
