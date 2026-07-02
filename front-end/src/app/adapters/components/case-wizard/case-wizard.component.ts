@@ -596,7 +596,6 @@ export class CaseWizardComponent implements OnInit, OnDestroy {
   private submitCreatedCase(caseId: string): void {
     this.casesApiService.submit(caseId).subscribe({
       next: () => {
-        this.isSubmitting = false;
         this.router.navigate(['/sede/expedientes', caseId, 'detalle']);
       },
       error: () => {
