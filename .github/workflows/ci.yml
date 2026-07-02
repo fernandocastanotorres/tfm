@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  COVERAGE_ENFORCEMENT_MODE: report
+  COVERAGE_ENFORCEMENT_MODE: ${{ github.event_name == 'pull_request' && 'enforce' || 'report' }}
   NODE_VERSION: '20'
   JAVA_VERSION: '17'
 
@@ -287,6 +287,7 @@ jobs:
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
+    environment: arsys
     timeout-minutes: 30
     steps:
       - name: Checkout
@@ -304,13 +305,22 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
+      - name: Cache OWASP NVD data
+        uses: actions/cache@v4
+        with:
+          path: ~/.dependency-check/data
+          key: owasp-nvd-${{ hashFiles('backend/pom.xml') }}-${{ github.run_id }}
+          restore-keys: |
+            owasp-nvd-${{ hashFiles('backend/pom.xml') }}-
+            owasp-nvd-
+
       - name: OWASP Dependency Check (Backend)
         working-directory: backend
         run: |
           mvn -B org.owasp:dependency-check-maven:check \
             -DfailBuildOnCVSS=7 \
             -Dformat=HTML \
-            -DnvdApiKey=${{ secrets.NVD_API_KEY || '' }}
+            -DnvdApiKey=${{ secrets.NVD_API_KEY }}
         continue-on-error: true
 
       - name: Upload OWASP report
@@ -387,6 +397,17 @@ jobs:
           name: backoffice-coverage
           path: .artifacts/backoffice
         continue-on-error: true
+
+      - name: Debug downloaded artifacts
+        run: |
+          echo "=== Artifacts directory tree ==="
+          find .artifacts -type f 2>/dev/null || echo "(no artifacts found)"
+          echo ""
+          echo "=== Looking for JaCoCo XML ==="
+          find .artifacts -name "jacoco.xml" 2>/dev/null || echo "(none)"
+          echo ""
+          echo "=== Looking for LCOV files ==="
+          find .artifacts -name "lcov.info" 2>/dev/null || echo "(none)"
 
       - name: Run coverage gate checks
         run: bash scripts/check-coverage.sh

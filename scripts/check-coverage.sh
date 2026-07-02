@@ -119,10 +119,14 @@ echo ""
 echo "--- Backend (JaCoCo) ---"
 BACKEND_JACOCO=$(find "$ARTIFACTS_DIR" -name "jacoco.xml" 2>/dev/null | head -1)
 if [ -n "$BACKEND_JACOCO" ] && [ -f "$BACKEND_JACOCO" ]; then
+  log_info "Found: $BACKEND_JACOCO"
+  log_info "File size: $(wc -c < "$BACKEND_JACOCO") bytes"
   read -r instr_pct branch_pct <<< "$(parse_jacoco "$BACKEND_JACOCO")"
   check_threshold "Backend Instructions" "$instr_pct" "80.00"
   check_threshold "Backend Branches" "$branch_pct" "60.00"
 else
+  log_info "Searching in: $(pwd)/$ARTIFACTS_DIR"
+  log_info "Available files: $(find "$ARTIFACTS_DIR" -type f 2>/dev/null | head -20 || echo 'none')"
   if [ "$MODE" = "enforce" ]; then
     log_error "No JaCoCo report found"
     FAILURES=$((FAILURES + 1))
@@ -136,12 +140,19 @@ echo ""
 echo "--- Frontend Citizen (LCOV) ---"
 FRONTEND_LCOV=$(find "$ARTIFACTS_DIR" -name "lcov.info" -path "*/frontend/*" 2>/dev/null | head -1)
 if [ -z "$FRONTEND_LCOV" ]; then
+  FRONTEND_LCOV=$(find "$ARTIFACTS_DIR" -name "lcov.info" -path "*/front-end/*" 2>/dev/null | head -1)
+fi
+if [ -z "$FRONTEND_LCOV" ]; then
   FRONTEND_LCOV=$(find "$ARTIFACTS_DIR" -name "lcov.info" 2>/dev/null | head -1)
 fi
 if [ -n "$FRONTEND_LCOV" ] && [ -f "$FRONTEND_LCOV" ]; then
+  log_info "Found: $FRONTEND_LCOV"
+  log_info "File size: $(wc -c < "$FRONTEND_LCOV") bytes"
   stmt_pct=$(parse_lcov "$FRONTEND_LCOV")
   check_threshold "Frontend Statements" "$stmt_pct" "80.00"
 else
+  log_info "Searching in: $(pwd)/$ARTIFACTS_DIR"
+  log_info "Available files: $(find "$ARTIFACTS_DIR" -type f 2>/dev/null | head -20 || echo 'none')"
   if [ "$MODE" = "enforce" ]; then
     log_error "No frontend LCOV report found"
     FAILURES=$((FAILURES + 1))
@@ -154,10 +165,20 @@ echo ""
 # Backoffice coverage (LCOV)
 echo "--- Frontend Backoffice (LCOV) ---"
 BACKOFFICE_LCOV=$(find "$ARTIFACTS_DIR" -name "lcov.info" -path "*/backoffice/*" 2>/dev/null | head -1)
+if [ -z "$BACKOFFICE_LCOV" ]; then
+  BACKOFFICE_LCOV=$(find "$ARTIFACTS_DIR" -name "lcov.info" -path "*/back-office/*" 2>/dev/null | head -1)
+fi
+if [ -z "$BACKOFFICE_LCOV" ]; then
+  BACKOFFICE_LCOV=$(find "$ARTIFACTS_DIR" -name "lcov.info" 2>/dev/null | head -1)
+fi
 if [ -n "$BACKOFFICE_LCOV" ] && [ -f "$BACKOFFICE_LCOV" ]; then
+  log_info "Found: $BACKOFFICE_LCOV"
+  log_info "File size: $(wc -c < "$BACKOFFICE_LCOV") bytes"
   stmt_pct=$(parse_lcov "$BACKOFFICE_LCOV")
   check_threshold "Backoffice Statements" "$stmt_pct" "80.00"
 else
+  log_info "Searching in: $(pwd)/$ARTIFACTS_DIR"
+  log_info "Available files: $(find "$ARTIFACTS_DIR" -type f 2>/dev/null | head -20 || echo 'none')"
   if [ "$MODE" = "enforce" ]; then
     log_error "No backoffice LCOV report found"
     FAILURES=$((FAILURES + 1))
