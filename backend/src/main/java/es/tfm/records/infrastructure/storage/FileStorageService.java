@@ -258,6 +258,7 @@ public class FileStorageService {
             Files.copy(inputStream, targetPath, StandardCopyOption.REPLACE_EXISTING);
             log.debug("Stored file: {} in subdirectory: {}", storedFilename, safeSubDir);
         } catch (IOException e) {
+            log.error("Failed to store file {}: {}", targetPath, e.getMessage(), e);
             throw new ConflictException("STORAGE", "Could not store file: " + storedFilename);
         }
 
