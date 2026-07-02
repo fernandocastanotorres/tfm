@@ -56,3 +56,8 @@ certs/*.p12
 certs/*.pfx
 certs/*.zip
 certs/*.key
+build/
+.cache/
+dist/
+node_modules/
+.env
