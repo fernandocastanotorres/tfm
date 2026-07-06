@@ -16,7 +16,7 @@
           autocomplete="email"
           required
           class="field-input"
-          placeholder="usuario@dominio.es"
+          [placeholder]="'LOGIN.EMAIL_PLACEHOLDER' | translate"
           aria-describedby="email-help email-error"
           [attr.aria-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
         />
@@ -35,7 +35,7 @@
           autocomplete="current-password"
           required
           class="field-input"
-          placeholder="Introduce tu contrasena"
+          [placeholder]="'LOGIN.PASSWORD_PLACEHOLDER' | translate"
           aria-describedby="password-help password-error"
           [attr.aria-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
         />

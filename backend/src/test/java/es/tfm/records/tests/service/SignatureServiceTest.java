@@ -96,4 +96,28 @@ class SignatureServiceTest {
         // Minimal PDF structure for testing
         return ("%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kids [] /Count 0 >>\nendobj\nxref\n0 3\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \ntrailer\n<< /Size 3 /Root 1 0 R >>\nstartxref\n115\n%%EOF").getBytes();
     }
+
+    private byte[] createMinimalPdfWithCrLf() {
+        return ("%PDF-1.4\r\n1 0 obj\r\n<< /Type /Catalog /Pages 2 0 R >>\r\nendobj\r\n2 0 obj\r\n<< /Type /Pages /Kids [] /Count 0 >>\r\nendobj\r\nxref\r\n0 3\r\n0000000000 65535 f \r\n0000000009 00000 n \r\n0000000058 00000 n \r\ntrailer\r\n<< /Size 3 /Root 1 0 R >>\r\nstartxref\r\n115\r\n%%EOF").getBytes();
+    }
+
+    @Test
+    void signDocument_shouldWorkWithCrLfLineEndings() throws Exception {
+        byte[] pdfContent = createMinimalPdfWithCrLf();
+
+        byte[] signedContent = signatureService.signDocument(pdfContent);
+
+        assertNotNull(signedContent);
+        assertTrue(signedContent.length > pdfContent.length);
+    }
+
+    @Test
+    void verifySignature_shouldValidateCrLfPdf() throws Exception {
+        byte[] pdfContent = createMinimalPdfWithCrLf();
+        byte[] signedContent = signatureService.signDocument(pdfContent);
+
+        boolean isValid = signatureService.verifySignature(signedContent);
+
+        assertTrue(isValid);
+    }
 }

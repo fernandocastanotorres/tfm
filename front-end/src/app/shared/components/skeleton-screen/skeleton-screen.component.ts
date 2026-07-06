@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-skeleton-screen',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   template: `
-    <div role="status" aria-live="polite" [attr.aria-label]="ariaLabel">
+    <div role="status" aria-live="polite" [attr.aria-label]="ariaLabel || ('COMMON.LOADING' | translate)">
       <ng-container [ngSwitch]="pattern">
         <!-- Full page: header + filters + content list -->
         <div *ngSwitchCase="'page'" class="max-w-4xl mx-auto">
@@ -121,7 +122,7 @@ export class SkeletonScreenComponent {
   @Input() count = 5;
   @Input() lines = 3;
   @Input() columns = 4;
-  @Input() ariaLabel = 'Cargando contenido...';
+  @Input() ariaLabel?: string;
 
   get rowItems(): number[] {
     return Array.from({ length: Math.max(1, this.count) }, (_, i) => i);

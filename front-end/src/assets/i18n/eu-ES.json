@@ -122,7 +122,11 @@
     "ERROR_INVALID": "Kredentzialak baliogabeak. Berrikusi datuak eta saiatu berriro.",
     "ERROR_GENERIC": "Ustekabeko errorea gertatu da. Saiatu berriro geroago.",
     "RESEND_VERIFICATION": "Bidali berriro egiaztapen esteka",
-    "SENDING_VERIFICATION": "Esteka berriro bidaltzen..."
+    "SENDING_VERIFICATION": "Esteka berriro bidaltzen...",
+    "EMAIL_PLACEHOLDER": "erabiltzailea@domeinua.eus",
+    "PASSWORD_PLACEHOLDER": "Sartu zure pasahitza",
+    "RESEND_SUCCESS": "Kontua existitzen bada eta aktibatuta ez badago, egiaztapen esteka berriro bidali dugu.",
+    "RESEND_ERROR": "Ezin izan da eskaera prozesatu une honetan."
   },
   "EMAIL_VERIFICATION": {
     "TITLE": "Kontuaren egiaztapena",
@@ -157,7 +161,14 @@
     "SUBMIT": "Kontua sortu",
     "SUBMITTING": "Erregistratzen…",
     "SUCCESS": "Kontua sortuta. Orain saioa hasi dezakezu.",
-    "VERIFICATION_EMAIL_SENT": "Egiaztapen esteka bat bidali dizugu zure helbide elektronikora."
+    "VERIFICATION_EMAIL_SENT": "Egiaztapen esteka bat bidali dizugu zure helbide elektronikora.",
+    "FULL_NAME_PLACEHOLDER": "Izen-abizenak",
+    "NATIONAL_ID_PLACEHOLDER": "NAN/NIE",
+    "PASSWORD_PLACEHOLDER": "Gutxienez 8 karaktere",
+    "CONFIRM_PASSWORD_PLACEHOLDER": "Errepikatu pasahitza",
+    "ERROR_DUPLICATE": "Dagoeneko kontu bat dago email edo identitate dokumentu horrekin.",
+    "ERROR_VALIDATION": "Erroreak daude inprimakiko datuetan. Berrikusi markatutako eremuak.",
+    "ERROR_GENERIC": "Errorea kontua sortzean. Saiatu berriro geroago."
   },
   "RECOVERY": {
     "EYEBROW": "Berreskuratze segurua",
@@ -179,7 +190,9 @@
     "CONFIRM_PASSWORD_ERROR": "Pasahitzak ez datoz bat.",
     "RESET": "Pasahitza berrezarri",
     "DONE_TITLE": "Pasahitza eguneratuta",
-    "DONE_SUBTITLE": "Orain saioa hasi dezakezu pasahitz berriarekin. Berbideratzen…"
+    "DONE_SUBTITLE": "Orain saioa hasi dezakezu pasahitz berriarekin. Berbideratzen…",
+    "NEW_PASSWORD_PLACEHOLDER": "Pasahitz berria",
+    "CONFIRM_PASSWORD_PLACEHOLDER": "Errepikatu pasahitz berria"
   },
   "DASHBOARD": {
     "TITLE": "Herritarren panela",
@@ -281,7 +294,11 @@
     "PASSWORDS_MISMATCH_HINT": "Pasahitzak ez datoz bat.",
     "SUCCESS_PASSWORD_TITLE": "Pasahitza eguneratuta",
     "SUCCESS_PASSWORD_TEXT": "Zure pasahitza zuzen aldatu da.",
-    "SAVING": "Gordetzen..."
+    "SAVING": "Gordetzen...",
+    "FULL_NAME_PLACEHOLDER": "Izen-abizenak",
+    "PHONE_PLACEHOLDER": "600123123",
+    "NATIONAL_ID_PLACEHOLDER": "NAN/NIE",
+    "ADDRESS_PLACEHOLDER": "Helbide osoa"
   },
   "LAYOUT": {
     "SKIP_LINK": "Salto egin eduki nagusira",
@@ -298,7 +315,9 @@
     "SELECT_LANGUAGE": "Hizkuntza hautatu",
     "NAV_MAIN": "Nabigazio nagusia",
     "MENU_OPEN": "Nabigazio menua ireki",
-    "MENU_CLOSE": "Nabigazio menua itxi"
+    "MENU_CLOSE": "Nabigazio menua itxi",
+    "LOGO_ARIA": "Joan egoitza elektronikoaren orri nagusira",
+    "BREADCRUMB_ARIA": "Ogi-papurrak"
   },
   "NOTIFICATIONS": {
     "EYEBROW": "Jakinarazpenak",
@@ -973,7 +992,11 @@
     "FORM_MESSAGE_ERROR": "Mezuak gutxienez 20 karaktere izan behar ditu.",
     "FORM_SUBMIT": "Mezua bidali",
     "FORM_SUBMITTING": "Bidaltzen...",
-    "FORM_SUCCESS": "Mezua zuzen bidali da. Ahalik eta azkarren erantzungo dizugu."
+    "FORM_SUCCESS": "Mezua zuzen bidali da. Lehenbailehen erantzungo dizugu.",
+    "FORM_NAME_PLACEHOLDER": "Zure izen osoa",
+    "FORM_EMAIL_PLACEHOLDER": "erabiltzailea@domeinua.eus",
+    "FORM_SUBJECT_PLACEHOLDER": "Kontsultaren gaia",
+    "FORM_MESSAGE_PLACEHOLDER": "Deskribatu zure kontsulta ahalik eta xehetasun handienarekin"
   },
   "BACKOFFICE": {
     "TITLE": "Administrazio panela",
@@ -1226,5 +1249,15 @@
   },
   "NOTIFICATION_TYPE": {
     "FORMAL_NOTICE": "Jakinarazpen formala"
+  },
+  "ERROR_PAGE": {
+    "403_TITLE": "Sarbidea ukatuta",
+    "403_DESC": "Ez duzu baimenik orri honetara sartzeko.",
+    "404_TITLE": "Orria ez da aurkitu",
+    "404_DESC": "Bilatzen ari zaren orria ez da existitzen edo lekuz aldatu da.",
+    "500_TITLE": "Zerbitzariaren errorea",
+    "500_DESC": "Barne errore bat gertatu da. Saiatu berriro geroago.",
+    "GO_HOME": "Joan orri nagusira",
+    "GO_BACK": "Atzera egin"
   }
 }

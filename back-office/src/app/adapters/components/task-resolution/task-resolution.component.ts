@@ -27,10 +27,10 @@ export class TaskResolutionComponent implements OnInit {
   success = false;
 
   actionOptions = [
-    { value: 'approve', label: 'Aprobar' },
-    { value: 'reject', label: 'Rechazar' },
-    { value: 'request_amendment', label: 'Solicitar Subsanacion' },
-    { value: 'reassign', label: 'Reasignar' }
+    { value: 'approve', labelKey: 'BO.TASK_RESOLUTION.ACTION_APPROVE' },
+    { value: 'reject', labelKey: 'BO.TASK_RESOLUTION.ACTION_REJECT' },
+    { value: 'request_amendment', labelKey: 'BO.TASK_RESOLUTION.ACTION_AMEND' },
+    { value: 'reassign', labelKey: 'BO.TASK_RESOLUTION.ACTION_REASSIGN' }
   ];
 
   ngOnInit(): void {

@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } 
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../application/services/auth.service';
 import { NgIf } from '@angular/common';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-login',
@@ -21,7 +21,8 @@ export class LoginComponent {
     private readonly fb: FormBuilder,
     private readonly authService: AuthService,
     private readonly router: Router,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly translateService: TranslateService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -75,11 +76,11 @@ export class LoginComponent {
     this.authService.resendVerificationEmail(emailControl.value).subscribe({
       next: () => {
         this.isResending = false;
-        this.infoMessage = 'Si la cuenta existe y no esta activa, hemos reenviado el enlace de verificacion.';
+        this.infoMessage = this.translateService.instant('LOGIN.RESEND_SUCCESS');
       },
       error: () => {
         this.isResending = false;
-        this.infoMessage = 'No se pudo procesar la solicitud en este momento.';
+        this.infoMessage = this.translateService.instant('LOGIN.RESEND_ERROR');
       }
     });
   }

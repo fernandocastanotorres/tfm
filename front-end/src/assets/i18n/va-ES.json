@@ -122,7 +122,11 @@
     "ERROR_INVALID": "Credencials invàlides. Revisa les dades i torna-ho a intentar.",
     "ERROR_GENERIC": "S'ha produït un error inesperat. Torna-ho a intentar més tard.",
     "RESEND_VERIFICATION": "Reenviar enllaç de verificació",
-    "SENDING_VERIFICATION": "Reenviant enllaç..."
+    "SENDING_VERIFICATION": "Reenviant enllaç...",
+    "EMAIL_PLACEHOLDER": "usuari@domini.es",
+    "PASSWORD_PLACEHOLDER": "Introduïx la teua contrasenya",
+    "RESEND_SUCCESS": "Si el compte existix i no està activa, hem reenviat l'enllaç de verificació.",
+    "RESEND_ERROR": "No s'ha pogut processar la sol·licitud en este moment."
   },
   "EMAIL_VERIFICATION": {
     "TITLE": "Verificació del compte",
@@ -157,7 +161,14 @@
     "SUBMIT": "Crear compte",
     "SUBMITTING": "Registrant…",
     "SUCCESS": "Compte creat. Ja pots iniciar sessió.",
-    "VERIFICATION_EMAIL_SENT": "T'hem enviat un enllaç de verificació al teu correu electrònic."
+    "VERIFICATION_EMAIL_SENT": "T'hem enviat un enllaç de verificació al teu correu electrònic.",
+    "FULL_NAME_PLACEHOLDER": "Nom i cognoms",
+    "NATIONAL_ID_PLACEHOLDER": "DNI/NIE",
+    "PASSWORD_PLACEHOLDER": "Mínim 8 caràcters",
+    "CONFIRM_PASSWORD_PLACEHOLDER": "Repetix la contrasenya",
+    "ERROR_DUPLICATE": "Ja existix un compte amb este email o document d'identitat.",
+    "ERROR_VALIDATION": "Hi ha errors en les dades del formulari. Revisa els camps marcats.",
+    "ERROR_GENERIC": "Error en crear el compte. Torna-ho a intentar més tard."
   },
   "RECOVERY": {
     "EYEBROW": "Recuperació segura",
@@ -179,7 +190,9 @@
     "CONFIRM_PASSWORD_ERROR": "Les contrasenyes no coincidixen.",
     "RESET": "Restablir contrasenya",
     "DONE_TITLE": "Contrasenya actualitzada",
-    "DONE_SUBTITLE": "Ja pots iniciar sessió amb la teua nova contrasenya. Redirigint…"
+    "DONE_SUBTITLE": "Ja pots iniciar sessió amb la teua nova contrasenya. Redirigint…",
+    "NEW_PASSWORD_PLACEHOLDER": "Nova contrasenya",
+    "CONFIRM_PASSWORD_PLACEHOLDER": "Repetix la nova contrasenya"
   },
   "DASHBOARD": {
     "TITLE": "Panel ciutadà",
@@ -281,7 +294,11 @@
     "PASSWORDS_MISMATCH_HINT": "Les contrasenyes no coincidisquen.",
     "SUCCESS_PASSWORD_TITLE": "Contrasenya actualitzada",
     "SUCCESS_PASSWORD_TEXT": "La teua contrasenya s'ha canviat correctament.",
-    "SAVING": "Guardant..."
+    "SAVING": "Guardant...",
+    "FULL_NAME_PLACEHOLDER": "Nom i cognoms",
+    "PHONE_PLACEHOLDER": "600123123",
+    "NATIONAL_ID_PLACEHOLDER": "DNI/NIE",
+    "ADDRESS_PLACEHOLDER": "Adreça completa"
   },
   "LAYOUT": {
     "SKIP_LINK": "Saltar al contingut principal",
@@ -298,7 +315,9 @@
     "SELECT_LANGUAGE": "Seleccionar idioma",
     "NAV_MAIN": "Navegació principal",
     "MENU_OPEN": "Obrir menú de navegació",
-    "MENU_CLOSE": "Tancar menú de navegació"
+    "MENU_CLOSE": "Tancar menú de navegació",
+    "LOGO_ARIA": "Anar a la pàgina principal de la seu electrònica",
+    "BREADCRUMB_ARIA": "Fil d'Ariadna"
   },
   "NOTIFICATIONS": {
     "EYEBROW": "Notificacions",
@@ -973,7 +992,11 @@
     "FORM_MESSAGE_ERROR": "El missatge ha de tindre almenys 20 caràcters.",
     "FORM_SUBMIT": "Enviar missatge",
     "FORM_SUBMITTING": "Enviant...",
-    "FORM_SUCCESS": "Missatge enviat correctament. Et respondrem tan prompte com siga possible."
+    "FORM_SUCCESS": "Missatge enviat correctament. Et respondrem tan prompte com siga possible.",
+    "FORM_NAME_PLACEHOLDER": "El teu nom complet",
+    "FORM_EMAIL_PLACEHOLDER": "usuari@domini.es",
+    "FORM_SUBJECT_PLACEHOLDER": "Assumpte de la consulta",
+    "FORM_MESSAGE_PLACEHOLDER": "Descriu la teua consulta amb el major detall possible"
   },
   "BACKOFFICE": {
     "TITLE": "Panell d'administració",
@@ -1226,5 +1249,15 @@
   },
   "NOTIFICATION_TYPE": {
     "FORMAL_NOTICE": "Notificació formal"
+  },
+  "ERROR_PAGE": {
+    "403_TITLE": "Accés denegat",
+    "403_DESC": "No tens permisos per a accedir a esta pàgina.",
+    "404_TITLE": "Pàgina no trobada",
+    "404_DESC": "La pàgina que busques no existix o ha sigut moguda.",
+    "500_TITLE": "Error del servidor",
+    "500_DESC": "S'ha produït un error intern. Torna-ho a intentar més tard.",
+    "GO_HOME": "Anar a la pàgina principal",
+    "GO_BACK": "Tornar arrere"
   }
 }

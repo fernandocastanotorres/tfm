@@ -1,6 +1,7 @@
 import { Location } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 type ErrorVariant = '403' | '404' | '500';
 
@@ -16,7 +17,8 @@ export class ErrorPageComponent {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly location: Location
+    private readonly location: Location,
+    private readonly translateService: TranslateService
   ) {
     const fromRoute = (this.route.snapshot.data['variant'] ?? '404') as ErrorVariant;
     this.variant = ['403', '404', '500'].includes(fromRoute) ? fromRoute : '404';
@@ -38,18 +40,18 @@ export class ErrorPageComponent {
     switch (variant) {
       case '403':
         return {
-          title: 'No tienes permisos para ver esta pagina',
-          description: 'Tu sesion no tiene privilegios suficientes para acceder al recurso solicitado.'
+          title: this.translateService.instant('ERROR_PAGE.403_TITLE'),
+          description: this.translateService.instant('ERROR_PAGE.403_DESC')
         };
       case '500':
         return {
-          title: 'Ha ocurrido un error del servidor',
-          description: 'Estamos trabajando en solucionarlo. Puedes volver atras o intentar de nuevo en unos minutos.'
+          title: this.translateService.instant('ERROR_PAGE.500_TITLE'),
+          description: this.translateService.instant('ERROR_PAGE.500_DESC')
         };
       default:
         return {
-          title: 'No hemos encontrado la pagina solicitada',
-          description: 'La URL puede ser incorrecta o el contenido haberse movido.'
+          title: this.translateService.instant('ERROR_PAGE.404_TITLE'),
+          description: this.translateService.instant('ERROR_PAGE.404_DESC')
         };
     }
   }

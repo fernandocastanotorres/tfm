@@ -4,6 +4,7 @@ import { AdminCasesService } from '../../../application/services/admin-cases.ser
 import { MessagingAdminService, MessageDto, PagedMessages } from '../../../application/services/messaging-admin.service';
 import { CaseDetail, CaseWorkflowGraph, CaseWorkflowNode } from '../../../application/models/backoffice.models';
 import { ProcedureManagementService } from '../../../application/services/procedure-management.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'bo-case-detail',
@@ -15,6 +16,7 @@ export class CaseDetailComponent implements OnInit {
   private readonly adminCasesService = inject(AdminCasesService);
   private readonly messagingService = inject(MessagingAdminService);
   private readonly procedureManagementService = inject(ProcedureManagementService);
+  private readonly translateService = inject(TranslateService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
@@ -44,21 +46,21 @@ export class CaseDetailComponent implements OnInit {
   replyFiles: File[] = [];
 
   readonly MESSAGE_TEMPLATES = [
-    { key: '', label: 'Texto libre' },
-    { key: 'REQUEST_INFO', label: 'Solicitud de informacion adicional' },
-    { key: 'DOCUMENT_INCOMPLETE', label: 'Documentacion incompleta' },
-    { key: 'APPROVED', label: 'Expediente aprobado' },
-    { key: 'REJECTED', label: 'Expediente rechazado' },
-    { key: 'AMENDMENT_REQUIRED', label: 'Subsanacion requerida' }
+    { key: '', labelKey: 'BO.CASE_DETAIL.MESSAGES.TEMPLATES.FREE_TEXT' },
+    { key: 'REQUEST_INFO', labelKey: 'BO.CASE_DETAIL.MESSAGES.TEMPLATES.REQUEST_INFO' },
+    { key: 'DOCUMENT_INCOMPLETE', labelKey: 'BO.CASE_DETAIL.MESSAGES.TEMPLATES.DOCUMENT_INCOMPLETE' },
+    { key: 'APPROVED', labelKey: 'BO.CASE_DETAIL.MESSAGES.TEMPLATES.APPROVED' },
+    { key: 'REJECTED', labelKey: 'BO.CASE_DETAIL.MESSAGES.TEMPLATES.REJECTED' },
+    { key: 'AMENDMENT_REQUIRED', labelKey: 'BO.CASE_DETAIL.MESSAGES.TEMPLATES.AMENDMENT_REQUIRED' }
   ];
 
   readonly PAGE_SIZE_OPTIONS = [10, 20, 50];
 
   statusOptions = [
-    { value: 'IN_PROGRESS', label: 'En Tramitacion' },
-    { value: 'PENDING_AMENDMENT', label: 'Pendiente Subsanacion' },
-    { value: 'RESOLVED', label: 'Resuelto' },
-    { value: 'REJECTED', label: 'Rechazado' }
+    { value: 'IN_PROGRESS', labelKey: 'BO.STATUS.IN_PROGRESS' },
+    { value: 'PENDING_AMENDMENT', labelKey: 'BO.STATUS.PENDING_AMENDMENT' },
+    { value: 'RESOLVED', labelKey: 'BO.STATUS.RESOLVED' },
+    { value: 'REJECTED', labelKey: 'BO.STATUS.REJECTED' }
   ];
 
   ngOnInit(): void {
@@ -223,9 +225,9 @@ export class CaseDetailComponent implements OnInit {
 
   getSenderLabel(role: string, name: string): string {
     const labels: Record<string, string> = {
-      'CITIZEN': 'Ciudadano',
-      'ADMIN': 'Administracion',
-      'SYSTEM': 'Sistema'
+      'CITIZEN': this.translateService.instant('BO.CASE_DETAIL.MESSAGES.SENDER_CITIZEN'),
+      'ADMIN': this.translateService.instant('BO.CASE_DETAIL.MESSAGES.SENDER_ADMIN'),
+      'SYSTEM': this.translateService.instant('BO.CASE_DETAIL.MESSAGES.SENDER_SYSTEM')
     };
     return `${labels[role] || role} (${name})`;
   }
@@ -274,7 +276,7 @@ export class CaseDetailComponent implements OnInit {
 
   getStatusLabel(status: string): string {
     const option = this.statusOptions.find(o => o.value === status);
-    return option?.label || status;
+    return option ? this.translateService.instant(option.labelKey) : status;
   }
 
   getStatusClass(status: string): string {
@@ -420,13 +422,13 @@ export class CaseDetailComponent implements OnInit {
 
   getTabLabel(tab: string): string {
     const labels: Record<string, string> = {
-      timeline: 'Historial',
-      documents: 'Documentos',
-      tasks: 'Tareas',
-      messages: 'Mensajes',
-      workflow: 'Diagrama',
-      data: 'Datos',
-      actions: 'Acciones'
+      timeline: this.translateService.instant('BO.CASE_DETAIL.TAB_TIMELINE'),
+      documents: this.translateService.instant('BO.CASE_DETAIL.TAB_DOCUMENTS'),
+      tasks: this.translateService.instant('BO.CASE_DETAIL.TAB_TASKS'),
+      messages: this.translateService.instant('BO.CASE_DETAIL.TAB_MESSAGES'),
+      workflow: this.translateService.instant('BO.CASE_DETAIL.TAB_WORKFLOW'),
+      data: this.translateService.instant('BO.CASE_DETAIL.TAB_DATA'),
+      actions: this.translateService.instant('BO.CASE_DETAIL.TAB_ACTIONS')
     };
     return labels[tab] || tab;
   }

@@ -1,4 +1,4 @@
-<a class="skip-link" href="#bo-main-content">Saltar al contenido principal</a>
+<a class="skip-link" href="#bo-main-content">{{ 'BO.SIDEBAR.SKIP_LINK' | translate }}</a>
 
 <div class="flex h-screen bg-gray-50">
   <aside
@@ -28,10 +28,10 @@
         #rla="routerLinkActive"
         [attr.aria-current]="rla.isActive ? 'page' : null"
         class="flex items-center px-4 py-3 hover:bg-gray-700 transition-colors cursor-pointer relative"
-        [attr.aria-label]="item.label"
+        [attr.aria-label]="item.labelKey | translate"
       >
         <span class="text-xl w-8 text-center" aria-hidden="true">{{ getIcon(item.icon) }}</span>
-        <span *ngIf="sidebarOpen" class="ml-3">{{ item.label }}</span>
+        <span *ngIf="sidebarOpen" class="ml-3">{{ item.labelKey | translate }}</span>
         <span *ngIf="item.icon === 'inbox' && unreadContactCount > 0 && sidebarOpen" class="ml-auto bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold">
           {{ unreadContactCount > 9 ? '9+' : unreadContactCount }}
         </span>

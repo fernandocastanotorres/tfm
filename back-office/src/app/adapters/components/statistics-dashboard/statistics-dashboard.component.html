@@ -2,93 +2,93 @@
   <div class="bg-white rounded-lg shadow p-6">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
       <div>
-        <h3 class="text-lg font-semibold text-gray-900">Panel de Estadisticas</h3>
-        <p class="text-sm text-gray-500 mt-1">Analisis visual de la actividad administrativa.</p>
+        <h3 class="text-lg font-semibold text-gray-900">{{ 'BO.STATS.TITLE' | translate }}</h3>
+        <p class="text-sm text-gray-500 mt-1">{{ 'BO.STATS.SUBTITLE' | translate }}</p>
       </div>
       <div class="flex items-center gap-3 flex-wrap">
         <label class="text-sm">
-          <span class="text-gray-600">Desde</span>
+          <span class="text-gray-600">{{ 'BO.STATISTICS.DATE_FROM' | translate }}</span>
           <input type="date" [(ngModel)]="dateFrom" (ngModelChange)="onDateChange()" class="ml-2 border rounded-md px-2 py-1 text-sm" />
         </label>
         <label class="text-sm">
-          <span class="text-gray-600">Hasta</span>
+          <span class="text-gray-600">{{ 'BO.STATISTICS.DATE_TO' | translate }}</span>
           <input type="date" [(ngModel)]="dateTo" (ngModelChange)="onDateChange()" class="ml-2 border rounded-md px-2 py-1 text-sm" />
         </label>
-        <button type="button" (click)="exportPdf()" class="px-3 py-1.5 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700">Exportar PDF</button>
+        <button type="button" (click)="exportPdf()" class="px-3 py-1.5 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700">{{ 'BO.STATISTICS.EXPORT_PDF' | translate }}</button>
       </div>
     </div>
   </div>
 
-  <div *ngIf="isLoading" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">Cargando estadisticas...</div>
+  <div *ngIf="isLoading" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">{{ 'BO.STATS.LOADING' | translate }}</div>
 
   <div *ngIf="!isLoading && report" class="space-y-6">
     <!-- Summary Cards -->
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
       <div class="bg-white rounded-lg shadow p-4 text-center">
         <div class="text-2xl font-bold text-gray-900">{{ report.summary.totalCases }}</div>
-        <div class="text-xs text-gray-500 mt-1">Total expedientes</div>
+        <div class="text-xs text-gray-500 mt-1">{{ 'BO.STATS.TOTAL_CASES' | translate }}</div>
       </div>
       <div class="bg-white rounded-lg shadow p-4 text-center">
         <div class="text-2xl font-bold text-blue-600">{{ report.summary.pendingCases }}</div>
-        <div class="text-xs text-gray-500 mt-1">Pendientes</div>
+        <div class="text-xs text-gray-500 mt-1">{{ 'BO.STATS.PENDING' | translate }}</div>
       </div>
       <div class="bg-white rounded-lg shadow p-4 text-center">
         <div class="text-2xl font-bold text-amber-600">{{ report.summary.inProgressCases }}</div>
-        <div class="text-xs text-gray-500 mt-1">En curso</div>
+        <div class="text-xs text-gray-500 mt-1">{{ 'BO.STATS.IN_PROGRESS' | translate }}</div>
       </div>
       <div class="bg-white rounded-lg shadow p-4 text-center">
         <div class="text-2xl font-bold text-green-600">{{ report.summary.resolvedCases }}</div>
-        <div class="text-xs text-gray-500 mt-1">Resueltos</div>
+        <div class="text-xs text-gray-500 mt-1">{{ 'BO.STATS.RESOLVED' | translate }}</div>
       </div>
       <div class="bg-white rounded-lg shadow p-4 text-center">
         <div class="text-2xl font-bold text-red-600">{{ report.summary.overdueCases }}</div>
-        <div class="text-xs text-gray-500 mt-1">Vencidos</div>
+        <div class="text-xs text-gray-500 mt-1">{{ 'BO.STATS.OVERDUE' | translate }}</div>
       </div>
       <div class="bg-white rounded-lg shadow p-4 text-center">
         <div class="text-2xl font-bold" [class.text-green-600]="report.summary.slaComplianceRate >= 80" [class.text-amber-600]="report.summary.slaComplianceRate >= 50 && report.summary.slaComplianceRate < 80" [class.text-red-600]="report.summary.slaComplianceRate < 50">{{ report.summary.slaComplianceRate }}%</div>
-        <div class="text-xs text-gray-500 mt-1">Cumplimiento SLA</div>
+        <div class="text-xs text-gray-500 mt-1">{{ 'BO.STATS.SLA_COMPLIANCE' | translate }}</div>
       </div>
     </div>
 
     <!-- Daily Trend -->
     <div class="bg-white rounded-lg shadow p-6">
-      <h4 class="font-semibold text-gray-900 mb-4">Tendencia diaria de expedientes</h4>
+      <h4 class="font-semibold text-gray-900 mb-4">{{ 'BO.STATS.DAILY_TREND' | translate }}</h4>
       <canvas baseChart [data]="dailyTrendChartConfig.data" [type]="dailyTrendChartConfig.type" [options]="dailyTrendChartConfig.options"></canvas>
     </div>
 
     <!-- Monthly Trend -->
     <div class="bg-white rounded-lg shadow p-6">
-      <h4 class="font-semibold text-gray-900 mb-4">Tendencia mensual</h4>
+      <h4 class="font-semibold text-gray-900 mb-4">{{ 'BO.STATS.MONTHLY_TREND' | translate }}</h4>
       <canvas baseChart [data]="monthlyTrendChartConfig.data" [type]="monthlyTrendChartConfig.type" [options]="monthlyTrendChartConfig.options"></canvas>
     </div>
 
     <!-- Status Distribution -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div class="bg-white rounded-lg shadow p-6">
-        <h4 class="font-semibold text-gray-900 mb-4">Distribucion por estado</h4>
+        <h4 class="font-semibold text-gray-900 mb-4">{{ 'BO.STATS.STATUS_DISTRIBUTION' | translate }}</h4>
         <canvas baseChart [data]="statusDistributionChartConfig.data" [type]="statusDistributionChartConfig.type" [options]="statusDistributionChartConfig.options"></canvas>
       </div>
       <div class="bg-white rounded-lg shadow p-6">
-        <h4 class="font-semibold text-gray-900 mb-4">Expedientes por tipo de procedimiento</h4>
+        <h4 class="font-semibold text-gray-900 mb-4">{{ 'BO.STATS.PROCEDURE_TYPES' | translate }}</h4>
         <canvas baseChart [data]="procedureTypeChartConfig.data" [type]="procedureTypeChartConfig.type" [options]="procedureTypeChartConfig.options"></canvas>
       </div>
     </div>
 
     <!-- SLA Compliance by Procedure Type -->
     <div class="bg-white rounded-lg shadow p-6">
-      <h4 class="font-semibold text-gray-900 mb-4">Cumplimiento SLA por tipo de procedimiento</h4>
+      <h4 class="font-semibold text-gray-900 mb-4">{{ 'BO.STATS.SLA_BY_PROCEDURE' | translate }}</h4>
       <canvas baseChart [data]="slaComplianceChartConfig.data" [type]="slaComplianceChartConfig.type" [options]="slaComplianceChartConfig.options"></canvas>
     </div>
 
     <!-- Resolution Time -->
     <div class="bg-white rounded-lg shadow p-6">
-      <h4 class="font-semibold text-gray-900 mb-4">Tiempo de resolucion por tipo (horas)</h4>
+      <h4 class="font-semibold text-gray-900 mb-4">{{ 'BO.STATS.RESOLUTION_TIME' | translate }}</h4>
       <canvas baseChart [data]="resolutionTimeChartConfig.data" [type]="resolutionTimeChartConfig.type" [options]="resolutionTimeChartConfig.options"></canvas>
     </div>
 
     <!-- Unit SLA Breakdown -->
     <div class="bg-white rounded-lg shadow p-6">
-      <h4 class="font-semibold text-gray-900 mb-4">Cumplimiento SLA por unidad (ordenado de menor a mayor)</h4>
+      <h4 class="font-semibold text-gray-900 mb-4">{{ 'BO.STATS.UNIT_SLA' | translate }}</h4>
       <canvas baseChart [data]="unitSlaChartConfig.data" [type]="unitSlaChartConfig.type" [options]="unitSlaChartConfig.options"></canvas>
     </div>
   </div>

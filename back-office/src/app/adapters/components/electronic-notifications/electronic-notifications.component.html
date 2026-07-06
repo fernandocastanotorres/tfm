@@ -9,7 +9,7 @@
         class="pb-3 text-sm font-medium border-b-2 transition-colors"
         [ngClass]="activeTab === 'send' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
       >
-        Enviar notificacion
+        {{ 'BO.NOTIFICATIONS.SEND_TAB' | translate }}
       </button>
       <button
         type="button"
@@ -19,7 +19,7 @@
         class="pb-3 text-sm font-medium border-b-2 transition-colors"
         [ngClass]="activeTab === 'history' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
       >
-        Historial
+        {{ 'BO.NOTIFICATIONS.HISTORY_TAB' | translate }}
       </button>
     </nav>
   </div>
@@ -27,13 +27,13 @@
   <div *ngIf="activeTab === 'send'">
     <section class="bg-white rounded-lg shadow p-6 space-y-4">
       <div>
-        <h3 class="text-lg font-semibold text-gray-900">Envio de notificaciones electronicas</h3>
-        <p class="text-sm text-gray-500 mt-1">Selecciona ciudadano, expediente, tipo de notificacion y adjunta documentos de evidencia.</p>
+        <h3 class="text-lg font-semibold text-gray-900">{{ 'BO.NOTIFICATIONS.TITLE' | translate }}</h3>
+        <p class="text-sm text-gray-500 mt-1">{{ 'BO.NOTIFICATIONS.SUBTITLE' | translate }}</p>
       </div>
 
       <div class="grid gap-4 md:grid-cols-2">
         <div>
-          <label for="citizen-search" class="block text-sm font-medium text-gray-700">Buscar ciudadano</label>
+          <label for="citizen-search" class="block text-sm font-medium text-gray-700">{{ 'BO.NOTIFICATIONS.SEARCH_CITIZEN' | translate }}</label>
             <input
               id="citizen-search"
               type="search"
@@ -41,11 +41,11 @@
               [(ngModel)]="citizenSearch"
               [ngModelOptions]="{standalone: true}"
               (ngModelChange)="applyCitizenFilter()"
-              placeholder="Email, nombre o DNI"
+              [placeholder]="'BO.NOTIFICATIONS.SEARCH_PLACEHOLDER' | translate"
             />
         </div>
         <div>
-          <label for="citizen-select" class="block text-sm font-medium text-gray-700">Ciudadano destinatario</label>
+          <label for="citizen-select" class="block text-sm font-medium text-gray-700">{{ 'BO.NOTIFICATIONS.CITIZEN_LABEL' | translate }}</label>
             <select
               id="citizen-select"
               class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
@@ -54,7 +54,7 @@
               [ngModelOptions]="{standalone: true}"
               (ngModelChange)="selectCitizen($event)"
             >
-            <option value="">Selecciona un ciudadano</option>
+            <option value="">{{ 'BO.NOTIFICATIONS.SELECT_CITIZEN' | translate }}</option>
             <option *ngFor="let citizen of filteredCitizens" [value]="citizen.id">
               {{ citizen.displayName || citizen.email }} · {{ citizen.email }}
             </option>
@@ -63,20 +63,20 @@
       </div>
 
       <div>
-        <label for="case-select" class="block text-sm font-medium text-gray-700">Expediente asociado</label>
+        <label for="case-select" class="block text-sm font-medium text-gray-700">{{ 'BO.NOTIFICATIONS.CASE_LABEL' | translate }}</label>
         <select
           id="case-select"
           class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
           [(ngModel)]="selectedCaseId"
           [disabled]="!selectedCitizenId || isLoadingCases"
         >
-          <option value="">Selecciona un expediente</option>
+          <option value="">{{ 'BO.NOTIFICATIONS.SELECT_CASE' | translate }}</option>
           <option *ngFor="let item of citizenCases" [value]="item.id">
             {{ item.title }} · {{ item.procedureType }} · {{ item.status }}
           </option>
         </select>
         <p *ngIf="selectedCitizenId && !isLoadingCases && citizenCases.length === 0" class="mt-1 text-xs text-amber-700">
-          El ciudadano no tiene expedientes activos para notificar.
+          {{ 'BO.NOTIFICATIONS.NO_CASES' | translate }}
         </p>
       </div>
     </section>
@@ -84,37 +84,37 @@
     <section class="bg-white rounded-lg shadow p-6 space-y-4 mt-6">
       <div class="grid gap-4 md:grid-cols-3">
         <div>
-          <label for="type" class="block text-sm font-medium text-gray-700">Tipo de notificacion</label>
+          <label for="type" class="block text-sm font-medium text-gray-700">{{ 'BO.NOTIFICATIONS.TYPE_LABEL' | translate }}</label>
           <select id="type" class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md text-sm" [(ngModel)]="notificationType">
-            <option *ngFor="let option of notificationTypes" [value]="option.key">{{ option.label }}</option>
+            <option *ngFor="let option of notificationTypes" [value]="option.key">{{ option.labelKey | translate }}</option>
           </select>
         </div>
         <div>
-          <label for="due-days" class="block text-sm font-medium text-gray-700">Plazo (dias naturales)</label>
+          <label for="due-days" class="block text-sm font-medium text-gray-700">{{ 'BO.NOTIFICATIONS.DEADLINE_LABEL' | translate }}</label>
           <input id="due-days" type="number" min="1" max="60" class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md text-sm" [(ngModel)]="dueDays" />
         </div>
         <div class="flex items-end">
           <label class="inline-flex items-center gap-2 text-sm text-gray-700">
             <input type="checkbox" [(ngModel)]="notifyByEmail" />
-            Enviar aviso por email
+            {{ 'BO.NOTIFICATIONS.EMAIL_NOTICE' | translate }}
           </label>
         </div>
       </div>
 
       <div>
-        <label for="subject" class="block text-sm font-medium text-gray-700">Asunto</label>
-        <input id="subject" type="text" class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md text-sm" [(ngModel)]="subject" placeholder="Ejemplo: Requerimiento de subsanacion" />
+        <label for="subject" class="block text-sm font-medium text-gray-700">{{ 'BO.NOTIFICATIONS.SUBJECT_LABEL' | translate }}</label>
+        <input id="subject" type="text" class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md text-sm" [(ngModel)]="subject" [placeholder]="'BO.NOTIFICATIONS.SUBJECT_PLACEHOLDER' | translate" />
       </div>
 
       <div>
-        <label for="body" class="block text-sm font-medium text-gray-700">Contenido</label>
-        <textarea id="body" rows="7" class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md text-sm" [(ngModel)]="body" placeholder="Redacta la notificacion administrativa..."></textarea>
+        <label for="body" class="block text-sm font-medium text-gray-700">{{ 'BO.NOTIFICATIONS.CONTENT_LABEL' | translate }}</label>
+        <textarea id="body" rows="7" class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md text-sm" [(ngModel)]="body" [placeholder]="'BO.NOTIFICATIONS.CONTENT_PLACEHOLDER' | translate"></textarea>
       </div>
 
       <div>
-        <label for="attachments" class="block text-sm font-medium text-gray-700">Documento(s) adjunto(s)</label>
+        <label for="attachments" class="block text-sm font-medium text-gray-700">{{ 'BO.NOTIFICATIONS.ATTACHMENTS_LABEL' | translate }}</label>
         <input id="attachments" type="file" multiple class="mt-1 block w-full text-sm" (change)="onFilesSelected($event)" />
-        <p class="mt-1 text-xs text-gray-500" *ngIf="files.length > 0">{{ files.length }} archivo(s) seleccionado(s)</p>
+        <p class="mt-1 text-xs text-gray-500" *ngIf="files.length > 0">{{ 'BO.NOTIFICATIONS.FILES_SELECTED' | translate: { count: files.length } }}</p>
       </div>
 
       <div class="flex justify-end">
@@ -124,7 +124,7 @@
           (click)="send()"
           [disabled]="isSending || !selectedCitizenId || !selectedCaseId"
         >
-          {{ isSending ? 'Enviando...' : 'Enviar notificacion electronica' }}
+          {{ isSending ? ('BO.NOTIFICATIONS.SENDING' | translate) : ('BO.NOTIFICATIONS.SEND_BUTTON' | translate) }}
         </button>
       </div>
     </section>
@@ -133,35 +133,35 @@
   <div *ngIf="activeTab === 'history'">
     <section class="bg-white rounded-lg shadow p-6">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-semibold text-gray-900">Historial de notificaciones</h3>
+        <h3 class="text-lg font-semibold text-gray-900">{{ 'BO.NOTIFICATIONS.HISTORY_TITLE' | translate }}</h3>
         <div class="flex items-center gap-3">
-          <label for="history-status-filter" class="text-sm text-gray-600">Filtrar por estado:</label>
+          <label for="history-status-filter" class="text-sm text-gray-600">{{ 'BO.NOTIFICATIONS.FILTER_BY_STATUS' | translate }}</label>
           <select
             id="history-status-filter"
             [value]="historyStatusFilter"
             (change)="onHistoryStatusFilterChange($any($event.target).value)"
             class="border border-gray-300 rounded-md px-3 py-1.5 text-sm"
           >
-            <option *ngFor="let opt of statusOptions" [value]="opt.value">{{ opt.label }}</option>
+            <option *ngFor="let opt of statusOptions" [value]="opt.value">{{ opt.labelKey | translate }}</option>
           </select>
         </div>
       </div>
 
       <div *ngIf="isLoadingHistory" class="flex items-center justify-center h-32">
-        <div class="text-gray-500">Cargando notificaciones...</div>
+        <div class="text-gray-500">{{ 'BO.NOTIFICATIONS.LOADING' | translate }}</div>
       </div>
 
       <div *ngIf="!isLoadingHistory" class="overflow-x-auto">
         <table class="w-full">
           <thead class="bg-gray-50 border-b border-gray-200">
             <tr>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ciudadano</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Asunto</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expediente</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha envio</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Adj.</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'BO.NOTIFICATIONS.TABLE.CITIZEN' | translate }}</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'BO.NOTIFICATIONS.TABLE.SUBJECT' | translate }}</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'BO.NOTIFICATIONS.TABLE.CASE' | translate }}</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'BO.NOTIFICATIONS.TABLE.STATUS' | translate }}</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'BO.NOTIFICATIONS.TABLE.TYPE' | translate }}</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'BO.NOTIFICATIONS.TABLE.DATE' | translate }}</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'BO.NOTIFICATIONS.TABLE.ATTACHMENTS' | translate }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200">
@@ -179,7 +179,7 @@
               <td class="px-4 py-3 text-sm text-gray-500 text-center">{{ notif.attachmentCount || '' }}</td>
             </tr>
             <tr *ngIf="notifications.length === 0">
-              <td colspan="7" class="px-4 py-8 text-center text-gray-500">No hay notificaciones registradas.</td>
+              <td colspan="7" class="px-4 py-8 text-center text-gray-500">{{ 'BO.NOTIFICATIONS.EMPTY' | translate }}</td>
             </tr>
           </tbody>
         </table>
@@ -187,7 +187,7 @@
 
       <div *ngIf="!isLoadingHistory && totalPages > 1" class="mt-4 flex items-center justify-between">
         <div class="text-sm text-gray-500">
-          Mostrando {{ currentPage * pageSize + 1 }}-{{ Math.min((currentPage + 1) * pageSize, totalItems) }} de {{ totalItems }}
+          {{ 'BO.NOTIFICATIONS.SHOWING' | translate: { from: currentPage * pageSize + 1, to: Math.min((currentPage + 1) * pageSize, totalItems), total: totalItems } }}
         </div>
         <div class="flex gap-2">
           <button
@@ -195,15 +195,15 @@
             (click)="changeHistoryPage(currentPage - 1)"
             class="px-3 py-1 border border-gray-300 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
           >
-            Anterior
+            {{ 'BO.COMMON.PREVIOUS' | translate }}
           </button>
-          <span class="px-3 py-1 text-sm text-gray-600">Pagina {{ currentPage + 1 }} de {{ totalPages }}</span>
+          <span class="px-3 py-1 text-sm text-gray-600">{{ 'BO.NOTIFICATIONS.PAGE' | translate: { page: currentPage + 1, total: totalPages } }}</span>
           <button
             [disabled]="currentPage >= totalPages - 1"
             (click)="changeHistoryPage(currentPage + 1)"
             class="px-3 py-1 border border-gray-300 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
           >
-            Siguiente
+            {{ 'BO.COMMON.NEXT' | translate }}
           </button>
         </div>
       </div>
