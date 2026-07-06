@@ -353,7 +353,7 @@ public class SignatureService {
             }
 
             // Build the new signature dictionary object
-            String sigDict = objCount + " 0 obj\n"
+            String sigDict = originalEntries.size() + " 0 obj\n"
                     + "<< /Type /Sig /Filter /Adobe.PPKLite /SubFilter /adbe.pkcs7.detached "
                     + "/Contents <" + signatureHex + "> "
                     + "/M (D:" + new java.text.SimpleDateFormat("yyyyMMddHHmmssZ").format(new java.util.Date()) + ") "
@@ -378,15 +378,12 @@ public class SignatureService {
             int newSigObjOffset = resultSoFar.length;
 
             // New xref with entries for ALL objects
-            int newTotalObjects = objCount + 1;
+            int newTotalObjects = originalEntries.size() + 1;
             result.append("xref\n");
             result.append("0 ").append(newTotalObjects).append('\n');
-            result.append("0000000000 65535 f \n");
 
             for (int i = 0; i < originalEntries.size(); i++) {
-                if (i < newTotalObjects - 1) {
-                    result.append(padXrefEntry(originalEntries.get(i)));
-                }
+                result.append(padXrefEntry(originalEntries.get(i)));
             }
 
             result.append(String.format("%010d 00000 n ", newSigObjOffset));
