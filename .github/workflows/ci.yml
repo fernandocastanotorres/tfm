@@ -404,21 +404,21 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Download backend coverage
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: backend-coverage
           path: .artifacts/backend
         continue-on-error: true
 
       - name: Download frontend coverage
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: frontend-coverage
           path: .artifacts/frontend
         continue-on-error: true
 
       - name: Download backoffice coverage
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: backoffice-coverage
           path: .artifacts/backoffice
