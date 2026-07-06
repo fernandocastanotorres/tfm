@@ -15,7 +15,7 @@ jobs:
     environment: arsys
     steps:
       - name: Deploy to server
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.2.5
         env:
           CERT_PASSWORD: ${{ secrets.CERT_PASSWORD }}
         with:
