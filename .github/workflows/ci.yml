@@ -34,7 +34,7 @@ jobs:
           cache: maven
 
       - name: Cache Maven dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('backend/pom.xml') }}
@@ -80,7 +80,7 @@ jobs:
           cache-dependency-path: front-end/package-lock.json
 
       - name: Cache npm dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.npm
           key: ${{ runner.os }}-npm-front-end-${{ hashFiles('front-end/package-lock.json') }}
@@ -136,7 +136,7 @@ jobs:
           cache-dependency-path: back-office/package-lock.json
 
       - name: Cache npm dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.npm
           key: ${{ runner.os }}-npm-back-office-${{ hashFiles('back-office/package-lock.json') }}
@@ -281,7 +281,7 @@ jobs:
         run: npm install --legacy-peer-deps
 
       - name: Cache Playwright browsers
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('front-end/package-lock.json') }}
@@ -331,7 +331,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Cache OWASP NVD data
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .owasp-nvd-cache
           key: owasp-nvd-${{ hashFiles('backend/pom.xml') }}
