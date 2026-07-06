@@ -210,6 +210,7 @@ npx ng serve --configuration development --port 4300
 **Dev Users:**
 - Admin: `admin@tfm.es / Admin1234`
 - Citizen: `citizen@tfm.es / Citizen1`
+- Grafana: `admin / Admin1234!`
 
 ### Production Mode (PostgreSQL)
 
