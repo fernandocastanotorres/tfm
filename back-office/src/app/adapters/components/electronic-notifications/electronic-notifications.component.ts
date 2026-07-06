@@ -6,6 +6,7 @@ import {
   ElectronicNotificationService
 } from '../../../application/services/electronic-notification.service';
 import { ToastService } from '../../../application/services/toast.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'bo-electronic-notifications',
@@ -16,6 +17,7 @@ import { ToastService } from '../../../application/services/toast.service';
 export class ElectronicNotificationsComponent implements OnInit {
   private readonly service = inject(ElectronicNotificationService);
   private readonly toast = inject(ToastService);
+  private readonly translateService = inject(TranslateService);
 
   readonly Math = Math;
 
@@ -47,19 +49,19 @@ export class ElectronicNotificationsComponent implements OnInit {
   isLoadingHistory = false;
 
   readonly notificationTypes = [
-    { key: 'FORMAL_NOTICE', label: 'Notificacion formal' },
-    { key: 'REQUEST_INFO', label: 'Requerimiento de informacion' },
-    { key: 'AMENDMENT_REQUIRED', label: 'Requerimiento de subsanacion' },
-    { key: 'RESOLUTION_NOTICE', label: 'Comunicacion de resolucion' }
+    { key: 'FORMAL_NOTICE', labelKey: 'BO.NOTIFICATIONS.TYPE.FORMAL_NOTICE' },
+    { key: 'REQUEST_INFO', labelKey: 'BO.NOTIFICATIONS.TYPE.REQUEST_INFO' },
+    { key: 'AMENDMENT_REQUIRED', labelKey: 'BO.NOTIFICATIONS.TYPE.AMENDMENT_REQUIRED' },
+    { key: 'RESOLUTION_NOTICE', labelKey: 'BO.NOTIFICATIONS.TYPE.RESOLUTION_NOTICE' }
   ];
 
   readonly statusOptions = [
-    { value: '', label: 'Todos los estados' },
-    { value: 'AVAILABLE', label: 'Disponible' },
-    { value: 'ACCESSED', label: 'Accedida' },
-    { value: 'ACCEPTED', label: 'Aceptada' },
-    { value: 'REJECTED', label: 'Rechazada' },
-    { value: 'EXPIRED', label: 'Caducada' }
+    { value: '', labelKey: 'BO.NOTIFICATIONS.STATUS.ALL' },
+    { value: 'AVAILABLE', labelKey: 'BO.NOTIFICATIONS.STATUS.AVAILABLE' },
+    { value: 'ACCESSED', labelKey: 'BO.NOTIFICATIONS.STATUS.ACCESSED' },
+    { value: 'ACCEPTED', labelKey: 'BO.NOTIFICATIONS.STATUS.ACCEPTED' },
+    { value: 'REJECTED', labelKey: 'BO.NOTIFICATIONS.STATUS.REJECTED' },
+    { value: 'EXPIRED', labelKey: 'BO.NOTIFICATIONS.STATUS.EXPIRED' }
   ];
 
   ngOnInit(): void {
@@ -199,6 +201,6 @@ export class ElectronicNotificationsComponent implements OnInit {
 
   getStatusLabel(status: string): string {
     const option = this.statusOptions.find(o => o.value === status);
-    return option?.label || status;
+    return option ? this.translateService.instant(option.labelKey) : status;
   }
 }

@@ -134,7 +134,11 @@
     "ERROR_INVALID": "Credenciales inválidas. Revisa los datos e inténtalo de nuevo.",
     "ERROR_GENERIC": "Ha ocurrido un error inesperado. Inténtalo de nuevo más tarde.",
     "RESEND_VERIFICATION": "Reenviar enlace de verificacion",
-    "SENDING_VERIFICATION": "Reenviando enlace..."
+    "SENDING_VERIFICATION": "Reenviando enlace...",
+    "EMAIL_PLACEHOLDER": "usuario@dominio.es",
+    "PASSWORD_PLACEHOLDER": "Introduce tu contrasena",
+    "RESEND_SUCCESS": "Si la cuenta existe y no esta activa, hemos reenviado el enlace de verificacion.",
+    "RESEND_ERROR": "No se pudo procesar la solicitud en este momento."
   },
   "EMAIL_VERIFICATION": {
     "TITLE": "Verificacion de cuenta",
@@ -169,7 +173,14 @@
     "SUBMIT": "Crear cuenta",
     "SUBMITTING": "Registrando…",
     "SUCCESS": "Cuenta creada. Ya puedes iniciar sesión.",
-    "VERIFICATION_EMAIL_SENT": "Te hemos enviado un enlace de verificacion a tu correo electronico."
+    "VERIFICATION_EMAIL_SENT": "Te hemos enviado un enlace de verificacion a tu correo electronico.",
+    "FULL_NAME_PLACEHOLDER": "Nombre y apellidos",
+    "NATIONAL_ID_PLACEHOLDER": "DNI/NIE",
+    "PASSWORD_PLACEHOLDER": "Minimo 8 caracteres",
+    "CONFIRM_PASSWORD_PLACEHOLDER": "Repite la contrasena",
+    "ERROR_DUPLICATE": "Ya existe una cuenta con ese email o documento de identidad.",
+    "ERROR_VALIDATION": "Hay errores en los datos del formulario. Revisa los campos marcados.",
+    "ERROR_GENERIC": "Error al crear la cuenta. Intentalo de nuevo mas tarde."
   },
   "RECOVERY": {
     "EYEBROW": "Recuperación segura",
@@ -191,7 +202,9 @@
     "CONFIRM_PASSWORD_ERROR": "Las contraseñas no coinciden.",
     "RESET": "Restablecer contraseña",
     "DONE_TITLE": "Contraseña actualizada",
-    "DONE_SUBTITLE": "Ya puedes iniciar sesión con tu nueva contraseña. Redirigiendo…"
+    "DONE_SUBTITLE": "Ya puedes iniciar sesión con tu nueva contraseña. Redirigiendo…",
+    "NEW_PASSWORD_PLACEHOLDER": "Nueva contrasena",
+    "CONFIRM_PASSWORD_PLACEHOLDER": "Repite la nueva contrasena"
   },
   "DASHBOARD": {
     "TITLE": "Panel ciudadano",
@@ -293,7 +306,11 @@
     "PASSWORDS_MISMATCH_HINT": "Las contraseñas no coinciden.",
     "SUCCESS_PASSWORD_TITLE": "Contraseña actualizada",
     "SUCCESS_PASSWORD_TEXT": "Tu contraseña se ha cambiado correctamente.",
-    "SAVING": "Guardando..."
+    "SAVING": "Guardando...",
+    "FULL_NAME_PLACEHOLDER": "Nombre y apellidos",
+    "PHONE_PLACEHOLDER": "600123123",
+    "NATIONAL_ID_PLACEHOLDER": "DNI/NIE",
+    "ADDRESS_PLACEHOLDER": "Direccion completa"
   },
   "LAYOUT": {
     "SKIP_LINK": "Saltar al contenido principal",
@@ -310,7 +327,9 @@
     "NAV_MAIN": "Navegacion principal",
     "SEARCH": "Buscar en sede",
     "MENU_OPEN": "Abrir menu de navegacion",
-    "MENU_CLOSE": "Cerrar menu de navegacion"
+    "MENU_CLOSE": "Cerrar menu de navegacion",
+    "LOGO_ARIA": "Ir a la pagina principal de la sede electronica",
+    "BREADCRUMB_ARIA": "Breadcrumb"
   },
   "NOTIFICATIONS": {
     "EYEBROW": "Notificaciones",
@@ -992,7 +1011,11 @@
     "FORM_MESSAGE_ERROR": "El mensaje debe tener al menos 20 caracteres.",
     "FORM_SUBMIT": "Enviar mensaje",
     "FORM_SUBMITTING": "Enviando...",
-    "FORM_SUCCESS": "Mensaje enviado correctamente. Te responderemos lo antes posible."
+    "FORM_SUCCESS": "Mensaje enviado correctamente. Te responderemos lo antes posible.",
+    "FORM_NAME_PLACEHOLDER": "Tu nombre completo",
+    "FORM_EMAIL_PLACEHOLDER": "usuario@dominio.es",
+    "FORM_SUBJECT_PLACEHOLDER": "Asunto de la consulta",
+    "FORM_MESSAGE_PLACEHOLDER": "Describe tu consulta con el mayor detalle posible"
   },
   "BACKOFFICE": {
     "TITLE": "Panel de administracion",
@@ -1226,5 +1249,15 @@
   },
   "NOTIFICATION_TYPE": {
     "FORMAL_NOTICE": "Notificación formal"
+  },
+  "ERROR_PAGE": {
+    "403_TITLE": "Acceso denegado",
+    "403_DESC": "No tienes permisos para acceder a esta pagina.",
+    "404_TITLE": "Pagina no encontrada",
+    "404_DESC": "La pagina que buscas no existe o ha sido movida.",
+    "500_TITLE": "Error del servidor",
+    "500_DESC": "Se ha producido un error interno. Intentalo de nuevo mas tarde.",
+    "GO_HOME": "Ir a la pagina principal",
+    "GO_BACK": "Volver atras"
   }
 }

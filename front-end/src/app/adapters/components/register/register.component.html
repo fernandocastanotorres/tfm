@@ -10,7 +10,7 @@
       <div class="grid gap-6 md:grid-cols-2">
         <div class="space-y-2">
           <label for="fullName" class="field-label">{{ 'REGISTER.FULL_NAME' | translate }}</label>
-          <input id="fullName" type="text" formControlName="fullName" autocomplete="name" required class="field-input" placeholder="Nombre y apellidos" aria-describedby="fullName-error" [attr.aria-invalid]="registerForm.get('fullName')?.invalid && registerForm.get('fullName')?.touched" />
+          <input id="fullName" type="text" formControlName="fullName" autocomplete="name" required class="field-input" [placeholder]="'REGISTER.FULL_NAME_PLACEHOLDER' | translate" aria-describedby="fullName-error" [attr.aria-invalid]="registerForm.get('fullName')?.invalid && registerForm.get('fullName')?.touched" />
           <p id="fullName-error" class="error-text" role="alert" *ngIf="registerForm.get('fullName')?.invalid && registerForm.get('fullName')?.touched">
             {{ 'REGISTER.FULL_NAME_ERROR' | translate }}
           </p>
@@ -26,7 +26,7 @@
 
         <div class="space-y-2">
           <label for="nationalId" class="field-label">{{ 'REGISTER.NATIONAL_ID' | translate }}</label>
-          <input id="nationalId" type="text" formControlName="nationalId" autocomplete="off" required class="field-input" placeholder="DNI/NIE" aria-describedby="nationalId-error" [attr.aria-invalid]="registerForm.get('nationalId')?.invalid && registerForm.get('nationalId')?.touched" />
+          <input id="nationalId" type="text" formControlName="nationalId" autocomplete="off" required class="field-input" [placeholder]="'REGISTER.NATIONAL_ID_PLACEHOLDER' | translate" aria-describedby="nationalId-error" [attr.aria-invalid]="registerForm.get('nationalId')?.invalid && registerForm.get('nationalId')?.touched" />
           <p class="helper-text">{{ 'REGISTER.NATIONAL_ID_HELP' | translate }}</p>
           <p id="nationalId-error" class="error-text" role="alert" *ngIf="registerForm.get('nationalId')?.invalid && registerForm.get('nationalId')?.touched">
             {{ 'REGISTER.NATIONAL_ID_ERROR' | translate }}
@@ -44,7 +44,7 @@
 
         <div class="space-y-2">
           <label for="password" class="field-label">{{ 'REGISTER.PASSWORD' | translate }}</label>
-          <input id="password" type="password" formControlName="password" autocomplete="new-password" required class="field-input" placeholder="Minimo 8 caracteres" aria-describedby="password-error" [attr.aria-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" />
+          <input id="password" type="password" formControlName="password" autocomplete="new-password" required class="field-input" [placeholder]="'REGISTER.PASSWORD_PLACEHOLDER' | translate" aria-describedby="password-error" [attr.aria-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" />
           <p class="helper-text">{{ 'REGISTER.PASSWORD_HELP' | translate }}</p>
           <p id="password-error" class="error-text" role="alert" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
             {{ 'REGISTER.PASSWORD_ERROR' | translate }}
@@ -53,7 +53,7 @@
 
         <div class="space-y-2">
           <label for="confirmPassword" class="field-label">{{ 'REGISTER.CONFIRM_PASSWORD' | translate }}</label>
-          <input id="confirmPassword" type="password" formControlName="confirmPassword" autocomplete="new-password" required class="field-input" placeholder="Repite la contrasena" aria-describedby="confirmPassword-error" [attr.aria-invalid]="registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched" />
+          <input id="confirmPassword" type="password" formControlName="confirmPassword" autocomplete="new-password" required class="field-input" [placeholder]="'REGISTER.CONFIRM_PASSWORD_PLACEHOLDER' | translate" aria-describedby="confirmPassword-error" [attr.aria-invalid]="registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched" />
           <p id="confirmPassword-error" class="error-text" role="alert" *ngIf="registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched">
             {{ 'REGISTER.CONFIRM_PASSWORD_ERROR' | translate }}
           </p>

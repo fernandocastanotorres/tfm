@@ -2,12 +2,12 @@
   <div class="bg-white rounded-lg shadow p-6">
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
       <div>
-        <h3 class="text-lg font-semibold text-gray-900">Gestion de Procedimientos</h3>
-        <p class="text-sm text-gray-500 mt-1">Configurar catalogo, tareas BPMN y campos de formulario.</p>
+        <h3 class="text-lg font-semibold text-gray-900">{{ 'BO.PROCEDURES.TITLE' | translate }}</h3>
+        <p class="text-sm text-gray-500 mt-1">{{ 'BO.PROCEDURES.SUBTITLE' | translate }}</p>
       </div>
       <div class="flex gap-3">
-        <input type="search" [(ngModel)]="searchTerm" placeholder="Buscar procedimiento" class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        <button type="button" (click)="openCreate()" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700">Nuevo procedimiento</button>
+        <input type="search" [(ngModel)]="searchTerm" [placeholder]="'BO.PROCEDURES.SEARCH' | translate" class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <button type="button" (click)="openCreate()" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700">{{ 'BO.PROCEDURES.NEW' | translate }}</button>
       </div>
     </div>
   </div>
@@ -22,61 +22,61 @@
         <span class="px-2 py-1 text-xs font-medium rounded-full" [class.bg-green-100]="procedure.status === 'ACTIVE'" [class.text-green-800]="procedure.status === 'ACTIVE'" [class.bg-gray-100]="procedure.status !== 'ACTIVE'" [class.text-gray-800]="procedure.status !== 'ACTIVE'">{{ procedure.status }}</span>
       </div>
       <div class="grid grid-cols-2 gap-3 text-sm mb-4">
-        <div><span class="text-gray-500">Categoria:</span> {{ procedure.category }}</div>
-        <div><span class="text-gray-500">Unidad:</span> {{ procedure.assignedUnit }}</div>
-        <div><span class="text-gray-500">Plazo:</span> {{ procedure.deadlineDays }} dias</div>
-        <div><span class="text-gray-500">Tasa:</span> {{ procedure.feeAmount | currency: 'EUR' }}</div>
+        <div><span class="text-gray-500">{{ 'BO.PROCEDURES.CATEGORY' | translate }}:</span> {{ procedure.category }}</div>
+        <div><span class="text-gray-500">{{ 'BO.PROCEDURES.UNIT' | translate }}:</span> {{ procedure.assignedUnit }}</div>
+        <div><span class="text-gray-500">{{ 'BO.PROCEDURES.DEADLINE' | translate }}:</span> {{ procedure.deadlineDays }} {{ 'BO.PROCEDURES.DAYS' | translate }}</div>
+        <div><span class="text-gray-500">{{ 'BO.PROCEDURES.FEE' | translate }}:</span> {{ procedure.feeAmount | currency: 'EUR' }}</div>
       </div>
       <div class="mb-4">
-        <div class="text-xs font-medium text-gray-500 uppercase mb-2">Tareas</div>
+        <div class="text-xs font-medium text-gray-500 uppercase mb-2">{{ 'BO.PROCEDURES.TASKS' | translate }}</div>
         <div class="flex flex-wrap gap-2">
           <span *ngFor="let task of procedure.tasks" class="px-2 py-1 bg-blue-50 text-blue-700 rounded-full text-xs">{{ task.orderIndex + 1 }}. {{ task.title }}</span>
         </div>
       </div>
       <div class="flex justify-end gap-3">
-        <button type="button" (click)="toggleStatus(procedure)" class="text-gray-600 hover:text-gray-900 text-sm font-medium">{{ procedure.status === 'ACTIVE' ? 'Desactivar' : 'Activar' }}</button>
-        <button type="button" (click)="openEdit(procedure)" class="text-blue-600 hover:text-blue-800 text-sm font-medium">Editar</button>
+        <button type="button" (click)="toggleStatus(procedure)" class="text-gray-600 hover:text-gray-900 text-sm font-medium">{{ procedure.status === 'ACTIVE' ? ('BO.PROCEDURES.DEACTIVATE' | translate) : ('BO.PROCEDURES.ACTIVATE' | translate) }}</button>
+        <button type="button" (click)="openEdit(procedure)" class="text-blue-600 hover:text-blue-800 text-sm font-medium">{{ 'BO.PROCEDURES.EDIT' | translate }}</button>
       </div>
       <bo-field-i18n-management [procedure]="procedure"></bo-field-i18n-management>
     </div>
   </div>
 
-  <div *ngIf="isLoading" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">Cargando procedimientos...</div>
-  <div *ngIf="!isLoading && filteredProcedures.length === 0" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">No hay procedimientos</div>
+  <div *ngIf="isLoading" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">{{ 'BO.PROCEDURES.LOADING' | translate }}</div>
+  <div *ngIf="!isLoading && filteredProcedures.length === 0" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">{{ 'BO.PROCEDURES.NO_PROCEDURES' | translate }}</div>
 
   <div *ngIf="showForm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-6" role="dialog" aria-modal="true" aria-labelledby="procedure-modal-title" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
     <div class="bg-white rounded-lg shadow-lg w-full max-w-5xl max-h-[90vh] overflow-y-auto p-6">
-      <h3 id="procedure-modal-title" class="text-lg font-semibold text-gray-900 mb-4">{{ selectedProcedure ? 'Editar procedimiento' : 'Nuevo procedimiento' }}</h3>
+      <h3 id="procedure-modal-title" class="text-lg font-semibold text-gray-900 mb-4">{{ selectedProcedure ? ('BO.PROCEDURES.EDIT' | translate) : ('BO.PROCEDURES.NEW' | translate) }}</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <label class="block text-sm"><span class="font-medium text-gray-700">Titulo</span><input [(ngModel)]="form.title" (ngModelChange)="onBaseFieldsChanged()" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm"><span class="font-medium text-gray-700">{{ 'BO.PROCEDURES.TITLE_LABEL' | translate }}</span><input [(ngModel)]="form.title" (ngModelChange)="onBaseFieldsChanged()" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
         <label class="block text-sm" for="category-select">
-          <span class="font-medium text-gray-700">Categoria</span>
+          <span class="font-medium text-gray-700">{{ 'BO.PROCEDURES.CATEGORY' | translate }}</span>
           <select *ngIf="!showCustomCategoryInput" id="category-select" [(ngModel)]="form.category" (change)="onCategoryChange($event)" class="mt-1 w-full border rounded-md px-3 py-2">
-            <option value="">Seleccionar categoria</option>
+            <option value="">{{ 'BO.PROCEDURES.SELECT_CATEGORY' | translate }}</option>
             <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
-            <option value="__custom__">+ Otra...</option>
+            <option value="__custom__">{{ 'BO.PROCEDURES.OTHER' | translate }}</option>
           </select>
-          <input *ngIf="showCustomCategoryInput" id="category-custom" [(ngModel)]="customCategory" (ngModelChange)="form.category = customCategory" class="mt-1 w-full border rounded-md px-3 py-2" placeholder="Nueva categoria" />
+          <input *ngIf="showCustomCategoryInput" id="category-custom" [(ngModel)]="customCategory" (ngModelChange)="form.category = customCategory" class="mt-1 w-full border rounded-md px-3 py-2" [placeholder]="'BO.PROCEDURES.NEW_CATEGORY_PLACEHOLDER' | translate" />
         </label>
         <label class="block text-sm" for="unit-select">
-          <span class="font-medium text-gray-700">Unidad asignada</span>
+          <span class="font-medium text-gray-700">{{ 'BO.PROCEDURES.UNIT' | translate }}</span>
           <select *ngIf="!showCustomUnitInput" id="unit-select" [(ngModel)]="form.assignedUnit" (change)="onUnitChange($event)" class="mt-1 w-full border rounded-md px-3 py-2">
-            <option value="">Seleccionar unidad</option>
+            <option value="">{{ 'BO.PROCEDURES.SELECT_UNIT' | translate }}</option>
             <option *ngFor="let unit of units" [value]="unit">{{ unit }}</option>
-            <option value="__custom__">+ Otra...</option>
+            <option value="__custom__">{{ 'BO.PROCEDURES.OTHER_UNIT' | translate }}</option>
           </select>
-          <input *ngIf="showCustomUnitInput" id="unit-custom" [(ngModel)]="customUnit" (ngModelChange)="form.assignedUnit = customUnit" class="mt-1 w-full border rounded-md px-3 py-2" placeholder="Nueva unidad" />
+          <input *ngIf="showCustomUnitInput" id="unit-custom" [(ngModel)]="customUnit" (ngModelChange)="form.assignedUnit = customUnit" class="mt-1 w-full border rounded-md px-3 py-2" [placeholder]="'BO.PROCEDURES.NEW_UNIT_PLACEHOLDER' | translate" />
         </label>
-        <label class="block text-sm"><span class="font-medium text-gray-700">Estado</span><select [(ngModel)]="form.status" class="mt-1 w-full border rounded-md px-3 py-2"><option value="DRAFT">DRAFT</option><option value="ACTIVE">ACTIVE</option><option value="INACTIVE">INACTIVE</option></select></label>
-        <label class="block text-sm"><span class="font-medium text-gray-700">Plazo dias</span><input type="number" [(ngModel)]="form.deadlineDays" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
-        <label class="block text-sm"><span class="font-medium text-gray-700">Tasa</span><input type="number" [(ngModel)]="form.feeAmount" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
-        <label class="block text-sm md:col-span-2"><span class="font-medium text-gray-700">Descripcion</span><textarea [(ngModel)]="form.description" (ngModelChange)="onBaseFieldsChanged()" rows="3" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
+        <label class="block text-sm"><span class="font-medium text-gray-700">{{ 'BO.PROCEDURES.STATUS_LABEL' | translate }}</span><select [(ngModel)]="form.status" class="mt-1 w-full border rounded-md px-3 py-2"><option value="DRAFT">DRAFT</option><option value="ACTIVE">ACTIVE</option><option value="INACTIVE">INACTIVE</option></select></label>
+        <label class="block text-sm"><span class="font-medium text-gray-700">{{ 'BO.PROCEDURES.DEADLINE_DAYS' | translate }}</span><input type="number" [(ngModel)]="form.deadlineDays" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm"><span class="font-medium text-gray-700">{{ 'BO.PROCEDURES.FEE_LABEL' | translate }}</span><input type="number" [(ngModel)]="form.feeAmount" class="mt-1 w-full border rounded-md px-3 py-2" /></label>
+        <label class="block text-sm md:col-span-2"><span class="font-medium text-gray-700">{{ 'BO.PROCEDURES.DESCRIPTION_LABEL' | translate }}</span><textarea [(ngModel)]="form.description" (ngModelChange)="onBaseFieldsChanged()" rows="3" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
       </div>
 
       <section class="mb-6 border rounded-lg p-4">
         <div class="flex items-center justify-between gap-3 mb-3">
-          <h4 class="font-semibold text-gray-900">Internacionalizacion</h4>
-          <span class="text-xs text-gray-500">El locale es-ES se sincroniza con los campos principales</span>
+          <h4 class="font-semibold text-gray-900">{{ 'BO.PROCEDURES.I18N.TITLE' | translate }}</h4>
+          <span class="text-xs text-gray-500">{{ 'BO.PROCEDURES.I18N.SYNC_NOTE' | translate }}</span>
         </div>
         <div class="flex flex-wrap gap-2 mb-4">
           <button
@@ -93,23 +93,23 @@
           >{{ locale }}</button>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <label class="block text-sm"><span class="font-medium text-gray-700">Titulo ({{ selectedLocale }})</span><input [(ngModel)]="selectedTranslation.title" class="mt-1 w-full border rounded-md px-3 py-2" id="translation-title" /></label>
-          <label class="block text-sm"><span class="font-medium text-gray-700">Unidad ({{ selectedLocale }})</span><input [(ngModel)]="selectedTranslation.unit" class="mt-1 w-full border rounded-md px-3 py-2" id="translation-unit" /></label>
-          <label class="block text-sm md:col-span-2"><span class="font-medium text-gray-700">Descripcion ({{ selectedLocale }})</span><textarea [(ngModel)]="selectedTranslation.description" rows="3" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
+          <label class="block text-sm"><span class="font-medium text-gray-700">{{ 'BO.PROCEDURES.I18N.TITLE_LOCALE' | translate: { locale: selectedLocale } }}</span><input [(ngModel)]="selectedTranslation.title" class="mt-1 w-full border rounded-md px-3 py-2" id="translation-title" /></label>
+          <label class="block text-sm"><span class="font-medium text-gray-700">{{ 'BO.PROCEDURES.I18N.UNIT_LOCALE' | translate: { locale: selectedLocale } }}</span><input [(ngModel)]="selectedTranslation.unit" class="mt-1 w-full border rounded-md px-3 py-2" id="translation-unit" /></label>
+          <label class="block text-sm md:col-span-2"><span class="font-medium text-gray-700">{{ 'BO.PROCEDURES.I18N.DESC_LOCALE' | translate: { locale: selectedLocale } }}</span><textarea [(ngModel)]="selectedTranslation.description" rows="3" class="mt-1 w-full border rounded-md px-3 py-2"></textarea></label>
         </div>
       </section>
 
       <section class="mb-6 border rounded-lg p-4">
         <div class="flex items-center justify-between gap-3 mb-3">
-          <h4 class="font-semibold text-gray-900">Traducciones de tareas</h4>
+          <h4 class="font-semibold text-gray-900">{{ 'BO.PROCEDURES.I18N.TASK_TRANSLATIONS' | translate }}</h4>
         </div>
-        <div *ngIf="form.tasks.length === 0" class="text-xs text-gray-500 text-center py-2">Anade tareas para traducir sus titulos</div>
+        <div *ngIf="form.tasks.length === 0" class="text-xs text-gray-500 text-center py-2">{{ 'BO.PROCEDURES.I18N.ADD_TASK_HINT' | translate }}</div>
         <div *ngFor="let task of form.tasks; let taskIndex = index" class="border rounded p-3 mb-3 bg-gray-50">
-          <div class="font-medium text-sm mb-2">{{ taskIndex + 1 }}. {{ task.title || 'Sin titulo' }} ({{ task.type }})</div>
+          <div class="font-medium text-sm mb-2">{{ taskIndex + 1 }}. {{ task.title || ('BO.PROCEDURES.I18N.NO_TITLE' | translate) }} ({{ task.type }})</div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div *ngFor="let locale of supportedLocales">
                 <label [for]="'task-translation-' + taskIndex + '-' + locale" class="text-xs text-gray-500 block mb-1">{{ locale }}</label>
-                <input [id]="'task-translation-' + taskIndex + '-' + locale" [(ngModel)]="taskTranslations[taskIndex][locale]" class="w-full border rounded px-2 py-1 text-xs" placeholder="Titulo de tarea" />
+                <input [id]="'task-translation-' + taskIndex + '-' + locale" [(ngModel)]="taskTranslations[taskIndex][locale]" class="w-full border rounded px-2 py-1 text-xs" [placeholder]="'BO.PROCEDURES.I18N.TASK_PLACEHOLDER' | translate" />
               </div>
           </div>
         </div>
@@ -117,45 +117,44 @@
 
       <div class="grid grid-cols-1 lg:grid-cols-1 gap-6">
         <section>
-          <div class="flex items-center justify-between mb-3"><h4 class="font-semibold text-gray-900">Tareas BPMN</h4><button type="button" (click)="addTask()" class="text-blue-600 text-sm font-medium">Anadir tarea</button></div>
+          <div class="flex items-center justify-between mb-3"><h4 class="font-semibold text-gray-900">{{ 'BO.PROCEDURES.BPMN.TITLE' | translate }}</h4><button type="button" (click)="addTask()" class="text-blue-600 text-sm font-medium">{{ 'BO.PROCEDURES.BPMN.ADD_TASK' | translate }}</button></div>
           <div class="space-y-3">
             <div *ngFor="let task of form.tasks; let taskIndex = index" class="border rounded-md p-3 space-y-2" [class.border-blue-400]="activeTaskIndex === taskIndex" [class.bg-blue-50]="activeTaskIndex === taskIndex">
               <div class="flex items-center justify-between">
-                <span class="text-xs font-medium text-gray-500">Tarea {{ taskIndex + 1 }}</span>
+                <span class="text-xs font-medium text-gray-500">{{ 'BO.TASKS.TASK' | translate }} {{ taskIndex + 1 }}</span>
                 <button type="button" (click)="selectTask(taskIndex)" class="text-xs text-blue-600 hover:text-blue-800">
-                  {{ activeTaskIndex === taskIndex ? 'Ocultar' : 'Expandir' }}
+                  {{ activeTaskIndex === taskIndex ? ('BO.PROCEDURES.BPMN.HIDE' | translate) : ('BO.PROCEDURES.BPMN.EXPAND' | translate) }}
                 </button>
               </div>
-              <input [(ngModel)]="task.title" class="w-full border rounded px-2 py-1 text-sm" placeholder="Titulo" />
-              <textarea [(ngModel)]="task.description" class="w-full border rounded px-2 py-1 text-sm" placeholder="Descripcion"></textarea>
+              <input [(ngModel)]="task.title" class="w-full border rounded px-2 py-1 text-sm" [placeholder]="'BO.PROCEDURES.BPMN.TASK_TITLE' | translate" />
+              <textarea [(ngModel)]="task.description" class="w-full border rounded px-2 py-1 text-sm" [placeholder]="'BO.PROCEDURES.BPMN.TASK_DESCRIPTION' | translate"></textarea>
               <div class="grid grid-cols-2 gap-2">
                 <select [(ngModel)]="task.type" class="border rounded px-2 py-1 text-sm"><option>FORM</option><option>UPLOAD</option><option>REVIEW</option><option>SIGNATURE</option><option>RESOLUTION</option></select>
                 <select [(ngModel)]="task.assignedRole" class="border rounded px-2 py-1 text-sm"><option>ROLE_TRAMITADOR</option><option>ROLE_ADMIN</option></select>
               </div>
 
-              <!-- Task-specific fields (only for FORM type) -->
               <div *ngIf="task.type === 'FORM' && activeTaskIndex === taskIndex" class="mt-3 p-2 bg-white border border-blue-200 rounded">
                 <div class="flex items-center justify-between mb-2">
-                  <span class="text-xs font-semibold text-blue-700">Campos de formulario</span>
-                  <button type="button" (click)="addFieldToTask(taskIndex)" class="text-xs text-blue-600 hover:text-blue-800">+ Anadir campo</button>
+                  <span class="text-xs font-semibold text-blue-700">{{ 'BO.PROCEDURES.FORM.TITLE' | translate }}</span>
+                  <button type="button" (click)="addFieldToTask(taskIndex)" class="text-xs text-blue-600 hover:text-blue-800">{{ 'BO.PROCEDURES.FORM.ADD_FIELD' | translate }}</button>
                 </div>
                 <div class="space-y-2">
                   <div *ngFor="let field of task.fields" class="border rounded p-2 bg-gray-50">
                     <div class="flex gap-2 mb-2">
-                      <input [(ngModel)]="field.label" class="flex-1 border rounded px-2 py-1 text-xs" placeholder="Etiqueta" />
-                      <button type="button" (click)="removeFieldFromTask(taskIndex, field.id)" class="text-red-600 text-xs hover:text-red-800">Eliminar</button>
+                      <input [(ngModel)]="field.label" class="flex-1 border rounded px-2 py-1 text-xs" [placeholder]="'BO.PROCEDURES.FORM.LABEL' | translate" />
+                      <button type="button" (click)="removeFieldFromTask(taskIndex, field.id)" class="text-red-600 text-xs hover:text-red-800">{{ 'BO.PROCEDURES.FORM.REMOVE_FIELD' | translate }}</button>
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                       <input [(ngModel)]="field.id" class="border rounded px-2 py-1 text-xs" placeholder="id" />
                       <select [(ngModel)]="field.type" class="border rounded px-2 py-1 text-xs"><option>text</option><option>textarea</option><option>number</option><option>date</option><option>select</option><option>checkbox</option><option>file</option></select>
                     </div>
-                    <label class="inline-flex items-center text-xs mt-1"><input type="checkbox" [(ngModel)]="field.required" class="mr-1" /> Obligatorio</label>
+                    <label class="inline-flex items-center text-xs mt-1"><input type="checkbox" [(ngModel)]="field.required" class="mr-1" /> {{ 'BO.PROCEDURES.FORM.REQUIRED' | translate }}</label>
                   </div>
-                  <div *ngIf="!task.fields || task.fields.length === 0" class="text-xs text-gray-500 text-center py-2">Sin campos. Pulsa "+ Anadir campo"</div>
+                  <div *ngIf="!task.fields || task.fields.length === 0" class="text-xs text-gray-500 text-center py-2">{{ 'BO.PROCEDURES.FORM.NO_FIELDS' | translate }}</div>
                 </div>
               </div>
 
-              <button type="button" (click)="removeTask(task.id)" class="text-red-600 text-sm hover:text-red-800 mt-2">Eliminar tarea</button>
+              <button type="button" (click)="removeTask(task.id)" class="text-red-600 text-sm hover:text-red-800 mt-2">{{ 'BO.PROCEDURES.BPMN.REMOVE_TASK' | translate }}</button>
             </div>
           </div>
         </section>
@@ -164,8 +163,8 @@
       </div>
 
       <div class="flex justify-end gap-3 mt-6">
-        <button type="button" (click)="closeForm()" class="px-4 py-2 border rounded-md text-sm">Cancelar</button>
-        <button type="button" (click)="save()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm disabled:opacity-50">{{ isSaving ? 'Guardando...' : 'Guardar' }}</button>
+        <button type="button" (click)="closeForm()" class="px-4 py-2 border rounded-md text-sm">{{ 'BO.PROCEDURES.CANCEL' | translate }}</button>
+        <button type="button" (click)="save()" [disabled]="isSaving" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm disabled:opacity-50">{{ isSaving ? ('BO.PROCEDURES.SAVING' | translate) : ('BO.PROCEDURES.SAVE' | translate) }}</button>
       </div>
     </div>
   </div>

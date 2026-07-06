@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { StatisticsService, AnalyticsReport, MonthlyTrendPoint, ProcedureTypeMetric, UnitSlaBreakdown } from '../../../application/services/statistics.service';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
@@ -10,7 +11,7 @@ import { NgChartsModule } from 'ng2-charts';
     templateUrl: './statistics-dashboard.component.html',
     styleUrls: ['./statistics-dashboard.component.css'],
     standalone: true,
-    imports: [CommonModule, FormsModule, NgChartsModule]
+    imports: [CommonModule, FormsModule, NgChartsModule, TranslateModule]
 })
 export class StatisticsDashboardComponent implements OnInit {
   private readonly service = inject(StatisticsService);

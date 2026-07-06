@@ -257,7 +257,12 @@ public class SignatureService {
                 return fallback.toByteArray();
             }
 
-            int startxrefIdx = pdfStr.lastIndexOf("startxref\n", eofPos);
+            int startxrefIdx = pdfStr.lastIndexOf("startxref\r\n", eofPos);
+            int startxrefLen = 11;
+            if (startxrefIdx < 0) {
+                startxrefIdx = pdfStr.lastIndexOf("startxref\n", eofPos);
+                startxrefLen = 10;
+            }
             if (startxrefIdx < 0) {
                 log.warn("PDF does not contain startxref, appending raw signature");
                 java.io.ByteArrayOutputStream fallback = new java.io.ByteArrayOutputStream();
@@ -266,13 +271,23 @@ public class SignatureService {
                 return fallback.toByteArray();
             }
 
-            String afterSx = pdfStr.substring(startxrefIdx + 10).trim();
+            String afterSx = pdfStr.substring(startxrefIdx + startxrefLen).trim();
             java.util.regex.Matcher numMatcher = java.util.regex.Pattern.compile("(\\d+)").matcher(afterSx);
             int originalStartxref = numMatcher.find() ? Integer.parseInt(numMatcher.group(1)) : 0;
 
-            int xrefKeywordPos = pdfStr.lastIndexOf("\nxref\n", eofPos);
+            int xrefKeywordPos = pdfStr.lastIndexOf("\nxref\r\n", eofPos);
+            int xrefHeaderLen = 7;
+            if (xrefKeywordPos < 0) {
+                xrefKeywordPos = pdfStr.lastIndexOf("\nxref\n", eofPos);
+                xrefHeaderLen = 6;
+            }
+            if (xrefKeywordPos < 0) {
+                xrefKeywordPos = pdfStr.lastIndexOf("xref\r\n", eofPos);
+                xrefHeaderLen = 6;
+            }
             if (xrefKeywordPos < 0) {
                 xrefKeywordPos = pdfStr.lastIndexOf("xref\n", eofPos);
+                xrefHeaderLen = 5;
             }
             if (xrefKeywordPos < 0) {
                 log.warn("PDF does not contain xref keyword");
@@ -282,14 +297,15 @@ public class SignatureService {
                 return fallback.toByteArray();
             }
 
-            int xrefContentStart;
-            if (pdfStr.charAt(xrefKeywordPos) == '\n') {
-                xrefContentStart = xrefKeywordPos + 6;
-            } else {
-                xrefContentStart = xrefKeywordPos + 5;
-            }
+            int xrefContentStart = xrefKeywordPos + xrefHeaderLen;
 
-            int trailerKeywordPos = pdfStr.lastIndexOf("\ntrailer\n", eofPos);
+            int trailerKeywordPos = pdfStr.lastIndexOf("\ntrailer\r\n", eofPos);
+            if (trailerKeywordPos < 0) {
+                trailerKeywordPos = pdfStr.lastIndexOf("\ntrailer\n", eofPos);
+            }
+            if (trailerKeywordPos < 0) {
+                trailerKeywordPos = pdfStr.lastIndexOf("trailer\r\n", eofPos);
+            }
             if (trailerKeywordPos < 0) {
                 trailerKeywordPos = pdfStr.lastIndexOf("trailer\n", eofPos);
             }
@@ -337,7 +353,7 @@ public class SignatureService {
             }
 
             // Build the new signature dictionary object
-            String sigDict = "10 0 obj\n"
+            String sigDict = objCount + " 0 obj\n"
                     + "<< /Type /Sig /Filter /Adobe.PPKLite /SubFilter /adbe.pkcs7.detached "
                     + "/Contents <" + signatureHex + "> "
                     + "/M (D:" + new java.text.SimpleDateFormat("yyyyMMddHHmmssZ").format(new java.util.Date()) + ") "
@@ -350,7 +366,8 @@ public class SignatureService {
             StringBuilder result = new StringBuilder();
             result.append(pdfStr, 0, eofPos + 5);
 
-            boolean hasNewline = pdfStr.charAt(eofPos + 5 - 1) == '\n';
+            boolean hasNewline = pdfStr.length() > eofPos + 5
+                    && (pdfStr.charAt(eofPos + 5) == '\n' || pdfStr.charAt(eofPos + 5) == '\r');
             if (!hasNewline) {
                 result.append('\n');
             }

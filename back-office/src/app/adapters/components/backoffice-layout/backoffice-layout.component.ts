@@ -4,11 +4,12 @@ import { AuthService } from '../../../application/services/auth.service';
 import { GuidedTourService } from '../../../application/services/guided-tour.service';
 import { MessagingAdminService, UnreadCounts, UnreadThreadSummary } from '../../../application/services/messaging-admin.service';
 import { ContactInboxService } from '../../../application/services/contact-inbox.service';
+import { TranslateService } from '@ngx-translate/core';
 import { interval, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 interface NavItem {
-  label: string;
+  labelKey: string;
   icon: string;
   route: string;
   roles?: string[];
@@ -26,6 +27,7 @@ export class BackofficeLayoutComponent implements OnInit, OnDestroy {
   private readonly guidedTourService = inject(GuidedTourService);
   private readonly messagingService = inject(MessagingAdminService);
   private readonly contactInboxService = inject(ContactInboxService);
+  private readonly translateService = inject(TranslateService);
 
   username = '';
   userRoles: string[] = [];
@@ -37,16 +39,16 @@ export class BackofficeLayoutComponent implements OnInit, OnDestroy {
   private unreadPollSub?: Subscription;
 
   navItems: NavItem[] = [
-    { label: 'Panel Principal', icon: 'dashboard', route: '/dashboard' },
-    { label: 'Estadisticas', icon: 'chart', route: '/statistics' },
-    { label: 'Expedientes', icon: 'folder', route: '/cases' },
-    { label: 'Tareas Pendientes', icon: 'task', route: '/tasks' },
-    { label: 'Buzon de Contacto', icon: 'inbox', route: '/contact-inbox' },
-    { label: 'Usuarios', icon: 'people', route: '/admin/users', roles: ['ROLE_ADMIN'] },
-    { label: 'Procedimientos', icon: 'settings', route: '/admin/procedures', roles: ['ROLE_ADMIN'] },
-    { label: 'Notificaciones e-', icon: 'mail', route: '/admin/notifications', roles: ['ROLE_ADMIN'] },
-    { label: 'Contenido Publico', icon: 'public', route: '/admin/public-content', roles: ['ROLE_ADMIN'] },
-    { label: 'Transparencia', icon: 'transparency', route: '/admin/transparency', roles: ['ROLE_ADMIN'] }
+    { labelKey: 'BO.NAV.DASHBOARD', icon: 'dashboard', route: '/dashboard' },
+    { labelKey: 'BO.NAV.STATISTICS', icon: 'chart', route: '/statistics' },
+    { labelKey: 'BO.NAV.CASES', icon: 'folder', route: '/cases' },
+    { labelKey: 'BO.NAV.TASKS', icon: 'task', route: '/tasks' },
+    { labelKey: 'BO.NAV.CONTACT_INBOX', icon: 'inbox', route: '/contact-inbox' },
+    { labelKey: 'BO.NAV.USERS', icon: 'people', route: '/admin/users', roles: ['ROLE_ADMIN'] },
+    { labelKey: 'BO.NAV.PROCEDURES', icon: 'settings', route: '/admin/procedures', roles: ['ROLE_ADMIN'] },
+    { labelKey: 'BO.NAV.ELECTRONIC_NOTIFICATIONS', icon: 'mail', route: '/admin/notifications', roles: ['ROLE_ADMIN'] },
+    { labelKey: 'BO.NAV.PUBLIC_CONTENT', icon: 'public', route: '/admin/public-content', roles: ['ROLE_ADMIN'] },
+    { labelKey: 'BO.NAV.TRANSPARENCY', icon: 'transparency', route: '/admin/transparency', roles: ['ROLE_ADMIN'] }
   ];
 
   ngOnInit(): void {
@@ -145,29 +147,29 @@ export class BackofficeLayoutComponent implements OnInit, OnDestroy {
 
   get breadcrumbs(): { label: string; url: string }[] {
     const labels: Record<string, string> = {
-      dashboard: 'Panel Principal',
-      statistics: 'Estad\u00edsticas',
-      cases: 'Expedientes',
-      tasks: 'Tareas Pendientes',
-      'contact-inbox': 'Buz\u00f3n de Contacto',
-      admin: 'Administraci\u00f3n',
-      users: 'Usuarios',
-      procedures: 'Procedimientos',
-      notifications: 'Notificaciones electr\u00f3nicas',
-      'public-content': 'Contenido P\u00fablico',
-      transparency: 'Transparencia'
+      dashboard: this.translateService.instant('BO.NAV.DASHBOARD'),
+      statistics: this.translateService.instant('BO.NAV.STATISTICS'),
+      cases: this.translateService.instant('BO.NAV.CASES'),
+      tasks: this.translateService.instant('BO.NAV.TASKS'),
+      'contact-inbox': this.translateService.instant('BO.NAV.CONTACT_INBOX'),
+      admin: this.translateService.instant('BO.BREADCRUMB.ADMIN'),
+      users: this.translateService.instant('BO.NAV.USERS'),
+      procedures: this.translateService.instant('BO.NAV.PROCEDURES'),
+      notifications: this.translateService.instant('BO.NAV.ELECTRONIC_NOTIFICATIONS'),
+      'public-content': this.translateService.instant('BO.NAV.PUBLIC_CONTENT'),
+      transparency: this.translateService.instant('BO.NAV.TRANSPARENCY')
     };
     const segments = this.router.url.split('/').filter(s => s && !s.match(/^[0-9a-f-]{36}$/i));
     if (segments.length === 0) return [];
-    const crumbs: { label: string; url: string }[] = [{ label: 'Inicio', url: '/dashboard' }];
+    const crumbs: { label: string; url: string }[] = [{ label: this.translateService.instant('BO.NAV.HOME'), url: '/dashboard' }];
     let currentUrl = '';
     for (const segment of segments) {
       currentUrl += '/' + segment;
       const label = labels[segment] || (segment.includes('-') ? segment.replace(/-/g, ' ') : segment);
       crumbs.push({ label, url: currentUrl });
     }
-    if (crumbs.length > 1 && crumbs[crumbs.length - 1].label.startsWith('cases')) {
-      crumbs[crumbs.length - 1] = { label: 'Detalle del expediente', url: crumbs[crumbs.length - 1].url };
+    if (crumbs.length > 1 && crumbs[crumbs.length - 1].label.startsWith(this.translateService.instant('BO.NAV.CASES'))) {
+      crumbs[crumbs.length - 1] = { label: this.translateService.instant('BO.BREADCRUMB.CASE_DETAIL'), url: crumbs[crumbs.length - 1].url };
     }
     return crumbs;
   }
@@ -175,7 +177,7 @@ export class BackofficeLayoutComponent implements OnInit, OnDestroy {
   getPageTitle(): string {
     const currentRoute = this.router.url;
     const item = this.navItems.find(n => currentRoute.startsWith(n.route));
-    return item?.label || 'Backoffice';
+    return item ? this.translateService.instant(item.labelKey) : 'Backoffice';
   }
 
   startTour(): void {

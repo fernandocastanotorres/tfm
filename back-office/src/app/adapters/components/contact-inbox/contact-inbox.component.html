@@ -2,22 +2,22 @@
   <div class="bg-white rounded-lg shadow p-6">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       <div>
-        <h3 class="text-lg font-semibold text-gray-900">Buzon de contacto</h3>
-        <p class="text-sm text-gray-500 mt-1">Gestiona mensajes entrantes y da seguimiento a consultas ciudadanas.</p>
+        <h3 class="text-lg font-semibold text-gray-900">{{ 'BO.CONTACT_INBOX.TITLE' | translate }}</h3>
+        <p class="text-sm text-gray-500 mt-1">{{ 'BO.CONTACT_INBOX.SUBTITLE' | translate }}</p>
       </div>
       <div class="flex items-center gap-2 text-xs text-gray-500" *ngIf="!isLoading && !selectedMessage">
-        <span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1">Total: {{ messages.length }}</span>
-        <span class="inline-flex items-center rounded-full bg-blue-100 text-blue-700 px-2.5 py-1">Sin leer: {{ unreadCount }}</span>
+        <span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1">{{ 'BO.CONTACT_INBOX.TOTAL' | translate }} {{ messages.length }}</span>
+        <span class="inline-flex items-center rounded-full bg-blue-100 text-blue-700 px-2.5 py-1">{{ 'BO.CONTACT_INBOX.UNREAD' | translate }} {{ unreadCount }}</span>
       </div>
     </div>
   </div>
 
   <div *ngIf="isLoading" class="bg-white rounded-lg shadow p-8 text-center text-gray-500" role="status" aria-live="polite">
-    Cargando mensajes...
+    {{ 'BO.CONTACT_INBOX.LOADING' | translate }}
   </div>
 
   <div *ngIf="!isLoading && selectedMessage" class="bg-white rounded-lg shadow p-6 space-y-5">
-    <button type="button" class="text-sm font-medium text-blue-600 hover:text-blue-700" (click)="backToList()">← Volver a la lista</button>
+    <button type="button" class="text-sm font-medium text-blue-600 hover:text-blue-700" (click)="backToList()">{{ 'BO.CONTACT_INBOX.BACK' | translate }}</button>
 
     <div class="border-b border-gray-200 pb-4">
       <h2 class="text-xl font-semibold text-gray-900">{{ selectedMessage.subject }}</h2>
@@ -33,19 +33,19 @@
     </div>
 
     <div>
-      <a [href]="'mailto:' + selectedMessage.email" class="btn-primary">Responder por email</a>
+      <a [href]="'mailto:' + selectedMessage.email" class="btn-primary">{{ 'BO.CONTACT_INBOX.REPLY_EMAIL' | translate }}</a>
     </div>
   </div>
 
   <div *ngIf="!isLoading && !selectedMessage" class="space-y-4">
     <div class="bg-white rounded-lg shadow p-4">
       <div class="flex items-center gap-2" role="group" [attr.aria-label]="'BO.CONTACT_INBOX.FILTER_LABEL' | translate">
-        <button type="button" class="px-3 py-2 text-sm rounded-md border" [class.bg-blue-600]="filterStatus === 'all'" [class.text-white]="filterStatus === 'all'" (click)="setFilter('all')">Todos</button>
+        <button type="button" class="px-3 py-2 text-sm rounded-md border" [class.bg-blue-600]="filterStatus === 'all'" [class.text-white]="filterStatus === 'all'" (click)="setFilter('all')">{{ 'BO.CONTACT_INBOX.ALL' | translate }}</button>
         <button type="button" class="px-3 py-2 text-sm rounded-md border inline-flex items-center gap-2" [class.bg-blue-600]="filterStatus === 'unread'" [class.text-white]="filterStatus === 'unread'" (click)="setFilter('unread')">
-          No leidos
+          {{ 'BO.CONTACT_INBOX.UNREAD_FILTER' | translate }}
           <span *ngIf="unreadCount > 0" class="inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-xs font-semibold text-white">{{ unreadCount }}</span>
         </button>
-        <button type="button" class="px-3 py-2 text-sm rounded-md border" [class.bg-blue-600]="filterStatus === 'read'" [class.text-white]="filterStatus === 'read'" (click)="setFilter('read')">Leidos</button>
+        <button type="button" class="px-3 py-2 text-sm rounded-md border" [class.bg-blue-600]="filterStatus === 'read'" [class.text-white]="filterStatus === 'read'" (click)="setFilter('read')">{{ 'BO.CONTACT_INBOX.READ_FILTER' | translate }}</button>
       </div>
     </div>
 
@@ -53,11 +53,11 @@
       <table class="w-full" *ngIf="filteredMessages.length > 0">
         <thead class="bg-gray-50 border-b border-gray-200">
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Asunto</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Remitente</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mensaje</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Categoria</th>
-            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Fecha</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'BO.CONTACT_INBOX.SUBJECT' | translate }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'BO.CONTACT_INBOX.SENDER' | translate }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'BO.CONTACT_INBOX.MESSAGE' | translate }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'BO.CONTACT_INBOX.CATEGORY' | translate }}</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">{{ 'BO.CONTACT_INBOX.DATE' | translate }}</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
@@ -80,9 +80,9 @@
       </table>
 
       <div *ngIf="filteredMessages.length === 0" class="px-6 py-8 text-center text-gray-500">
-        <p *ngIf="filterStatus === 'all'">No hay mensajes en el buzón de contacto.</p>
-        <p *ngIf="filterStatus === 'unread'">No hay mensajes sin leer.</p>
-        <p *ngIf="filterStatus === 'read'">No hay mensajes leídos.</p>
+        <p *ngIf="filterStatus === 'all'">{{ 'BO.CONTACT_INBOX.EMPTY' | translate }}</p>
+        <p *ngIf="filterStatus === 'unread'">{{ 'BO.CONTACT_INBOX.EMPTY_UNREAD' | translate }}</p>
+        <p *ngIf="filterStatus === 'read'">{{ 'BO.CONTACT_INBOX.EMPTY_READ' | translate }}</p>
       </div>
     </div>
   </div>

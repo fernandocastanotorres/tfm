@@ -1,6 +1,7 @@
 import { Location } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 type ErrorVariant = '403' | '404' | '500';
 
@@ -10,15 +11,16 @@ type ErrorVariant = '403' | '404' | '500';
   templateUrl: './error-page.component.html'
 })
 export class ErrorPageComponent {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly location = inject(Location);
+  private readonly translateService = inject(TranslateService);
+
   readonly variant: ErrorVariant;
   readonly title: string;
   readonly description: string;
 
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly location: Location
-  ) {
+  constructor() {
     const fromRoute = (this.route.snapshot.data['variant'] ?? '404') as ErrorVariant;
     this.variant = ['403', '404', '500'].includes(fromRoute) ? fromRoute : '404';
 
@@ -39,18 +41,18 @@ export class ErrorPageComponent {
     switch (variant) {
       case '403':
         return {
-          title: 'No tienes permisos para acceder a esta seccion',
-          description: 'Tu rol actual no permite abrir este recurso del back-office.'
+          title: this.translateService.instant('BO.ERROR.403_TITLE'),
+          description: this.translateService.instant('BO.ERROR.403_DESC')
         };
       case '500':
         return {
-          title: 'Se ha producido un error interno',
-          description: 'El equipo tecnico ya dispone de trazas para investigar el problema.'
+          title: this.translateService.instant('BO.ERROR.500_TITLE'),
+          description: this.translateService.instant('BO.ERROR.500_DESC')
         };
       default:
         return {
-          title: 'La pagina solicitada no existe',
-          description: 'Revisa la URL o vuelve al panel principal para continuar trabajando.'
+          title: this.translateService.instant('BO.ERROR.404_TITLE'),
+          description: this.translateService.instant('BO.ERROR.404_DESC')
         };
     }
   }

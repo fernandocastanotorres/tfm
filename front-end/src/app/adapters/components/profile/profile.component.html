@@ -10,7 +10,7 @@
     <form class="card p-8 grid gap-6 md:grid-cols-2" [formGroup]="profileForm" *ngIf="!isLoading">
       <div class="space-y-2">
         <label class="field-label" for="profile-name">{{ 'PROFILE.FULL_NAME' | translate }}</label>
-        <input id="profile-name" class="field-input" type="text" formControlName="fullName" autocomplete="name" placeholder="Nombre y apellidos" />
+        <input id="profile-name" class="field-input" type="text" formControlName="fullName" autocomplete="name" [placeholder]="'PROFILE.FULL_NAME_PLACEHOLDER' | translate" />
       </div>
       <div class="space-y-2">
         <label class="field-label" for="profile-email">{{ 'PROFILE.EMAIL' | translate }}</label>
@@ -18,15 +18,15 @@
       </div>
       <div class="space-y-2">
         <label class="field-label" for="profile-phone">{{ 'PROFILE.PHONE' | translate }}</label>
-        <input id="profile-phone" class="field-input" type="tel" formControlName="phone" autocomplete="tel" placeholder="600123123" />
+        <input id="profile-phone" class="field-input" type="tel" formControlName="phone" autocomplete="tel" [placeholder]="'PROFILE.PHONE_PLACEHOLDER' | translate" />
       </div>
       <div class="space-y-2">
         <label class="field-label" for="profile-id">{{ 'PROFILE.NATIONAL_ID' | translate }}</label>
-        <input id="profile-id" class="field-input" type="text" formControlName="nationalId" autocomplete="off" placeholder="DNI/NIE" />
+        <input id="profile-id" class="field-input" type="text" formControlName="nationalId" autocomplete="off" [placeholder]="'PROFILE.NATIONAL_ID_PLACEHOLDER' | translate" />
       </div>
       <div class="space-y-2 md:col-span-2">
         <label class="field-label" for="profile-address">{{ 'PROFILE.ADDRESS' | translate }}</label>
-        <input id="profile-address" class="field-input" type="text" formControlName="address" autocomplete="street-address" placeholder="Direccion completa" />
+        <input id="profile-address" class="field-input" type="text" formControlName="address" autocomplete="street-address" [placeholder]="'PROFILE.ADDRESS_PLACEHOLDER' | translate" />
       </div>
       <div class="md:col-span-2 flex flex-col gap-3 md:flex-row">
         <button class="btn-primary" type="button" (click)="toggleEdit()" [disabled]="isSaving">

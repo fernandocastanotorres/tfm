@@ -5,8 +5,8 @@
     <p class="mt-4 text-sm text-surface-600 md:text-base">{{ description }}</p>
 
     <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-      <button type="button" class="btn-primary" (click)="goHome()">Ir a la pagina principal</button>
-      <button type="button" class="btn-secondary" (click)="goBack()">Volver atras</button>
+      <button type="button" class="btn-primary" (click)="goHome()">{{ 'ERROR_PAGE.GO_HOME' | translate }}</button>
+      <button type="button" class="btn-secondary" (click)="goBack()">{{ 'ERROR_PAGE.GO_BACK' | translate }}</button>
     </div>
   </div>
 </section>

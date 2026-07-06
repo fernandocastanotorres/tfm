@@ -122,7 +122,11 @@
     "ERROR_INVALID": "Credenciais non válidas. Revisa os datos e téntao de novo.",
     "ERROR_GENERIC": "Produciuse un erro inesperado. Téntao de novo máis tarde.",
     "RESEND_VERIFICATION": "Reenviar ligazón de verificación",
-    "SENDING_VERIFICATION": "Reenviando ligazón..."
+    "SENDING_VERIFICATION": "Reenviando ligazón...",
+    "EMAIL_PLACEHOLDER": "usuario@dominio.es",
+    "PASSWORD_PLACEHOLDER": "Introduce o teu contrasinal",
+    "RESEND_SUCCESS": "Se a conta existe e non está activa, reenviamos a ligazón de verificación.",
+    "RESEND_ERROR": "Non se puido procesar a solicitude neste momento."
   },
   "EMAIL_VERIFICATION": {
     "TITLE": "Verificación da conta",
@@ -157,7 +161,14 @@
     "SUBMIT": "Crear conta",
     "SUBMITTING": "Rexistrando…",
     "SUCCESS": "Conta creada. Xa podes iniciar sesión.",
-    "VERIFICATION_EMAIL_SENT": "Enviamosche unha ligazón de verificación ao teu correo electrónico."
+    "VERIFICATION_EMAIL_SENT": "Enviamosche unha ligazón de verificación ao teu correo electrónico.",
+    "FULL_NAME_PLACEHOLDER": "Nome e apelidos",
+    "NATIONAL_ID_PLACEHOLDER": "DNI/NIE",
+    "PASSWORD_PLACEHOLDER": "Mínimo 8 caracteres",
+    "CONFIRM_PASSWORD_PLACEHOLDER": "Repite o contrasinal",
+    "ERROR_DUPLICATE": "Xa existe unha conta con ese email ou documento de identidade.",
+    "ERROR_VALIDATION": "Hai erros nos datos do formulario. Revisa os campos marcados.",
+    "ERROR_GENERIC": "Erro ao crear a conta. Téntao de novo máis tarde."
   },
   "RECOVERY": {
     "EYEBROW": "Recuperación segura",
@@ -179,7 +190,9 @@
     "CONFIRM_PASSWORD_ERROR": "Os contrasinais non coinciden.",
     "RESET": "Restablecer contrasinal",
     "DONE_TITLE": "Contrasinal actualizado",
-    "DONE_SUBTITLE": "Xa podes iniciar sesión co teu novo contrasinal. Redirixindo…"
+    "DONE_SUBTITLE": "Xa podes iniciar sesión co teu novo contrasinal. Redirixindo…",
+    "NEW_PASSWORD_PLACEHOLDER": "Novo contrasinal",
+    "CONFIRM_PASSWORD_PLACEHOLDER": "Repite o novo contrasinal"
   },
   "DASHBOARD": {
     "TITLE": "Panel cidadán",
@@ -281,7 +294,11 @@
     "PASSWORDS_MISMATCH_HINT": "Os contrasinais non coinciden.",
     "SUCCESS_PASSWORD_TITLE": "Contrasinal actualizado",
     "SUCCESS_PASSWORD_TEXT": "O teu contrasinal cambiouse correctamente.",
-    "SAVING": "Gardando..."
+    "SAVING": "Gardando...",
+    "FULL_NAME_PLACEHOLDER": "Nome e apelidos",
+    "PHONE_PLACEHOLDER": "600123123",
+    "NATIONAL_ID_PLACEHOLDER": "DNI/NIE",
+    "ADDRESS_PLACEHOLDER": "Enderezo completo"
   },
   "LAYOUT": {
     "SKIP_LINK": "Saltar ao contido principal",
@@ -298,7 +315,9 @@
     "SELECT_LANGUAGE": "Seleccionar idioma",
     "NAV_MAIN": "Navegación principal",
     "MENU_OPEN": "Abrir menú de navegación",
-    "MENU_CLOSE": "Pechar menú de navegación"
+    "MENU_CLOSE": "Pechar menú de navegación",
+    "LOGO_ARIA": "Ir á páxina principal da sede electrónica",
+    "BREADCRUMB_ARIA": "Pan de patela"
   },
   "NOTIFICATIONS": {
     "EYEBROW": "Notificacións",
@@ -1215,7 +1234,11 @@
     "FORM_MESSAGE_ERROR": "El missatge ha de tenir almenys 20 caràcters.",
     "FORM_SUBMIT": "Enviar missatge",
     "FORM_SUBMITTING": "Enviant...",
-    "FORM_SUCCESS": "Missatge enviat correctament. Et respondrem el més aviat possible."
+    "FORM_SUCCESS": "Mensaxe enviada correctamente. Responderémosche o antes posible.",
+    "FORM_NAME_PLACEHOLDER": "O teu nome completo",
+    "FORM_EMAIL_PLACEHOLDER": "usuario@dominio.es",
+    "FORM_SUBJECT_PLACEHOLDER": "Asunto da consulta",
+    "FORM_MESSAGE_PLACEHOLDER": "Describe a túa consulta co maior detalle posible"
   },
   "NOTIFICATION_STATUS": {
     "AVAILABLE": "Dispoñible",
@@ -1226,5 +1249,15 @@
   },
   "NOTIFICATION_TYPE": {
     "FORMAL_NOTICE": "Notificación formal"
+  },
+  "ERROR_PAGE": {
+    "403_TITLE": "Acceso denegado",
+    "403_DESC": "Non tes permisos para acceder a esta páxina.",
+    "404_TITLE": "Páxina non atopada",
+    "404_DESC": "A páxina que buscas non existe ou foi movida.",
+    "500_TITLE": "Erro do servidor",
+    "500_DESC": "Produciuse un erro interno. Téntao de novo máis tarde.",
+    "GO_HOME": "Ir á páxina principal",
+    "GO_BACK": "Volver atrás"
   }
 }
