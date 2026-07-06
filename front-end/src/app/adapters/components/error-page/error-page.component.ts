@@ -1,13 +1,14 @@
 import { Location } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 type ErrorVariant = '403' | '404' | '500';
 
 @Component({
     selector: 'app-error-page',
-    templateUrl: './error-page.component.html'
+    templateUrl: './error-page.component.html',
+    imports: [TranslatePipe]
 })
 export class ErrorPageComponent {
   readonly variant: ErrorVariant;
