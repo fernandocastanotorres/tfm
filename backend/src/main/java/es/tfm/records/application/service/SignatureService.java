@@ -313,6 +313,11 @@ public class SignatureService {
                 trailerKeywordPos = eofPos;
             }
 
+            // Extract /Root reference from original trailer
+            String originalTrailer = pdfStr.substring(trailerKeywordPos, eofPos);
+            java.util.regex.Matcher rootMatcher = java.util.regex.Pattern.compile("/Root (\\d+ \\d+ R)").matcher(originalTrailer);
+            String rootRef = rootMatcher.find() ? rootMatcher.group(1) : "1 0 R";
+
             String xrefBody = pdfStr.substring(xrefContentStart, trailerKeywordPos).trim();
             String[] xrefLines = xrefBody.split("\\r?\\n");
 
@@ -393,7 +398,7 @@ public class SignatureService {
 
             result.append("trailer\n");
             result.append("<< /Size ").append(newTotalObjects)
-                  .append(" /Root 1 0 R")
+                  .append(" /Root ").append(rootRef)
                   .append(" /Prev ").append(originalStartxref)
                   .append(" >>\n");
             result.append("startxref\n").append(newXrefOffset).append("\n%%EOF");
