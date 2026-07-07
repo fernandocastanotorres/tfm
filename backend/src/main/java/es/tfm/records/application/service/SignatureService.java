@@ -372,10 +372,12 @@ public class SignatureService {
                 result.append('\n');
             }
             result.append('\n');
+
+            int sigDictObjectOffset = result.length();
             result.append(sigDict);
 
             byte[] resultSoFar = result.toString().getBytes(java.nio.charset.StandardCharsets.ISO_8859_1);
-            int newSigObjOffset = resultSoFar.length;
+            int newXrefOffset = resultSoFar.length;
 
             // New xref with entries for ALL objects
             int newTotalObjects = originalEntries.size() + 1;
@@ -386,7 +388,7 @@ public class SignatureService {
                 result.append(padXrefEntry(originalEntries.get(i)));
             }
 
-            result.append(String.format("%010d 00000 n ", newSigObjOffset));
+            result.append(String.format("%010d 00000 n ", sigDictObjectOffset));
             result.append('\n');
 
             result.append("trailer\n");
@@ -394,7 +396,7 @@ public class SignatureService {
                   .append(" /Root 1 0 R")
                   .append(" /Prev ").append(originalStartxref)
                   .append(" >>\n");
-            result.append("startxref\n").append(newSigObjOffset).append("\n%%EOF");
+            result.append("startxref\n").append(newXrefOffset).append("\n%%EOF");
 
             return result.toString().getBytes(java.nio.charset.StandardCharsets.ISO_8859_1);
         } catch (Exception e) {
