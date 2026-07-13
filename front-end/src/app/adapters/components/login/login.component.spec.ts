@@ -4,7 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import { LoginComponent } from './login.component';
 import { AuthService } from '../../../application/services/auth.service';
@@ -18,7 +18,7 @@ describe('LoginComponent', () => {
 
   beforeEach(async () => {
     const authSpy = jasmine.createSpyObj('AuthService', ['login', 'resendVerificationEmail']);
-    const translateSpy = jasmine.createSpyObj('TranslateService', ['instant']);
+    const translateSpy = jasmine.createSpyObj('TranslateService', ['instant', 'get']);
     translateSpy.instant.and.callFake((key: string) => {
       const translations: Record<string, string> = {
         'LOGIN.RESEND_SUCCESS': 'Se ha reenviado el enlace de verificación.',
@@ -26,9 +26,10 @@ describe('LoginComponent', () => {
       };
       return translations[key] || key;
     });
+    translateSpy.get.and.returnValue(of(''));
 
     await TestBed.configureTestingModule({
-    imports: [ReactiveFormsModule, LoginComponent],
+    imports: [ReactiveFormsModule, TranslateModule.forRoot(), LoginComponent],
     schemas: [NO_ERRORS_SCHEMA],
     providers: [
         { provide: AuthService, useValue: authSpy },
