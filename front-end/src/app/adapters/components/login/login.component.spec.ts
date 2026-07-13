@@ -13,27 +13,17 @@ describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let authService: jasmine.SpyObj<AuthService>;
-  let translateService: jasmine.SpyObj<TranslateService>;
+  let translateService: TranslateService;
   let router: Router;
 
   beforeEach(async () => {
     const authSpy = jasmine.createSpyObj('AuthService', ['login', 'resendVerificationEmail']);
-    const translateSpy = jasmine.createSpyObj('TranslateService', ['instant', 'get']);
-    translateSpy.instant.and.callFake((key: string) => {
-      const translations: Record<string, string> = {
-        'LOGIN.RESEND_SUCCESS': 'Se ha reenviado el enlace de verificación.',
-        'LOGIN.RESEND_ERROR': 'No se pudo procesar la solicitud. Intente nuevamente.',
-      };
-      return translations[key] || key;
-    });
-    translateSpy.get.and.returnValue(of(''));
 
     await TestBed.configureTestingModule({
     imports: [ReactiveFormsModule, TranslateModule.forRoot(), LoginComponent],
     schemas: [NO_ERRORS_SCHEMA],
     providers: [
         { provide: AuthService, useValue: authSpy },
-        { provide: TranslateService, useValue: translateSpy },
         {
             provide: ActivatedRoute,
             useValue: {
@@ -53,7 +43,15 @@ describe('LoginComponent', () => {
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
     authService = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
-    translateService = TestBed.inject(TranslateService) as jasmine.SpyObj<TranslateService>;
+    translateService = TestBed.inject(TranslateService);
+    translateService.currentLang = 'es';
+    spyOn(translateService, 'instant').and.callFake((key: string) => {
+      const translations: Record<string, string> = {
+        'LOGIN.RESEND_SUCCESS': 'Se ha reenviado el enlace de verificación.',
+        'LOGIN.RESEND_ERROR': 'No se pudo procesar la solicitud. Intente nuevamente.',
+      };
+      return translations[key] || key;
+    });
     router = TestBed.inject(Router);
     spyOn(router, 'navigateByUrl');
     fixture.detectChanges();

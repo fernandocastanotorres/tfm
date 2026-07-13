@@ -78,8 +78,9 @@ describe('ProcedureManagementComponent', () => {
 
     mockToast = jasmine.createSpyObj('ToastService', ['success', 'error']);
 
-    mockTranslate = jasmine.createSpyObj('TranslateService', ['instant']);
+    mockTranslate = jasmine.createSpyObj('TranslateService', ['instant', 'get']);
     mockTranslate.instant.and.returnValue('mock translation');
+    mockTranslate.get.and.returnValue(of('mock translation'));
 
     await TestBed.configureTestingModule({
       imports: [FormsModule, TranslateModule.forRoot()],
