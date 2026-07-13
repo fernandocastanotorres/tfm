@@ -14,7 +14,6 @@ describe('ProcedureManagementComponent', () => {
   let mockService: jasmine.SpyObj<ProcedureManagementService>;
   let mockConfirmDialog: jasmine.SpyObj<ConfirmDialogService>;
   let mockToast: jasmine.SpyObj<ToastService>;
-  let mockTranslate: jasmine.SpyObj<TranslateService>;
 
   const mockCategories = ['Urbanismo', 'Padrón', 'Administración'];
   const mockUnits = ['Secretaría', 'Tesorería', 'Registro'];
@@ -78,10 +77,6 @@ describe('ProcedureManagementComponent', () => {
 
     mockToast = jasmine.createSpyObj('ToastService', ['success', 'error']);
 
-    mockTranslate = jasmine.createSpyObj('TranslateService', ['instant', 'get']);
-    mockTranslate.instant.and.returnValue('mock translation');
-    mockTranslate.get.and.returnValue(of('mock translation'));
-
     await TestBed.configureTestingModule({
       imports: [FormsModule, TranslateModule.forRoot()],
       declarations: [ProcedureManagementComponent],
@@ -89,10 +84,13 @@ describe('ProcedureManagementComponent', () => {
       providers: [
         { provide: ProcedureManagementService, useValue: mockService },
         { provide: ConfirmDialogService, useValue: mockConfirmDialog },
-        { provide: ToastService, useValue: mockToast },
-        { provide: TranslateService, useValue: mockTranslate }
+        { provide: ToastService, useValue: mockToast }
       ]
     }).compileComponents();
+
+    const translate = TestBed.inject(TranslateService);
+    spyOn(translate, 'instant').and.returnValue('mock translation');
+    spyOn(translate, 'get').and.returnValue(of('mock translation'));
 
     fixture = TestBed.createComponent(ProcedureManagementComponent);
     component = fixture.componentInstance;
