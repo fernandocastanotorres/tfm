@@ -224,6 +224,9 @@ describe('MessagesComponent', () => {
 
   describe('downloadAttachment', () => {
     it('should download attachment and trigger file download', () => {
+      const createElementSpy = spyOn(document, 'createElement').and.callThrough();
+      const createObjectURLSpy = spyOn(URL, 'createObjectURL').and.returnValue('blob:test');
+      const revokeObjectURLSpy = spyOn(URL, 'revokeObjectURL');
       const blob = new Blob(['file content'], { type: 'application/pdf' });
 
       component.downloadAttachment('att1', 'doc.pdf');
@@ -232,6 +235,10 @@ describe('MessagesComponent', () => {
         req.url.includes('/attachments/att1/download')
       );
       req.flush(blob);
+
+      expect(createObjectURLSpy).toHaveBeenCalledWith(blob);
+      expect(createElementSpy).toHaveBeenCalledWith('a');
+      expect(revokeObjectURLSpy).toHaveBeenCalledWith('blob:test');
     });
 
     it('should show error toast when download fails', () => {

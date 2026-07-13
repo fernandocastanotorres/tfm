@@ -4,7 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import { LoginComponent } from './login.component';
 import { AuthService } from '../../../application/services/auth.service';
@@ -13,16 +13,26 @@ describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let authService: jasmine.SpyObj<AuthService>;
+  let translateService: jasmine.SpyObj<TranslateService>;
   let router: Router;
 
   beforeEach(async () => {
     const authSpy = jasmine.createSpyObj('AuthService', ['login', 'resendVerificationEmail']);
+    const translateSpy = jasmine.createSpyObj('TranslateService', ['instant']);
+    translateSpy.instant.and.callFake((key: string) => {
+      const translations: Record<string, string> = {
+        'LOGIN.RESEND_SUCCESS': 'Se ha reenviado el enlace de verificación.',
+        'LOGIN.RESEND_ERROR': 'No se pudo procesar la solicitud. Intente nuevamente.',
+      };
+      return translations[key] || key;
+    });
 
     await TestBed.configureTestingModule({
-    imports: [ReactiveFormsModule, TranslateModule.forRoot(), LoginComponent],
+    imports: [ReactiveFormsModule, LoginComponent],
     schemas: [NO_ERRORS_SCHEMA],
     providers: [
         { provide: AuthService, useValue: authSpy },
+        { provide: TranslateService, useValue: translateSpy },
         {
             provide: ActivatedRoute,
             useValue: {
@@ -42,6 +52,7 @@ describe('LoginComponent', () => {
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
     authService = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
+    translateService = TestBed.inject(TranslateService) as jasmine.SpyObj<TranslateService>;
     router = TestBed.inject(Router);
     spyOn(router, 'navigateByUrl');
     fixture.detectChanges();

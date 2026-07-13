@@ -453,6 +453,9 @@ describe('CaseDetailComponent', () => {
       casesApiService.amend.and.returnValue(of({} as any));
 
       await component.requestAmendment();
+
+      expect(confirmDialogService.confirm).toHaveBeenCalled();
+      expect(casesApiService.amend).toHaveBeenCalled();
     });
 
     it('should NOT proceed when user cancels', async () => {
