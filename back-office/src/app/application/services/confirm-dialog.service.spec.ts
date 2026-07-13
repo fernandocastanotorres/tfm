@@ -5,6 +5,17 @@ import Swal from 'sweetalert2';
 describe('ConfirmDialogService', () => {
   let service: ConfirmDialogService;
 
+  beforeAll(() => {
+    spyOn(Swal, 'fire').and.resolveTo({ isConfirmed: true } as any);
+  });
+
+  afterAll(() => {
+    const swalContainer = document.querySelector('.swal2-container');
+    if (swalContainer) {
+      swalContainer.remove();
+    }
+  });
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [ConfirmDialogService]
@@ -13,7 +24,6 @@ describe('ConfirmDialogService', () => {
   });
 
   it('should return true when user confirms', async () => {
-    spyOn(Swal, 'fire').and.resolveTo({ isConfirmed: true } as any);
     const result = await service.confirm('Eliminar?', 'Seguro?');
     expect(result).toBeTrue();
     expect(Swal.fire).toHaveBeenCalledWith(
@@ -22,7 +32,7 @@ describe('ConfirmDialogService', () => {
   });
 
   it('should return false when user cancels', async () => {
-    spyOn(Swal, 'fire').and.resolveTo({ isConfirmed: false } as any);
+    (Swal.fire as jasmine.Spy).and.resolveTo({ isConfirmed: false } as any);
     const result = await service.confirm('Salir?', 'Perderas datos');
     expect(result).toBeFalse();
   });

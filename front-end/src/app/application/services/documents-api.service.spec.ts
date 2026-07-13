@@ -168,7 +168,9 @@ describe('DocumentsApiService', () => {
       });
 
       const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures/c-1/documents`);
-      // The FormData should have the description appended
+      expect(req.request.body instanceof FormData).toBeTrue();
+      const formData = req.request.body as FormData;
+      expect(formData.get('description')).toBe('Important document');
       req.flush({ id: 'd-1', caseId: 'c-1', name: 'doc.pdf', type: 'application/pdf', size: 100, status: 'uploaded', uploadedAt: '2026-01-01T00:00:00Z' });
     });
 
@@ -181,6 +183,9 @@ describe('DocumentsApiService', () => {
       });
 
       const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures/c-1/documents`);
+      expect(req.request.body instanceof FormData).toBeTrue();
+      const formData = req.request.body as FormData;
+      expect(formData.get('category')).toBe('legal');
       req.flush({ id: 'd-1', caseId: 'c-1', name: 'doc.pdf', type: 'application/pdf', size: 100, status: 'uploaded', uploadedAt: '2026-01-01T00:00:00Z' });
     });
 
@@ -193,6 +198,10 @@ describe('DocumentsApiService', () => {
       });
 
       const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures/c-1/documents`);
+      expect(req.request.body instanceof FormData).toBeTrue();
+      const formData = req.request.body as FormData;
+      expect(formData.get('description')).toBe('Test doc');
+      expect(formData.get('category')).toBe('legal');
       req.flush({ id: 'd-1', caseId: 'c-1', name: 'doc.pdf', type: 'application/pdf', size: 100, status: 'uploaded', uploadedAt: '2026-01-01T00:00:00Z' });
     });
 
@@ -205,6 +214,10 @@ describe('DocumentsApiService', () => {
       });
 
       const req = httpMock.expectOne(`${environment.apiBaseUrl}/citizen/procedures/c-1/documents`);
+      expect(req.request.body instanceof FormData).toBeTrue();
+      const formData = req.request.body as FormData;
+      expect(formData.get('description')).toBeNull();
+      expect(formData.get('category')).toBeNull();
       req.flush({ id: 'd-1', caseId: 'c-1', name: 'doc.pdf', type: 'application/pdf', size: 100, status: 'uploaded', uploadedAt: '2026-01-01T00:00:00Z' });
     });
 

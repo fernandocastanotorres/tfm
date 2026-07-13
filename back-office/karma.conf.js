@@ -27,7 +27,7 @@ module.exports = function (config) {
 
       ],
     },
-    reporters: ['progress', 'kjhtml', 'coverage'],
+    reporters: ['progress', 'coverage'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
@@ -40,6 +40,9 @@ module.exports = function (config) {
       },
     },
     singleRun: false,
-    restartOnFileChange: true
+    restartOnFileChange: true,
+    browserDisconnectTimeout: 60000,
+    browserNoActivityTimeout: 120000,
+    browserDisconnectTolerance: 1,
   });
 };

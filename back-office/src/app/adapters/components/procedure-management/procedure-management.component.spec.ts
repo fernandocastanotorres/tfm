@@ -5,7 +5,7 @@ import { ProcedureManagementComponent } from './procedure-management.component';
 import { ProcedureManagementService } from '../../../application/services/procedure-management.service';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
 import { ToastService } from '../../../application/services/toast.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 
 describe('ProcedureManagementComponent', () => {
@@ -14,7 +14,6 @@ describe('ProcedureManagementComponent', () => {
   let mockService: jasmine.SpyObj<ProcedureManagementService>;
   let mockConfirmDialog: jasmine.SpyObj<ConfirmDialogService>;
   let mockToast: jasmine.SpyObj<ToastService>;
-  let mockTranslate: jasmine.SpyObj<TranslateService>;
 
   const mockCategories = ['Urbanismo', 'Padrón', 'Administración'];
   const mockUnits = ['Secretaría', 'Tesorería', 'Registro'];
@@ -78,20 +77,20 @@ describe('ProcedureManagementComponent', () => {
 
     mockToast = jasmine.createSpyObj('ToastService', ['success', 'error']);
 
-    mockTranslate = jasmine.createSpyObj('TranslateService', ['instant']);
-    mockTranslate.instant.and.returnValue('mock translation');
-
     await TestBed.configureTestingModule({
-      imports: [FormsModule],
+      imports: [FormsModule, TranslateModule.forRoot()],
       declarations: [ProcedureManagementComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: ProcedureManagementService, useValue: mockService },
         { provide: ConfirmDialogService, useValue: mockConfirmDialog },
-        { provide: ToastService, useValue: mockToast },
-        { provide: TranslateService, useValue: mockTranslate }
+        { provide: ToastService, useValue: mockToast }
       ]
     }).compileComponents();
+
+    const translate = TestBed.inject(TranslateService);
+    spyOn(translate, 'instant').and.returnValue('mock translation');
+    spyOn(translate, 'get').and.returnValue(of('mock translation'));
 
     fixture = TestBed.createComponent(ProcedureManagementComponent);
     component = fixture.componentInstance;
