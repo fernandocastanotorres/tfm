@@ -5,7 +5,7 @@ import { ProcedureManagementComponent } from './procedure-management.component';
 import { ProcedureManagementService } from '../../../application/services/procedure-management.service';
 import { ConfirmDialogService } from '../../../application/services/confirm-dialog.service';
 import { ToastService } from '../../../application/services/toast.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 
 describe('ProcedureManagementComponent', () => {
@@ -82,7 +82,7 @@ describe('ProcedureManagementComponent', () => {
     mockTranslate.instant.and.returnValue('mock translation');
 
     await TestBed.configureTestingModule({
-      imports: [FormsModule],
+      imports: [FormsModule, TranslateModule.forRoot()],
       declarations: [ProcedureManagementComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
