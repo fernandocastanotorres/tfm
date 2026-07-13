@@ -5,9 +5,18 @@ import Swal from 'sweetalert2';
 describe('ConfirmDialogService', () => {
   let service: ConfirmDialogService;
 
-  beforeEach(() => {
+  beforeAll(() => {
     spyOn(Swal, 'fire').and.resolveTo({ isConfirmed: true } as any);
+  });
 
+  afterAll(() => {
+    const swalContainer = document.querySelector('.swal2-container');
+    if (swalContainer) {
+      swalContainer.remove();
+    }
+  });
+
+  beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [ConfirmDialogService]
     });
